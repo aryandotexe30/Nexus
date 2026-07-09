@@ -57,12 +57,12 @@ export default function LandingPage() {
           </span>
         </div>
         <div className="flex gap-6 items-center">
-          <Link href="/login" className="text-slate-600 font-bold hover:text-slate-900 transition-colors uppercase text-sm tracking-wider hidden sm:block">
-            Access Terminal
+          <Link href="/login" className="text-slate-600 font-bold hover:text-slate-900 transition-colors text-sm tracking-wider hidden sm:block">
+            Sign In
           </Link>
           <Link href="/signup">
-            <button className="px-6 py-2.5 bg-blue-600 text-white font-bold uppercase text-sm tracking-wider hover:bg-blue-700 transition-all shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[2px] hover:translate-y-[2px]">
-              Initialize
+            <button className="px-6 py-2.5 bg-blue-600 text-white font-bold text-sm tracking-wider hover:bg-blue-700 transition-all shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[2px] hover:translate-y-[2px]">
+              Get Started
             </button>
           </Link>
         </div>
@@ -93,8 +93,8 @@ export default function LandingPage() {
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <Link href="/signup">
-                <button className="w-full sm:w-auto px-10 py-5 bg-slate-900 text-white font-black uppercase tracking-widest text-lg flex items-center justify-center gap-3 shadow-[8px_8px_0px_0px_rgba(37,99,235,1)] hover:shadow-[4px_4px_0px_0px_rgba(37,99,235,1)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all group border-2 border-slate-900">
-                  Deploy Nexus Now <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+                <button className="w-full sm:w-auto px-10 py-5 bg-slate-900 text-white font-black tracking-widest text-lg flex items-center justify-center gap-3 shadow-[8px_8px_0px_0px_rgba(37,99,235,1)] hover:shadow-[4px_4px_0px_0px_rgba(37,99,235,1)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all group border-2 border-slate-900">
+                  Get Started For Free <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
                 </button>
               </Link>
               <div className="flex items-center gap-2 text-slate-500 font-mono text-sm uppercase font-bold">
@@ -242,8 +242,8 @@ export default function LandingPage() {
             </p>
             
             <Link href="/signup">
-              <button className="px-12 py-6 bg-blue-600 text-white font-black uppercase tracking-widest text-xl shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all border-2 border-white inline-flex items-center gap-4 group">
-                Execute Protocol <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
+              <button className="px-12 py-6 bg-blue-600 text-white font-black tracking-widest text-xl shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-x-[4px] hover:translate-y-[4px] transition-all border-2 border-white inline-flex items-center gap-4 group">
+                Start Your Free Trial <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
               </button>
             </Link>
             
