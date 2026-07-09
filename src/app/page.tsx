@@ -146,7 +146,7 @@ export default function LandingPage() {
 
             {/* Bento Item 2: Square - Data Enrichment */}
             <motion.div 
-              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, delay: 0.1 }}
+              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}
               className="bg-slate-900 text-white border-2 border-slate-900 p-8 flex flex-col justify-between shadow-[8px_8px_0px_0px_rgba(37,99,235,1)] relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.2),transparent_50%)] pointer-events-none"></div>
@@ -161,7 +161,7 @@ export default function LandingPage() {
 
             {/* Bento Item 3: Square - Strategic Advisor */}
             <motion.div 
-              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, delay: 0.2 }}
+              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
               className="bg-white border-2 border-slate-900 p-8 flex flex-col justify-between shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
             >
               <div>
@@ -175,7 +175,7 @@ export default function LandingPage() {
 
             {/* Bento Item 4: Wide - Marketplace */}
             <motion.div 
-              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, delay: 0.3 }}
+              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}
               className="md:col-span-2 bg-blue-600 text-white border-2 border-slate-900 p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.1)_50%,transparent_75%)] bg-[length:250%_250%,100%_100%] animate-[bg-pan_3s_linear_infinite] pointer-events-none"></div>
@@ -195,7 +195,7 @@ export default function LandingPage() {
 
             {/* Bento Item 5: Square - Network Mapper */}
             <motion.div 
-              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, delay: 0.4 }}
+              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4 }}
               className="bg-white border-2 border-slate-900 p-8 flex flex-col justify-between shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] group"
             >
               <div>

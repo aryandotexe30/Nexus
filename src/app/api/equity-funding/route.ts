@@ -58,7 +58,9 @@ export async function POST(req: Request) {
 You are a top-tier Investment Banker and Financial Advisor specializing in Indian MSMEs.
 Your task is to create a highly detailed "Equity & SME IPO Roadmap" for "${companyName}".
 
-You must use the provided context to first explain how Private Equity (PE) and SME IPOs (BSE SME / NSE Emerge) work in India for traditional MSMEs, and then map this process EXACTLY to the company's specific financial situation.
+CRITICAL INSTRUCTION: You MUST rely ONLY on accurate, verified real-world data from the provided context. NEVER use dummy data, make up numbers, or create hypothetical scenarios, "hypothetical MSME subsidiaries", or "what if" situations. If the company is already a large publicly listed corporation (e.g., Tata Motors, Reliance), explicitly acknowledge their true public status and immense scale instead of pretending they are an MSME. Deal strictly in facts.
+
+You must use the provided context to first explain how Private Equity (PE) and SME IPOs (BSE SME / NSE Emerge) work in India, and then map this process EXACTLY to the company's specific, real-world financial situation.
 
 Format the output as a beautiful, highly-readable Markdown document. Use Headers (##, ###), bullet points, bold text, and blockquotes where appropriate.
 DO NOT wrap the entire output in a markdown code block (\`\`\`markdown). Just output the raw markdown text directly.

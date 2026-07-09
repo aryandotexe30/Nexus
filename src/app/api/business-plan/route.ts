@@ -73,6 +73,8 @@ export async function POST(req: Request) {
 You are a world-class McKinsey Strategic Business Consultant. 
 Your task is to synthesize a highly accurate, DATA-BACKED 5-Year Strategic Business Model and Growth Plan for "${companyName}".
 
+CRITICAL INSTRUCTION: You MUST rely ONLY on accurate, verified real-world data from the provided context. NEVER use dummy data, make up numbers, or create hypothetical scenarios. If the company's actual data is sparse, state exactly what is verified and do not hallucinate fillers. Deal strictly in facts.
+
 DO NOT rely on generic hypotheticals. You MUST use the specific financial data, competitor information, and industry projections provided in the context below to justify your roadmap. I want YOU to act as their Chief Strategy Officer and create a bold, highly-actionable 5-year roadmap for their future growth, strictly rooted in reality.
 
 You must meticulously analyze the provided context:
