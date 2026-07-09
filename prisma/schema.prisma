@@ -15,6 +15,9 @@ model User {
   domain      String
   companyName String?
   gstNumber   String?
+  udyamNumber String?
+  industry    String?
+  isVerified  Boolean  @default(false)
   role        String   @default("USER") // USER, ADMIN
   credits     Int      @default(3)
   createdAt DateTime @default(now())

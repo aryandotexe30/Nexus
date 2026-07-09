@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { Users, Database, Activity, ShieldAlert } from "lucide-react";
 import AdminUserTable from "@/components/AdminUserTable";
+import AdminInvitePanel from "@/components/AdminInvitePanel";
 
 const prisma = new PrismaClient();
 
@@ -85,6 +86,8 @@ export default async function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      <AdminInvitePanel />
 
       <h2 className="text-2xl font-bold text-slate-900 mb-6">Registered Users</h2>
       

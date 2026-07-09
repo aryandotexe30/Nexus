@@ -1,29 +1,21 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import { Resend } from 'resend';
-import WelcomeEmail from '@/emails/WelcomeEmail';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendWelcomeEmail } from '@/lib/email';
 
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const { email, password, companyName, gstNumber } = await req.json();
+    const { email, password, companyName, gstNumber, udyamNumber, industry } = await req.json();
 
-    if (!email || !password || !companyName) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (!email || !password || !companyName || !gstNumber || !industry) {
+      return NextResponse.json({ error: "Missing required fields for Business Verification" }, { status: 400 });
     }
 
     // Extract domain from email (e.g., aryan@tata.com -> tata.com)
     const domain = email.split('@')[1];
     
-    // Check if a user with this domain already exists
-    const existingDomainUser = await prisma.user.findFirst({
-      where: { domain: domain }
-    });
-
     // Check if exact email exists
     const existingEmailUser = await prisma.user.findUnique({
       where: { email: email }
@@ -31,13 +23,6 @@ export async function POST(req: Request) {
 
     if (existingEmailUser) {
       return NextResponse.json({ error: "Email already registered" }, { status: 409 });
-    }
-
-    if (existingDomainUser) {
-      // ENFORCING: Temporarily disabled to allow multiple generic emails
-      // return NextResponse.json({ 
-      //   error: `An account for the business domain @${domain} already exists. Please contact your administrator.` 
-      // }, { status: 403 });
     }
 
     // Hash the password
@@ -49,21 +34,19 @@ export async function POST(req: Request) {
         email,
         password: hashedPassword,
         companyName,
-        gstNumber: gstNumber || null,
+        gstNumber,
+        udyamNumber: udyamNumber || null,
+        industry,
         domain,
+        isVerified: false,
         role: "USER", // Default role
         credits: 3    // Free tier gets 3 credits
       }
     });
 
-    // Send the Welcome Email
+    // Send the Welcome Email via Nodemailer/Outlook
     try {
-      await resend.emails.send({
-        from: 'Nexus <onboarding@resend.dev>',
-        to: email,
-        subject: 'Welcome to Nexus - Your B2B Lead Engine 🚀',
-        react: WelcomeEmail({ companyName }),
-      });
+      await sendWelcomeEmail(email, companyName);
     } catch (emailError) {
       console.error("Failed to send welcome email:", emailError);
       // We don't fail the registration if the email fails, just log it.
