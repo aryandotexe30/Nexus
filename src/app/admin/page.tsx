@@ -73,7 +73,7 @@ export default async function AdminDashboard() {
             <Database className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm text-slate-500 font-semibold uppercase tracking-wider">Total Companies</p>
+            <p className="text-sm text-slate-500 font-semibold uppercase tracking-wider">Companies Indexed</p>
             <h3 className="text-2xl font-bold text-slate-900">{totalCompanies}</h3>
           </div>
         </div>
