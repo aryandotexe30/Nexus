@@ -172,7 +172,7 @@ export default function HubDashboard() {
 
       {/* Tools Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <Link href="/dashboard/matchmaker">
+        <Link href="/matchmaker">
           <motion.div 
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -192,7 +192,7 @@ export default function HubDashboard() {
           </motion.div>
         </Link>
 
-        <Link href="/dashboard/enrich">
+        <Link href="/enrich">
           <motion.div 
              whileHover={{ scale: 1.02 }}
              whileTap={{ scale: 0.98 }}
