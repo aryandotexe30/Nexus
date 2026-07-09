@@ -164,7 +164,7 @@ export default function LandingPage() {
   return (
     <div 
       ref={containerRef} 
-      className="relative min-h-[300vh] bg-white text-slate-900 font-sans overflow-x-hidden selection:bg-blue-600 selection:text-white"
+      className="relative min-h-screen bg-white text-slate-900 font-sans overflow-x-hidden selection:bg-blue-600 selection:text-white"
     >
       {/* Industrial Blueprint Grid Overlay */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.04] z-0" 
