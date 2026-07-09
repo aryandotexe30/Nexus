@@ -92,7 +92,8 @@ export default function Sidebar() {
         {routes.map((route) => {
           const isActive = pathname === route.path;
           const userPlan = (session.user as any)?.plan || "FREE";
-          const isLocked = route.requiredPlan && !route.requiredPlan.includes(userPlan);
+          const isAdminRole = (session.user as any)?.role === "ADMIN";
+          const isLocked = !isAdminRole && route.requiredPlan && !route.requiredPlan.includes(userPlan);
 
           return (
             <Link key={route.path} href={isLocked ? "/pricing" : route.path}>

@@ -164,8 +164,8 @@ export default function PricingPage() {
           <ul className="space-y-4 mb-10 flex-1">
             <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-400 shrink-0 mt-0.5"/> <span className="font-medium text-slate-300">500 Data Extraction Credits/mo</span></li>
             <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-400 shrink-0 mt-0.5"/> <span className="font-medium text-slate-300">Unlimited Global Matchmaking</span></li>
-            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-400 shrink-0 mt-0.5"/> <span className="font-medium text-slate-300">Strategic Advisor Access</span></li>
-            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-400 shrink-0 mt-0.5"/> <span className="font-medium text-slate-300">Priority Node Network</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-400 shrink-0 mt-0.5"/> <span className="font-medium text-slate-300">Network Mapper Unlocked</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-400 shrink-0 mt-0.5"/> <span className="font-medium text-slate-300">Priority Support</span></li>
           </ul>
           <button 
             onClick={() => handleSubscribe("PRO", 5000)}
@@ -186,8 +186,8 @@ export default function PricingPage() {
           </div>
           <ul className="space-y-4 mb-10 flex-1">
             <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-600 shrink-0 mt-0.5"/> <span className="font-medium text-slate-700">Unlimited Extraction Credits</span></li>
-            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-600 shrink-0 mt-0.5"/> <span className="font-medium text-slate-700">Supply Chain Mapper Unlocked</span></li>
-            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-600 shrink-0 mt-0.5"/> <span className="font-medium text-slate-700">Dedicated AI Strategy Node</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-600 shrink-0 mt-0.5"/> <span className="font-medium text-slate-700">AI Strategic Advisor Unlocked</span></li>
+            <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-600 shrink-0 mt-0.5"/> <span className="font-medium text-slate-700">Equity & IPO Advisor Unlocked</span></li>
             <li className="flex items-start gap-3"><Check className="w-5 h-5 text-blue-600 shrink-0 mt-0.5"/> <span className="font-medium text-slate-700">Custom CRM Integrations</span></li>
           </ul>
           <button 
