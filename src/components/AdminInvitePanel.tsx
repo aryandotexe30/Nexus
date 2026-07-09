@@ -33,7 +33,7 @@ export default function AdminInvitePanel() {
         throw new Error(data.error || "Failed to invite admin");
       }
 
-      setSuccess("Admin invitation sent successfully!");
+      setSuccess("Admin account created successfully with password '12345678'");
       setFormData({ email: "", name: "", companyName: "Nexus Admin" });
     } catch (err: any) {
       setError(err.message);
@@ -49,8 +49,8 @@ export default function AdminInvitePanel() {
           <UserPlus className="w-5 h-5" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Invite New Admin</h2>
-          <p className="text-sm text-slate-500">Create an admin account and email them their temporary password.</p>
+          <h2 className="text-xl font-bold text-slate-900">Create New Admin</h2>
+          <p className="text-sm text-slate-500">Create an admin account with default password '12345678'.</p>
         </div>
       </div>
 
@@ -91,7 +91,7 @@ export default function AdminInvitePanel() {
             disabled={loading}
             className="w-full h-[42px] bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70"
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Invitation"}
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Admin"}
           </button>
         </div>
       </form>

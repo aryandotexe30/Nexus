@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import { sendAdminInviteEmail } from '@/lib/email';
-import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -49,8 +47,8 @@ export async function POST(req: Request) {
       }
     }
 
-    // Generate secure temporary password
-    const tempPassword = crypto.randomBytes(8).toString('hex'); // 16 char string
+    // Set default password to 12345678
+    const tempPassword = "12345678";
     const hashedPassword = await bcrypt.hash(tempPassword, 10);
     const domain = email.split('@')[1] || "nexus.admin";
 
@@ -67,15 +65,7 @@ export async function POST(req: Request) {
       }
     });
 
-    // Send the invitation email with the temporary password
-    try {
-      await sendAdminInviteEmail(email, name, tempPassword);
-    } catch (emailError) {
-      console.error("Failed to send admin invite email:", emailError);
-      return NextResponse.json({ error: "Admin created but email failed to send. Temp Password: " + tempPassword }, { status: 500 });
-    }
-
-    return NextResponse.json({ message: "Admin invited successfully" }, { status: 201 });
+    return NextResponse.json({ message: "Admin created successfully" }, { status: 201 });
 
   } catch (error) {
     console.error("Admin invite error:", error);
