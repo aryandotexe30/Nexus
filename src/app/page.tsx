@@ -152,9 +152,6 @@ export default function LandingPage() {
   
   const smoothProgress = useSpring(scrollYProgress, { damping: 20, stiffness: 100 });
 
-  // Parallax Depth Scrolling
-  const yForeground = useTransform(smoothProgress, [0, 1], [0, -200]);
-  
   // Background Rotations
   const bgRotateX = useTransform(smoothProgress, [0, 1], [0, 60]);
   const bgRotateZ = useTransform(smoothProgress, [0, 1], [0, -30]);
@@ -215,7 +212,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Parallax Content Layers */}
-      <motion.div style={{ y: yForeground }} className="relative z-10 w-full">
+      <div className="relative z-10 w-full">
         
         {/* HERO SECTION */}
         <section className="min-h-screen flex flex-col justify-center px-6 md:px-12 pt-32 max-w-7xl mx-auto">
@@ -444,8 +441,7 @@ export default function LandingPage() {
             </div>
           </div>
         </footer>
-
-      </motion.div>
+      </div>
     </div>
   );
 }
