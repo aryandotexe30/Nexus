@@ -42,6 +42,7 @@ export default async function AdminDashboard() {
     companyName: u.companyName,
     domain: u.domain,
     role: u.role,
+    plan: u.plan,
     credits: u.credits
   }));
 

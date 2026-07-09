@@ -22,7 +22,7 @@ export async function PUT(req: Request) {
     const isAdmin = await verifyAdmin();
     if (!isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
 
-    const { userId, role, credits } = await req.json();
+    const { userId, role, credits, plan } = await req.json();
 
     if (!userId || typeof credits !== "number" || !role) {
       return NextResponse.json({ error: "Invalid data" }, { status: 400 });
@@ -32,7 +32,8 @@ export async function PUT(req: Request) {
       where: { id: userId },
       data: {
         role,
-        credits
+        credits,
+        ...(plan && { plan })
       }
     });
 

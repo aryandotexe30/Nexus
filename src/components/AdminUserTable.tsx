@@ -10,6 +10,7 @@ type User = {
   companyName: string | null;
   domain: string;
   role: string;
+  plan: string;
   credits: number;
 };
 
@@ -21,11 +22,13 @@ export default function AdminUserTable({ initialUsers }: { initialUsers: User[] 
 
   // Form State
   const [editRole, setEditRole] = useState("USER");
+  const [editPlan, setEditPlan] = useState("FREE");
   const [editCredits, setEditCredits] = useState(0);
 
   const openEditModal = (user: User) => {
     setEditingUser(user);
     setEditRole(user.role);
+    setEditPlan(user.plan || "FREE");
     setEditCredits(user.credits);
   };
 
@@ -40,12 +43,13 @@ export default function AdminUserTable({ initialUsers }: { initialUsers: User[] 
         body: JSON.stringify({
           userId: editingUser.id,
           role: editRole,
+          plan: editPlan,
           credits: editCredits,
         }),
       });
 
       if (res.ok) {
-        setUsers(users.map((u) => (u.id === editingUser.id ? { ...u, role: editRole, credits: editCredits } : u)));
+        setUsers(users.map((u) => (u.id === editingUser.id ? { ...u, role: editRole, plan: editPlan, credits: editCredits } : u)));
         setEditingUser(null);
         router.refresh();
       } else {
@@ -88,6 +92,7 @@ export default function AdminUserTable({ initialUsers }: { initialUsers: User[] 
               <th className="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider">Email</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider">Company</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider">Role</th>
+              <th className="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider">Plan</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider">Credits</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider text-right">Actions</th>
             </tr>
@@ -102,6 +107,13 @@ export default function AdminUserTable({ initialUsers }: { initialUsers: User[] 
                     u.role === 'ADMIN' ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-100 text-slate-800'
                   }`}>
                     {u.role}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                    u.plan === 'ENTERPRISE' ? 'bg-purple-100 text-purple-800' : u.plan === 'PRO' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-800'
+                  }`}>
+                    {u.plan || 'FREE'}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-mono">{u.credits}</td>
@@ -155,6 +167,19 @@ export default function AdminUserTable({ initialUsers }: { initialUsers: User[] 
                 >
                   <option value="USER">USER</option>
                   <option value="ADMIN">ADMIN</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Plan</label>
+                <select 
+                  value={editPlan} 
+                  onChange={(e) => setEditPlan(e.target.value)}
+                  className="w-full border border-slate-200 text-slate-900 rounded-xl py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="FREE">FREE</option>
+                  <option value="PRO">PRO</option>
+                  <option value="ENTERPRISE">ENTERPRISE</option>
                 </select>
               </div>
 
