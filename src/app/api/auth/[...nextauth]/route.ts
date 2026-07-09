@@ -37,18 +37,23 @@ export const authOptions = {
           email: user.email,
           role: user.role,
           domain: user.domain,
-          companyName: user.companyName
+          companyName: user.companyName,
+          plan: user.plan
         };
       }
     })
   ],
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user, trigger, session }: any) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
         token.domain = user.domain;
         token.companyName = user.companyName;
+        token.plan = user.plan;
+      }
+      if (trigger === "update" && session?.plan) {
+        token.plan = session.plan;
       }
       return token;
     },
@@ -58,6 +63,7 @@ export const authOptions = {
         (session.user as any).role = token.role;
         (session.user as any).domain = token.domain;
         (session.user as any).companyName = token.companyName;
+        (session.user as any).plan = token.plan;
       }
       return session;
     }

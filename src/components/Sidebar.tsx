@@ -19,7 +19,8 @@ import {
   Landmark,
   Menu,
   X,
-  CreditCard
+  CreditCard,
+  Lock
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -43,10 +44,10 @@ export default function Sidebar() {
     { name: "Marketplace", path: "/dashboard/marketplace", icon: Store },
     { name: "Messages", path: "/dashboard/messages", icon: MessageSquare },
     { name: "Global Matchmaker", path: "/matchmaker", icon: Search },
-    { name: "Network Mapper", path: "/network", icon: Network },
+    { name: "Network Mapper", path: "/network", icon: Network, requiredPlan: ["PRO", "ENTERPRISE"] },
     { name: "Data Enrichment", path: "/enrich", icon: UploadCloud },
-    { name: "Business Plan", path: "/dashboard/business-plan", icon: TrendingUp },
-    { name: "Equity & IPO", path: "/dashboard/equity-funding", icon: Landmark },
+    { name: "Business Plan", path: "/dashboard/business-plan", icon: TrendingUp, requiredPlan: ["ENTERPRISE"] },
+    { name: "Equity & IPO", path: "/dashboard/equity-funding", icon: Landmark, requiredPlan: ["ENTERPRISE"] },
     { name: "Billing & Plans", path: "/pricing", icon: CreditCard },
     { name: "Settings", path: "/dashboard/settings", icon: Settings },
   ];
@@ -90,19 +91,23 @@ export default function Sidebar() {
       <div className="flex-1 py-4 px-4 space-y-2 relative z-10 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
         {routes.map((route) => {
           const isActive = pathname === route.path;
+          const userPlan = (session.user as any)?.plan || "FREE";
+          const isLocked = route.requiredPlan && !route.requiredPlan.includes(userPlan);
+
           return (
-            <Link key={route.path} href={route.path}>
-              <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group relative ${isActive ? 'text-blue-600 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-slate-200'}`}>
-                {isActive && (
+            <Link key={route.path} href={isLocked ? "/pricing" : route.path}>
+              <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group relative ${isActive ? 'text-blue-600 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-slate-200'} ${isLocked ? 'opacity-70' : ''}`}>
+                {isActive && !isLocked && (
                   <motion.div 
                     layoutId="sidebar-active"
                     className="absolute inset-0 bg-white dark:bg-blue-600/10 border border-slate-200/50 dark:border-blue-500/20 shadow-md shadow-slate-200/50 dark:shadow-none rounded-2xl"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
-                <div className={`absolute inset-0 bg-blue-50/50 dark:bg-slate-800/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isActive ? 'hidden' : 'block'}`}></div>
-                <route.icon className={`w-5 h-5 relative z-10 ${isActive ? 'text-blue-500 dark:text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 'group-hover:text-blue-500 dark:group-hover:text-slate-300 transition-colors'}`} />
-                <span className={`font-bold relative z-10 ${isActive ? 'drop-shadow-sm' : ''}`}>{route.name}</span>
+                <div className={`absolute inset-0 bg-blue-50/50 dark:bg-slate-800/50 rounded-2xl opacity-0 transition-opacity duration-300 ${(isActive && !isLocked) ? 'hidden' : 'group-hover:opacity-100'} ${isLocked ? 'hidden' : 'block'}`}></div>
+                <route.icon className={`w-5 h-5 relative z-10 ${isActive && !isLocked ? 'text-blue-500 dark:text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 'group-hover:text-blue-500 dark:group-hover:text-slate-300 transition-colors'}`} />
+                <span className={`font-bold relative z-10 flex-1 ${isActive && !isLocked ? 'drop-shadow-sm' : ''}`}>{route.name}</span>
+                {isLocked && <Lock className="w-4 h-4 text-slate-400 relative z-10" />}
               </div>
             </Link>
           );

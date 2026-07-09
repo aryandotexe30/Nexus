@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function PricingPage() {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const router = useRouter();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
@@ -67,6 +67,7 @@ export default function PricingPage() {
 
           const verifyData = await verifyRes.json();
           if (verifyData.success) {
+            await update({ plan: planName });
             alert("Payment Successful! Your instance has been upgraded.");
             router.push("/dashboard");
           } else {

@@ -1,16 +1,41 @@
 "use client";
 
 import { useState } from 'react';
-import { Loader2, TrendingUp, Sparkles, Building2, Briefcase } from 'lucide-react';
+import { Loader2, TrendingUp, Sparkles, Building2, Briefcase, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 export default function BusinessPlanPage() {
+  const { data: session } = useSession();
   const [companyName, setCompanyName] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [plan, setPlan] = useState<string | null>(null);
   const [industry, setIndustry] = useState<string | null>(null);
+
+  const userPlan = (session?.user as any)?.plan || "FREE";
+  const hasAccess = userPlan === "ENTERPRISE" || (session?.user as any)?.role === "ADMIN";
+
+  if (!hasAccess) {
+    return (
+      <div className="max-w-5xl mx-auto space-y-8 p-4 flex flex-col items-center justify-center min-h-[70vh] text-center">
+        <div className="w-24 h-24 bg-slate-100 rounded-[2rem] flex items-center justify-center mb-6 shadow-sm border border-slate-200">
+          <Lock className="w-10 h-10 text-slate-400" />
+        </div>
+        <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">Strategic Advisor Locked</h1>
+        <p className="text-slate-500 font-medium max-w-lg mx-auto mb-8 text-lg">
+          This military-grade intelligence module is restricted to the Enterprise tier. Upgrade to generate complete 5-year business roadmaps.
+        </p>
+        <Link href="/pricing">
+          <button className="px-8 py-4 bg-slate-900 text-white font-bold rounded-2xl shadow-lg hover:bg-slate-800 transition-colors uppercase tracking-widest text-sm border-2 border-slate-900">
+            Deploy Enterprise
+          </button>
+        </Link>
+      </div>
+    );
+  }
 
   const generatePlan = async (e: React.FormEvent) => {
     e.preventDefault();
