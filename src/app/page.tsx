@@ -13,7 +13,11 @@ import {
   useMotionTemplate
 } from "framer-motion";
 import { ArrowRight, Search, Zap, Globe, ShieldCheck, Network, TrendingUp, Store, Activity, ChevronRight, Lock } from "lucide-react";
-import { wrap } from "@motionone/utils";
+// Advanced wrap function for velocity marquee
+const wrap = (min: number, max: number, v: number) => {
+  const rangeSize = max - min;
+  return ((((v - min) % rangeSize) + rangeSize) % rangeSize) + min;
+};
 
 // --- Advanced Physics Components ---
 
