@@ -18,7 +18,8 @@ import {
   TrendingUp,
   Landmark,
   Menu,
-  X
+  X,
+  CreditCard
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -46,6 +47,7 @@ export default function Sidebar() {
     { name: "Data Enrichment", path: "/enrich", icon: UploadCloud },
     { name: "Business Plan", path: "/dashboard/business-plan", icon: TrendingUp },
     { name: "Equity & IPO", path: "/dashboard/equity-funding", icon: Landmark },
+    { name: "Billing & Plans", path: "/pricing", icon: CreditCard },
     { name: "Settings", path: "/dashboard/settings", icon: Settings },
   ];
 
