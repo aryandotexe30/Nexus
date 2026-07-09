@@ -418,7 +418,6 @@ export default function LandingPage() {
                 <ul className="space-y-4 text-sm font-medium text-slate-400">
                   <li><Link href="/about" className="hover:text-blue-400 transition-colors">About Us</Link></li>
                   <li><Link href="#" className="hover:text-blue-400 transition-colors">Pricing</Link></li>
-                  <li><Link href="#" className="hover:text-blue-400 transition-colors">Careers</Link></li>
                 </ul>
               </div>
 
