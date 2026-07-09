@@ -19,7 +19,15 @@ model User {
   industry    String?
   isVerified  Boolean  @default(false)
   role        String   @default("USER") // USER, ADMIN
+  plan        PlanType @default(FREE)
   credits     Int      @default(3)
+  
+  // Razorpay Tracking
+  razorpayCustomerId      String?
+  razorpaySubscriptionId  String?
+  subscriptionStatus      String?
+  currentPeriodEnd        DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -48,6 +56,12 @@ model NetworkCache {
 enum PostType {
   OFFERING
   REQUEST
+}
+
+enum PlanType {
+  FREE
+  PRO
+  ENTERPRISE
 }
 
 enum BidStatus {
