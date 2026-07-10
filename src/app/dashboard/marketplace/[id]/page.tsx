@@ -78,27 +78,52 @@ export default function PostDetailsPage() {
           <ArrowLeft className="w-4 h-4" /> Back to Marketplace
         </button>
         
-        {isAuthor && (
-          <button 
-            onClick={async () => {
-              if (!confirm("Are you sure you want to permanently delete this entire post and all its bids?")) return;
-              try {
-                const res = await fetch(`/api/marketplace/${params.id}`, { method: "DELETE" });
-                const data = await res.json();
-                if (data.success) {
-                  router.push("/dashboard/marketplace");
-                } else {
-                  alert(data.error);
+        <div className="flex items-center gap-4">
+          {!isAuthor && (
+            <button 
+              onClick={async () => {
+                if (!confirm("Are you sure you want to report this post? It will be temporarily hidden and sent for Admin review.")) return;
+                try {
+                  const res = await fetch(`/api/marketplace/${params.id}/report`, { method: "POST" });
+                  const data = await res.json();
+                  if (data.success) {
+                    alert("Post reported successfully. It has been hidden pending review.");
+                    router.push("/dashboard/marketplace");
+                  } else {
+                    alert(data.error);
+                  }
+                } catch (e) {
+                  alert("Failed to report post.");
                 }
-              } catch (e) {
-                alert("Failed to delete post.");
-              }
-            }}
-            className="flex items-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-lg transition-colors font-bold text-sm"
-          >
-            <Trash2 className="w-4 h-4" /> Delete Post
-          </button>
-        )}
+              }}
+              className="flex items-center gap-2 bg-orange-50 text-orange-600 hover:bg-orange-100 px-4 py-2 rounded-lg transition-colors font-bold text-sm"
+            >
+              Report Post
+            </button>
+          )}
+
+          {isAuthor && (
+            <button 
+              onClick={async () => {
+                if (!confirm("Are you sure you want to permanently delete this entire post and all its bids?")) return;
+                try {
+                  const res = await fetch(`/api/marketplace/${params.id}`, { method: "DELETE" });
+                  const data = await res.json();
+                  if (data.success) {
+                    router.push("/dashboard/marketplace");
+                  } else {
+                    alert(data.error);
+                  }
+                } catch (e) {
+                  alert("Failed to delete post.");
+                }
+              }}
+              className="flex items-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-lg transition-colors font-bold text-sm"
+            >
+              <Trash2 className="w-4 h-4" /> Delete Post
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

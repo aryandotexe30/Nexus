@@ -434,8 +434,8 @@ export default function LandingPage() {
             <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-slate-500 uppercase tracking-widest">
               <p>© {new Date().getFullYear()} Nexus AI System. Built in India.</p>
               <div className="flex gap-6">
-                <Link href="#" className="hover:text-white transition-colors">Terms</Link>
-                <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
+                <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms</Link>
+                <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy</Link>
               </div>
             </div>
           </div>

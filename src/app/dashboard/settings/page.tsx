@@ -93,6 +93,32 @@ export default function SettingsPage() {
             </button>
           </div>
         </motion.section>
+
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white/70 dark:bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-200/50 dark:border-slate-700/50 shadow-xl shadow-slate-200/20 dark:shadow-none transition-all"
+        >
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+             <ShieldCheck className="w-6 h-6 text-emerald-500" /> Legal & Compliance
+          </h2>
+          
+          <div className="space-y-4">
+             <a href="/privacy-policy" target="_blank" className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 transition-colors">
+               <div>
+                 <h3 className="font-bold text-slate-900 dark:text-white">Privacy Policy</h3>
+                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Read how we handle and protect your data.</p>
+               </div>
+             </a>
+             <a href="/terms-of-service" target="_blank" className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 transition-colors">
+               <div>
+                 <h3 className="font-bold text-slate-900 dark:text-white">Terms of Service</h3>
+                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Read the terms and conditions for using Nexus.</p>
+               </div>
+             </a>
+          </div>
+        </motion.section>
       </div>
     </div>
   );

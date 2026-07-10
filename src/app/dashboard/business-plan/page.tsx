@@ -184,6 +184,11 @@ export default function BusinessPlanPage() {
                   {plan}
                 </ReactMarkdown>
               </div>
+              <div className="mt-8 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                <p className="text-xs text-slate-500 font-medium">
+                  <strong>Disclaimer:</strong> This AI-generated strategic plan is for informational purposes only and does not constitute licensed legal, accounting, or financial advice.
+                </p>
+              </div>
             </div>
           </motion.div>
         )}

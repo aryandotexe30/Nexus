@@ -2,9 +2,10 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { PrismaClient } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { Users, Database, Activity, ShieldAlert } from "lucide-react";
+import { Users, Database, Activity, ShieldAlert, Flag } from "lucide-react";
 import AdminUserTable from "@/components/AdminUserTable";
 import AdminInvitePanel from "@/components/AdminInvitePanel";
+import AdminModerationTable from "@/components/AdminModerationTable";
 
 const prisma = new PrismaClient();
 
@@ -34,6 +35,13 @@ export default async function AdminDashboard() {
   });
 
   const totalCompanies = await prisma.company.count();
+
+  // Fetch flagged posts
+  const flaggedPosts = await prisma.marketplacePost.findMany({
+    where: { isFlagged: true },
+    include: { author: { select: { companyName: true, email: true } } },
+    orderBy: { createdAt: 'desc' }
+  });
 
   // Convert dates to string so they can be passed to Client Component
   const serializedUsers = users.map(u => ({
@@ -78,19 +86,24 @@ export default async function AdminDashboard() {
           </div>
         </div>
         <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600">
-            <Activity className="w-6 h-6" />
+          <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-600">
+            <Flag className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm text-slate-500 font-semibold uppercase tracking-wider">API Health</p>
-            <h3 className="text-2xl font-bold text-slate-900">Excellent</h3>
+            <p className="text-sm text-slate-500 font-semibold uppercase tracking-wider">Flagged Posts</p>
+            <h3 className="text-2xl font-bold text-slate-900">{flaggedPosts.length}</h3>
           </div>
         </div>
       </div>
 
       <AdminInvitePanel />
 
-      <h2 className="text-2xl font-bold text-slate-900 mb-6">Registered Users</h2>
+      <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+        <ShieldAlert className="w-6 h-6 text-red-500" /> Moderation Queue
+      </h2>
+      <AdminModerationTable initialPosts={flaggedPosts} />
+
+      <h2 className="text-2xl font-bold text-slate-900 mb-6 mt-12">Registered Users</h2>
       
       <AdminUserTable initialUsers={serializedUsers} />
 

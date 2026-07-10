@@ -81,6 +81,8 @@ model MarketplacePost {
   bids        Bid[]
   threads     ChatThread[]
   isOpen      Boolean  @default(true)
+  isApproved  Boolean  @default(true)
+  isFlagged   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

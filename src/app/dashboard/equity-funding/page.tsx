@@ -181,6 +181,11 @@ export default function EquityFundingPage() {
                   {roadmap}
                 </ReactMarkdown>
               </div>
+              <div className="mt-8 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                <p className="text-xs text-slate-500 font-medium">
+                  <strong>Disclaimer:</strong> This AI-generated funding roadmap is an estimate for informational purposes only and does not constitute licensed investment, legal, or financial advice. Consult a certified financial advisor before making equity decisions.
+                </p>
+              </div>
             </div>
           </motion.div>
         )}
