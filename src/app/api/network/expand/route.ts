@@ -95,8 +95,9 @@ Entity Type: ${nodeType}
 Requested Action: ${action}
 
 Extract exactly 5 to 8 highly specific, distinct items related to the query. 
-For example, if asking for raw materials for a battery, output specific materials like "Lithium Cobalt Oxide", "Graphite Anode", "Polyethylene Separator", rather than generic terms.
-If asking for products of a company, list their specific technical products, flagship products, and use their exact industry terms (e.g. if they manufacture "Gauntlets", call them "Gauntlets", not "Bags"). Be comprehensive.
+- If asking for "Suppliers", "Manufacturers", or "Competitors", output EXACT COMPANY NAMES (e.g., "Tata Steel", "Suraj Metal Corp", "Reliance Industries"). Do NOT output product names.
+- If asking for "Raw Materials", output specific materials like "Lithium Cobalt Oxide", "Graphite Anode", "Polyethylene Separator", rather than generic terms.
+- If asking for "Products", list their specific technical products, flagship products, and use their exact industry terms (e.g. if they manufacture "Gauntlets", call them "Gauntlets", not "Bags"). Be comprehensive.
 
 Search Context:
 ${searchContext}
