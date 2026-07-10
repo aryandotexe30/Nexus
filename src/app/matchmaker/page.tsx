@@ -100,9 +100,9 @@ export default function Matchmaker() {
                       </div>
                     </div>
                   </div>
-                  <button className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1">
+                  <a href={`https://www.google.com/search?q=${encodeURIComponent(company.name)}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1">
                     View Full Profile <ExternalLink className="w-4 h-4" />
-                  </button>
+                  </a>
                 </div>
                 <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100">
                   <p className="text-slate-700 leading-relaxed font-medium">
