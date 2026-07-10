@@ -2,10 +2,11 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { PrismaClient } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { Users, Database, Activity, ShieldAlert, Flag } from "lucide-react";
+import { Users, Database, Activity, ShieldAlert, Flag, UserCheck } from "lucide-react";
 import AdminUserTable from "@/components/AdminUserTable";
 import AdminInvitePanel from "@/components/AdminInvitePanel";
 import AdminModerationTable from "@/components/AdminModerationTable";
+import AdminVerificationQueue from "@/components/AdminVerificationQueue";
 
 const prisma = new PrismaClient();
 
@@ -43,6 +44,12 @@ export default async function AdminDashboard() {
     orderBy: { createdAt: 'desc' }
   });
 
+  // Fetch unverified users for KYC queue
+  const unverifiedUsers = await prisma.user.findMany({
+    where: { isVerified: false },
+    orderBy: { createdAt: 'desc' }
+  });
+
   // Convert dates to string so they can be passed to Client Component
   const serializedUsers = users.map(u => ({
     id: u.id,
@@ -52,6 +59,19 @@ export default async function AdminDashboard() {
     role: u.role,
     plan: u.plan,
     credits: u.credits
+  }));
+
+  const serializedUnverifiedUsers = unverifiedUsers.map(u => ({
+    id: u.id,
+    email: u.email,
+    companyName: u.companyName,
+    gstNumber: u.gstNumber,
+    cinNumber: u.cinNumber,
+    udyamNumber: u.udyamNumber,
+    industry: u.industry,
+    personalEmail: u.personalEmail,
+    companyPhone: u.companyPhone,
+    personalPhone: u.personalPhone
   }));
 
   return (
@@ -96,9 +116,12 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      <AdminInvitePanel />
-
       <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
+        <UserCheck className="w-6 h-6 text-emerald-500" /> Pending KYC Approvals
+      </h2>
+      <AdminVerificationQueue initialUsers={serializedUnverifiedUsers} />
+
+      <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3 mt-12">
         <ShieldAlert className="w-6 h-6 text-red-500" /> Moderation Queue
       </h2>
       <AdminModerationTable initialPosts={flaggedPosts} />

@@ -38,7 +38,8 @@ export const authOptions = {
           role: user.role,
           domain: user.domain,
           companyName: user.companyName,
-          plan: user.plan
+          plan: user.plan,
+          isVerified: user.isVerified
         };
       }
     })
@@ -51,6 +52,7 @@ export const authOptions = {
         token.domain = user.domain;
         token.companyName = user.companyName;
         token.plan = user.plan;
+        token.isVerified = user.isVerified;
       }
       if (trigger === "update" && session?.plan) {
         token.plan = session.plan;
@@ -64,6 +66,7 @@ export const authOptions = {
         (session.user as any).domain = token.domain;
         (session.user as any).companyName = token.companyName;
         (session.user as any).plan = token.plan;
+        (session.user as any).isVerified = token.isVerified;
       }
       return session;
     }

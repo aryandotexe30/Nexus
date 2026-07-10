@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Monitor, User, Building2, Key, Save } from "lucide-react";
+import { Moon, Sun, Monitor, User, Building2, Key, Save, ShieldCheck } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 

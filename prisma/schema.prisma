@@ -15,8 +15,12 @@ model User {
   domain      String
   companyName String?
   gstNumber   String?
-  udyamNumber String?
-  industry    String?
+  udyamNumber    String?
+  cinNumber      String?
+  personalEmail  String?
+  companyPhone   String?
+  personalPhone  String?
+  industry       String?
   isVerified  Boolean  @default(false)
   role        String   @default("USER") // USER, ADMIN
   plan        PlanType @default(FREE)

@@ -7,10 +7,13 @@ const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
-    const { email, password, companyName, gstNumber, udyamNumber, industry } = await req.json();
+    const { 
+      email, password, companyName, gstNumber, industry, 
+      udyamNumber, cinNumber, personalEmail, companyPhone, personalPhone 
+    } = await req.json();
 
-    if (!email || !password || !companyName || !gstNumber || !industry) {
-      return NextResponse.json({ error: "Missing required fields for Business Verification" }, { status: 400 });
+    if (!email || !password || !companyName || !gstNumber || !cinNumber || !personalEmail || !companyPhone || !personalPhone) {
+      return NextResponse.json({ error: "Missing required KYC fields for Business Verification" }, { status: 400 });
     }
 
     // Extract domain from email (e.g., aryan@tata.com -> tata.com)
@@ -36,6 +39,10 @@ export async function POST(req: Request) {
         companyName,
         gstNumber,
         udyamNumber: udyamNumber || null,
+        cinNumber,
+        personalEmail,
+        companyPhone,
+        personalPhone,
         industry,
         domain,
         isVerified: false,
