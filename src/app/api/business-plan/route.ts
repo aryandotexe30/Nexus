@@ -18,15 +18,29 @@ export async function POST(req: Request) {
     const data = await req.json();
     const { companyName } = data;
 
-    if (!companyName) {
+    if (!companyName || typeof companyName !== 'string') {
       return NextResponse.json({ error: 'Company name is required' }, { status: 400 });
+    }
+
+    if (companyName.length > 100) {
+      return NextResponse.json({ error: 'Company name is too long' }, { status: 400 });
     }
 
     const user = await prisma.user.findUnique({ where: { email: session.user.email } });
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    if (user.credits <= 0) {
-      return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
+    
+    // Deduct credits upfront to prevent race conditions
+    if (user.role !== 'ADMIN') {
+      if (user.credits <= 0) {
+        return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
+      }
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { credits: { decrement: 1 } }
+      });
     }
+
+    try {
 
     // Step 1: Initial Reconnaissance on the Company
     console.log(`[Business Plan] Step 1: Searching for ${companyName}`);
@@ -117,18 +131,23 @@ ${industryContext}
 
     const businessPlan = planRes.text || "Failed to generate business plan.";
 
-    // Deduct credits
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { credits: { decrement: 1 } }
-    });
-
     return NextResponse.json({ 
       success: true, 
       businessPlan,
       industry,
       remainingCredits: user.role === 'ADMIN' ? 'Unlimited' : user.credits - 1
     });
+
+    } catch (innerError: any) {
+      // Refund credit on failure
+      if (user.role !== 'ADMIN') {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { credits: { increment: 1 } }
+        });
+      }
+      throw innerError;
+    }
 
   } catch (error: any) {
     console.error("Business Plan error:", error);

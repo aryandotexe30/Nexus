@@ -32,13 +32,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    if (!companies || companies.length === 0) {
+    if (!companies || !Array.isArray(companies) || companies.length === 0) {
       return NextResponse.json({ error: 'No companies provided' }, { status: 400 });
+    }
+
+    if (companies.length > 50) {
+      return NextResponse.json({ error: 'Max 50 companies per batch allowed' }, { status: 400 });
+    }
+
+    // Validate inputs
+    for (const c of companies) {
+      if (c.name && c.name.length > 100) {
+        return NextResponse.json({ error: 'Company name too long' }, { status: 400 });
+      }
     }
 
     let companiesToProcess = companies;
     
-    // Free Tier Limit logic
+    // Free Tier Limit logic and UPFRONT Deduction
     if (user.role !== 'ADMIN') {
       if (user.credits <= 0) {
         return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
@@ -46,9 +57,15 @@ export async function POST(req: Request) {
       if (companiesToProcess.length > user.credits) {
         companiesToProcess = companiesToProcess.slice(0, user.credits);
       }
+      // Deduct upfront
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { credits: { decrement: companiesToProcess.length } }
+      });
     }
 
-    const results = [];
+    try {
+      const results = [];
 
     // For testing, process them sequentially to avoid rate limits
     for (const company of companiesToProcess) {
@@ -88,20 +105,23 @@ export async function POST(req: Request) {
       }
     }
 
-    // Deduct credits
-    if (user.role !== 'ADMIN') {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { credits: { decrement: companiesToProcess.length } }
-      });
-    }
-
     return NextResponse.json({ 
       success: true, 
       data: results, 
       processedCount: companiesToProcess.length,
       remainingCredits: user.role === 'ADMIN' ? 'Unlimited' : user.credits - companiesToProcess.length
     });
+
+    } catch (innerError: any) {
+      // Refund credits on catastrophic failure
+      if (user.role !== 'ADMIN') {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { credits: { increment: companiesToProcess.length } }
+        });
+      }
+      throw innerError;
+    }
 
   } catch (error: any) {
     console.error("Enrichment error:", error);

@@ -49,6 +49,19 @@ export async function POST(req: Request, { params }: { params: Promise<{ threadI
       return NextResponse.json({ error: 'Message cannot be empty' }, { status: 400 });
     }
 
+    if (content && typeof content === 'string' && content.length > 2000) {
+      return NextResponse.json({ error: 'Message content is too long (max 2000 chars)' }, { status: 400 });
+    }
+
+    if (attachmentUrl) {
+      if (typeof attachmentUrl !== 'string' || attachmentUrl.length > 500) {
+        return NextResponse.json({ error: 'Attachment URL is too long' }, { status: 400 });
+      }
+      if (!attachmentUrl.startsWith('http://') && !attachmentUrl.startsWith('https://')) {
+        return NextResponse.json({ error: 'Invalid Attachment URL' }, { status: 400 });
+      }
+    }
+
     const newMessage = await prisma.chatMessage.create({
       data: {
         threadId,
