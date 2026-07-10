@@ -160,11 +160,13 @@ async function processCompany(company: CompanyInput) {
       max_results: 3
     }, { timeout: 15000 });
 
-    // 3. SignalHire Search
+    // 3. SignalHire Search (Targeting Dealmakers)
     let signalHireData = null;
     try {
       const shRes = await axios.post(`https://www.signalhire.com/api/v1/candidate/search`, {
-        companyName: company.name, items: 10 
+        companyName: company.name, 
+        keywords: "Sales Manager, Business Head, Director, Procurement",
+        items: 10 
       }, {
         headers: { apikey: process.env.SIGNALHIRE_API_KEY }
       });
@@ -215,14 +217,14 @@ Target Fields to Extract:
 3. "financials": All available financials (Revenue, etc.) (Markdown text)
 4. "goods_sold": Goods sold (Markdown text)
 5. "goods_purchased": Goods Purchased (Markdown text)
-5. "profits_made": Profits made (Markdown text)
-6. "loss_made": loss made (Markdown text)
-7. "economic_times_info": All information available on economic times (Markdown text with [Links](url))
-8. "sales_people": sales people available (Markdown text)
-9. "board_of_directors": Board of directors (Markdown text)
-10. "products_and_services": Products and services (Markdown text)
-11. "hr_contacts": HR and people available (Markdown text)
-12. "all_available_info": A summary of all other available information (Markdown text)
+6. "profits_made": Profits made (Markdown text)
+7. "loss_made": loss made (Markdown text)
+8. "economic_times_info": All information available on economic times (Markdown text with [Links](url))
+9. "sales_and_business_heads": The primary dealmakers. Extract Regional Sales Managers, Business Heads, Procurement Officers, or Directors. If none exist, fallback to CEO. Include names and contact info if available. (Markdown text)
+10. "board_of_directors": Board of directors (Markdown text)
+11. "products_and_services": Products and services (Markdown text)
+12. "hr_contacts": HR and people available (Markdown text)
+13. "all_available_info": A summary of all other available information (Markdown text)
 13. "stock_information": Live or recent stock data (Ticker, Market Cap, Share Price, Exchange, Performance). If private, say "Private Company". (Markdown text)
 14. "financial_chart_data": An ARRAY of JSON objects representing historical financial data to plot on a chart. Must contain { "year": "2023", "revenue": number_in_millions, "profit": number_in_millions }. Infer or extract this from the text. Ensure it is a valid JSON array of objects, NOT markdown.
 
