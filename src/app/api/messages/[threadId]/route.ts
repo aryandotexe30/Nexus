@@ -80,11 +80,13 @@ export async function POST(req: Request, { params }: { params: Promise<{ threadI
     });
 
     try {
-      await pusherServer.trigger(
-        `thread-${threadId}`,
-        'new-message',
-        newMessage
-      );
+      if (pusherServer) {
+        await pusherServer.trigger(
+          `thread-${threadId}`,
+          'new-message',
+          newMessage
+        );
+      }
     } catch (pusherError) {
       console.error("Pusher trigger error:", pusherError);
     }

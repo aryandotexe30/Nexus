@@ -32,6 +32,11 @@ export default function MessagesPage() {
     fetchMessages(activeThreadId);
     
     // Subscribe to pusher channel
+    if (!pusherClient) {
+      console.warn("Pusher is not configured. Real-time chat is disabled.");
+      return;
+    }
+
     const channelName = `thread-${activeThreadId}`;
     const channel = pusherClient.subscribe(channelName);
     
