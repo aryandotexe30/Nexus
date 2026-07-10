@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { PrismaClient } from "@prisma/client";
+import { pusherServer } from "@/lib/pusher";
 
 const prisma = new PrismaClient();
 
@@ -64,6 +65,16 @@ export async function POST(req: Request, { params }: { params: Promise<{ threadI
       where: { id: threadId },
       data: { updatedAt: new Date() }
     });
+
+    try {
+      await pusherServer.trigger(
+        `thread-${threadId}`,
+        'new-message',
+        newMessage
+      );
+    } catch (pusherError) {
+      console.error("Pusher trigger error:", pusherError);
+    }
 
     return NextResponse.json({ success: true, message: newMessage });
   } catch (error: any) {

@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Send, Paperclip, Loader2, FileText, Trash2 } from "lucide-react";
+import { pusherClient } from "@/lib/pusher-client";
 
 export default function MessagesPage() {
   const { data: session } = useSession();
@@ -30,11 +31,23 @@ export default function MessagesPage() {
     if (!activeThreadId) return;
     fetchMessages(activeThreadId);
     
-    const interval = setInterval(() => {
-      fetchMessages(activeThreadId, true);
-    }, 5000); // Poll every 5s
+    // Subscribe to pusher channel
+    const channelName = `thread-${activeThreadId}`;
+    const channel = pusherClient.subscribe(channelName);
+    
+    channel.bind("new-message", (newMsg: any) => {
+      setMessages((prev) => {
+        // Prevent duplicate messages if sender is this user
+        if (prev.some(m => m.id === newMsg.id)) return prev;
+        return [...prev, newMsg];
+      });
+      // Optionally re-fetch threads so latest preview is updated
+      fetchThreads();
+    });
 
-    return () => clearInterval(interval);
+    return () => {
+      pusherClient.unsubscribe(channelName);
+    };
   }, [activeThreadId]);
 
   // Auto-scroll to bottom when messages change
