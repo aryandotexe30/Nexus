@@ -51,7 +51,7 @@ export default function MessagesPage() {
     });
 
     return () => {
-      pusherClient.unsubscribe(channelName);
+      pusherClient?.unsubscribe(channelName);
     };
   }, [activeThreadId]);
 
