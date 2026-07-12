@@ -1,0 +1,170 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password    String
+  domain      String
+  companyName String?
+  gstNumber   String?
+  udyamNumber    String?
+  cinNumber      String?
+  personalEmail  String?
+  companyPhone   String?
+  personalPhone  String?
+  industry       String?
+  isVerified  Boolean  @default(false)
+  role        String   @default("USER") // USER, ADMIN
+  plan        PlanType @default(FREE)
+  credits     Int      @default(3)
+  
+  // Razorpay Tracking
+  razorpayCustomerId      String?
+  razorpaySubscriptionId  String?
+  subscriptionStatus      String?
+  currentPeriodEnd        DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts     MarketplacePost[]
+  bids      Bid[] @relation("UserBids")
+  threads1  ChatThread[] @relation("ThreadUser1")
+  threads2  ChatThread[] @relation("ThreadUser2")
+  messages  ChatMessage[]
+  
+  supportTickets    SupportTicket[] @relation("UserTickets")
+  handledTickets    SupportTicket[] @relation("AdminTickets")
+  supportMessages   SupportMessage[]
+  notifications     Notification[]
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  data        Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model NetworkCache {
+  id        String   @id @default(cuid())
+  queryKey  String   @unique
+  result    Json
+  createdAt DateTime @default(now())
+}
+
+enum PostType {
+  OFFERING
+  REQUEST
+}
+
+enum PlanType {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum BidStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model MarketplacePost {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  type        PostType
+  budget      String?
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  bids        Bid[]
+  threads     ChatThread[]
+  isOpen      Boolean  @default(true)
+  isApproved  Boolean  @default(true)
+  isFlagged   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Bid {
+  id          String   @id @default(cuid())
+  postId      String
+  post        MarketplacePost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  bidderId    String
+  bidder      User     @relation("UserBids", fields: [bidderId], references: [id], onDelete: Cascade)
+  amount      String
+  proposal    String
+  status      BidStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ChatThread {
+  id          String   @id @default(cuid())
+  postId      String?
+  post        MarketplacePost? @relation(fields: [postId], references: [id], onDelete: SetNull)
+  user1Id     String
+  user1       User     @relation("ThreadUser1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2Id     String
+  user2       User     @relation("ThreadUser2", fields: [user2Id], references: [id], onDelete: Cascade)
+  messages    ChatMessage[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([user1Id, user2Id, postId])
+}
+
+model ChatMessage {
+  id            String   @id @default(cuid())
+  threadId      String
+  thread        ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  senderId      String
+  sender        User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  content       String
+  attachmentUrl String?
+  createdAt     DateTime @default(now())
+}
+
+model SupportTicket {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation("UserTickets", fields: [userId], references: [id], onDelete: Cascade)
+  adminId   String?
+  admin     User?    @relation("AdminTickets", fields: [adminId], references: [id], onDelete: SetNull)
+  status    String   @default("PENDING") // PENDING, ACTIVE, CLOSED
+  messages  SupportMessage[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SupportMessage {
+  id          String   @id @default(cuid())
+  ticketId    String
+  ticket      SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  senderId    String
+  sender      User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  content     String
+  createdAt   DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // e.g., 'SYSTEM', 'BID', 'MESSAGE', 'MATCH'
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  link      String?  
+  createdAt DateTime @default(now())
+}
