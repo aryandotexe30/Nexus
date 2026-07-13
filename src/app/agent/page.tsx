@@ -7,10 +7,10 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 
 export default function CopilotPage() {
-  const [messages, setMessages] = useState<{ role: 'user' | 'ai', text: string }[]>([
+  const [messages, setMessages] = useState<{ role: 'user' | 'ai', text: string, isFinalPitch?: boolean, productData?: any }[]>([
     {
       role: 'ai',
-      text: "Hello! I am your AI Agent. What kind of industrial products or raw materials are you looking for today?"
+      text: "Hello! I am Nexus. What kind of industrial products or raw materials are you looking for today?"
     }
   ]);
   const [input, setInput] = useState("");
@@ -48,7 +48,12 @@ export default function CopilotPage() {
       
       const data = await res.json();
       if (data.success) {
-        setMessages(prev => [...prev, { role: 'ai', text: data.text }]);
+        setMessages(prev => [...prev, { 
+          role: 'ai', 
+          text: data.text,
+          isFinalPitch: data.isFinalPitch,
+          productData: data.productData
+        }]);
       } else {
         setMessages(prev => [...prev, { role: 'ai', text: "Sorry, I encountered an error. Please try again." }]);
       }
@@ -72,7 +77,7 @@ export default function CopilotPage() {
             <Bot className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-slate-900">AI Agent</h1>
+            <h1 className="text-lg font-bold text-slate-900">Nexus</h1>
           </div>
         </div>
         <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">
@@ -104,8 +109,30 @@ export default function CopilotPage() {
                     : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'
                 }`}>
                   {msg.role === 'ai' ? (
-                    <div className="prose prose-sm max-w-none prose-slate">
-                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                    <div className="flex flex-col gap-4">
+                      <div className="prose prose-sm max-w-none prose-slate">
+                        <ReactMarkdown>{msg.text}</ReactMarkdown>
+                      </div>
+                      
+                      {msg.isFinalPitch && msg.productData && (
+                        <div className="mt-2 border border-blue-200 bg-blue-50/50 rounded-xl p-5 shadow-sm">
+                          <h3 className="font-bold text-slate-900 mb-3 border-b border-blue-200 pb-2">Matched Vendors</h3>
+                          <ul className="space-y-2 mb-5">
+                            {msg.productData.vendors.map((v: string, i: number) => (
+                              <li key={i} className="text-sm text-slate-700 flex items-start gap-2">
+                                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
+                                <span>{v}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <button 
+                            onClick={() => alert("Enquiry successfully sent to anonymous vendors!")}
+                            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-md transition-colors flex justify-center items-center gap-2"
+                          >
+                            <Send className="w-4 h-4" /> Send Enquiry Anonymously
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p className="text-[15px] whitespace-pre-wrap">{msg.text}</p>
@@ -152,7 +179,7 @@ export default function CopilotPage() {
           </button>
         </form>
         <p className="text-center text-xs text-slate-400 mt-3 font-medium">
-          Copilot acts as an anonymous middleman. Supplier identities are protected.
+          Nexus acts as an anonymous middleman. Supplier identities are protected.
         </p>
       </div>
 

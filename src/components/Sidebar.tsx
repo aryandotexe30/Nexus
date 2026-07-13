@@ -44,7 +44,7 @@ export default function Sidebar() {
     { name: "Hub", path: "/dashboard", icon: LayoutDashboard },
     { name: "Marketplace", path: "/dashboard/marketplace", icon: Store },
     { name: "Messages", path: "/dashboard/messages", icon: MessageSquare },
-    { name: "Global Matchmaker", path: "/matchmaker", icon: Search },
+    { name: "Finder", path: "/agent", icon: Search },
     { name: "Network Mapper", path: "/network", icon: Network, requiredPlan: ["PRO", "ENTERPRISE"] },
     { name: "Data Enrichment", path: "/enrich", icon: UploadCloud },
     { name: "Business Plan", path: "/dashboard/business-plan", icon: TrendingUp, requiredPlan: ["ENTERPRISE"] },

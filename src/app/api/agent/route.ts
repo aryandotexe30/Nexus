@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const SYSTEM_PROMPT = `
-You are the "Nexus AI Agent", an elite B2B procurement consultant and specification engine focused EXCLUSIVELY on the Indian MSME (Micro, Small, and Medium Enterprises) market.
+You are "Nexus", an elite B2B procurement consultant and specification engine focused EXCLUSIVELY on the Indian MSME (Micro, Small, and Medium Enterprises) market.
 
 YOUR CORE DIRECTIVE:
 1. SPECIFICATION GATHERING (Keep it extremely user-friendly): 
@@ -18,7 +18,7 @@ YOUR CORE DIRECTIVE:
    
 2. A-TO-Z PRODUCT PITCH & ANONYMOUS VENDORS (INDIAN MSME FOCUS):
    Once you have enough context, you must output a highly detailed, A-to-Z technical description of the exact product they need. 
-   You must also list 2-3 matched verified vendors COMPLETELY ANONYMOUSLY (e.g., "Supplier A: A verified MSME manufacturer in Gujarat", "Supplier B: An ISO-certified supplier in Maharashtra"). NEVER REVEAL REAL COMPANY NAMES.
+   You must also list AS MANY verified vendors as possible (aim for 5-10 or more if available) COMPLETELY ANONYMOUSLY (e.g., "Supplier A: A verified MSME manufacturer in Gujarat", "Supplier B: An ISO-certified supplier in Maharashtra"). NEVER REVEAL REAL COMPANY NAMES.
    ALL vendors and products MUST be strictly limited to the Indian market and suitable for MSME businesses. Do not recommend expensive foreign imports unless absolutely necessary.
 
 JSON OUTPUT ENFORCEMENT:
@@ -30,7 +30,7 @@ The JSON must follow this exact structure:
   "description": "Your complete A-to-Z highly detailed description and technical breakdown suitable for the Indian MSME market.",
   "specs": { "Temp": "...", "Adhesion": "..." },
   "vendors": ["Supplier A: ...", "Supplier B: ..."],
-  "messageToUser": "A friendly concluding message telling them they can now click 'Matchmaker' to enquire."
+  "messageToUser": "A friendly concluding message."
 }
 
 If you are just asking a clarifying question, output standard text (NOT JSON), but keep it to exactly ONE friendly question.
@@ -92,6 +92,9 @@ ${formattedMessages[0].parts[0].text}
     const response = await chat.sendMessage({ message: formattedMessages[formattedMessages.length - 1].parts[0].text });
     let text = response.text || "";
 
+    let isFinalPitch = false;
+    let productData = null;
+
     // Parse JSON if it's a final pitch
     if (text.includes("```json") && text.includes('"type": "final_pitch"')) {
       try {
@@ -108,18 +111,11 @@ ${formattedMessages[0].parts[0].text}
           }
         });
 
-        // Format a beautiful markdown response for the user
-        let formattedMarkdown = `### ${data.productName}\n\n${data.description}\n\n**Technical Specifications:**\n`;
-        for (const [k, v] of Object.entries(data.specs)) {
-          formattedMarkdown += `- **${k}**: ${v}\n`;
-        }
-        formattedMarkdown += `\n**Available Anonymous Vendors:**\n`;
-        data.vendors.forEach((v: string) => {
-          formattedMarkdown += `- ${v}\n`;
-        });
-        formattedMarkdown += `\n\n*${data.messageToUser}*`;
-
-        text = formattedMarkdown;
+        isFinalPitch = true;
+        productData = data;
+        
+        // Formulate a clean fallback text without the huge summary
+        text = `Here is your detailed breakdown for **${data.productName}**.\\n\\n*Scroll down to view specifications and contact vendors directly.*`;
 
       } catch (e) {
         console.error("Failed to parse Copilot JSON:", e);
@@ -128,7 +124,9 @@ ${formattedMessages[0].parts[0].text}
 
     return NextResponse.json({ 
       success: true, 
-      text: text
+      text: text,
+      isFinalPitch,
+      productData
     });
 
   } catch (error: any) {
