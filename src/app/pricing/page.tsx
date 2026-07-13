@@ -128,7 +128,7 @@ export default function PricingPage() {
       </section>
 
       {/* Pricing Cards */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section className="relative z-10 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
         
         {/* FREE PLAN */}
         <div className="bg-white border-2 border-slate-900 p-8 flex flex-col shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[10px_10px_0px_0px_rgba(15,23,42,1)] transition-all">
