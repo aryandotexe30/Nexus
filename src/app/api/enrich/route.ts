@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+
+export const maxDuration = 60; // Increase Vercel serverless function timeout
 import { GoogleGenAI } from '@google/genai';
 import axios from 'axios';
 import { getServerSession } from "next-auth/next";

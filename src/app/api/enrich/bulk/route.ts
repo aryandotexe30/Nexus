@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+
+export const maxDuration = 60; // Increase Vercel serverless function timeout
 import prisma from "@/lib/prisma";
 import { GoogleGenAI } from '@google/genai';
 import axios from 'axios';
@@ -31,7 +33,7 @@ export async function POST(req: Request) {
         search_depth: 'advanced',
         include_answer: true,
         max_results: 5
-      }, { timeout: 10000 });
+      }, { timeout: 25000 });
       
       searchContext = JSON.stringify(tavilyRes.data.results?.map((r: any) => ({ url: r.url, c: r.content?.substring(0, 500) })));
     } catch (e) {
@@ -51,25 +53,66 @@ export async function POST(req: Request) {
 
       CRITICAL: If the Web Search Context is empty or says 'No web data found.', you MUST use your own extensive pre-trained knowledge to fill out the company profile as best as you can. Do NOT leave fields blank if you know who the company is.
       
-      Return ONLY a valid JSON object with this exact structure. NEVER output null. Use "Unknown" or [] if truly unavailable:
+      Return ONLY a valid JSON object with this exact structure. NEVER output null. Use "Unknown" or [] if truly unavailable.
       {
         "description": "Short 2-sentence summary of what they do",
-        "products": ["Product 1", "Product 2"],
         "location": "City, State (if found, else Unknown)",
-        "certifications": ["ISO...", etc (if found)],
         "website": "URL if found",
-        "confidence": "High/Medium/Low based on data quality"
+        "gst_number": "${gst || 'Extract if found'}",
+        "industry": "Industry of the company",
+        "financials": "All available financials (Including previous years Revenue, Profits, etc.)",
+        "raw_materials_purchased": "Every raw material they purchase and from who (suppliers)",
+        "customers": "Who their customers are and what all they sell to these customers",
+        "stock_market_info": "Their stock market information (if available)",
+        "personnel_contacts": "Personnel contact details including sales people, HR, etc.",
+        "goods_sold": "Goods sold overview",
+        "goods_purchased": "Goods Purchased overview",
+        "board_of_directors": "Board of directors",
+        "products_and_services": "Detailed Products and services",
+        "products": ["Product 1", "Product 2"]
       }
     `;
 
-    const chat = ai.chats.create({ model: 'gemini-2.5-flash' });
-    const response = await chat.sendMessage({ message: prompt });
-    let text = response.text || "{}";
+    const modelsToTry = ['gemini-2.5-flash-lite', 'gemini-flash-lite-latest', 'gemini-2.5-flash', 'gemini-1.5-flash'];
+    let text = "";
+    
+    for (const model of modelsToTry) {
+      let attempt = 0;
+      let success = false;
+      while (attempt < 2 && !success) {
+        try {
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error("Gemini SDK Timeout")), 20000)
+          );
+
+          const response: any = await Promise.race([
+            ai.models.generateContent({
+              model: model,
+              contents: prompt,
+            }),
+            timeoutPromise
+          ]);
+          
+          text = response.text || "";
+          success = true;
+          break;
+        } catch (err: any) {
+          console.log(`Model ${model} Error: ${err.message}. Retrying... (Attempt ${attempt + 1})`);
+          await new Promise(r => setTimeout(r, 4000));
+          attempt++;
+        }
+      }
+      if (success) break;
+    }
+
+    if (!text) {
+      throw new Error("All AI models are currently overloaded or rate-limited. Please try again later.");
+    }
     
     let enrichedData: any = {};
     try {
       // Clean up markdown block if present
-      let cleanText = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+      let cleanText = text.replace(/^```json/gi, '').replace(/```$/g, '').trim();
       enrichedData = JSON.parse(cleanText);
 
       // Protect against nulls

@@ -9,6 +9,7 @@ export default function DatabookPage() {
   const [companies, setCompanies] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState<any>(null);
 
   // Upload & Enrichment State
   const [file, setFile] = useState<File | null>(null);
@@ -79,12 +80,18 @@ export default function DatabookPage() {
           if (result.success) {
             setLogs(prev => [{ type: 'success', msg: `Enriched ${item.name}` }, ...prev]);
           } else {
-            setLogs(prev => [{ type: 'error', msg: `Failed ${item.name}: ${result.error}` }, ...prev]);
+            setLogs(prev => [{ type: 'error', msg: `Failed ${item.name}: ${result.error || 'Rate Limited'}` }, ...prev]);
           }
         } catch (e) {
           setLogs(prev => [{ type: 'error', msg: `Network error for ${item.name}` }, ...prev]);
         }
         setProgress(prev => ({ ...prev, current: i + 1 }));
+        
+        // Artificial delay of 4 seconds to respect free tier API rate limits
+        if (i < parsedData.length - 1) {
+            setLogs(prev => [{ type: 'success', msg: `Waiting 4s to prevent API rate limit...` }, ...prev]);
+            await new Promise(r => setTimeout(r, 4000));
+        }
       }
       
       alert("Bulk enrichment completed!");
@@ -98,7 +105,28 @@ export default function DatabookPage() {
     }
   };
 
-  const filteredCompanies = companies.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredCompanies = companies.filter(c => {
+    if (!c.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    
+    // Parse data safely
+    let data = {};
+    try {
+      data = typeof c.data === 'string' ? JSON.parse(c.data) : c.data || {};
+    } catch (e) {}
+
+    // Check if any significant data field exists
+    const hasLocation = !!data.location && data.location !== 'Unknown';
+    const hasDescription = !!data.description || !!data.all_available_info;
+    const hasProducts = (Array.isArray(data.products) && data.products.length > 0) || !!data.products_and_services;
+    const hasGst = !!data.gst || !!data.gst_number;
+    const hasIndustry = !!data.industry;
+
+    // Hide if all major columns are entirely empty
+    if (!hasLocation && !hasDescription && !hasProducts && !hasGst && !hasIndustry) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <div className="max-w-7xl mx-auto p-6 font-sans">
@@ -221,7 +249,11 @@ export default function DatabookPage() {
                   // data column is JSON. Let's parse or use safely
                   const data = typeof c.data === 'string' ? JSON.parse(c.data) : c.data || {};
                   return (
-                    <tr key={c.id} className="border-b border-slate-100 hover:bg-slate-50">
+                    <tr 
+                      key={c.id} 
+                      className="border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors"
+                      onClick={() => setSelectedCompany({ ...c, parsedData: data })}
+                    >
                       <td className="px-6 py-4 font-bold text-slate-900 whitespace-nowrap">{c.name}</td>
                       <td className="px-6 py-4">{data.location || 'Unknown'}</td>
                       <td className="px-6 py-4 max-w-xs truncate">{data.description || '-'}</td>
@@ -233,7 +265,7 @@ export default function DatabookPage() {
                           {Array.isArray(data.products) && data.products.length > 2 && <span className="text-xs text-slate-400">+{data.products.length - 2}</span>}
                         </div>
                       </td>
-                      <td className="px-6 py-4 font-mono text-xs">{data.gst || '-'}</td>
+                      <td className="px-6 py-4 font-mono text-xs">{data.gst || data.gst_number || '-'}</td>
                     </tr>
                   )
                 })
@@ -242,6 +274,98 @@ export default function DatabookPage() {
           </table>
         </div>
       </div>
+
+      {/* Modal for Details */}
+      {selectedCompany && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-slate-200 flex justify-between items-start bg-slate-50">
+              <div>
+                <h2 className="text-2xl font-black text-slate-900">{selectedCompany.name}</h2>
+                <p className="text-slate-500 font-mono text-sm mt-1">GST: {selectedCompany.parsedData.gst || selectedCompany.parsedData.gst_number || 'N/A'}</p>
+              </div>
+              <button 
+                onClick={() => setSelectedCompany(null)}
+                className="text-slate-400 hover:text-slate-600 bg-white border border-slate-200 rounded-full w-8 h-8 flex items-center justify-center font-bold"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto bg-white flex-1">
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Description</h3>
+                  <p className="text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100">{selectedCompany.parsedData.description || selectedCompany.parsedData.all_available_info || 'No description provided.'}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Industry</h3>
+                    <p className="text-slate-700 font-medium">{selectedCompany.parsedData.industry || 'Unknown'}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Location</h3>
+                    <p className="text-slate-700 font-medium">{selectedCompany.parsedData.location || 'Unknown'}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
+                    <h3 className="text-sm font-bold text-emerald-600 uppercase tracking-wider mb-2">Raw Materials Purchased (Suppliers)</h3>
+                    <p className="text-slate-700 whitespace-pre-wrap text-sm">{selectedCompany.parsedData.raw_materials_purchased || 'Data not available'}</p>
+                  </div>
+                  <div className="bg-rose-50 border border-rose-100 p-4 rounded-xl">
+                    <h3 className="text-sm font-bold text-rose-600 uppercase tracking-wider mb-2">Customers & Sales Output</h3>
+                    <p className="text-slate-700 whitespace-pre-wrap text-sm">{selectedCompany.parsedData.customers || 'Data not available'}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-green-50 border border-green-100 p-4 rounded-xl">
+                    <h3 className="text-sm font-bold text-green-600 uppercase tracking-wider mb-2">Financials (Including Previous Years)</h3>
+                    <p className="text-slate-700 whitespace-pre-wrap text-sm">{selectedCompany.parsedData.financials || 'Data not available'}</p>
+                  </div>
+                  <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl">
+                    <h3 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-2">Stock Market Info</h3>
+                    <p className="text-slate-700 whitespace-pre-wrap text-sm">{selectedCompany.parsedData.stock_market_info || selectedCompany.parsedData.stock_information || 'Private Company / Data not available'}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6">
+                  <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl">
+                    <h3 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-2">Products / Services</h3>
+                    <p className="text-slate-700 whitespace-pre-wrap text-sm">{selectedCompany.parsedData.products_and_services || Array.isArray(selectedCompany.parsedData.products) ? selectedCompany.parsedData.products?.join(', ') : 'Data not available'}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-purple-50 border border-purple-100 p-4 rounded-xl">
+                    <h3 className="text-sm font-bold text-purple-600 uppercase tracking-wider mb-2">Goods Sold Overview</h3>
+                    <p className="text-slate-700 whitespace-pre-wrap text-sm">{selectedCompany.parsedData.goods_sold || 'Data not available'}</p>
+                  </div>
+                  <div className="bg-orange-50 border border-orange-100 p-4 rounded-xl">
+                    <h3 className="text-sm font-bold text-orange-600 uppercase tracking-wider mb-2">Goods Purchased Overview</h3>
+                    <p className="text-slate-700 whitespace-pre-wrap text-sm">{selectedCompany.parsedData.goods_purchased || 'Data not available'}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                    <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Board of Directors</h3>
+                    <p className="text-slate-700 whitespace-pre-wrap text-sm">{selectedCompany.parsedData.board_of_directors || 'Data not available'}</p>
+                  </div>
+                  <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                    <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Personnel Contacts (Sales, HR, Execs)</h3>
+                    <p className="text-slate-700 whitespace-pre-wrap text-sm">{selectedCompany.parsedData.personnel_contacts || selectedCompany.parsedData.hr_contacts || selectedCompany.parsedData.sales_and_business_heads || 'Data not available'}</p>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
