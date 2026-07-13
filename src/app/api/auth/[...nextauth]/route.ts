@@ -4,9 +4,6 @@ import prisma from "@/lib/prisma";
 
 import bcrypt from "bcryptjs";
 
-if (!process.env.NEXTAUTH_SECRET) {
-  throw new Error("NEXTAUTH_SECRET is not set");
-}
 
 export const authOptions = {
   providers: [
