@@ -378,7 +378,6 @@ export default function DatabookPage() {
                     </>
                   );
                 })()}
-              </div>    
               </div>
             </div>
           </div>
