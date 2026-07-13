@@ -9,6 +9,7 @@ export default function DatabookPage() {
   const [companies, setCompanies] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchFilter, setSearchFilter] = useState("all");
   const [selectedCompany, setSelectedCompany] = useState<any>(null);
 
   // Upload & Enrichment State
@@ -106,13 +107,30 @@ export default function DatabookPage() {
   };
 
   const filteredCompanies = companies.filter(c => {
-    if (!c.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    
-    // Parse data safely
+    // Parse data safely first to use for searching
     let data: any = {};
     try {
       data = typeof c.data === 'string' ? JSON.parse(c.data) : c.data || {};
     } catch (e) {}
+
+    const query = searchQuery.toLowerCase();
+    let matchesSearch = false;
+
+    if (!query) {
+      matchesSearch = true;
+    } else if (searchFilter === "name") {
+      matchesSearch = c.name.toLowerCase().includes(query);
+    } else if (searchFilter === "product") {
+      const prodStr = Array.isArray(data.products) ? data.products.join(" ") : String(data.products_and_services || data.products || "");
+      matchesSearch = prodStr.toLowerCase().includes(query) || String(data.goods_sold || "").toLowerCase().includes(query);
+    } else if (searchFilter === "industry") {
+      matchesSearch = String(data.industry || "").toLowerCase().includes(query);
+    } else if (searchFilter === "all") {
+      const searchStr = `${c.name} ${data.description || ""} ${Array.isArray(data.products) ? data.products.join(" ") : (data.products_and_services || data.products || "")} ${data.industry || ""} ${data.location || ""}`.toLowerCase();
+      matchesSearch = searchStr.includes(query);
+    }
+
+    if (!matchesSearch) return false;
 
     // Check if any significant data field exists
     const hasLocation = !!data.location && data.location !== 'Unknown';
@@ -212,15 +230,27 @@ export default function DatabookPage() {
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
         <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
           <h2 className="text-lg font-bold text-slate-900">Proprietary Database</h2>
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input 
-              type="text" 
-              placeholder="Search companies..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+          <div className="relative flex items-center gap-2">
+            <select 
+              value={searchFilter} 
+              onChange={(e) => setSearchFilter(e.target.value)}
+              className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+            >
+              <option value="all">All Fields</option>
+              <option value="name">Company Name</option>
+              <option value="product">Products/Services</option>
+              <option value="industry">Industry</option>
+            </select>
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input 
+                type="text" 
+                placeholder="Search database..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
           </div>
         </div>
         
