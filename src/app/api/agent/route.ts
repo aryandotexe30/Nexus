@@ -115,7 +115,7 @@ ${formattedMessages[0].parts[0].text}
         productData = data;
         
         // Formulate a clean fallback text without the huge summary
-        text = `Here is your detailed breakdown for **${data.productName}**.\\n\\n*Scroll down to view specifications and contact vendors directly.*`;
+        text = `Here is your detailed breakdown for **${data.productName}**.\n\n*Scroll down to view specifications and contact vendors directly.*`;
 
       } catch (e) {
         console.error("Failed to parse Copilot JSON:", e);

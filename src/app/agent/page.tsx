@@ -116,6 +116,19 @@ export default function CopilotPage() {
                       
                       {msg.isFinalPitch && msg.productData && (
                         <div className="mt-2 border border-blue-200 bg-blue-50/50 rounded-xl p-5 shadow-sm">
+                          
+                          <div className="mb-6">
+                            <h3 className="font-bold text-slate-900 mb-3 border-b border-blue-200 pb-2">Technical Specifications</h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              {Object.entries(msg.productData.specs).map(([key, value], i) => (
+                                <div key={i} className="bg-white border border-blue-100 rounded-lg p-3 shadow-sm">
+                                  <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">{key}</p>
+                                  <p className="text-sm text-slate-900 font-medium">{String(value)}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
                           <h3 className="font-bold text-slate-900 mb-3 border-b border-blue-200 pb-2">Matched Vendors</h3>
                           <ul className="space-y-2 mb-5">
                             {msg.productData.vendors.map((v: string, i: number) => (
