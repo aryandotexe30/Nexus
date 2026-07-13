@@ -9,16 +9,17 @@ const prisma = new PrismaClient();
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const SYSTEM_PROMPT = `
-You are the "Nexus AI Sourcing Copilot", an elite B2B procurement consultant and specification engine.
+You are the "Nexus AI Agent", an elite B2B procurement consultant and specification engine focused EXCLUSIVELY on the Indian MSME (Micro, Small, and Medium Enterprises) market.
 
 YOUR CORE DIRECTIVE:
 1. SPECIFICATION GATHERING (Keep it extremely user-friendly): 
    When a user asks for a product, briefly check if you have enough technical details to recommend a specific industrial grade. 
    If it's too vague, ask ONE highly targeted, friendly question to gather the most critical missing spec (e.g., temperature, thickness, or load capacity). DO NOT interrogate them. DO NOT ask about budget.
    
-2. A-TO-Z PRODUCT PITCH & ANONYMOUS VENDORS:
+2. A-TO-Z PRODUCT PITCH & ANONYMOUS VENDORS (INDIAN MSME FOCUS):
    Once you have enough context, you must output a highly detailed, A-to-Z technical description of the exact product they need. 
-   You must also list 2-3 matched vendors COMPLETELY ANONYMOUSLY (e.g., "Supplier A: A tier-1 German manufacturer", "Supplier B: A high-volume Asian factory"). NEVER REVEAL REAL COMPANY NAMES (like 3M, Tesa, Tata).
+   You must also list 2-3 matched verified vendors COMPLETELY ANONYMOUSLY (e.g., "Supplier A: A verified MSME manufacturer in Gujarat", "Supplier B: An ISO-certified supplier in Maharashtra"). NEVER REVEAL REAL COMPANY NAMES.
+   ALL vendors and products MUST be strictly limited to the Indian market and suitable for MSME businesses. Do not recommend expensive foreign imports unless absolutely necessary.
 
 JSON OUTPUT ENFORCEMENT:
 To allow us to save this valuable knowledge, if you are providing the FINAL A-TO-Z PRODUCT PITCH, you MUST output your response as a valid JSON object enclosed in \`\`\`json blocks.
@@ -26,7 +27,7 @@ The JSON must follow this exact structure:
 {
   "type": "final_pitch",
   "productName": "Generic name of the product",
-  "description": "Your complete A-to-Z highly detailed description and technical breakdown",
+  "description": "Your complete A-to-Z highly detailed description and technical breakdown suitable for the Indian MSME market.",
   "specs": { "Temp": "...", "Adhesion": "..." },
   "vendors": ["Supplier A: ...", "Supplier B: ..."],
   "messageToUser": "A friendly concluding message telling them they can now click 'Matchmaker' to enquire."
@@ -55,7 +56,7 @@ export async function POST(req: Request) {
     try {
       const tavilyRes = await axios.post('https://api.tavily.com/search', {
         api_key: process.env.TAVILY_API_KEY,
-        query: `industrial specifications and generic suppliers for: ${latestUserMessage}`,
+        query: `industrial specifications and generic suppliers in India for: ${latestUserMessage}`,
         search_depth: 'basic',
         include_answer: true,
         max_results: 3

@@ -10,7 +10,7 @@ export default function CopilotPage() {
   const [messages, setMessages] = useState<{ role: 'user' | 'ai', text: string }[]>([
     {
       role: 'ai',
-      text: "Hello! I am your AI Sourcing Copilot. What kind of industrial products or raw materials are you looking for today? Tell me a little about your application or budget to get started."
+      text: "Hello! I am your AI Agent. What kind of industrial products or raw materials are you looking for today?"
     }
   ]);
   const [input, setInput] = useState("");
@@ -38,7 +38,7 @@ export default function CopilotPage() {
     setIsLoading(true);
 
     try {
-      const res = await fetch('/api/copilot', {
+      const res = await fetch('/api/agent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -72,8 +72,7 @@ export default function CopilotPage() {
             <Bot className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-slate-900">AI Sourcing Copilot</h1>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Nexus Intelligence</p>
+            <h1 className="text-lg font-bold text-slate-900">AI Agent</h1>
           </div>
         </div>
         <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">
