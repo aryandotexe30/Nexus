@@ -112,9 +112,9 @@ export default function DatabookPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-12">
         {/* Upload Section */}
-        <div className="lg:col-span-1 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+        <div className="xl:col-span-1 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
           <h2 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
             <UploadCloud className="w-5 h-5 text-indigo-600" /> Upload Excel Data
           </h2>
@@ -165,7 +165,7 @@ export default function DatabookPage() {
         </div>
 
         {/* Stats Section */}
-        <div className="lg:col-span-2 grid grid-cols-2 gap-4">
+        <div className="xl:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-md flex flex-col justify-center">
             <h3 className="text-indigo-100 font-bold mb-1">Total Enriched Companies</h3>
             <p className="text-5xl font-black">{companies.length}</p>

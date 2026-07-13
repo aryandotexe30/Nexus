@@ -29,7 +29,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 dark:bg-slate-950 dark:text-slate-50 flex transition-colors duration-300">
       
       <Sidebar />
-      <main className="flex-1 w-full max-w-[100vw] md:ml-[280px] lg:ml-[320px] p-4 md:p-8 pt-20 md:pt-10 overflow-x-hidden">
+      <main className="flex-1 w-full max-w-[100vw] md:ml-[288px] p-4 md:p-8 pt-20 md:pt-10 overflow-x-hidden">
         {isUnverified && pathname.startsWith("/dashboard") ? (
           <div className="h-[80vh] flex flex-col items-center justify-center text-center max-w-lg mx-auto">
             <div className="w-24 h-24 bg-orange-100 dark:bg-orange-900/30 text-orange-500 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-orange-500/10">

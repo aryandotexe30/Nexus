@@ -148,7 +148,7 @@ export default function CopilotPage() {
               animate={{ opacity: 1, y: 0 }}
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`flex gap-3 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+              <div className={`flex gap-3 max-w-[95%] lg:max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                   msg.role === 'user' ? 'bg-slate-800 text-white' : 'bg-blue-600 text-white'
                 }`}>
@@ -210,7 +210,7 @@ export default function CopilotPage() {
 
                               <div className="mb-5">
                                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Technical Specifications</h4>
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                   {vendor.specs && Object.entries(vendor.specs).map(([key, value], i) => (
                                     <div key={i} className="text-sm border-l-2 border-blue-200 pl-2">
                                       <span className="text-slate-500">{key}:</span> <span className="font-semibold text-slate-900">{String(value)}</span>
@@ -241,7 +241,7 @@ export default function CopilotPage() {
         
         {isLoading && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
-            <div className="flex gap-3 max-w-[85%]">
+            <div className="flex gap-3 max-w-[95%] lg:max-w-[85%]">
               <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center shrink-0">
                 <Bot className="w-5 h-5" />
               </div>
