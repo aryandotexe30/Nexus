@@ -9,21 +9,30 @@ const prisma = new PrismaClient();
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const SYSTEM_PROMPT = `
-You are the "Nexus AI Sourcing Copilot", an elite B2B procurement consultant and industrial expert.
-Your goal is to help users figure out EXACTLY what product they need to source, what their budget should be, and what the market options are.
+You are the "Nexus AI Sourcing Copilot", an elite B2B procurement consultant and specification engine.
 
-CRITICAL ANONYMITY RULE:
-You represent "Nexus", a B2B matchmaking platform that acts as a middleman. YOU MUST NEVER REVEAL THE REAL NAMES OF SUPPLIERS OR MANUFACTURERS. 
-If you find a supplier named "3M" or "Tata Steel", you must refer to them using pseudonyms like "A premium global manufacturer", "Supplier A (Based in Germany)", or "A tier-1 Asian supplier".
+YOUR CORE DIRECTIVE:
+1. SPECIFICATION GATHERING (Keep it extremely user-friendly): 
+   When a user asks for a product, briefly check if you have enough technical details to recommend a specific industrial grade. 
+   If it's too vague, ask ONE highly targeted, friendly question to gather the most critical missing spec (e.g., temperature, thickness, or load capacity). DO NOT interrogate them. DO NOT ask about budget.
+   
+2. A-TO-Z PRODUCT PITCH & ANONYMOUS VENDORS:
+   Once you have enough context, you must output a highly detailed, A-to-Z technical description of the exact product they need. 
+   You must also list 2-3 matched vendors COMPLETELY ANONYMOUSLY (e.g., "Supplier A: A tier-1 German manufacturer", "Supplier B: A high-volume Asian factory"). NEVER REVEAL REAL COMPANY NAMES (like 3M, Tesa, Tata).
 
-CONVERSATIONAL GUIDELINES:
-1. When a user asks for a vague product (e.g., "I need tape"), DO NOT just dump a list of products.
-2. Instead, ask 1 or 2 clarifying questions: What is the end application? What are the temperature/environmental requirements? What is the budget constraint?
-3. Once you have enough context, present 2-3 specific options (e.g., "Option 1: Polyimide High-Temp Tape. Option 2: PTFE Film Tape").
-4. Keep your responses concise, highly professional, and structured (use bolding and bullet points).
-5. If the user is ready to buy, encourage them to use the "Matchmaker" tool on the dashboard to anonymously blast their enquiry to the matched suppliers.
+JSON OUTPUT ENFORCEMENT:
+To allow us to save this valuable knowledge, if you are providing the FINAL A-TO-Z PRODUCT PITCH, you MUST output your response as a valid JSON object enclosed in \`\`\`json blocks.
+The JSON must follow this exact structure:
+{
+  "type": "final_pitch",
+  "productName": "Generic name of the product",
+  "description": "Your complete A-to-Z highly detailed description and technical breakdown",
+  "specs": { "Temp": "...", "Adhesion": "..." },
+  "vendors": ["Supplier A: ...", "Supplier B: ..."],
+  "messageToUser": "A friendly concluding message telling them they can now click 'Matchmaker' to enquire."
+}
 
-Use the provided search context to inform your recommendations with real-time market data.
+If you are just asking a clarifying question, output standard text (NOT JSON), but keep it to exactly ONE friendly question.
 `;
 
 export async function POST(req: Request) {
@@ -39,15 +48,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid messages array' }, { status: 400 });
     }
 
-    // Extract the latest user message to search the web for context
     const latestUserMessage = messages[messages.length - 1].text;
 
-    // Optional: Search Tavily for real-time market data based on the user's latest query
+    // Search Tavily for real-time market data
     let searchContext = "";
     try {
       const tavilyRes = await axios.post('https://api.tavily.com/search', {
         api_key: process.env.TAVILY_API_KEY,
-        query: `industrial suppliers and specifications for: ${latestUserMessage}`,
+        query: `industrial specifications and generic suppliers for: ${latestUserMessage}`,
         search_depth: 'basic',
         include_answer: true,
         max_results: 3
@@ -58,20 +66,19 @@ export async function POST(req: Request) {
       console.log("Tavily search skipped or failed in Copilot.");
     }
 
-    const formattedMessages = messages.map(msg => ({
+    const formattedMessages = messages.map((msg: any) => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.text }]
     }));
 
-    // Inject system prompt and search context into the first message
     if (formattedMessages.length > 0) {
       formattedMessages[0].parts[0].text = `
 ${SYSTEM_PROMPT}
 
-CURRENT MARKET INTELLIGENCE:
-${searchContext || "No real-time data retrieved."}
+MARKET INTELLIGENCE:
+${searchContext || "No real-time data."}
 
-User's actual message:
+User's message:
 ${formattedMessages[0].parts[0].text}
 `;
     }
@@ -82,10 +89,45 @@ ${formattedMessages[0].parts[0].text}
     });
 
     const response = await chat.sendMessage({ message: formattedMessages[formattedMessages.length - 1].parts[0].text });
+    let text = response.text || "";
+
+    // Parse JSON if it's a final pitch
+    if (text.includes("```json") && text.includes('"type": "final_pitch"')) {
+      try {
+        const jsonStr = text.split("```json")[1].split("```")[0].trim();
+        const data = JSON.parse(jsonStr);
+
+        // Save to Database! The Brain gets smarter.
+        await prisma.productKnowledge.create({
+          data: {
+            query: latestUserMessage,
+            productName: data.productName,
+            description: data.description,
+            specs: data.specs,
+          }
+        });
+
+        // Format a beautiful markdown response for the user
+        let formattedMarkdown = `### ${data.productName}\n\n${data.description}\n\n**Technical Specifications:**\n`;
+        for (const [k, v] of Object.entries(data.specs)) {
+          formattedMarkdown += `- **${k}**: ${v}\n`;
+        }
+        formattedMarkdown += `\n**Available Anonymous Vendors:**\n`;
+        data.vendors.forEach((v: string) => {
+          formattedMarkdown += `- ${v}\n`;
+        });
+        formattedMarkdown += `\n\n*${data.messageToUser}*`;
+
+        text = formattedMarkdown;
+
+      } catch (e) {
+        console.error("Failed to parse Copilot JSON:", e);
+      }
+    }
 
     return NextResponse.json({ 
       success: true, 
-      text: response.text
+      text: text
     });
 
   } catch (error: any) {

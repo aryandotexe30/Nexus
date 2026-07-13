@@ -169,3 +169,12 @@ model Notification {
   link      String?  
   createdAt DateTime @default(now())
 }
+
+model ProductKnowledge {
+  id          String   @id @default(cuid())
+  query       String
+  productName String
+  description String
+  specs       Json
+  createdAt   DateTime @default(now())
+}
