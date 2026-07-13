@@ -325,14 +325,29 @@ export default function DatabookPage() {
             <div className="p-6 overflow-y-auto bg-white flex-1">
               <div className="space-y-6">
                 {(() => {
-                  const safeRender = (val: any) => {
+                  const safeRender = (val: any, depth = 0): React.ReactNode => {
                     if (!val) return 'Data not available';
                     if (typeof val === 'string') return val;
                     if (Array.isArray(val)) {
-                      return val.map(v => typeof v === 'string' ? v : JSON.stringify(v)).join(', ');
+                      return (
+                        <ul className="list-disc pl-5 space-y-1 my-1">
+                          {val.map((item, idx) => (
+                            <li key={idx}>{safeRender(item, depth + 1)}</li>
+                          ))}
+                        </ul>
+                      );
                     }
                     if (typeof val === 'object') {
-                      return JSON.stringify(val, null, 2);
+                      return (
+                        <div className="space-y-1 mt-1">
+                          {Object.entries(val).map(([k, v]) => (
+                            <div key={k} className="pl-3 border-l-2 border-indigo-200 py-1">
+                              <span className="font-bold text-slate-700 capitalize text-sm">{k.replace(/_/g, ' ')}: </span>
+                              <span className="text-slate-600 text-sm">{safeRender(v, depth + 1)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      );
                     }
                     return String(val);
                   };
@@ -341,17 +356,17 @@ export default function DatabookPage() {
                     <>
                       <div>
                         <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Description</h3>
-                        <p className="text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100">{safeRender(selectedCompany.parsedData.description || selectedCompany.parsedData.all_available_info)}</p>
+                        <div className="text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100">{safeRender(selectedCompany.parsedData.description || selectedCompany.parsedData.all_available_info)}</div>
                       </div>
                       
                       <div className="grid grid-cols-2 gap-6">
                         <div>
                           <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Industry</h3>
-                          <p className="text-slate-700 font-medium">{safeRender(selectedCompany.parsedData.industry)}</p>
+                          <div className="text-slate-700 font-medium">{safeRender(selectedCompany.parsedData.industry)}</div>
                         </div>
                         <div>
                           <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Location</h3>
-                          <p className="text-slate-700 font-medium">{safeRender(selectedCompany.parsedData.location)}</p>
+                          <div className="text-slate-700 font-medium">{safeRender(selectedCompany.parsedData.location)}</div>
                         </div>
                       </div>
 
@@ -360,15 +375,15 @@ export default function DatabookPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                           <div>
                             <span className="block text-xs font-bold text-slate-400 mb-1">Phone Number</span>
-                            <p className="text-slate-700 text-sm">{safeRender(selectedCompany.parsedData.phone_number || selectedCompany.parsedData.phone)}</p>
+                            <div className="text-slate-700 text-sm">{safeRender(selectedCompany.parsedData.phone_number || selectedCompany.parsedData.phone)}</div>
                           </div>
                           <div>
                             <span className="block text-xs font-bold text-slate-400 mb-1">Email Address</span>
-                            <p className="text-slate-700 text-sm">{safeRender(selectedCompany.parsedData.email_address || selectedCompany.parsedData.email)}</p>
+                            <div className="text-slate-700 text-sm">{safeRender(selectedCompany.parsedData.email_address || selectedCompany.parsedData.email)}</div>
                           </div>
                           <div>
                             <span className="block text-xs font-bold text-slate-400 mb-1">Exact Address</span>
-                            <p className="text-slate-700 text-sm">{safeRender(selectedCompany.parsedData.exact_address || selectedCompany.parsedData.address)}</p>
+                            <div className="text-slate-700 text-sm">{safeRender(selectedCompany.parsedData.exact_address || selectedCompany.parsedData.address)}</div>
                           </div>
                         </div>
                       </div>
@@ -376,51 +391,51 @@ export default function DatabookPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
                           <h3 className="text-sm font-bold text-emerald-600 uppercase tracking-wider mb-2">Raw Materials Purchased (Suppliers)</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.raw_materials_purchased)}</p>
+                          <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.raw_materials_purchased)}</div>
                         </div>
                         <div className="bg-rose-50 border border-rose-100 p-4 rounded-xl">
                           <h3 className="text-sm font-bold text-rose-600 uppercase tracking-wider mb-2">Customers & Sales Output</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.customers)}</p>
+                          <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.customers)}</div>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="bg-green-50 border border-green-100 p-4 rounded-xl">
                           <h3 className="text-sm font-bold text-green-600 uppercase tracking-wider mb-2">Financials (Including Previous Years)</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.financials)}</p>
+                          <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.financials)}</div>
                         </div>
                         <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl">
                           <h3 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-2">Stock Market Info</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.stock_market_info || selectedCompany.parsedData.stock_information || 'Private Company / Data not available')}</p>
+                          <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.stock_market_info || selectedCompany.parsedData.stock_information || 'Private Company / Data not available')}</div>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 gap-6">
                         <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl">
                           <h3 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-2">Products / Services</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.products_and_services || selectedCompany.parsedData.products)}</p>
+                          <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.products_and_services || selectedCompany.parsedData.products)}</div>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="bg-purple-50 border border-purple-100 p-4 rounded-xl">
                           <h3 className="text-sm font-bold text-purple-600 uppercase tracking-wider mb-2">Goods Sold Overview</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.goods_sold)}</p>
+                          <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.goods_sold)}</div>
                         </div>
                         <div className="bg-orange-50 border border-orange-100 p-4 rounded-xl">
                           <h3 className="text-sm font-bold text-orange-600 uppercase tracking-wider mb-2">Goods Purchased Overview</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.goods_purchased)}</p>
+                          <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.goods_purchased)}</div>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
                           <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Board of Directors</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.board_of_directors)}</p>
+                          <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.board_of_directors)}</div>
                         </div>
                         <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
                           <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Personnel Contacts (Sales, HR, Execs)</h3>
-                          <p className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.personnel_contacts || selectedCompany.parsedData.hr_contacts || selectedCompany.parsedData.sales_and_business_heads)}</p>
+                          <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(selectedCompany.parsedData.personnel_contacts || selectedCompany.parsedData.hr_contacts || selectedCompany.parsedData.sales_and_business_heads)}</div>
                         </div>
                       </div>
                     </>
