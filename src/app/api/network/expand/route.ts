@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     switch (action) {
       case "Find Products":
         targetType = "Product";
-        searchQuery = `${nodeLabel} company main products and services list`;
+        searchQuery = `"${nodeLabel}" official product catalog list, specific model numbers, and detailed technical specifications`;
         break;
       case "Find Raw Materials":
         targetType = "Raw Material";
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
       query: searchQuery,
       search_depth: 'advanced',
       include_answer: true,
-      max_results: 5
+      max_results: 15
     }, { timeout: 15000 });
 
     const searchContext = JSON.stringify(tavilyRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 1000) })));
@@ -94,10 +94,11 @@ Target Entity: ${nodeLabel}
 Entity Type: ${nodeType}
 Requested Action: ${action}
 
-Extract exactly 5 to 8 highly specific, distinct items related to the query. 
+Extract exactly 5 to 15 highly specific, distinct items related to the query. 
 - If asking for "Suppliers", "Manufacturers", or "Competitors", output EXACT COMPANY NAMES (e.g., "Tata Steel", "Suraj Metal Corp", "Reliance Industries"). Do NOT output product names.
 - If asking for "Raw Materials", output specific materials like "Lithium Cobalt Oxide", "Graphite Anode", "Polyethylene Separator", rather than generic terms.
-- If asking for "Products", list their specific technical products, flagship products, and use their exact industry terms (e.g. if they manufacture "Gauntlets", call them "Gauntlets", not "Bags"). Be comprehensive.
+- If asking for "Products", you MUST list their EXACT, highly-detailed product names and model numbers exactly as they appear on their official catalogs or websites (e.g., "DMT-308 Masking Tape"). Do NOT group them into generic categories like "Masking Tapes".
+- Furthermore, if asking for "Products", include a brief description of the product's primary use or application directly alongside the product name (e.g., "DMT-308 Masking Tape - Application: General Purpose Masking and Packaging").
 
 Search Context:
 ${searchContext}

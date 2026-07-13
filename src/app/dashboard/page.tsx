@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, UploadCloud, Database, Zap, ArrowUpRight, Bell, CheckCircle2, AlertCircle, MessageSquare } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import SupplyChainAnalyzer from "@/components/SupplyChainAnalyzer";
 
 export default function HubDashboard() {
   const { data: session } = useSession();
@@ -98,6 +99,8 @@ export default function HubDashboard() {
         
         {/* Main Feed Column */}
         <div className="flex-1 space-y-6">
+          <SupplyChainAnalyzer />
+          
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Bell className="w-6 h-6 text-blue-500" />

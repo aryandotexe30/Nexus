@@ -21,6 +21,7 @@ model User {
   companyPhone   String?
   personalPhone  String?
   industry       String?
+  companyProfile Json?
   isVerified  Boolean  @default(false)
   role        String   @default("USER") // USER, ADMIN
   plan        PlanType @default(FREE)
