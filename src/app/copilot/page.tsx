@@ -90,20 +90,20 @@ export default function CopilotPage() {
               key={idx}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className={\`flex \${msg.role === 'user' ? 'justify-end' : 'justify-start'}\`}
+              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={\`flex gap-3 max-w-[85%] \${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}\`}>
-                <div className={\`w-8 h-8 rounded-full flex items-center justify-center shrink-0 \${
+              <div className={`flex gap-3 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                   msg.role === 'user' ? 'bg-slate-800 text-white' : 'bg-blue-600 text-white'
-                }\`}>
+                }`}>
                   {msg.role === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
                 </div>
                 
-                <div className={\`p-4 rounded-2xl \${
+                <div className={`p-4 rounded-2xl ${
                   msg.role === 'user' 
                     ? 'bg-slate-800 text-white rounded-tr-none' 
                     : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'
-                }\`}>
+                }`}>
                   {msg.role === 'ai' ? (
                     <div className="prose prose-sm max-w-none prose-slate">
                       <ReactMarkdown>{msg.text}</ReactMarkdown>

@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     try {
       const tavilyRes = await axios.post('https://api.tavily.com/search', {
         api_key: process.env.TAVILY_API_KEY,
-        query: \`industrial suppliers and specifications for: \${latestUserMessage}\`,
+        query: `industrial suppliers and specifications for: ${latestUserMessage}`,
         search_depth: 'basic',
         include_answer: true,
         max_results: 3
@@ -65,15 +65,15 @@ export async function POST(req: Request) {
 
     // Inject system prompt and search context into the first message
     if (formattedMessages.length > 0) {
-      formattedMessages[0].parts[0].text = \`
-\${SYSTEM_PROMPT}
+      formattedMessages[0].parts[0].text = `
+${SYSTEM_PROMPT}
 
 CURRENT MARKET INTELLIGENCE:
-\${searchContext || "No real-time data retrieved."}
+${searchContext || "No real-time data retrieved."}
 
 User's actual message:
-\${formattedMessages[0].parts[0].text}
-\`;
+${formattedMessages[0].parts[0].text}
+`;
     }
 
     const chat = ai.chats.create({
