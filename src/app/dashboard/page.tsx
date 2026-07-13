@@ -198,6 +198,24 @@ export default function HubDashboard() {
             </div>
           </motion.div>
 
+          <Link href="/copilot" className="block">
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative overflow-hidden rounded-3xl p-8 bg-slate-900 border border-slate-800 shadow-xl mb-6"
+            >
+              <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-purple-500/20 transition-colors"></div>
+              <MessageSquare className="w-10 h-10 mb-6 text-purple-400 group-hover:text-white transition-colors" />
+              <h2 className="text-xl font-bold mb-2 text-white">AI Sourcing Copilot</h2>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                Chat with an AI procurement expert to find exactly what you need.
+              </p>
+              <div className="flex items-center gap-2 font-bold text-sm text-purple-400 group-hover:text-purple-300">
+                Start Chat <ArrowUpRight className="w-4 h-4" />
+              </div>
+            </motion.div>
+          </Link>
+
           <Link href="/matchmaker" className="block">
             <motion.div 
               whileHover={{ scale: 1.02 }}
@@ -206,7 +224,7 @@ export default function HubDashboard() {
             >
               <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-500/20 transition-colors"></div>
               <Search className="w-10 h-10 mb-6 text-blue-400 group-hover:text-white transition-colors" />
-              <h2 className="text-xl font-bold mb-2 text-white">Matchmaker</h2>
+              <h2 className="text-xl font-bold mb-2 text-white">Global Matchmaker</h2>
               <p className="text-slate-400 text-sm leading-relaxed mb-6">
                 Find exactly who you are looking for globally using AI.
               </p>
