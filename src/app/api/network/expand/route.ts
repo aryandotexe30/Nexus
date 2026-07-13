@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
     }
 
-    const queryKey = `${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
+    const queryKey = `v2-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
 
     // Determine target node type based on action
     let targetType = "Company";
