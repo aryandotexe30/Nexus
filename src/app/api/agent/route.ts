@@ -81,25 +81,26 @@ export async function POST(req: Request) {
       console.log("Tavily search skipped or failed in Copilot.");
     }
 
-    const formattedMessages = messages.map((msg: any) => ({
+    // Filter out the initial greeting
+    let filteredMessages = messages;
+    if (messages.length > 0 && messages[0].role === 'ai' && messages[0].text.includes("Hello! I am Nexus")) {
+      filteredMessages = messages.slice(1);
+    }
+
+    const formattedMessages = filteredMessages.map((msg: any) => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.text }]
     }));
 
-    if (formattedMessages.length > 0) {
-      formattedMessages[0].parts[0].text = `
-${SYSTEM_PROMPT}
-
-MARKET INTELLIGENCE:
-${searchContext || "No real-time data."}
-
-User's message:
-${formattedMessages[0].parts[0].text}
-`;
+    if (formattedMessages.length === 0) {
+      return NextResponse.json({ error: 'No user messages found' }, { status: 400 });
     }
 
     const chat = ai.chats.create({
       model: 'gemini-2.5-flash',
+      config: {
+        systemInstruction: `${SYSTEM_PROMPT}\n\nMARKET INTELLIGENCE:\n${searchContext || "No real-time data."}`,
+      },
       history: formattedMessages.slice(0, -1),
     });
 
