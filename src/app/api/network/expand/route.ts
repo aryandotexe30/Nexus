@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
     }
 
-    const queryKey = `v2-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
+    const queryKey = `v3-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
 
     // Determine target node type based on action
     let targetType = "Company";
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
       query: searchQuery,
       search_depth: 'advanced',
       include_answer: true,
-      max_results: 15
+      max_results: 30
     }, { timeout: 15000 });
 
     const searchContext = JSON.stringify(tavilyRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 1000) })));
@@ -94,7 +94,7 @@ Target Entity: ${nodeLabel}
 Entity Type: ${nodeType}
 Requested Action: ${action}
 
-Extract exactly 5 to 15 highly specific, distinct items related to the query. 
+Extract ALL highly specific, distinct items related to the query found in the search context. Do NOT arbitrarily limit the list. If there are 50 products or items, you must list all 50. 
 - If asking for "Suppliers", "Manufacturers", or "Competitors", output EXACT COMPANY NAMES (e.g., "Tata Steel", "Suraj Metal Corp", "Reliance Industries"). Do NOT output product names.
 - If asking for "Raw Materials", output specific materials like "Lithium Cobalt Oxide", "Graphite Anode", "Polyethylene Separator", rather than generic terms.
 - If asking for "Products", you MUST list their EXACT, highly-detailed product names and model numbers exactly as they appear on their official catalogs or websites (e.g., "DMT-308 Masking Tape"). Do NOT group them into generic categories like "Masking Tapes".
