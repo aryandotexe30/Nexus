@@ -24,21 +24,64 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Company name is required' }, { status: 400 });
     }
 
-    // 1. Search Tavily for public info
-    let searchContext = "";
+    // 1. Tavily General Search
+    let tavilyGeneralRes: any = { data: { results: [] } };
+    let tavilyFinancialRes: any = { data: { results: [] } };
+    let tavilyStockRes: any = { data: { results: [] } };
+    let signalHireData: any = null;
+
     try {
-      const tavilyRes = await axios.post('https://api.tavily.com/search', {
-        api_key: process.env.TAVILY_API_KEY,
-        query: `"${name}" GST ${gst || ''} products address contact certifications company profile india`,
-        search_depth: 'advanced',
-        include_answer: true,
-        max_results: 5
-      }, { timeout: 25000 });
+      console.log(`Starting deep enrichment for ${name}`);
       
-      searchContext = JSON.stringify(tavilyRes.data.results?.map((r: any) => ({ url: r.url, c: r.content?.substring(0, 500) })));
+      // Fire all API requests in parallel for maximum speed
+      const [generalReq, financialReq, stockReq, signalHireReq] = await Promise.allSettled([
+        axios.post('https://api.tavily.com/search', {
+          api_key: process.env.TAVILY_API_KEY,
+          query: `"${name}" GST ${gst || ''} company profile products services directors contact india`,
+          search_depth: 'advanced',
+          include_answer: true,
+          max_results: 3
+        }, { timeout: 15000 }),
+        
+        axios.post('https://api.tavily.com/search', {
+          api_key: process.env.TAVILY_API_KEY,
+          query: `site:economictimes.indiatimes.com OR site:tofler.in OR site:zaubacorp.com "${name}" financials revenue profit loss balance sheet`,
+          search_depth: 'advanced',
+          include_answer: true,
+          max_results: 4
+        }, { timeout: 15000 }),
+
+        axios.post('https://api.tavily.com/search', {
+          api_key: process.env.TAVILY_API_KEY,
+          query: `"${name}" stock ticker symbol market cap share price performance NASDAQ NSE BSE`,
+          search_depth: 'advanced',
+          include_answer: true,
+          max_results: 2
+        }, { timeout: 15000 }),
+
+        axios.post(`https://www.signalhire.com/api/v1/candidate/search`, {
+          companyName: name, 
+          keywords: "Sales Manager, Business Head, Director, Procurement, HR",
+          items: 10 
+        }, {
+          headers: { apikey: process.env.SIGNALHIRE_API_KEY },
+          timeout: 15000
+        })
+      ]);
+
+      if (generalReq.status === 'fulfilled') tavilyGeneralRes = generalReq.value;
+      if (financialReq.status === 'fulfilled') tavilyFinancialRes = financialReq.value;
+      if (stockReq.status === 'fulfilled') tavilyStockRes = stockReq.value;
+      
+      if (signalHireReq.status === 'fulfilled') {
+        signalHireData = signalHireReq.value.data;
+      } else {
+        console.error("SignalHire Error:", signalHireReq.reason);
+        signalHireData = { error: "Failed to fetch from SignalHire. Check API key." };
+      }
+
     } catch (e) {
-      console.log(`Tavily search failed for ${name}:`, e);
-      searchContext = "No web data found.";
+      console.log(`Parallel requests failed for ${name}:`, e);
     }
 
     // 2. Use Gemini to extract structured data
@@ -49,9 +92,16 @@ export async function POST(req: Request) {
       GST Number: ${gst || 'Not provided'}
       
       Web Search Context:
-      ${searchContext}
+      --- TAVILY GENERAL SEARCH ---
+      ${JSON.stringify(tavilyGeneralRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 800) })))}
+      --- TAVILY FINANCIAL SEARCH (Economic Times, Tofler, Zauba) ---
+      ${JSON.stringify(tavilyFinancialRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 800) })))}
+      --- TAVILY STOCK SEARCH ---
+      ${JSON.stringify(tavilyStockRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 800) })))}
+      --- SIGNALHIRE EXECUTIVE CONTACT DATA ---
+      ${JSON.stringify(signalHireData)}
 
-      CRITICAL: If the Web Search Context is empty or says 'No web data found.', you MUST use your own extensive pre-trained knowledge to fill out the company profile as best as you can. Do NOT leave fields blank if you know who the company is.
+      CRITICAL: Extract high-value B2B intelligence. If specific fields are not found directly, logically infer based on your industry knowledge. Use the SignalHire data specifically for the personnel_contacts field!
       
       Return ONLY a valid JSON object with this exact structure. NEVER output null. Use "Unknown" or [] if truly unavailable.
       {
