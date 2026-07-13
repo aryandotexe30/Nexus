@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, Loader2, MessageSquare, ArrowLeft } from "lucide-react";
+import { Send, Bot, User, Loader2, MessageSquare, ArrowLeft, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -16,6 +16,56 @@ export default function CopilotPage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Enquiry Modal State
+  const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [formQty, setFormQty] = useState("");
+  const [formUnit, setFormUnit] = useState("Pieces");
+  const [formPurpose, setFormPurpose] = useState("Reselling");
+  const [formDetails, setFormDetails] = useState("");
+
+  const openEnquiryModal = (productName: string) => {
+    setSelectedProduct(productName);
+    setFormDetails(`I am interested in ${productName}. Kindly send the quotation for the same.`);
+    setIsEnquiryModalOpen(true);
+  };
+
+  const closeEnquiryModal = () => {
+    if (isSending) return;
+    setIsEnquiryModalOpen(false);
+  };
+
+  const handleSendEnquiry = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSending(true);
+    try {
+      const res = await fetch('/api/enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          targetToken: "AGENT-MATCH",
+          productName: selectedProduct,
+          quantity: formQty,
+          unit: formUnit,
+          purpose: formPurpose,
+          details: formDetails
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(`Enquiry sent successfully! Support Ticket Ref: ENQ-${data.token}`);
+        closeEnquiryModal();
+      } else {
+        alert("Failed to send enquiry: " + data.error);
+      }
+    } catch (err) {
+      alert("Network error while sending enquiry.");
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -139,7 +189,7 @@ export default function CopilotPage() {
                             ))}
                           </ul>
                           <button 
-                            onClick={() => alert("Enquiry successfully sent to anonymous vendors!")}
+                            onClick={() => openEnquiryModal(msg.productData.productName)}
                             className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-md transition-colors flex justify-center items-center gap-2"
                           >
                             <Send className="w-4 h-4" /> Send Enquiry Anonymously
@@ -195,6 +245,82 @@ export default function CopilotPage() {
           Nexus acts as an anonymous middleman. Supplier identities are protected.
         </p>
       </div>
+
+      {/* Enquiry Modal */}
+      {isEnquiryModalOpen && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
+          >
+            <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+              <h2 className="text-xl font-bold text-slate-900">Enquire: {selectedProduct}</h2>
+              <button onClick={closeEnquiryModal} disabled={isSending} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto">
+              <form id="enquiryForm" onSubmit={handleSendEnquiry} className="space-y-6">
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1">Quantity</label>
+                    <div className="flex gap-2">
+                      <input type="number" required value={formQty} onChange={(e)=>setFormQty(e.target.value)} placeholder="Estimated Qty" className="w-2/3 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" />
+                      <input type="text" required value={formUnit} onChange={(e)=>setFormUnit(e.target.value)} placeholder="Units" className="w-1/3 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1">Purpose</label>
+                    <div className="flex gap-4 mt-2">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="purpose" value="Reselling" checked={formPurpose === 'Reselling'} onChange={(e)=>setFormPurpose(e.target.value)} className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
+                        <span className="text-sm text-slate-700">Reselling</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="purpose" value="End Use" checked={formPurpose === 'End Use'} onChange={(e)=>setFormPurpose(e.target.value)} className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
+                        <span className="text-sm text-slate-700">End Use</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-1">Requirement Details</label>
+                  <textarea 
+                    required
+                    rows={4} 
+                    value={formDetails}
+                    onChange={(e)=>setFormDetails(e.target.value)}
+                    className="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+                  ></textarea>
+                </div>
+              </form>
+            </div>
+            
+            <div className="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
+              <button 
+                type="button" 
+                onClick={closeEnquiryModal} 
+                disabled={isSending}
+                className="px-5 py-2.5 text-slate-600 hover:bg-slate-200 font-semibold rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                form="enquiryForm"
+                disabled={isSending}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50"
+              >
+                {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send Enquiry Anonymously"}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
     </div>
   );
