@@ -48,8 +48,10 @@ export async function POST(req: Request) {
       
       Web Search Context:
       ${searchContext}
+
+      CRITICAL: If the Web Search Context is empty or says 'No web data found.', you MUST use your own extensive pre-trained knowledge to fill out the company profile as best as you can. Do NOT leave fields blank if you know who the company is.
       
-      Return ONLY a valid JSON object with this exact structure:
+      Return ONLY a valid JSON object with this exact structure. NEVER output null. Use "Unknown" or [] if truly unavailable:
       {
         "description": "Short 2-sentence summary of what they do",
         "products": ["Product 1", "Product 2"],
@@ -64,15 +66,19 @@ export async function POST(req: Request) {
     const response = await chat.sendMessage({ message: prompt });
     let text = response.text || "{}";
     
-    let enrichedData = {};
-    if (text.includes("```json")) {
-      text = text.split("```json")[1].split("```")[0].trim();
-    }
+    let enrichedData: any = {};
     try {
-      enrichedData = JSON.parse(text);
+      // Clean up markdown block if present
+      let cleanText = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+      enrichedData = JSON.parse(cleanText);
+
+      // Protect against nulls
+      if (!enrichedData.description) enrichedData.description = "No description available.";
+      if (!enrichedData.products) enrichedData.products = [];
+      if (!enrichedData.location) enrichedData.location = "Unknown";
     } catch (e) {
       console.error("Failed to parse Gemini JSON:", text);
-      enrichedData = { description: "Failed to parse data", raw: text };
+      enrichedData = { description: "Failed to parse data", products: [], location: "Unknown", raw: text };
     }
 
     // 3. Save to Database
