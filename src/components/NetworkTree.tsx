@@ -73,7 +73,7 @@ const TreeNode = ({ label, type, level = 0, context = "" }: { label: string; typ
           </div>
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">{type}</div>
-            <div className="font-semibold text-slate-800 text-[15px] leading-tight">{label}</div>
+            <div className="font-semibold text-slate-800 text-[15px] leading-relaxed whitespace-pre-wrap font-mono text-sm">{label}</div>
           </div>
         </div>
 
