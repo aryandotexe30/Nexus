@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { pusherServer } from "@/lib/pusher";
 
 export const dynamic = 'force-dynamic';
 
-const prisma = new PrismaClient();
+
 
 // GET all tickets (Admins get all PENDING/ACTIVE, Users get their own)
 export async function GET(req: Request) {

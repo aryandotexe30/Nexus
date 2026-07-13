@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { GoogleGenAI } from '@google/genai';
 
-const prisma = new PrismaClient();
+
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function GET(req: Request) {

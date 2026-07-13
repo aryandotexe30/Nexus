@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../auth/[...nextauth]/route";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { pusherServer } from "@/lib/pusher";
 
-const prisma = new PrismaClient();
+
 
 // POST: Send a message in a support ticket
 export async function POST(req: Request, { params }: { params: Promise<{ ticketId: string }> }) {

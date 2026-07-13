@@ -1,20 +1,24 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from "@/lib/prisma";
 import bcrypt from 'bcryptjs';
 import { sendWelcomeEmail } from '@/lib/email';
+import { registerSchema } from "@/lib/validations";
 
-const prisma = new PrismaClient();
+
 
 export async function POST(req: Request) {
   try {
+    const body = await req.json();
+    const validation = registerSchema.safeParse(body);
+    
+    if (!validation.success) {
+      return NextResponse.json({ error: validation.error.errors[0].message }, { status: 400 });
+    }
+
     const { 
       email, password, companyName, gstNumber, industry, 
       udyamNumber, cinNumber, personalEmail, companyPhone, personalPhone 
-    } = await req.json();
-
-    if (!email || !password || !companyName || !gstNumber || !cinNumber || !personalEmail || !companyPhone || !personalPhone) {
-      return NextResponse.json({ error: "Missing required KYC fields for Business Verification" }, { status: 400 });
-    }
+    } = validation.data;
 
     // Extract domain from email (e.g., aryan@tata.com -> tata.com)
     const domain = email.split('@')[1];

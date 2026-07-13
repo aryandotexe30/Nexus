@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { pusherServer } from "@/lib/pusher";
 
-const prisma = new PrismaClient();
+
 
 export async function GET(req: Request, { params }: { params: Promise<{ threadId: string }> }) {
   try {

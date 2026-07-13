@@ -1,9 +1,12 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
+
 import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient();
+if (!process.env.NEXTAUTH_SECRET) {
+  throw new Error("NEXTAUTH_SECRET is not set");
+}
 
 export const authOptions = {
   providers: [
@@ -77,7 +80,7 @@ export const authOptions = {
   session: {
     strategy: "jwt" as const,
   },
-  secret: process.env.NEXTAUTH_SECRET || "default_secret_for_development_change_in_production",
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);

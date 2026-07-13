@@ -46,6 +46,9 @@ model User {
   handledTickets    SupportTicket[] @relation("AdminTickets")
   supportMessages   SupportMessage[]
   notifications     Notification[]
+  creditTransactions CreditTransaction[]
+
+  deletedAt DateTime?
 }
 
 model Company {
@@ -54,6 +57,7 @@ model Company {
   data        Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
 }
 
 model NetworkCache {
@@ -95,6 +99,7 @@ model MarketplacePost {
   isFlagged   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
 }
 
 model Bid {
@@ -177,4 +182,26 @@ model ProductKnowledge {
   description String
   specs       Json
   createdAt   DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  oldValue  Json?
+  newValue  Json?
+  ip        String?
+  createdAt DateTime @default(now())
+}
+
+model CreditTransaction {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount    Int
+  type      String   // e.g., PURCHASE, AI_USAGE, SEARCH, BONUS
+  description String?
+  createdAt DateTime @default(now())
 }
