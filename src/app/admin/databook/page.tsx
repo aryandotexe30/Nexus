@@ -109,7 +109,7 @@ export default function DatabookPage() {
     if (!c.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     
     // Parse data safely
-    let data = {};
+    let data: any = {};
     try {
       data = typeof c.data === 'string' ? JSON.parse(c.data) : c.data || {};
     } catch (e) {}
