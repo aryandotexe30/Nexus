@@ -7,7 +7,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 
 export default function CopilotPage() {
-  const [messages, setMessages] = useState<{ role: 'user' | 'ai', text: string, isFinalPitch?: boolean, productData?: any }[]>([
+  const [messages, setMessages] = useState<{ role: 'user' | 'ai', text: string, isFinalPitch?: boolean, productData?: any, options?: string[] }[]>([
     {
       role: 'ai',
       text: "Hello! I am Nexus. What kind of industrial products or raw materials are you looking for today?"
@@ -17,17 +17,18 @@ export default function CopilotPage() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Enquiry Modal State
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState("");
+  const [selectedVendor, setSelectedVendor] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [formQty, setFormQty] = useState("");
   const [formUnit, setFormUnit] = useState("Pieces");
   const [formPurpose, setFormPurpose] = useState("Reselling");
   const [formDetails, setFormDetails] = useState("");
 
-  const openEnquiryModal = (productName: string) => {
+  const openEnquiryModal = (productName: string, vendorAlias: string) => {
     setSelectedProduct(productName);
+    setSelectedVendor(vendorAlias);
     setFormDetails(`I am interested in ${productName}. Kindly send the quotation for the same.`);
     setIsEnquiryModalOpen(true);
   };
@@ -45,7 +46,7 @@ export default function CopilotPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          targetToken: "AGENT-MATCH",
+          targetToken: selectedVendor,
           productName: selectedProduct,
           quantity: formQty,
           unit: formUnit,
@@ -102,7 +103,8 @@ export default function CopilotPage() {
           role: 'ai', 
           text: data.text,
           isFinalPitch: data.isFinalPitch,
-          productData: data.productData
+          productData: data.productData,
+          options: data.options
         }]);
       } else {
         setMessages(prev => [...prev, { role: 'ai', text: "Sorry, I encountered an error. Please try again." }]);
@@ -164,36 +166,67 @@ export default function CopilotPage() {
                         <ReactMarkdown>{msg.text}</ReactMarkdown>
                       </div>
                       
+                      {msg.options && msg.options.length > 0 && idx === messages.length - 1 && (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {msg.options.map((opt, i) => (
+                            <button
+                              key={i}
+                              onClick={() => {
+                                if (opt.toLowerCase() === "other") {
+                                  document.querySelector("input")?.focus();
+                                } else {
+                                  setInput(opt);
+                                  // We need to trigger submit, but setInput is async.
+                                  // Easiest is to create a synthetic event or extract the logic.
+                                  // For simplicity, we can just call a direct send function.
+                                  setTimeout(() => {
+                                    document.querySelector("form")?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                                  }, 0);
+                                }
+                              }}
+                              className="px-4 py-2 bg-white border border-blue-200 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-50 transition-colors shadow-sm"
+                            >
+                              {opt}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      
                       {msg.isFinalPitch && msg.productData && (
-                        <div className="mt-2 border border-blue-200 bg-blue-50/50 rounded-xl p-5 shadow-sm">
-                          
-                          <div className="mb-6">
-                            <h3 className="font-bold text-slate-900 mb-3 border-b border-blue-200 pb-2">Technical Specifications</h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                              {Object.entries(msg.productData.specs).map(([key, value], i) => (
-                                <div key={i} className="bg-white border border-blue-100 rounded-lg p-3 shadow-sm">
-                                  <p className="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">{key}</p>
-                                  <p className="text-sm text-slate-900 font-medium">{String(value)}</p>
+                        <div className="mt-4 space-y-4">
+                          {msg.productData.vendors.map((vendor: any, vIdx: number) => (
+                            <div key={vIdx} className="bg-white border border-blue-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                              <div className="flex justify-between items-start mb-3">
+                                <div>
+                                  <h3 className="font-bold text-slate-900 text-lg">{vendor.alias}</h3>
+                                  <p className="text-sm font-medium text-slate-500">{vendor.location} • {vendor.specialty}</p>
                                 </div>
-                              ))}
-                            </div>
-                          </div>
+                                <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Verified MSME</div>
+                              </div>
+                              
+                              <div className="bg-slate-50 rounded-lg p-3 mb-4">
+                                <p className="text-sm text-slate-700"><strong>Why it's a match:</strong> {vendor.matchReason}</p>
+                              </div>
 
-                          <h3 className="font-bold text-slate-900 mb-3 border-b border-blue-200 pb-2">Matched Vendors</h3>
-                          <ul className="space-y-2 mb-5">
-                            {msg.productData.vendors.map((v: string, i: number) => (
-                              <li key={i} className="text-sm text-slate-700 flex items-start gap-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
-                                <span>{v}</span>
-                              </li>
-                            ))}
-                          </ul>
-                          <button 
-                            onClick={() => openEnquiryModal(msg.productData.productName)}
-                            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-md transition-colors flex justify-center items-center gap-2"
-                          >
-                            <Send className="w-4 h-4" /> Send Enquiry Anonymously
-                          </button>
+                              <div className="mb-5">
+                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Technical Specifications</h4>
+                                <div className="grid grid-cols-2 gap-2">
+                                  {vendor.specs && Object.entries(vendor.specs).map(([key, value], i) => (
+                                    <div key={i} className="text-sm border-l-2 border-blue-200 pl-2">
+                                      <span className="text-slate-500">{key}:</span> <span className="font-semibold text-slate-900">{String(value)}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <button 
+                                onClick={() => openEnquiryModal(msg.productData.productName, vendor.alias)}
+                                className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-sm transition-colors flex justify-center items-center gap-2"
+                              >
+                                <Send className="w-4 h-4" /> Send Enquiry Anonymously
+                              </button>
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>
@@ -255,7 +288,7 @@ export default function CopilotPage() {
             className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
           >
             <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-              <h2 className="text-xl font-bold text-slate-900">Enquire: {selectedProduct}</h2>
+              <h2 className="text-xl font-bold text-slate-900">Enquire: {selectedVendor}</h2>
               <button onClick={closeEnquiryModal} disabled={isSending} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors">
                 <X className="w-5 h-5" />
               </button>

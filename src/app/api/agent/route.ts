@@ -18,22 +18,36 @@ YOUR CORE DIRECTIVE:
    
 2. A-TO-Z PRODUCT PITCH & ANONYMOUS VENDORS (INDIAN MSME FOCUS):
    Once you have enough context, you must output a highly detailed, A-to-Z technical description of the exact product they need. 
-   You must also list AS MANY verified vendors as possible (aim for 5-10 or more if available) COMPLETELY ANONYMOUSLY (e.g., "Supplier A: A verified MSME manufacturer in Gujarat", "Supplier B: An ISO-certified supplier in Maharashtra"). NEVER REVEAL REAL COMPANY NAMES.
+   You must extract ALL comprehensive technical specifications (including Length, Width, Thickness, Adhesion, Temperature, etc.).
+   You must list AS MANY verified vendors as possible (aim for 5-10 or more) COMPLETELY ANONYMOUSLY.
    ALL vendors and products MUST be strictly limited to the Indian market and suitable for MSME businesses. Do not recommend expensive foreign imports unless absolutely necessary.
 
 JSON OUTPUT ENFORCEMENT:
-To allow us to save this valuable knowledge, if you are providing the FINAL A-TO-Z PRODUCT PITCH, you MUST output your response as a valid JSON object enclosed in \`\`\`json blocks.
-The JSON must follow this exact structure:
+You MUST ALWAYS output your response as a valid JSON object enclosed in \`\`\`json blocks.
+
+If you are asking a clarifying question, use this structure:
+{
+  "type": "clarification",
+  "text": "Your ONE friendly question here.",
+  "options": ["Option 1", "Option 2", "Option 3", "Other"]
+}
+
+If you are providing the FINAL A-TO-Z PRODUCT PITCH, use this exact structure:
 {
   "type": "final_pitch",
   "productName": "Generic name of the product",
   "description": "Your complete A-to-Z highly detailed description and technical breakdown suitable for the Indian MSME market.",
-  "specs": { "Temp": "...", "Adhesion": "..." },
-  "vendors": ["Supplier A: ...", "Supplier B: ..."],
+  "vendors": [
+    {
+      "alias": "Supplier A",
+      "location": "Gujarat",
+      "specialty": "Manufacturer of industrial tapes",
+      "specs": { "Temperature Resistance": "Up to 180°C", "Length": "50m", "Adhesive": "Acrylic", "Backing": "PET Film" },
+      "matchReason": "They specialize in high-temp acrylic adhesion and offer custom slitting."
+    }
+  ],
   "messageToUser": "A friendly concluding message."
 }
-
-If you are just asking a clarifying question, output standard text (NOT JSON), but keep it to exactly ONE friendly question.
 `;
 
 export async function POST(req: Request) {
@@ -94,28 +108,37 @@ ${formattedMessages[0].parts[0].text}
 
     let isFinalPitch = false;
     let productData = null;
+    let options: string[] = [];
 
-    // Parse JSON if it's a final pitch
-    if (text.includes("```json") && text.includes('"type": "final_pitch"')) {
+    // Parse JSON
+    if (text.includes("```json")) {
       try {
         const jsonStr = text.split("```json")[1].split("```")[0].trim();
         const data = JSON.parse(jsonStr);
 
-        // Save to Database! The Brain gets smarter.
-        await prisma.productKnowledge.create({
-          data: {
-            query: latestUserMessage,
-            productName: data.productName,
-            description: data.description,
-            specs: data.specs,
-          }
-        });
+        if (data.type === "clarification") {
+          text = data.text;
+          options = data.options || [];
+        } else if (data.type === "final_pitch") {
+          // Extract a generic specs object to save to the DB by looking at the first vendor's specs
+          const firstVendorSpecs = data.vendors?.[0]?.specs || {};
+          
+          // Save to Database! The Brain gets smarter.
+          await prisma.productKnowledge.create({
+            data: {
+              query: latestUserMessage,
+              productName: data.productName,
+              description: data.description,
+              specs: firstVendorSpecs,
+            }
+          });
 
-        isFinalPitch = true;
-        productData = data;
-        
-        // Formulate a clean fallback text without the huge summary
-        text = `Here is your detailed breakdown for **${data.productName}**.\n\n*Scroll down to view specifications and contact vendors directly.*`;
+          isFinalPitch = true;
+          productData = data;
+          
+          // Formulate a clean fallback text without the huge summary
+          text = `Here is your detailed breakdown for **${data.productName}**.\n\n*Scroll down to view detailed vendor cards and technical specifications.*`;
+        }
 
       } catch (e) {
         console.error("Failed to parse Copilot JSON:", e);
@@ -126,7 +149,8 @@ ${formattedMessages[0].parts[0].text}
       success: true, 
       text: text,
       isFinalPitch,
-      productData
+      productData,
+      options
     });
 
   } catch (error: any) {

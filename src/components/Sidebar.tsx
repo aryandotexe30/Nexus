@@ -21,7 +21,8 @@ import {
   X,
   CreditCard,
   Lock,
-  Headset
+  Headset,
+  Database
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -55,6 +56,7 @@ export default function Sidebar() {
 
   if (isAdmin) {
     routes.push({ name: "Admin Console", path: "/admin", icon: ShieldCheck });
+    routes.push({ name: "Databook", path: "/admin/databook", icon: Database });
     routes.push({ name: "Customer Care", path: "/admin/support", icon: Headset });
   }
 
