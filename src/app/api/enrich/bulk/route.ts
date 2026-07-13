@@ -105,6 +105,9 @@ export async function POST(req: Request) {
       
       Return ONLY a valid JSON object with this exact structure. NEVER output null. Use "Unknown" or [] if truly unavailable.
       {
+        "exact_address": "Exact physical address of the company",
+        "email_address": "General contact email address",
+        "phone_number": "General contact phone number",
         "description": "Short 2-sentence summary of what they do",
         "location": "City, State (if found, else Unknown)",
         "website": "URL if found",

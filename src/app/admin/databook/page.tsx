@@ -325,6 +325,24 @@ export default function DatabookPage() {
                         </div>
                       </div>
 
+                      <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Corporate Contact Info</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                          <div>
+                            <span className="block text-xs font-bold text-slate-400 mb-1">Phone Number</span>
+                            <p className="text-slate-700 text-sm">{safeRender(selectedCompany.parsedData.phone_number || selectedCompany.parsedData.phone)}</p>
+                          </div>
+                          <div>
+                            <span className="block text-xs font-bold text-slate-400 mb-1">Email Address</span>
+                            <p className="text-slate-700 text-sm">{safeRender(selectedCompany.parsedData.email_address || selectedCompany.parsedData.email)}</p>
+                          </div>
+                          <div>
+                            <span className="block text-xs font-bold text-slate-400 mb-1">Exact Address</span>
+                            <p className="text-slate-700 text-sm">{safeRender(selectedCompany.parsedData.exact_address || selectedCompany.parsedData.address)}</p>
+                          </div>
+                        </div>
+                      </div>
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
                           <h3 className="text-sm font-bold text-emerald-600 uppercase tracking-wider mb-2">Raw Materials Purchased (Suppliers)</h3>
