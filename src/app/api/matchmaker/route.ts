@@ -67,8 +67,8 @@ A user has submitted the following request: "${query}"
 
 CRITICAL INTENT PARSING RULES:
 First, determine if the user wants to BUY (procure) or SELL (supply) a product.
-- If they want to SELL (or supply/export), you MUST strictly find companies that PURCHASE that material as a raw material or input. Do NOT show them other competitors who sell the same thing.
-- If they want to BUY (or procure/import), you MUST strictly find companies that MANUFACTURE or SELL that material.
+- If they want to SELL (or supply/export): You MUST strictly find companies that PURCHASE that material as a raw material or input. DO NOT SHOW OTHER SELLERS OR MANUFACTURERS OF THAT PRODUCT. It is completely useless for a seller to see another seller.
+- If they want to BUY (or procure/import): You MUST strictly find companies that MANUFACTURE or SELL that material.
 
 Here is data from our Proprietary Database of pre-vetted companies:
 ${JSON.stringify(dbCompanies)}
@@ -114,7 +114,7 @@ Do not include markdown formatting around the JSON array.
     const matches = JSON.parse(resultText);
 
     // Send full data to frontend for "Lead Finder" UI
-    const secureMatches = matches.map((m: any) => {
+    const secureMatches = matches.map((m: any, index: number) => {
       const sensitiveData = JSON.stringify({
         realName: m.realName,
         contactEmail: m.parsedData?.email || m.contactEmail,
@@ -122,12 +122,31 @@ Do not include markdown formatting around the JSON array.
       });
       const targetToken = encrypt(sensitiveData);
       
+      const alias = \`Company \${String.fromCharCode(65 + index)}\`;
+      const maskString = (str: string) => {
+        if (!str) return str;
+        return str.replace(new RegExp(m.realName, 'gi'), alias);
+      };
+
+      // Redact contact info from parsedData to prevent platform bypass
+      const safeParsedData = { ...m.parsedData };
+      delete safeParsedData.email;
+      delete safeParsedData.phone;
+      delete safeParsedData.phone_number;
+      delete safeParsedData.email_address;
+      delete safeParsedData.website;
+      
+      // Mask the description if it exists inside parsedData
+      if (safeParsedData.description) {
+        safeParsedData.description = maskString(safeParsedData.description);
+      }
+
       return {
-        realName: m.realName, // WE NOW EXPOSE THE REAL NAME
+        alias: alias, 
         intent: m.intent,
-        reason: m.reason,
-        description: m.description,
-        parsedData: m.parsedData || {},
+        reason: maskString(m.reason),
+        description: maskString(m.description),
+        parsedData: safeParsedData,
         properties: m.properties || [],
         matchScore: m.matchScore,
         targetToken,
