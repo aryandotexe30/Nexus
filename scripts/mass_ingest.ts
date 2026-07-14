@@ -1,4 +1,5 @@
 import fs from 'fs';
+// @ts-ignore
 import csv from 'csv-parser';
 import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
