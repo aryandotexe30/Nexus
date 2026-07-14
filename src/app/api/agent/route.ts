@@ -68,10 +68,15 @@ export async function POST(req: Request) {
     const latestUserMessage = messages[messages.length - 1].text;
 
     // Fetch proprietary database for context
-    const dbCompanies = await prisma.company.findMany({
-      take: 50,
+    const allDbCompanies = await prisma.company.findMany({
       select: { name: true, data: true }
     });
+
+    const queryWords = latestUserMessage.toLowerCase().split(' ').filter((w: string) => w.length > 2);
+    const dbCompanies = allDbCompanies.filter(c => {
+      const dataStr = JSON.stringify(c.data).toLowerCase();
+      return queryWords.length === 0 || queryWords.some((w: string) => dataStr.includes(w) || c.name.toLowerCase().includes(w));
+    }).slice(0, 20);
 
     // Search Tavily for real-time market data fallback
     let searchContext = "";

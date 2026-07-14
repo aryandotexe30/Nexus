@@ -27,11 +27,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
     }
 
-    // Fetch proprietary database for context
-    const dbCompanies = await prisma.company.findMany({
-      take: 50, // Limit to prevent payload bloat
+    // Fetch proprietary database for context and filter for relevance
+    const allDbCompanies = await prisma.company.findMany({
       select: { name: true, data: true }
     });
+
+    const queryWords = query.toLowerCase().split(' ').filter((w: string) => w.length > 2);
+    const dbCompanies = allDbCompanies.filter(c => {
+      const dataStr = JSON.stringify(c.data).toLowerCase();
+      // If no query words, just return true. Otherwise, check if ANY word matches.
+      return queryWords.length === 0 || queryWords.some((w: string) => dataStr.includes(w) || c.name.toLowerCase().includes(w));
+    }).slice(0, 20); // Limit to top 20 most relevant to avoid overwhelming the AI prompt
     
     // Search the internet globally for matches using Tavily
     let searchContext = [];
@@ -73,8 +79,12 @@ ${searchAnswer ? `Internet Summary: ${searchAnswer}` : ''}
 
 Analyze the user's intent. Then extract the best matching companies (prioritize the Proprietary Database first, then fallback to internet search data).
 
-Return a JSON array of the top matching companies. EXACTLY up to 10 matches, prioritizing companies located in India.
-If there are no good matches, return an empty array [].
+CRITICAL RULES FOR MATCHING:
+1. DO NOT force matches. If a company in the Proprietary Database does NOT explicitly buy or sell the requested product based on their data, YOU MUST IGNORE THEM.
+2. Do not assume or invent reasons for a company to match.
+3. If no companies are a strong match, return an empty array [].
+
+Return a JSON array of the top matching companies (maximum 10), prioritizing companies located in India.
 
 CRITICAL FORMATTING RULES:
 Strictly output a JSON array of objects with the following keys:
