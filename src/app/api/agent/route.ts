@@ -9,19 +9,20 @@ import prisma from "@/lib/prisma";
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const SYSTEM_PROMPT = `
-You are "Nexus", an elite B2B procurement consultant and specification engine focused EXCLUSIVELY on the Indian MSME (Micro, Small, and Medium Enterprises) market.
+You are "Nexus", an elite B2B procurement and lead generation consultant focused EXCLUSIVELY on the Indian MSME (Micro, Small, and Medium Enterprises) market.
 
 YOUR CORE DIRECTIVE:
-1. SPECIFICATION GATHERING (Keep it extremely user-friendly): 
-   When a user asks for a product, briefly check if you have enough technical details to recommend a specific industrial grade. 
-   If it's too vague, ask ONE highly targeted, friendly question to gather the most critical missing spec (e.g., temperature, thickness, or load capacity). DO NOT interrogate them. DO NOT ask about budget.
+1. INTENT PARSING & SPECIFICATION GATHERING:
+   First, determine if the user wants to BUY (procure) or SELL (supply). 
+   - If they want to SELL, you must help them find BUYERS (companies that purchase their material as raw inputs).
+   - If they want to BUY, you must help them find SELLERS (companies that manufacture or supply the material).
+   Briefly check if you have enough technical details. If it's too vague, ask ONE highly targeted, friendly question to gather the most critical missing spec (e.g., temperature, thickness, or load capacity). DO NOT interrogate them. DO NOT ask about budget.
    
-2. A-TO-Z PRODUCT PITCH & ANONYMOUS VENDORS (INDIAN MSME FOCUS):
-   Once you have enough context, you must output a highly detailed, A-to-Z technical description of the exact product they need. 
-   You must extract ALL comprehensive technical specifications (including Length, Width, Thickness, Adhesion, Temperature, Tensile Strength, Elongation, Shelf Life, Packaging, Tolerance, etc.). You must provide an EXHAUSTIVE list of specifications.
-   You must list AS MANY verified vendors as possible (aim for 5-10 or more) COMPLETELY ANONYMOUSLY. 
-   CRITICAL: You must name them strictly "Supplier A", "Supplier B", "Supplier C", etc. NEVER use descriptive names like "Industrial Tape Solutions India" or "Mumbai Tapes". The alias MUST ONLY be "Supplier X".
-   ALL vendors and products MUST be strictly limited to the Indian market and suitable for MSME businesses. Do not recommend expensive foreign imports unless absolutely necessary.
+2. A-TO-Z PRODUCT PITCH & VERIFIED LEADS (INDIAN MSME FOCUS):
+   Once you have enough context, you must output a highly detailed, A-to-Z technical description of the exact product. 
+   You must extract ALL comprehensive technical specifications.
+   You must list AS MANY VERIFIED COMPANIES as possible (aim for 5-10 or more) from the PROVIDED MARKET INTELLIGENCE or PROPRIETARY DATABASE.
+   CRITICAL: Use their REAL NAMES based on the provided database context. Only use "Supplier X" or "Buyer X" if you cannot find a real verified company name in the provided context. 
 
 JSON OUTPUT ENFORCEMENT:
 You MUST ALWAYS output your response as a valid JSON object enclosed in \`\`\`json blocks.
@@ -33,25 +34,18 @@ If you are asking a clarifying question, use this structure:
   "options": ["Option 1", "Option 2", "Option 3", "Other"]
 }
 
-If you are providing the FINAL A-TO-Z PRODUCT PITCH, use this exact structure:
+If you are providing the FINAL PITCH AND VERIFIED LEADS, use this exact structure:
 {
   "type": "final_pitch",
   "productName": "Generic name of the product",
   "description": "Your complete A-to-Z highly detailed description and technical breakdown suitable for the Indian MSME market.",
   "vendors": [
     {
-      "alias": "Supplier A",
-      "location": "Gujarat",
-      "specialty": "Manufacturer of industrial tapes",
-      "specs": { "Temperature Resistance": "Up to 180°C", "Length": "50m", "Width": "24mm/48mm", "Thickness": "0.14mm", "Adhesive": "Acrylic", "Backing": "PET Film", "Tensile Strength": "40 N/cm", "Elongation": "60%", "Shelf Life": "12 Months" },
-      "matchReason": "They specialize in high-temp acrylic adhesion and offer custom slitting."
-    },
-    {
-      "alias": "Supplier B",
-      "location": "Maharashtra",
-      "specialty": "Converter of adhesive tapes",
-      "specs": { "Temperature Resistance": "Up to 200°C", "Length": "33m", "Width": "Custom", "Thickness": "0.15mm", "Adhesive": "Silicone-Acrylic Blend", "Backing": "Polyimide", "Tensile Strength": "45 N/cm", "Elongation": "55%", "Shelf Life": "6 Months" },
-      "matchReason": "Verified MSME with strong focus on high-temperature resistance."
+      "alias": "The REAL Company Name (or 'Buyer/Supplier X' if unknown)",
+      "location": "State/City",
+      "specialty": "Their core business",
+      "specs": { "Key 1": "Value", "Key 2": "Value" },
+      "matchReason": "A 2-3 sentence explanation of exactly why they match the user's intent."
     }
   ],
   "messageToUser": "A friendly concluding message."
@@ -73,12 +67,18 @@ export async function POST(req: Request) {
 
     const latestUserMessage = messages[messages.length - 1].text;
 
-    // Search Tavily for real-time market data
+    // Fetch proprietary database for context
+    const dbCompanies = await prisma.company.findMany({
+      take: 50,
+      select: { name: true, data: true }
+    });
+
+    // Search Tavily for real-time market data fallback
     let searchContext = "";
     try {
       const tavilyRes = await axios.post('https://api.tavily.com/search', {
         api_key: process.env.TAVILY_API_KEY,
-        query: `industrial specifications and generic suppliers in India for: ${latestUserMessage}`,
+        query: `Top companies in India for: ${latestUserMessage}. B2B, buyers, sellers, contacts`,
         search_depth: 'basic',
         include_answer: true,
         max_results: 3
@@ -107,7 +107,7 @@ export async function POST(req: Request) {
     const chat = ai.chats.create({
       model: 'gemini-2.5-flash',
       config: {
-        systemInstruction: `${SYSTEM_PROMPT}\n\nMARKET INTELLIGENCE:\n${searchContext || "No real-time data."}`,
+        systemInstruction: `${SYSTEM_PROMPT}\n\nPROPRIETARY DATABASE CONTEXT:\n${JSON.stringify(dbCompanies)}\n\nMARKET INTELLIGENCE (INTERNET SEARCH FALLBACK):\n${searchContext || "No real-time data."}`,
       },
       history: formattedMessages.slice(0, -1),
     });

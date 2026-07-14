@@ -13,6 +13,9 @@ export default function Matchmaker() {
   const [selectedMatch, setSelectedMatch] = useState<any>(null);
   const [isSending, setIsSending] = useState(false);
   
+  // Deep Profile Modal State
+  const [selectedLeadProfile, setSelectedLeadProfile] = useState<any>(null);
+  
   // Form State
   const [formQty, setFormQty] = useState("");
   const [formUnit, setFormUnit] = useState("");
@@ -148,20 +151,35 @@ export default function Matchmaker() {
                       <Building2 className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-slate-900">{company.alias || "Supplier"}</h3>
+                      <h3 className="text-xl font-bold text-slate-900">{company.realName || company.alias || "Verified Lead"}</h3>
                       <div className="text-sm font-medium text-slate-500 mt-1 flex items-center gap-4">
                         <span className="flex items-center gap-1 text-green-600 bg-green-50 px-2 py-1 rounded-md">
                           <Sparkles className="w-3 h-3" /> {company.matchScore}% Match
                         </span>
+                        {company.intent && (
+                          <span className="flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
+                            <Tag className="w-3 h-3" /> {company.intent === "BUYING" ? "Potential Buyer" : "Potential Supplier"}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
-                  <button 
-                    onClick={() => openEnquiryModal(company)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors whitespace-nowrap"
-                  >
-                    Generate Enquiry <Send className="w-4 h-4" />
-                  </button>
+                  <div className="flex flex-col gap-2">
+                    <button 
+                      onClick={() => openEnquiryModal(company)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors whitespace-nowrap justify-center"
+                    >
+                      Generate Enquiry <Send className="w-4 h-4" />
+                    </button>
+                    {company.parsedData && Object.keys(company.parsedData).length > 0 && (
+                      <button 
+                        onClick={() => setSelectedLeadProfile(company)}
+                        className="bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 transition-colors whitespace-nowrap justify-center"
+                      >
+                        Unlock Profile
+                      </button>
+                    )}
+                  </div>
                 </div>
                 
                 {company.properties && company.properties.length > 0 && (
@@ -262,6 +280,116 @@ export default function Matchmaker() {
               </button>
             </div>
           </motion.div>
+        </div>
+      )}
+
+      {/* Deep Profile Modal */}
+      {selectedLeadProfile && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-slate-200 flex justify-between items-start bg-slate-50">
+              <div>
+                <h2 className="text-2xl font-black text-slate-900">{selectedLeadProfile.realName || selectedLeadProfile.alias}</h2>
+                <p className="text-slate-500 font-mono text-sm mt-1">Verified Databook Profile</p>
+              </div>
+              <button 
+                onClick={() => setSelectedLeadProfile(null)}
+                className="text-slate-400 hover:text-slate-600 bg-white border border-slate-200 rounded-full w-8 h-8 flex items-center justify-center font-bold"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto bg-white flex-1">
+              <div className="space-y-6">
+                {(() => {
+                  const safeRender = (val: any, depth = 0): React.ReactNode => {
+                    if (!val) return 'Data not available';
+                    if (typeof val === 'string') return val;
+                    if (Array.isArray(val)) {
+                      return (
+                        <ul className="list-disc pl-5 space-y-1 my-1">
+                          {val.map((item, idx) => (
+                            <li key={idx}>{safeRender(item, depth + 1)}</li>
+                          ))}
+                        </ul>
+                      );
+                    }
+                    if (typeof val === 'object') {
+                      return (
+                        <div className="space-y-1 mt-1">
+                          {Object.entries(val).map(([k, v]) => (
+                            <div key={k} className="pl-3 border-l-2 border-indigo-200 py-1">
+                              <span className="font-bold text-slate-700 capitalize text-sm">{k.replace(/_/g, ' ')}: </span>
+                              <span className="text-slate-600 text-sm">{safeRender(v, depth + 1)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }
+                    return String(val);
+                  };
+
+                  const data = selectedLeadProfile.parsedData;
+                  if (!data || Object.keys(data).length === 0) {
+                    return <p className="text-slate-500">No deep profile data available.</p>;
+                  }
+
+                  return (
+                    <>
+                      {data.description && (
+                        <div>
+                          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Description</h3>
+                          <div className="text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100">{safeRender(data.description)}</div>
+                        </div>
+                      )}
+                      
+                      <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Contact Info</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <span className="block text-xs font-bold text-slate-400 mb-1">Phone Number</span>
+                            <div className="text-slate-700 text-sm">{safeRender(data.phone_number || data.phone)}</div>
+                          </div>
+                          <div>
+                            <span className="block text-xs font-bold text-slate-400 mb-1">Email Address</span>
+                            <div className="text-slate-700 text-sm">{safeRender(data.email_address || data.email)}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {data.financials && (
+                        <div className="bg-green-50 border border-green-100 p-4 rounded-xl">
+                          <h3 className="text-sm font-bold text-green-600 uppercase tracking-wider mb-2">Financials</h3>
+                          <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(data.financials)}</div>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {data.raw_materials_purchased && (
+                          <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
+                            <h3 className="text-sm font-bold text-emerald-600 uppercase tracking-wider mb-2">Raw Materials Purchased (Suppliers)</h3>
+                            <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(data.raw_materials_purchased)}</div>
+                          </div>
+                        )}
+                        {data.products && (
+                          <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl">
+                            <h3 className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-2">Products / Services</h3>
+                            <div className="text-slate-700 whitespace-pre-wrap text-sm">{safeRender(data.products)}</div>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">All Verified Data</h3>
+                        <div className="text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100">{safeRender(data)}</div>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

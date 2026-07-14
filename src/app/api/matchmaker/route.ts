@@ -56,35 +56,39 @@ export async function POST(req: Request) {
     }
 
     const prompt = `
-You are an expert B2B matchmaker and lead generation AI.
+You are an expert B2B matchmaker, intent parser, and lead generation AI.
 A user has submitted the following request: "${query}"
+
+CRITICAL INTENT PARSING RULES:
+First, determine if the user wants to BUY (procure) or SELL (supply) a product.
+- If they want to SELL (or supply/export), you MUST strictly find companies that PURCHASE that material as a raw material or input. Do NOT show them other competitors who sell the same thing.
+- If they want to BUY (or procure/import), you MUST strictly find companies that MANUFACTURE or SELL that material.
 
 Here is data from our Proprietary Database of pre-vetted companies:
 ${JSON.stringify(dbCompanies)}
 
-Here is raw internet search data representing potential companies in India that match their request:
+Here is raw internet search data representing potential companies in India:
 ${JSON.stringify(searchContext)}
 ${searchAnswer ? `Internet Summary: ${searchAnswer}` : ''}
 
-Analyze the user's request and evaluate the provided internet search data to extract the best matching companies for buying, selling, or partnering.
+Analyze the user's intent. Then extract the best matching companies (prioritize the Proprietary Database first, then fallback to internet search data).
 
 Return a JSON array of the top matching companies. EXACTLY up to 10 matches, prioritizing companies located in India.
 If there are no good matches, return an empty array [].
 
 CRITICAL FORMATTING RULES:
 Strictly output a JSON array of objects with the following keys:
-- "alias": A generic anonymous alias for the company (e.g., "Supplier A", "Manufacturer 1"). Do NOT include the real company name here.
 - "realName": The company's actual real name.
-- "reason": A 2-3 sentence explanation of exactly why they are a perfect match. CRITICAL: Do NOT include their real company name in this explanation! Ensure it remains strictly anonymous for the customer.
-- "description": A slightly longer description of what they do, their financials, or capacity. CRITICAL: Keep it highly anonymous. DO NOT REVEAL the company name!
-- "properties": An array of strings representing an EXTENSIVE list of PHYSICAL PRODUCT properties and technical specifications. You MUST extract as many details as possible (e.g., ["Width: 50mm", "Length: 100m", "Adhesive: Acrylic", "Thickness: 1.5mm", "Material: PE Foam", "Color: Black", "Certifications: ISO9001", "Applications: Automotive", "MOQ: 100 Rolls"]). CRITICAL: If the specific technical properties of the product are not explicitly mentioned in the search results, YOU MUST USE YOUR GENERAL KNOWLEDGE to generate a comprehensive list of standard industry properties, specs, and variants that a buyer would typically need to specify for this exact product. 100% REQUIRED to include product properties, not just company properties. Do not just return 2 or 3; generate an exhaustive list of standard specs for the product.
+- "intent": Either "BUYING" or "SELLING" based on what the user wants to do.
+- "reason": A 2-3 sentence explanation of exactly why they are a perfect match based on the parsed intent.
+- "description": A highly detailed description of the company.
+- "properties": An array of strings representing an EXTENSIVE list of technical properties or keywords associated with the match.
 - "matchScore": A number from 0 to 100 indicating how strong the match is.
-- "contactEmail": The best email to contact. CRITICAL: If an explicit email is not found in the search text, you MUST construct a highly probable standard B2B email based on the company's name or domain (e.g., "sales@[companyname].in", "info@[companyname].com"). NEVER output null for this field; always provide a constructed guess so the automated email system can attempt outreach.
-- "contactPhone": The best phone number to contact. If none, output null.
+- "parsedData": A JSON object containing all known verified data about this company (e.g., location, industry, phone, email, raw_materials_purchased, products). Extract this from the Proprietary Database or construct it from the internet search.
 - "prefillQuantity": A suggested quantity based on standard B2B orders for this product (e.g., "500").
 - "prefillUnit": The unit for the quantity (e.g., "Pieces", "Rolls", "Kg").
 - "prefillProduct": The simplified name of the product they are looking for (e.g., "Double Sided Foam Tapes").
-- "prefillDetails": A short professional 1-2 sentence enquiry message body to pre-fill the form.
+- "prefillDetails": A short professional 1-2 sentence message body.
 
 Do not include markdown formatting around the JSON array.
     `;
@@ -99,19 +103,21 @@ Do not include markdown formatting around the JSON array.
     
     const matches = JSON.parse(resultText);
 
-    // Encrypt sensitive targets
+    // Send full data to frontend for "Lead Finder" UI
     const secureMatches = matches.map((m: any) => {
       const sensitiveData = JSON.stringify({
         realName: m.realName,
-        contactEmail: m.contactEmail,
-        contactPhone: m.contactPhone
+        contactEmail: m.parsedData?.email || m.contactEmail,
+        contactPhone: m.parsedData?.phone || m.contactPhone
       });
       const targetToken = encrypt(sensitiveData);
       
-      // Return only safe fields + targetToken to frontend
       return {
-        alias: m.alias,
+        realName: m.realName, // WE NOW EXPOSE THE REAL NAME
+        intent: m.intent,
         reason: m.reason,
+        description: m.description,
+        parsedData: m.parsedData || {},
         properties: m.properties || [],
         matchScore: m.matchScore,
         targetToken,
@@ -123,7 +129,6 @@ Do not include markdown formatting around the JSON array.
     });
 
     // Store all found companies in the Database for quick access by Admins
-    // We only create basic shells. Admins can hit "Bulk Enrich" later to fill out the deep specs.
     for (const m of matches) {
       if (m.realName) {
         try {
@@ -135,9 +140,8 @@ Do not include markdown formatting around the JSON array.
               data: {
                 description: m.description || m.reason,
                 products: [m.prefillProduct || query],
-                source: "Matchmaker Web Discovery",
-                contactEmail: m.contactEmail,
-                contactPhone: m.contactPhone
+                source: "Matchmaker Hybrid Search",
+                ...m.parsedData
               }
             }
           });
