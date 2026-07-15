@@ -170,8 +170,10 @@ export async function POST(req: Request) {
                     });
                   } else {
                     await prisma.company.create({
-                      name: realName,
-                      data: newData
+                      data: {
+                        name: realName,
+                        data: newData
+                      }
                     });
                   }
                 } catch (dbErr) {

@@ -178,8 +178,10 @@ Do not include markdown formatting around the JSON array.
             });
           } else {
             await prisma.company.create({
-              name: m.realName,
-              data: newData
+              data: {
+                name: m.realName,
+                data: newData
+              }
             });
           }
         } catch (dbErr) {
