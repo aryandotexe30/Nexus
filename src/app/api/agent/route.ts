@@ -147,6 +147,40 @@ export async function POST(req: Request) {
             }
           });
 
+          // Save newly discovered vendors to the Company database
+          if (data.vendors && Array.isArray(data.vendors)) {
+            for (const v of data.vendors) {
+              const realName = v.alias;
+              if (realName && realName !== "Supplier X" && realName !== "Buyer X" && !realName.startsWith("Company ")) {
+                try {
+                  const existing = await prisma.company.findUnique({ where: { name: realName } });
+                  const newData = {
+                    description: v.matchReason || v.specialty,
+                    products: [data.productName],
+                    location: v.location,
+                    specs: v.specs,
+                    source: "Agent Chat Hybrid Search",
+                  };
+        
+                  if (existing) {
+                    const mergedData = { ...newData, ...(existing.data as object || {}) };
+                    await prisma.company.update({
+                      where: { name: realName },
+                      data: { data: mergedData }
+                    });
+                  } else {
+                    await prisma.company.create({
+                      name: realName,
+                      data: newData
+                    });
+                  }
+                } catch (dbErr) {
+                  console.error("Failed to store discovered company from Agent in DB", dbErr);
+                }
+              }
+            }
+          }
+
           isFinalPitch = true;
           productData = data;
           

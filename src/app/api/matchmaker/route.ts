@@ -159,21 +159,29 @@ Do not include markdown formatting around the JSON array.
 
     // Store all found companies in the Database for quick access by Admins
     for (const m of matches) {
-      if (m.realName) {
+      if (m.realName && m.realName !== "Supplier X" && m.realName !== "Buyer X" && !m.realName.startsWith("Company ")) {
         try {
-          await prisma.company.upsert({
-            where: { name: m.realName },
-            update: {}, // Don't overwrite existing rich data
-            create: {
+          const existing = await prisma.company.findUnique({ where: { name: m.realName } });
+          const newData = {
+            description: m.description || m.reason,
+            products: [m.prefillProduct || query],
+            source: "Matchmaker Hybrid Search",
+            ...m.parsedData
+          };
+
+          if (existing) {
+            // Merge data (existing data overrides new data to prevent overwriting verified data with AI hallucinations, but new fields are added)
+            const mergedData = { ...newData, ...(existing.data as object || {}) };
+            await prisma.company.update({
+              where: { name: m.realName },
+              data: { data: mergedData }
+            });
+          } else {
+            await prisma.company.create({
               name: m.realName,
-              data: {
-                description: m.description || m.reason,
-                products: [m.prefillProduct || query],
-                source: "Matchmaker Hybrid Search",
-                ...m.parsedData
-              }
-            }
-          });
+              data: newData
+            });
+          }
         } catch (dbErr) {
           console.error("Failed to store discovered company in DB", dbErr);
         }
