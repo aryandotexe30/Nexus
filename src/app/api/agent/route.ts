@@ -41,7 +41,7 @@ If you are providing the FINAL PITCH AND VERIFIED LEADS, use this exact structur
   "description": "Your complete A-to-Z highly detailed description and technical breakdown suitable for the Indian MSME market.",
   "vendors": [
     {
-      "alias": "The REAL Company Name (or 'Buyer/Supplier X' if unknown)",
+      "realName": "The REAL Company Name (or 'Buyer/Supplier X' if unknown)",
       "location": "State/City",
       "specialty": "Their core business",
       "specs": { "Key 1": "Value", "Key 2": "Value" },
@@ -147,10 +147,12 @@ export async function POST(req: Request) {
             }
           });
 
-          // Save newly discovered vendors to the Company database
+          // Save newly discovered vendors to the Company database AND ANONYMIZE
           if (data.vendors && Array.isArray(data.vendors)) {
-            for (const v of data.vendors) {
-              const realName = v.alias;
+            for (let i = 0; i < data.vendors.length; i++) {
+              const v = data.vendors[i];
+              const realName = v.realName || v.alias;
+              
               if (realName && realName !== "Supplier X" && realName !== "Buyer X" && !realName.startsWith("Company ")) {
                 try {
                   const existing = await prisma.company.findUnique({ where: { name: realName } });
@@ -179,6 +181,26 @@ export async function POST(req: Request) {
                 } catch (dbErr) {
                   console.error("Failed to store discovered company from Agent in DB", dbErr);
                 }
+
+                // SECURE ANONYMIZATION
+                const secureAlias = `Company ${String.fromCharCode(65 + i)}`;
+                
+                const maskString = (str: string) => {
+                  if (!str) return str;
+                  return str.replace(new RegExp(realName, 'gi'), secureAlias);
+                };
+
+                v.alias = secureAlias;
+                v.matchReason = maskString(v.matchReason);
+                v.specialty = maskString(v.specialty);
+                if (data.description) {
+                  data.description = maskString(data.description);
+                }
+                delete v.realName;
+              } else if (realName) {
+                // If it's already an alias or unknown, just move it to alias property
+                v.alias = realName;
+                delete v.realName;
               }
             }
           }
