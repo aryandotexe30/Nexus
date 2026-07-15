@@ -122,7 +122,7 @@ Do not include markdown formatting around the JSON array.
       });
       const targetToken = encrypt(sensitiveData);
       
-      const alias = \`Company \${String.fromCharCode(65 + index)}\`;
+      const alias = `Company ${String.fromCharCode(65 + index)}`;
       const maskString = (str: string) => {
         if (!str) return str;
         return str.replace(new RegExp(m.realName, 'gi'), alias);
