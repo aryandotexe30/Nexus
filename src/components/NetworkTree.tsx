@@ -22,6 +22,14 @@ const getOptions = (type: string) => {
   }
 };
 
+const safeRender = (val: any): React.ReactNode => {
+  if (val === null || val === undefined) return '';
+  if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') return String(val);
+  if (Array.isArray(val)) return val.map(v => safeRender(v)).join(', ');
+  if (typeof val === 'object') return Object.entries(val).map(([k, v]) => `${k}: ${v}`).join('\n');
+  return String(val);
+};
+
 const TreeNode = ({ label, type, level = 0, context = "" }: { label: string; type: string; level?: number, context?: string }) => {
   const [expandedGroups, setExpandedGroups] = useState<{ [action: string]: {label: string, type: string}[] }>({});
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
@@ -73,7 +81,7 @@ const TreeNode = ({ label, type, level = 0, context = "" }: { label: string; typ
           </div>
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">{type}</div>
-            <div className="font-semibold text-slate-800 text-[15px] leading-relaxed whitespace-pre-wrap font-mono text-sm">{label}</div>
+            <div className="font-semibold text-slate-800 text-[15px] leading-relaxed whitespace-pre-wrap font-mono text-sm">{safeRender(label)}</div>
           </div>
         </div>
 

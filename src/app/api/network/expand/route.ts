@@ -134,6 +134,9 @@ Output exactly the JSON array of strings and nothing else.
             ai.models.generateContent({
               model: model,
               contents: prompt,
+              config: {
+                responseMimeType: "application/json",
+              }
             }),
             timeoutPromise
           ]);
