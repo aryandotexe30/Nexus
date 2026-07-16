@@ -262,6 +262,9 @@ Output strictly valid JSON matching the exact keys above. Do not include markdow
             ai.models.generateContent({
               model: model,
               contents: prompt,
+              config: {
+                responseMimeType: "application/json",
+              }
             }),
             timeoutPromise
           ]);

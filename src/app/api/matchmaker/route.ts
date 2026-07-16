@@ -106,6 +106,9 @@ Do not include markdown formatting around the JSON array.
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      }
     });
 
     let resultText = response.text || "";
