@@ -116,6 +116,14 @@ export default function CopilotPage() {
     }
   };
 
+  const safeRender = (val: any): React.ReactNode => {
+    if (val === null || val === undefined) return '';
+    if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') return String(val);
+    if (Array.isArray(val)) return val.map(v => safeRender(v)).join(', ');
+    if (typeof val === 'object') return JSON.stringify(val);
+    return String(val);
+  };
+
   return (
     <div className="max-w-4xl mx-auto h-[calc(100vh-2rem)] flex flex-col font-sans bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden relative">
       
@@ -163,7 +171,7 @@ export default function CopilotPage() {
                   {msg.role === 'ai' ? (
                     <div className="flex flex-col gap-4">
                       <div className="prose prose-sm max-w-none prose-slate">
-                        <ReactMarkdown>{msg.text}</ReactMarkdown>
+                        <ReactMarkdown>{typeof msg.text === 'string' ? msg.text : JSON.stringify(msg.text)}</ReactMarkdown>
                       </div>
                       
                       {msg.options && msg.options.length > 0 && idx === messages.length - 1 && (
@@ -186,7 +194,7 @@ export default function CopilotPage() {
                               }}
                               className="px-4 py-2 bg-white border border-blue-200 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-50 transition-colors shadow-sm"
                             >
-                              {opt}
+                              {safeRender(opt)}
                             </button>
                           ))}
                         </div>
@@ -198,22 +206,22 @@ export default function CopilotPage() {
                             <div key={vIdx} className="bg-white border border-blue-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
                               <div className="flex justify-between items-start mb-3">
                                 <div>
-                                  <h3 className="font-bold text-slate-900 text-lg">{vendor.alias}</h3>
-                                  <p className="text-sm font-medium text-slate-500">{vendor.location} • {vendor.specialty}</p>
+                                  <h3 className="font-bold text-slate-900 text-lg">{safeRender(vendor.alias)}</h3>
+                                  <p className="text-sm font-medium text-slate-500">{safeRender(vendor.location)} • {safeRender(vendor.specialty)}</p>
                                 </div>
                                 <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Verified MSME</div>
                               </div>
                               
                               <div className="bg-slate-50 rounded-lg p-3 mb-4">
-                                <p className="text-sm text-slate-700"><strong>Why it's a match:</strong> {vendor.matchReason}</p>
+                                <p className="text-sm text-slate-700"><strong>Why it's a match:</strong> {safeRender(vendor.matchReason)}</p>
                               </div>
 
                               <div className="mb-5">
                                 <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Technical Specifications</h4>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                  {vendor.specs && Object.entries(vendor.specs).map(([key, value], i) => (
+                                  {vendor.specs && typeof vendor.specs === 'object' && Object.entries(vendor.specs).map(([key, value], i) => (
                                     <div key={i} className="text-sm border-l-2 border-blue-200 pl-2">
-                                      <span className="text-slate-500">{key}:</span> <span className="font-semibold text-slate-900">{String(value)}</span>
+                                      <span className="text-slate-500">{safeRender(key)}:</span> <span className="font-semibold text-slate-900">{safeRender(value)}</span>
                                     </div>
                                   ))}
                                 </div>
@@ -231,7 +239,7 @@ export default function CopilotPage() {
                       )}
                     </div>
                   ) : (
-                    <p className="text-[15px] whitespace-pre-wrap">{msg.text}</p>
+                    <p className="text-[15px] whitespace-pre-wrap">{safeRender(msg.text)}</p>
                   )}
                 </div>
               </div>
