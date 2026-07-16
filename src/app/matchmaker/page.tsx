@@ -23,6 +23,14 @@ export default function Matchmaker() {
   const [formDetails, setFormDetails] = useState("");
   const [formProduct, setFormProduct] = useState("");
 
+  const safeRender = (val: any): React.ReactNode => {
+    if (val === null || val === undefined) return '';
+    if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') return String(val);
+    if (Array.isArray(val)) return val.map(v => safeRender(v)).join(', ');
+    if (typeof val === 'object') return JSON.stringify(val);
+    return String(val);
+  };
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
@@ -151,7 +159,7 @@ export default function Matchmaker() {
                       <Building2 className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-slate-900">{company.realName || company.alias || "Verified Lead"}</h3>
+                      <h3 className="text-xl font-bold text-slate-900">{safeRender(company.realName || company.alias || "Verified Lead")}</h3>
                       <div className="text-sm font-medium text-slate-500 mt-1 flex items-center gap-4">
                         <span className="flex items-center gap-1 text-green-600 bg-green-50 px-2 py-1 rounded-md">
                           <Sparkles className="w-3 h-3" /> {company.matchScore}% Match
@@ -186,7 +194,7 @@ export default function Matchmaker() {
                   <div className="mb-4 flex flex-wrap gap-2">
                     {company.properties.map((prop: string, idx: number) => (
                       <span key={idx} className="bg-slate-100 text-slate-700 text-xs font-semibold px-2.5 py-1 rounded-md border border-slate-200 flex items-center gap-1">
-                        <Tag className="w-3 h-3" /> {prop}
+                        <Tag className="w-3 h-3" /> {safeRender(prop)}
                       </span>
                     ))}
                   </div>
@@ -195,7 +203,7 @@ export default function Matchmaker() {
                 <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100">
                   <p className="text-slate-700 leading-relaxed font-medium">
                     <span className="font-bold text-slate-900">Why it's a match: </span>
-                    {company.reason}
+                    {safeRender(company.reason)}
                   </p>
                 </div>
               </div>
