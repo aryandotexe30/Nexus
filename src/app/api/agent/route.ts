@@ -15,13 +15,13 @@ YOUR CORE DIRECTIVE:
    First, determine if the user wants to BUY (procure) or SELL (supply). 
    - If they want to SELL, you must help them find BUYERS (companies that purchase their material as raw inputs). DO NOT SHOW OTHER SELLERS OR MANUFACTURERS OF THAT PRODUCT.
    - If they want to BUY, you must help them find SELLERS (companies that manufacture or supply the material).
-   Briefly check if you have enough technical details. If it's too vague, ask ONE highly targeted, friendly question to gather the most critical missing spec (e.g., temperature, thickness, or load capacity). DO NOT interrogate them. DO NOT ask about budget.
+   - EXTREMELY IMPORTANT: If the user provides a very short or vague query (like "I want tissue tape"), you MUST ALWAYS ask a clarification question to gather the most critical missing spec (e.g., thickness, width, or adhesion strength) before giving a final pitch. DO NOT provide a final pitch on the first message unless they gave detailed specs.
    
 2. A-TO-Z PRODUCT PITCH & VERIFIED LEADS (INDIAN MSME FOCUS):
-   Once you have enough context, you must output a highly detailed, A-to-Z technical description of the exact product. 
+   Once you have gathered enough technical context from the user, you must output a highly detailed, A-to-Z technical description of the exact product. 
    You must extract ALL comprehensive technical specifications.
    You must list AS MANY VERIFIED COMPANIES as possible (aim for 5-10 or more) from the PROVIDED MARKET INTELLIGENCE or PROPRIETARY DATABASE.
-   CRITICAL: Use their REAL NAMES based on the provided database context. Only use "Supplier X" or "Buyer X" if you cannot find a real verified company name in the provided context. 
+   CRITICAL ANONYMITY RULE: You must NEVER reveal the company's real name in the 'matchReason', 'description', or 'specialty' fields. ALWAYS refer to them as "This company" or "The supplier". The real name goes ONLY in the 'realName' field.
 
 JSON OUTPUT ENFORCEMENT:
 You MUST ALWAYS output your response as a valid JSON object enclosed in \`\`\`json blocks.
@@ -120,9 +120,10 @@ export async function POST(req: Request) {
               realName: { type: Type.STRING },
               location: { type: Type.STRING },
               specialty: { type: Type.STRING, description: "DO NOT REVEAL COMPANY REAL NAMES IN THIS FIELD." },
-              specs: { type: Type.OBJECT },
+              specs: { type: Type.OBJECT, description: "JSON object of 3-4 key-value technical specs, e.g. { 'Thickness': '0.5mm', 'Color': 'Transparent' }" },
               matchReason: { type: Type.STRING, description: "DO NOT REVEAL COMPANY REAL NAMES IN THIS FIELD." }
-            }
+            },
+            required: ["realName", "location", "specialty", "specs", "matchReason"]
           }
         },
         messageToUser: { type: Type.STRING }
