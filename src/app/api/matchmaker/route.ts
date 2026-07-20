@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, Type } from '@google/genai';
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
@@ -48,6 +48,7 @@ export async function POST(req: Request) {
         query: `Top companies in India for: ${query}. B2B, providers, buyers, list, contacts`,
         search_depth: 'advanced',
         include_answer: true,
+        exclude_domains: ["amazon.com", "amazon.in", "flipkart.com", "ebay.com", "justdial.com", "indiamart.com", "tradeindia.com", "facebook.com", "instagram.com"],
         max_results: 5
       }, { timeout: 20000 });
       
@@ -79,28 +80,19 @@ ${searchAnswer ? `Internet Summary: ${searchAnswer}` : ''}
 
 Analyze the user's intent. Then extract the best matching companies (prioritize the Proprietary Database first, then fallback to internet search data).
 
-CRITICAL RULES FOR MATCHING:
+CRITICAL RULES FOR MATCHING & VERIFICATION:
 1. DO NOT force matches. If a company in the Proprietary Database does NOT explicitly buy or sell the requested product based on their data, YOU MUST IGNORE THEM.
 2. Do not assume or invent reasons for a company to match.
 3. If no companies are a strong match, return an empty array [].
+4. ONLY INCLUDE verified companies (e.g. they have an official website, GSTIN, or are listed on reliable sources). If you extract from the internet search, verify that the company is real.
 
-Return a JSON array of the top matching companies (maximum 10), prioritizing companies located in India.
+CRITICAL ANONYMITY RULE:
+You are acting as a blind broker. The user must NOT know the name of the company until they spend a credit to unlock them.
+Therefore, DO NOT use the company's real name, abbreviations, or brand names anywhere in the "reason" or "description" fields. Always refer to them as "This company", "The manufacturer", or "The supplier".
 
 CRITICAL FORMATTING RULES:
-Strictly output a JSON array of objects with the following keys:
-- "realName": The company's actual real name.
-- "intent": Either "BUYING" or "SELLING" based on what the user wants to do.
-- "reason": A 2-3 sentence explanation of exactly why they are a perfect match based on the parsed intent.
-- "description": A highly detailed description of the company.
-- "properties": An array of strings representing an EXTENSIVE list of technical properties or keywords associated with the match.
-- "matchScore": A number from 0 to 100 indicating how strong the match is.
-- "parsedData": A JSON object containing all known verified data about this company (e.g., location, industry, phone, email, raw_materials_purchased, products). Extract this from the Proprietary Database or construct it from the internet search.
-- "prefillQuantity": A suggested quantity based on standard B2B orders for this product (e.g., "500").
-- "prefillUnit": The unit for the quantity (e.g., "Pieces", "Rolls", "Kg").
-- "prefillProduct": The simplified name of the product they are looking for (e.g., "Double Sided Foam Tapes").
-- "prefillDetails": A short professional 1-2 sentence message body.
-
-Do not include markdown formatting around the JSON array.
+Strictly output a JSON object containing a "thinking" block and a "matches" array of objects.
+Do not include markdown formatting.
     `;
 
     const response = await ai.models.generateContent({
@@ -108,13 +100,42 @@ Do not include markdown formatting around the JSON array.
       contents: prompt,
       config: {
         responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            thinking: { type: Type.STRING, description: "Your reasoning process to select verified matches and determine intent." },
+            matches: {
+              type: Type.ARRAY,
+              description: "Array of matching companies (max 10)",
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  realName: { type: Type.STRING, description: "The company's actual real name." },
+                  intent: { type: Type.STRING, description: "BUYING or SELLING" },
+                  reason: { type: Type.STRING, description: "Why they are a perfect match. DO NOT USE THE COMPANY REAL NAME HERE." },
+                  description: { type: Type.STRING, description: "Detailed description. DO NOT USE THE COMPANY REAL NAME HERE." },
+                  properties: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Extensive list of technical properties or keywords." },
+                  matchScore: { type: Type.NUMBER, description: "0 to 100 indicating how strong the match is." },
+                  parsedData: { type: Type.OBJECT, description: "Any key-value pair containing all known verified data about this company." },
+                  prefillQuantity: { type: Type.STRING },
+                  prefillUnit: { type: Type.STRING },
+                  prefillProduct: { type: Type.STRING },
+                  prefillDetails: { type: Type.STRING }
+                },
+                required: ["realName", "intent", "reason", "description", "matchScore"]
+              }
+            }
+          },
+          required: ["thinking", "matches"]
+        }
       }
     });
 
     let resultText = response.text || "";
-    resultText = resultText.replace(/```json/gi, "").replace(/```/g, "").trim();
+    resultText = resultText.replace(/^```json/gi, "").replace(/```$/g, "").trim();
     
-    const matches = JSON.parse(resultText);
+    const parsedObject = JSON.parse(resultText);
+    const matches = parsedObject.matches || [];
 
     // Send full data to frontend for "Lead Finder" UI
     const secureMatches = matches.map((m: any, index: number) => {
