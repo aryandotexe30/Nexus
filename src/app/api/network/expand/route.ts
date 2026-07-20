@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI, Type } from '@google/genai';
-import axios from 'axios';
+import { Type } from '@google/genai';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
+import { isCacheExpired, fetchVerifiedInternetData, generateStructuredAIResponse } from "@/lib/searchProtocol";
 
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function POST(req: Request) {
   try {
@@ -65,8 +64,7 @@ export async function POST(req: Request) {
       where: { queryKey }
     });
 
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const isExpired = cached?.createdAt && cached.createdAt < thirtyDaysAgo;
+    const isExpired = isCacheExpired(cached?.createdAt, 30);
 
     if (cached && cached.result && !isExpired) {
       console.log(`[Cache Hit] Network data found for: ${queryKey}`);
@@ -87,16 +85,8 @@ export async function POST(req: Request) {
     }
 
     // 1. Tavily Search
-    const tavilyRes = await axios.post('https://api.tavily.com/search', {
-      api_key: process.env.TAVILY_API_KEY,
-      query: searchQuery,
-      search_depth: 'advanced',
-      include_answer: true,
-      exclude_domains: ["amazon.com", "amazon.in", "flipkart.com", "ebay.com", "justdial.com", "indiamart.com", "tradeindia.com", "facebook.com", "instagram.com"],
-      max_results: 30
-    }, { timeout: 15000 });
-
-    const searchContext = JSON.stringify(tavilyRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 1000) })));
+    const searchRes = await fetchVerifiedInternetData(searchQuery, 30, false);
+    const searchContext = searchRes.contextString;
 
     // 2. Gemini Extraction
     const prompt = `
@@ -120,77 +110,21 @@ ${searchContext}
 Output exactly the JSON object containing a "thinking" chain of thought and an "items" array of strings.
     `;
 
-    const modelsToTry = ['gemini-2.5-flash-lite', 'gemini-flash-lite-latest', 'gemini-2.5-flash'];
-    let responseText = "";
-    
-    for (const model of modelsToTry) {
-      let attempt = 0;
-      let success = false;
-      while (attempt < 2 && !success) {
-        try {
-          const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error("Gemini SDK Timeout")), 25000)
-          );
-
-          const response: any = await Promise.race([
-            ai.models.generateContent({
-              model: model,
-              contents: prompt,
-              config: {
-                responseMimeType: "application/json",
-                responseSchema: {
-                  type: Type.OBJECT,
-                  properties: {
-                    thinking: { type: Type.STRING, description: "Your chain of thought reasoning." },
-                    items: {
-                      type: Type.ARRAY,
-                      items: { type: Type.STRING },
-                      description: "Array of highly specific extracted items."
-                    }
-                  },
-                  required: ["thinking", "items"]
-                }
-              }
-            }),
-            timeoutPromise
-          ]);
-          
-          responseText = response.text || "";
-          success = true;
-          break;
-        } catch (err: any) {
-          console.log(`Model ${model} Error: ${err.message}. Retrying... (Attempt ${attempt + 1})`);
-          await new Promise(r => setTimeout(r, 4000));
-          attempt++;
-        }
+    const schemaProps = {
+      items: {
+        type: Type.ARRAY,
+        items: { type: Type.STRING },
+        description: "Array of highly specific extracted items."
       }
-      if (success) break;
-    }
+    };
 
-    if (!responseText) {
-      throw new Error("All AI models are currently overloaded or rate-limited. Please try again in 60 seconds.");
-    }
-    
-    // Robust parsing
     let items: string[] = [];
     try {
-      const resultText = responseText.replace(/^```json/gi, "").replace(/```$/gi, "").trim();
-      const parsed = JSON.parse(resultText);
-      
-      if (parsed && Array.isArray(parsed.items)) {
-        items = parsed.items;
-      } else {
-        throw new Error("No JSON items array found in response");
-      }
+      const parsedObject = await generateStructuredAIResponse(prompt, schemaProps, ["items"]);
+      items = parsedObject.items || [];
     } catch (parseError) {
-      console.error("Failed to parse Gemini output:", responseText);
-      items = responseText.split('\n')
-        .map(l => l.replace(/^[-\*\d\.\s"]+/, '').replace(/"?,?$/, '').trim())
-        .filter(l => l.length > 2 && l.length < 100);
-      
-      if (items.length === 0) {
-         items = ["No data found"];
-      }
+      console.error("Failed to parse Gemini output:", parseError);
+      items = ["No data found"];
     }
 
     try {

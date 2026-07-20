@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI, Type } from '@google/genai';
+import { Type } from '@google/genai';
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
-import axios from 'axios';
 import { encrypt } from "@/lib/encryption";
+import { fetchVerifiedInternetData, generateStructuredAIResponse } from "@/lib/searchProtocol";
 
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function POST(req: Request) {
   try {
@@ -43,21 +42,18 @@ export async function POST(req: Request) {
     let searchContext = [];
     let searchAnswer = "";
     try {
-      const searchRes = await axios.post('https://api.tavily.com/search', {
-        api_key: process.env.TAVILY_API_KEY,
-        query: `Top companies in India for: ${query}. B2B, providers, buyers, list, contacts`,
-        search_depth: 'advanced',
-        include_answer: true,
-        exclude_domains: ["amazon.com", "amazon.in", "flipkart.com", "ebay.com", "justdial.com", "indiamart.com", "tradeindia.com", "facebook.com", "instagram.com"],
-        max_results: 5
-      }, { timeout: 20000 });
+      const searchRes = await fetchVerifiedInternetData(
+        `Top companies in India for: ${query}. B2B, providers, buyers, list, contacts`,
+        5,
+        false
+      );
       
-      searchContext = searchRes.data.results?.map((r: any) => ({
+      searchContext = searchRes.context?.map((r: any) => ({
         title: r.title,
         url: r.url,
         content: r.content?.substring(0, 800)
       })) || [];
-      searchAnswer = searchRes.data.answer || "";
+      searchAnswer = searchRes.answer || "";
     } catch (e) {
       console.log("Tavily search timeout or error in Matchmaker, relying on DB.");
     }
@@ -95,46 +91,31 @@ Strictly output a JSON object containing a "thinking" block and a "matches" arra
 Do not include markdown formatting.
     `;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
+    const schemaProps = {
+      matches: {
+        type: Type.ARRAY,
+        description: "Array of matching companies (max 10)",
+        items: {
           type: Type.OBJECT,
           properties: {
-            thinking: { type: Type.STRING, description: "Your reasoning process to select verified matches and determine intent." },
-            matches: {
-              type: Type.ARRAY,
-              description: "Array of matching companies (max 10)",
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  realName: { type: Type.STRING, description: "The company's actual real name." },
-                  intent: { type: Type.STRING, description: "BUYING or SELLING" },
-                  reason: { type: Type.STRING, description: "Why they are a perfect match. DO NOT USE THE COMPANY REAL NAME HERE." },
-                  description: { type: Type.STRING, description: "Detailed description. DO NOT USE THE COMPANY REAL NAME HERE." },
-                  properties: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Extensive list of technical properties or keywords." },
-                  matchScore: { type: Type.NUMBER, description: "0 to 100 indicating how strong the match is." },
-                  parsedData: { type: Type.OBJECT, description: "Any key-value pair containing all known verified data about this company." },
-                  prefillQuantity: { type: Type.STRING },
-                  prefillUnit: { type: Type.STRING },
-                  prefillProduct: { type: Type.STRING },
-                  prefillDetails: { type: Type.STRING }
-                },
-                required: ["realName", "intent", "reason", "description", "matchScore"]
-              }
-            }
+            realName: { type: Type.STRING, description: "The company's actual real name." },
+            intent: { type: Type.STRING, description: "BUYING or SELLING" },
+            reason: { type: Type.STRING, description: "Why they are a perfect match. DO NOT USE THE COMPANY REAL NAME HERE." },
+            description: { type: Type.STRING, description: "Detailed description. DO NOT USE THE COMPANY REAL NAME HERE." },
+            properties: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Extensive list of technical properties or keywords." },
+            matchScore: { type: Type.NUMBER, description: "0 to 100 indicating how strong the match is." },
+            parsedData: { type: Type.OBJECT, description: "Any key-value pair containing all known verified data about this company." },
+            prefillQuantity: { type: Type.STRING },
+            prefillUnit: { type: Type.STRING },
+            prefillProduct: { type: Type.STRING },
+            prefillDetails: { type: Type.STRING }
           },
-          required: ["thinking", "matches"]
+          required: ["realName", "intent", "reason", "description", "matchScore"]
         }
       }
-    });
+    };
 
-    let resultText = response.text || "";
-    resultText = resultText.replace(/^```json/gi, "").replace(/```$/g, "").trim();
-    
-    const parsedObject = JSON.parse(resultText);
+    const parsedObject = await generateStructuredAIResponse(prompt, schemaProps, ["matches"], "gemini-2.5-flash");
     const matches = parsedObject.matches || [];
 
     // Send full data to frontend for "Lead Finder" UI

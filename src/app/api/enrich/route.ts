@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
 
 export const maxDuration = 60; // Increase Vercel serverless function timeout
-import { GoogleGenAI, Type } from '@google/genai';
+import { Type } from '@google/genai';
 import axios from 'axios';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
-
-
-
-// Initialize Gemini Client
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+import { 
+  isCacheExpired, 
+  fetchVerifiedInternetData, 
+  generateStructuredAIResponse 
+} from "@/lib/searchProtocol";
 
 // Interfaces
 interface CompanyInput {
@@ -77,8 +77,7 @@ export async function POST(req: Request) {
         where: { name: normalizedName }
       });
 
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-      const isExpired = existingCompany?.updatedAt && existingCompany.updatedAt < thirtyDaysAgo;
+      const isExpired = isCacheExpired(existingCompany?.updatedAt, 30);
 
       if (existingCompany && existingCompany.data && !isExpired) {
         console.log(`[Cache Hit] Enriched data found for: ${normalizedName}`);
@@ -138,33 +137,25 @@ async function processCompany(company: CompanyInput) {
     console.log(`Processing company: ${company.name}`);
 
     // 1. Tavily General Search (Filtered for official/B2B data)
-    const tavilyGeneralRes = await axios.post('https://api.tavily.com/search', {
-      api_key: process.env.TAVILY_API_KEY,
-      query: `${company.name} ${company.address} official company profile products services directors`,
-      search_depth: 'advanced',
-      include_answer: true,
-      exclude_domains: ["amazon.com", "amazon.in", "flipkart.com", "ebay.com", "justdial.com", "indiamart.com", "tradeindia.com", "facebook.com", "instagram.com"],
-      max_results: 5
-    }, { timeout: 15000 });
+    const generalSearch = await fetchVerifiedInternetData(
+      `${company.name} ${company.address} official company profile products services directors`,
+      5,
+      false // use excluded domains
+    );
 
     // 2. Tavily Official Govt & Registration Search (ZaubaCorp / MCA / Verified)
-    const tavilyVerifiedRes = await axios.post('https://api.tavily.com/search', {
-      api_key: process.env.TAVILY_API_KEY,
-      query: `"${company.name}" registration details directors GSTIN MCA`,
-      search_depth: 'advanced',
-      include_answer: true,
-      include_domains: ["zaubacorp.com", "tofler.in", "mca.gov.in", "bloomberg.com", "pitchbook.com", "dunandbradstreet.com"],
-      max_results: 3
-    }, { timeout: 15000 });
+    const verifiedSearch = await fetchVerifiedInternetData(
+      `"${company.name}" registration details directors GSTIN MCA`,
+      3,
+      true // use strict whitelist
+    );
 
     // 3. Tavily Stock & Market Search
-    const tavilyStockRes = await axios.post('https://api.tavily.com/search', {
-      api_key: process.env.TAVILY_API_KEY,
-      query: `"${company.name}" stock ticker symbol market cap share price performance NASDAQ NSE BSE`,
-      search_depth: 'advanced',
-      include_answer: true,
-      max_results: 3
-    }, { timeout: 15000 });
+    const stockSearch = await fetchVerifiedInternetData(
+      `"${company.name}" stock ticker symbol market cap share price performance NASDAQ NSE BSE`,
+      3,
+      false
+    );
 
     // 3. SignalHire Search (Targeting Dealmakers)
     let signalHireData = null;
@@ -185,7 +176,7 @@ async function processCompany(company: CompanyInput) {
     // 4. Free GSTIN Website Crawler (Option 1)
     let scrapedGstNumbers: string[] = [];
     try {
-      const generalResults = tavilyGeneralRes.data.results || [];
+      const generalResults = generalSearch.context;
       const firstUrl = generalResults.length > 0 ? generalResults[0].url : null;
       if (firstUrl && !firstUrl.includes('linkedin.com') && !firstUrl.includes('facebook.com')) {
         console.log(`Crawling ${firstUrl} for GSTIN...`);
@@ -236,11 +227,11 @@ Target Fields to Extract:
 
 Context:
 --- TAVILY GENERAL SEARCH ---
-${JSON.stringify(tavilyGeneralRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 1000) })))}
+${generalSearch.contextString}
 --- TAVILY VERIFIED REGISTRY SEARCH ---
-${JSON.stringify(tavilyVerifiedRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 1000) })))}
+${verifiedSearch.contextString}
 --- TAVILY STOCK SEARCH ---
-${JSON.stringify(tavilyStockRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 1000) })))}
+${stockSearch.contextString}
 --- SIGNALHIRE DATA ---
 ${JSON.stringify(signalHireData)}
 --- SCRAPED GST NUMBERS (HIGH ACCURACY) ---
@@ -250,83 +241,43 @@ ${scrapedGstNumbers.length > 0 ? scrapedGstNumbers.join(', ') : 'None found dire
 Output strictly valid JSON matching the exact keys above. Do not include markdown formatting around the JSON itself.
     `;
 
-    const modelsToTry = ['gemini-2.5-flash-lite', 'gemini-flash-lite-latest', 'gemini-2.5-flash'];
-    let responseText = "";
-    
-    for (const model of modelsToTry) {
-      let attempt = 0;
-      let success = false;
-      while (attempt < 2 && !success) {
-        try {
-          const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error("Gemini SDK Timeout")), 45000)
-          );
-
-          const response: any = await Promise.race([
-            ai.models.generateContent({
-              model: model,
-              contents: prompt,
-              config: {
-                responseMimeType: "application/json",
-                responseSchema: {
-                  type: Type.OBJECT,
-                  properties: {
-                    thinking: { type: Type.STRING, description: "Your chain of thought reasoning before extracting data." },
-                    gst_number: { type: Type.STRING, description: "GST Number (Markdown text)" },
-                    industry: { type: Type.STRING, description: "Industry of the company (Markdown text)" },
-                    financials: { type: Type.STRING, description: "All available financials (Markdown text)" },
-                    goods_sold: { type: Type.STRING, description: "Goods sold (Markdown text)" },
-                    goods_purchased: { type: Type.STRING, description: "Goods Purchased (Markdown text)" },
-                    profits_made: { type: Type.STRING, description: "Profits made (Markdown text)" },
-                    loss_made: { type: Type.STRING, description: "loss made (Markdown text)" },
-                    economic_times_info: { type: Type.STRING, description: "All information from verified sources (Markdown text with links)" },
-                    sales_and_business_heads: { type: Type.STRING, description: "Primary dealmakers, managers, directors (Markdown text)" },
-                    board_of_directors: { type: Type.STRING, description: "Board of directors (Markdown text)" },
-                    products_and_services: { type: Type.STRING, description: "Products and services (Markdown text)" },
-                    hr_contacts: { type: Type.STRING, description: "HR and people available (Markdown text)" },
-                    all_available_info: { type: Type.STRING, description: "Summary of all other info (Markdown text)" },
-                    stock_information: { type: Type.STRING, description: "Stock data (Markdown text)" },
-                    financial_chart_data: { 
-                      type: Type.ARRAY,
-                      items: {
-                        type: Type.OBJECT,
-                        properties: {
-                          year: { type: Type.STRING },
-                          revenue: { type: Type.NUMBER },
-                          profit: { type: Type.NUMBER }
-                        }
-                      },
-                      description: "Array of historical financial data for charts"
-                    }
-                  },
-                  required: ["thinking", "gst_number", "industry", "financials", "goods_sold", "goods_purchased", "profits_made", "loss_made", "economic_times_info", "sales_and_business_heads", "board_of_directors", "products_and_services", "hr_contacts", "all_available_info", "stock_information", "financial_chart_data"]
-                }
-              }
-            }),
-            timeoutPromise
-          ]);
-          
-          responseText = response.text || "";
-          success = true;
-          break;
-        } catch (err: any) {
-          console.log(`Model ${model} Error: ${err.message}. Retrying... (Attempt ${attempt + 1})`);
-          await new Promise(r => setTimeout(r, 4000));
-          attempt++;
-        }
+    const schemaProps = {
+      gst_number: { type: Type.STRING, description: "GST Number (Markdown text)" },
+      industry: { type: Type.STRING, description: "Industry of the company (Markdown text)" },
+      financials: { type: Type.STRING, description: "All available financials (Markdown text)" },
+      goods_sold: { type: Type.STRING, description: "Goods sold (Markdown text)" },
+      goods_purchased: { type: Type.STRING, description: "Goods Purchased (Markdown text)" },
+      profits_made: { type: Type.STRING, description: "Profits made (Markdown text)" },
+      loss_made: { type: Type.STRING, description: "loss made (Markdown text)" },
+      economic_times_info: { type: Type.STRING, description: "All information from verified sources (Markdown text with links)" },
+      sales_and_business_heads: { type: Type.STRING, description: "Primary dealmakers, managers, directors (Markdown text)" },
+      board_of_directors: { type: Type.STRING, description: "Board of directors (Markdown text)" },
+      products_and_services: { type: Type.STRING, description: "Products and services (Markdown text)" },
+      hr_contacts: { type: Type.STRING, description: "HR and people available (Markdown text)" },
+      all_available_info: { type: Type.STRING, description: "Summary of all other info (Markdown text)" },
+      stock_information: { type: Type.STRING, description: "Stock data (Markdown text)" },
+      financial_chart_data: { 
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            year: { type: Type.STRING },
+            revenue: { type: Type.NUMBER },
+            profit: { type: Type.NUMBER }
+          }
+        },
+        description: "Array of historical financial data for charts"
       }
-      if (success) break;
-    }
+    };
 
-    if (!responseText) {
-      throw new Error("All AI models are currently overloaded or rate-limited. Please try again in 60 seconds.");
-    }
+    const requiredKeys = [
+      "gst_number", "industry", "financials", "goods_sold", 
+      "goods_purchased", "profits_made", "loss_made", "economic_times_info", 
+      "sales_and_business_heads", "board_of_directors", "products_and_services", 
+      "hr_contacts", "all_available_info", "stock_information", "financial_chart_data"
+    ];
 
-    let resultText = responseText || "";
-    // Clean up potential markdown formatting if the model disobeys instructions
-    resultText = resultText.replace(/^```json/g, "").replace(/```$/g, "").trim();
-    
-    const jsonResult = JSON.parse(resultText);
+    const jsonResult = await generateStructuredAIResponse(prompt, schemaProps, requiredKeys, 'gemini-2.5-flash');
 
     // Merge original inputs
     return {

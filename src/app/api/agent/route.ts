@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
-import axios from 'axios';
+import { Type } from '@google/genai';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
+import { fetchVerifiedInternetData, generateStructuredAIResponse } from "@/lib/searchProtocol";
 
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const SYSTEM_PROMPT = `
 You are "Nexus", an elite B2B procurement and lead generation consultant focused EXCLUSIVELY on the Indian MSME (Micro, Small, and Medium Enterprises) market.
@@ -81,15 +80,8 @@ export async function POST(req: Request) {
     // Search Tavily for real-time market data fallback
     let searchContext = "";
     try {
-      const tavilyRes = await axios.post('https://api.tavily.com/search', {
-        api_key: process.env.TAVILY_API_KEY,
-        query: `Top companies in India for: ${latestUserMessage}. B2B, buyers, sellers, contacts`,
-        search_depth: 'basic',
-        include_answer: true,
-        max_results: 3
-      }, { timeout: 5000 });
-      
-      searchContext = JSON.stringify(tavilyRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 300) })));
+      const tavilyRes = await fetchVerifiedInternetData(`Top companies in India for: ${latestUserMessage}. B2B, buyers, sellers, contacts`, 3, false);
+      searchContext = tavilyRes.contextString;
     } catch (e) {
       console.log("Tavily search skipped or failed in Copilot.");
     }
@@ -109,26 +101,47 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No user messages found' }, { status: 400 });
     }
 
-    const chat = ai.chats.create({
-      model: 'gemini-2.5-flash',
-      config: {
-        systemInstruction: `${SYSTEM_PROMPT}\n\nPROPRIETARY DATABASE CONTEXT:\n${JSON.stringify(dbCompanies)}\n\nMARKET INTELLIGENCE (INTERNET SEARCH FALLBACK):\n${searchContext || "No real-time data."}`,
-      },
-      history: formattedMessages.slice(0, -1),
-    });
+    const historyPrompt = formattedMessages.map((m: any) => `${m.role}: ${m.parts[0].text}`).join("\n");
+    const fullPrompt = `${SYSTEM_PROMPT}\n\nPROPRIETARY DATABASE CONTEXT:\n${JSON.stringify(dbCompanies)}\n\nMARKET INTELLIGENCE (INTERNET SEARCH FALLBACK):\n${searchContext || "No real-time data."}\n\nCHAT HISTORY:\n${historyPrompt}`;
 
-    const response = await chat.sendMessage({ message: formattedMessages[formattedMessages.length - 1].parts[0].text });
-    let text = response.text || "";
+    let data;
+    try {
+      const schemaProps = {
+        type: { type: Type.STRING, description: "clarification OR final_pitch" },
+        text: { type: Type.STRING, description: "Message for the user." },
+        options: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Options if asking clarification" },
+        productName: { type: Type.STRING },
+        description: { type: Type.STRING, description: "DO NOT REVEAL COMPANY REAL NAMES IN THIS FIELD." },
+        vendors: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              realName: { type: Type.STRING },
+              location: { type: Type.STRING },
+              specialty: { type: Type.STRING, description: "DO NOT REVEAL COMPANY REAL NAMES IN THIS FIELD." },
+              specs: { type: Type.OBJECT },
+              matchReason: { type: Type.STRING, description: "DO NOT REVEAL COMPANY REAL NAMES IN THIS FIELD." }
+            }
+          }
+        },
+        messageToUser: { type: Type.STRING }
+      };
+
+      data = await generateStructuredAIResponse(fullPrompt, schemaProps, ["type"]);
+    } catch (e) {
+      console.error("Agent generation failed:", e);
+      return NextResponse.json({ error: "Agent generation failed" }, { status: 500 });
+    }
+
+    let text = "";
 
     let isFinalPitch = false;
     let productData = null;
     let options: string[] = [];
 
-    // Parse JSON
-    if (text.includes("```json")) {
-      try {
-        const jsonStr = text.split("```json")[1].split("```")[0].trim();
-        const data = JSON.parse(jsonStr);
+    // Parse logic
+    try {
 
         if (data.type === "clarification") {
           text = data.text;
@@ -208,14 +221,13 @@ export async function POST(req: Request) {
           isFinalPitch = true;
           productData = data;
           
-          // Formulate a clean fallback text without the huge summary
           text = `Here is your detailed breakdown for **${data.productName}**.\n\n*Scroll down to view detailed vendor cards and technical specifications.*`;
         }
 
       } catch (e) {
         console.error("Failed to parse Copilot JSON:", e);
+        // Fallback: If it completely failed to parse as JSON, just return the raw text to the user.
       }
-    }
 
     return NextResponse.json({ 
       success: true, 
