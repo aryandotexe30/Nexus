@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, Type } from '@google/genai';
 import axios from 'axios';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
@@ -65,13 +65,25 @@ export async function POST(req: Request) {
       where: { queryKey }
     });
 
-    if (cached && cached.result) {
-      console.log(`Cache hit for: ${queryKey}`);
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const isExpired = cached?.createdAt && cached.createdAt < thirtyDaysAgo;
+
+    if (cached && cached.result && !isExpired) {
+      console.log(`[Cache Hit] Network data found for: ${queryKey}`);
       return NextResponse.json({ 
         success: true, 
         items: cached.result,
         targetType 
       });
+    }
+
+    if (isExpired) {
+      // Clean up old cache entry to prevent DB bloat
+      try {
+        await prisma.networkCache.delete({ where: { queryKey } });
+      } catch (e) {
+        // Ignore if it was already deleted or doesn't exist
+      }
     }
 
     // 1. Tavily Search
@@ -80,6 +92,7 @@ export async function POST(req: Request) {
       query: searchQuery,
       search_depth: 'advanced',
       include_answer: true,
+      exclude_domains: ["amazon.com", "amazon.in", "flipkart.com", "ebay.com", "justdial.com", "indiamart.com", "tradeindia.com", "facebook.com", "instagram.com"],
       max_results: 30
     }, { timeout: 15000 });
 
@@ -104,7 +117,7 @@ Extract ALL highly specific, distinct items related to the query found in the se
 Search Context:
 ${searchContext}
 
-Output exactly the JSON array of strings and nothing else.
+Output exactly the JSON object containing a "thinking" chain of thought and an "items" array of strings.
     `;
 
     const modelsToTry = ['gemini-2.5-flash-lite', 'gemini-flash-lite-latest', 'gemini-2.5-flash'];
@@ -125,6 +138,18 @@ Output exactly the JSON array of strings and nothing else.
               contents: prompt,
               config: {
                 responseMimeType: "application/json",
+                responseSchema: {
+                  type: Type.OBJECT,
+                  properties: {
+                    thinking: { type: Type.STRING, description: "Your chain of thought reasoning." },
+                    items: {
+                      type: Type.ARRAY,
+                      items: { type: Type.STRING },
+                      description: "Array of highly specific extracted items."
+                    }
+                  },
+                  required: ["thinking", "items"]
+                }
               }
             }),
             timeoutPromise
@@ -149,11 +174,13 @@ Output exactly the JSON array of strings and nothing else.
     // Robust parsing
     let items: string[] = [];
     try {
-      const match = responseText.match(/\[[\s\S]*\]/);
-      if (match) {
-        items = JSON.parse(match[0]);
+      const resultText = responseText.replace(/^```json/gi, "").replace(/```$/gi, "").trim();
+      const parsed = JSON.parse(resultText);
+      
+      if (parsed && Array.isArray(parsed.items)) {
+        items = parsed.items;
       } else {
-        throw new Error("No JSON array found in response");
+        throw new Error("No JSON items array found in response");
       }
     } catch (parseError) {
       console.error("Failed to parse Gemini output:", responseText);

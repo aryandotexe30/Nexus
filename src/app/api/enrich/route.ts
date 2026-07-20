@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export const maxDuration = 60; // Increase Vercel serverless function timeout
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, Type } from '@google/genai';
 import axios from 'axios';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
@@ -73,12 +73,14 @@ export async function POST(req: Request) {
     for (const company of companiesToProcess) {
       const normalizedName = company.name.trim();
 
-      // 1. Check if company already exists in DB
       const existingCompany = await prisma.company.findUnique({
         where: { name: normalizedName }
       });
 
-      if (existingCompany && existingCompany.data) {
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const isExpired = existingCompany?.updatedAt && existingCompany.updatedAt < thirtyDaysAgo;
+
+      if (existingCompany && existingCompany.data && !isExpired) {
         console.log(`[Cache Hit] Enriched data found for: ${normalizedName}`);
         results.push({
           company_input: company,
@@ -135,21 +137,23 @@ async function processCompany(company: CompanyInput) {
   try {
     console.log(`Processing company: ${company.name}`);
 
-    // 1. Tavily General Search
+    // 1. Tavily General Search (Filtered for official/B2B data)
     const tavilyGeneralRes = await axios.post('https://api.tavily.com/search', {
       api_key: process.env.TAVILY_API_KEY,
-      query: `${company.name} ${company.address} company profile products services directors`,
+      query: `${company.name} ${company.address} official company profile products services directors`,
       search_depth: 'advanced',
       include_answer: true,
+      exclude_domains: ["amazon.com", "amazon.in", "flipkart.com", "ebay.com", "justdial.com", "indiamart.com", "tradeindia.com", "facebook.com", "instagram.com"],
       max_results: 5
     }, { timeout: 15000 });
 
-    // 2. Tavily Economic Times Search
-    const tavilyETRes = await axios.post('https://api.tavily.com/search', {
+    // 2. Tavily Official Govt & Registration Search (ZaubaCorp / MCA / Verified)
+    const tavilyVerifiedRes = await axios.post('https://api.tavily.com/search', {
       api_key: process.env.TAVILY_API_KEY,
-      query: `site:economictimes.indiatimes.com "${company.name}" financials news`,
+      query: `"${company.name}" registration details directors GSTIN MCA`,
       search_depth: 'advanced',
       include_answer: true,
+      include_domains: ["zaubacorp.com", "tofler.in", "mca.gov.in", "bloomberg.com", "pitchbook.com", "dunandbradstreet.com"],
       max_results: 3
     }, { timeout: 15000 });
 
@@ -233,8 +237,8 @@ Target Fields to Extract:
 Context:
 --- TAVILY GENERAL SEARCH ---
 ${JSON.stringify(tavilyGeneralRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 1000) })))}
---- TAVILY ECONOMIC TIMES SEARCH ---
-${JSON.stringify(tavilyETRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 1000) })))}
+--- TAVILY VERIFIED REGISTRY SEARCH ---
+${JSON.stringify(tavilyVerifiedRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 1000) })))}
 --- TAVILY STOCK SEARCH ---
 ${JSON.stringify(tavilyStockRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 1000) })))}
 --- SIGNALHIRE DATA ---
@@ -264,6 +268,39 @@ Output strictly valid JSON matching the exact keys above. Do not include markdow
               contents: prompt,
               config: {
                 responseMimeType: "application/json",
+                responseSchema: {
+                  type: Type.OBJECT,
+                  properties: {
+                    thinking: { type: Type.STRING, description: "Your chain of thought reasoning before extracting data." },
+                    gst_number: { type: Type.STRING, description: "GST Number (Markdown text)" },
+                    industry: { type: Type.STRING, description: "Industry of the company (Markdown text)" },
+                    financials: { type: Type.STRING, description: "All available financials (Markdown text)" },
+                    goods_sold: { type: Type.STRING, description: "Goods sold (Markdown text)" },
+                    goods_purchased: { type: Type.STRING, description: "Goods Purchased (Markdown text)" },
+                    profits_made: { type: Type.STRING, description: "Profits made (Markdown text)" },
+                    loss_made: { type: Type.STRING, description: "loss made (Markdown text)" },
+                    economic_times_info: { type: Type.STRING, description: "All information from verified sources (Markdown text with links)" },
+                    sales_and_business_heads: { type: Type.STRING, description: "Primary dealmakers, managers, directors (Markdown text)" },
+                    board_of_directors: { type: Type.STRING, description: "Board of directors (Markdown text)" },
+                    products_and_services: { type: Type.STRING, description: "Products and services (Markdown text)" },
+                    hr_contacts: { type: Type.STRING, description: "HR and people available (Markdown text)" },
+                    all_available_info: { type: Type.STRING, description: "Summary of all other info (Markdown text)" },
+                    stock_information: { type: Type.STRING, description: "Stock data (Markdown text)" },
+                    financial_chart_data: { 
+                      type: Type.ARRAY,
+                      items: {
+                        type: Type.OBJECT,
+                        properties: {
+                          year: { type: Type.STRING },
+                          revenue: { type: Type.NUMBER },
+                          profit: { type: Type.NUMBER }
+                        }
+                      },
+                      description: "Array of historical financial data for charts"
+                    }
+                  },
+                  required: ["thinking", "gst_number", "industry", "financials", "goods_sold", "goods_purchased", "profits_made", "loss_made", "economic_times_info", "sales_and_business_heads", "board_of_directors", "products_and_services", "hr_contacts", "all_available_info", "stock_information", "financial_chart_data"]
+                }
               }
             }),
             timeoutPromise
