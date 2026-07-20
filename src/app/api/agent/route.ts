@@ -128,7 +128,7 @@ export async function POST(req: Request) {
         messageToUser: { type: Type.STRING }
       };
 
-      data = await generateStructuredAIResponse(fullPrompt, schemaProps, ["type"]);
+      data = await generateStructuredAIResponse(fullPrompt, schemaProps, ["type", "text"]);
     } catch (e) {
       console.error("Agent generation failed:", e);
       return NextResponse.json({ error: "Agent generation failed" }, { status: 500 });
@@ -144,7 +144,7 @@ export async function POST(req: Request) {
     try {
 
         if (data.type === "clarification") {
-          text = data.text;
+          text = data.text || "Could you provide some more details about your requirement?";
           options = data.options || [];
         } else if (data.type === "final_pitch") {
           // Extract a generic specs object to save to the DB by looking at the first vendor's specs
