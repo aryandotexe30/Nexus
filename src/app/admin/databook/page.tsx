@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
-import { UploadCloud, FileSpreadsheet, Loader2, Database, Search, CheckCircle2, AlertCircle } from "lucide-react";
+import { UploadCloud, FileSpreadsheet, Loader2, Database, Search, CheckCircle2, AlertCircle, RefreshCcw } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function DatabookPage() {
@@ -103,6 +103,58 @@ export default function DatabookPage() {
     } finally {
       setIsProcessing(false);
       setFile(null);
+    }
+  };
+
+  const refreshAllCompanies = async () => {
+    if (companies.length === 0) return;
+    const confirmRefresh = window.confirm(`Are you sure you want to refresh all ${companies.length} companies? This will take a while and consume API credits.`);
+    if (!confirmRefresh) return;
+
+    setIsProcessing(true);
+    setLogs([]);
+    
+    try {
+      setProgress({ current: 0, total: companies.length });
+
+      for (let i = 0; i < companies.length; i++) {
+        const item = companies[i];
+        let data: any = {};
+        try {
+          data = typeof item.data === 'string' ? JSON.parse(item.data) : item.data || {};
+        } catch (e) {}
+        const gst = data.gst || data.gst_number || "";
+
+        try {
+          const res = await fetch('/api/enrich/bulk', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: item.name, gst: gst })
+          });
+          const result = await res.json();
+          if (result.success) {
+            setLogs(prev => [{ type: 'success', msg: `Refreshed ${item.name}` }, ...prev]);
+          } else {
+            setLogs(prev => [{ type: 'error', msg: `Failed ${item.name}: ${result.error || 'Rate Limited'}` }, ...prev]);
+          }
+        } catch (e) {
+          setLogs(prev => [{ type: 'error', msg: `Network error for ${item.name}` }, ...prev]);
+        }
+        setProgress(prev => ({ ...prev, current: i + 1 }));
+        
+        if (i < companies.length - 1) {
+            setLogs(prev => [{ type: 'success', msg: `Waiting 4s to prevent API rate limit...` }, ...prev]);
+            await new Promise(r => setTimeout(r, 4000));
+        }
+      }
+      
+      alert("Refresh completed!");
+      fetchDatabook(); 
+    } catch (err) {
+      alert("An error occurred during refresh.");
+      console.error(err);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -228,8 +280,19 @@ export default function DatabookPage() {
 
       {/* Datatable */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
-          <h2 className="text-lg font-bold text-slate-900">Proprietary Database</h2>
+        <div className="p-4 border-b border-slate-200 bg-slate-50 flex flex-wrap justify-between items-center gap-4">
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            Proprietary Database
+            <button 
+              onClick={refreshAllCompanies}
+              disabled={isProcessing || companies.length === 0}
+              className="ml-4 px-3 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 text-sm font-bold rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+              title="Refresh and fetch latest data for all companies"
+            >
+              {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCcw className="w-4 h-4" />}
+              Refresh All Data
+            </button>
+          </h2>
           <div className="relative flex items-center gap-2">
             <select 
               value={searchFilter} 
