@@ -223,11 +223,15 @@ export async function POST(req: Request) {
           productData = data;
           
           text = `Here is your detailed breakdown for **${data.productName}**.\n\n*Scroll down to view detailed vendor cards and technical specifications.*`;
+        } else {
+          text = data.text || "I found some information, but there was an issue formatting the output.";
         }
 
       } catch (e) {
-        console.error("Failed to parse Copilot JSON:", e);
-        // Fallback: If it completely failed to parse as JSON, just return the raw text to the user.
+        console.error("Failed to parse Copilot JSON or DB save:", e);
+        if (!text) {
+          text = data?.text || "I encountered an error while processing the data. Please try again.";
+        }
       }
 
     return NextResponse.json({ 
