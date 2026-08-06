@@ -155,8 +155,8 @@ export async function POST(req: Request) {
           await prisma.productKnowledge.create({
             data: {
               query: latestUserMessage,
-              productName: data.productName,
-              description: data.description,
+              productName: data.productName || "Unknown Product",
+              description: data.description || "No description provided.",
               specs: firstVendorSpecs,
             }
           });
