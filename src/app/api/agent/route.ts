@@ -20,7 +20,7 @@ YOUR CORE DIRECTIVE:
 2. A-TO-Z PRODUCT PITCH & VERIFIED LEADS (INDIAN MSME FOCUS):
    Once you have gathered enough technical context from the user, you must output a highly detailed, A-to-Z technical description of the exact product. 
    You must extract ALL comprehensive technical specifications.
-   You must list AS MANY VERIFIED COMPANIES as possible (aim for 5-10 or more) from the PROVIDED MARKET INTELLIGENCE or PROPRIETARY DATABASE.
+   You must list AS MANY VERIFIED COMPANIES as possible (aim for 5-10 or more) from the PROVIDED MARKET INTELLIGENCE (INTERNET SEARCH DATA). You MUST provide a highly precise and detailed comparison between these companies.
    STRICT PRODUCT VERIFICATION: You MUST ensure that the manufacturers you recommend actually produce the EXACT product requested. Do not match a generic manufacturer unless their catalog explicitly lists the exact product or specification requested by the user.
    CRITICAL ANONYMITY RULE: You must NEVER reveal the company's real name in the 'matchReason', 'description', or 'specialty' fields. ALWAYS refer to them as "This company" or "The supplier". The real name goes ONLY in the 'realName' field.
 
@@ -67,16 +67,7 @@ export async function POST(req: Request) {
 
     const latestUserMessage = messages[messages.length - 1].text;
 
-    // Fetch proprietary database for context
-    const allDbCompanies = await prisma.company.findMany({
-      select: { name: true, data: true }
-    });
 
-    const queryWords = latestUserMessage.toLowerCase().split(' ').filter((w: string) => w.length > 2);
-    const dbCompanies = allDbCompanies.filter(c => {
-      const dataStr = JSON.stringify(c.data).toLowerCase();
-      return queryWords.length === 0 || queryWords.some((w: string) => dataStr.includes(w) || c.name.toLowerCase().includes(w));
-    }).slice(0, 20);
 
     // Search Tavily for real-time market data fallback
     let searchContext = "";
@@ -103,7 +94,7 @@ export async function POST(req: Request) {
     }
 
     const historyPrompt = formattedMessages.map((m: any) => `${m.role}: ${m.parts[0].text}`).join("\n");
-    const fullPrompt = `${SYSTEM_PROMPT}\n\nPROPRIETARY DATABASE CONTEXT:\n${JSON.stringify(dbCompanies)}\n\nMARKET INTELLIGENCE (INTERNET SEARCH FALLBACK):\n${searchContext || "No real-time data."}\n\nCHAT HISTORY:\n${historyPrompt}`;
+    const fullPrompt = `${SYSTEM_PROMPT}\n\nMARKET INTELLIGENCE (INTERNET SEARCH DATA):\n${searchContext || "No real-time data."}\n\nCHAT HISTORY:\n${historyPrompt}`;
 
     let data;
     try {
