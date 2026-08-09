@@ -38,7 +38,7 @@ If you are providing the FINAL PITCH AND VERIFIED LEADS, use this exact structur
 {
   "type": "final_pitch",
   "productName": "Generic name of the product",
-  "description": "Your complete A-to-Z highly detailed description and technical breakdown suitable for the Indian MSME market.",
+  "description": "Your complete A-to-Z highly detailed description. You MUST include a highly detailed Markdown comparison table (rows: technical specifications/metrics, columns: Vendor 1, Vendor 2, etc.) doing a side-by-side comparison of every technical specification, dimension, and performance metric between the matched vendors.",
   "vendors": [
     {
       "realName": "The REAL Company Name (or 'Buyer/Supplier X' if unknown)",
