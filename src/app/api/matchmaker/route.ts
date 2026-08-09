@@ -26,17 +26,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
     }
 
-    // Fetch proprietary database for context and filter for relevance
-    const allDbCompanies = await prisma.company.findMany({
-      select: { name: true, data: true }
-    });
-
-    const queryWords = query.toLowerCase().split(' ').filter((w: string) => w.length > 2);
-    const dbCompanies = allDbCompanies.filter(c => {
-      const dataStr = JSON.stringify(c.data).toLowerCase();
-      // If no query words, just return true. Otherwise, check if ANY word matches.
-      return queryWords.length === 0 || queryWords.some((w: string) => dataStr.includes(w) || c.name.toLowerCase().includes(w));
-    }).slice(0, 20); // Limit to top 20 most relevant to avoid overwhelming the AI prompt
     
     // Search the internet globally for matches using Tavily
     let searchContext = [];
@@ -67,18 +56,14 @@ First, determine if the user wants to BUY (procure) or SELL (supply) a product.
 - If they want to SELL (or supply/export): You MUST strictly find companies that PURCHASE that material as a raw material or input. DO NOT SHOW OTHER SELLERS OR MANUFACTURERS OF THAT PRODUCT. It is completely useless for a seller to see another seller.
 - If they want to BUY (or procure/import): You MUST strictly find companies that MANUFACTURE or SELL that material.
 
-Here is data from our Proprietary Database of pre-vetted companies:
-${JSON.stringify(dbCompanies)}
-
 Here is raw internet search data representing potential companies in India:
 ${JSON.stringify(searchContext)}
 ${searchAnswer ? `Internet Summary: ${searchAnswer}` : ''}
 
-Analyze the user's intent. Then extract the best matching companies (prioritize the Proprietary Database first, then fallback to internet search data).
+Analyze the user's intent. Then extract the best matching companies based entirely on the internet search data.
 
 CRITICAL RULES FOR MATCHING & VERIFICATION:
-1. DO NOT force matches. If a company in the Proprietary Database does NOT explicitly buy or sell the requested product based on their data, YOU MUST IGNORE THEM.
-2. Do not assume or invent reasons for a company to match.
+1. DO NOT force matches. Do not assume or invent reasons for a company to match.
 3. If no companies are a strong match, return an empty array [].
 4. ONLY INCLUDE verified companies (e.g. they have an official website, GSTIN, or are listed on reliable sources). If you extract from the internet search, verify that the company is real.
 5. STRICT PRODUCT VERIFICATION: You MUST ensure that the manufacturer/supplier actually produces the EXACT product requested. For example, if the user asks for "pink rayon tape", do not just match a generic tape manufacturer; you must ensure their data/website explicitly lists "pink rayon tape" or highly specific rayon tapes.
