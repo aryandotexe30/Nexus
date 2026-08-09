@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     let searchAnswer = "";
     try {
       const searchRes = await fetchVerifiedInternetData(
-        `Top companies in India for: ${query}. B2B, providers, buyers, list, contacts`,
+        `"${query}" India (manufacturer OR supplier OR buyer). Official website, product catalog, specifications, industrial`,
         5,
         false
       );
@@ -81,6 +81,7 @@ CRITICAL RULES FOR MATCHING & VERIFICATION:
 2. Do not assume or invent reasons for a company to match.
 3. If no companies are a strong match, return an empty array [].
 4. ONLY INCLUDE verified companies (e.g. they have an official website, GSTIN, or are listed on reliable sources). If you extract from the internet search, verify that the company is real.
+5. STRICT PRODUCT VERIFICATION: You MUST ensure that the manufacturer/supplier actually produces the EXACT product requested. For example, if the user asks for "pink rayon tape", do not just match a generic tape manufacturer; you must ensure their data/website explicitly lists "pink rayon tape" or highly specific rayon tapes.
 
 CRITICAL ANONYMITY RULE:
 You are acting as a blind broker. The user must NOT know the name of the company until they spend a credit to unlock them.

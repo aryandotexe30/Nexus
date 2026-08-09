@@ -21,6 +21,7 @@ YOUR CORE DIRECTIVE:
    Once you have gathered enough technical context from the user, you must output a highly detailed, A-to-Z technical description of the exact product. 
    You must extract ALL comprehensive technical specifications.
    You must list AS MANY VERIFIED COMPANIES as possible (aim for 5-10 or more) from the PROVIDED MARKET INTELLIGENCE or PROPRIETARY DATABASE.
+   STRICT PRODUCT VERIFICATION: You MUST ensure that the manufacturers you recommend actually produce the EXACT product requested. Do not match a generic manufacturer unless their catalog explicitly lists the exact product or specification requested by the user.
    CRITICAL ANONYMITY RULE: You must NEVER reveal the company's real name in the 'matchReason', 'description', or 'specialty' fields. ALWAYS refer to them as "This company" or "The supplier". The real name goes ONLY in the 'realName' field.
 
 JSON OUTPUT ENFORCEMENT:
@@ -80,7 +81,7 @@ export async function POST(req: Request) {
     // Search Tavily for real-time market data fallback
     let searchContext = "";
     try {
-      const tavilyRes = await fetchVerifiedInternetData(`Top companies in India for: ${latestUserMessage}. B2B, buyers, sellers, contacts`, 3, false);
+      const tavilyRes = await fetchVerifiedInternetData(`"${latestUserMessage}" India (manufacturer OR supplier OR buyer). Official website, product catalog, specifications, industrial`, 3, false);
       searchContext = tavilyRes.contextString;
     } catch (e) {
       console.log("Tavily search skipped or failed in Copilot.");
