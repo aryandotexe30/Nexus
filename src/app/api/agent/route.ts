@@ -30,7 +30,7 @@ You MUST ALWAYS output your response as a valid JSON object enclosed in \`\`\`js
 If you are asking a clarifying question, use this structure:
 {
   "type": "clarification",
-  "text": "Your ONE friendly question here.",
+  "text": "A detailed, markdown-formatted response. You MUST include a bulleted list of the critical technical parameters (e.g., Backing material, Adhesive type, Temperature resistance, Dimensions) required to find the exact manufacturer, similar to a datasheet specification breakdown. End by asking the user to clarify their requirements for these parameters.",
   "options": ["Option 1", "Option 2", "Option 3", "Other"]
 }
 
