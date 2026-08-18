@@ -84,8 +84,10 @@ export async function POST(req: Request) {
       }
     }
 
-    // 1. Tavily Search
-    const searchRes = await fetchVerifiedInternetData(searchQuery, 30, false);
+    // 1. Tavily Search - Efficient Exhaustive Scraping
+    const isExhaustiveProductScrape = action === "Find Products";
+    const maxResults = isExhaustiveProductScrape ? 3 : 20; // Fewer searches, but deep raw content for products
+    const searchRes = await fetchVerifiedInternetData(searchQuery, maxResults, false, isExhaustiveProductScrape);
     const searchContext = searchRes.contextString;
 
     // 2. Gemini Extraction
@@ -97,7 +99,7 @@ Target Entity: ${nodeLabel}
 Entity Type: ${nodeType}
 Requested Action: ${action}
 
-Extract ALL highly specific, distinct items related to the query found in the search context. Do NOT arbitrarily limit the list. If there are 50 products or items, you must list all 50. 
+Extract EVERY SINGLE highly specific, distinct item related to the query found in the search context. Do NOT arbitrarily limit the list under any circumstances. If the context contains 500 products, you MUST list all 500. Read the entire raw content block exhaustively.
 - If asking for "Suppliers", "Manufacturers", or "Competitors", output EXACT COMPANY NAMES (e.g., "Tata Steel", "Suraj Metal Corp", "Reliance Industries"). Do NOT output product names.
 - If asking for "Raw Materials", output specific materials like "Lithium Cobalt Oxide", "Graphite Anode", "Polyethylene Separator", rather than generic terms.
 - If asking for "Products", you MUST adhere strictly to these rules:

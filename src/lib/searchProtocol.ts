@@ -90,7 +90,8 @@ export async function generateStructuredAIResponse(
 export async function fetchVerifiedInternetData(
   query: string,
   maxResults: number = 5,
-  useStrictWhitelists: boolean = false
+  useStrictWhitelists: boolean = false,
+  includeRawContent: boolean = false
 ) {
   try {
     const payload: any = {
@@ -99,6 +100,7 @@ export async function fetchVerifiedInternetData(
       search_depth: 'advanced',
       include_answer: true,
       max_results: maxResults,
+      include_raw_content: includeRawContent,
     };
 
     if (useStrictWhitelists) {
@@ -108,10 +110,17 @@ export async function fetchVerifiedInternetData(
     }
 
     const res = await axios.post('https://api.tavily.com/search', payload, { timeout: 20000 });
+    
+    // Efficiently map context: include raw_content if requested, else just the snippet
+    const mappedContext = res.data.results?.map((r: any) => ({ 
+      t: r.title, 
+      c: includeRawContent && r.raw_content ? r.raw_content : r.content?.substring(0, 800) 
+    }));
+
     return {
       answer: res.data.answer || "",
       context: res.data.results || [],
-      contextString: JSON.stringify(res.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 800) })))
+      contextString: JSON.stringify(mappedContext)
     };
   } catch (e: any) {
     console.error(`Tavily search failed for query: ${query}.`, e.message);
