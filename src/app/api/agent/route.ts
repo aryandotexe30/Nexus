@@ -218,7 +218,7 @@ export async function POST(req: Request) {
           isFinalPitch = true;
           productData = data;
           
-          text = `Here is your detailed breakdown for **${data.productName}**.\n\n*Scroll down to view detailed vendor cards and technical specifications.*`;
+          text = `${data.description}\n\n*Scroll down to view detailed vendor cards and technical specifications.*`;
         } else {
           text = data.text || "I found some information, but there was an issue formatting the output.";
         }
