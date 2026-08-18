@@ -61,7 +61,7 @@ export default function Login() {
             <ShieldCheck className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Welcome Back</h1>
-          <p className="text-slate-400">Sign in to your Nexus account.</p>
+          <p className="text-slate-400">Sign in to your TarasAI account.</p>
         </div>
 
         {registered && (
@@ -135,3 +135,4 @@ export default function Login() {
     </div>
   );
 }
+

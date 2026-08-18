@@ -49,7 +49,7 @@ export default function PricingPage() {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_placeholder",
         amount: data.amount,
         currency: "INR",
-        name: "Nexus OS",
+        name: "TarasAI OS",
         description: `${planName} Plan Subscription`,
         order_id: data.orderId,
         handler: async function (response: any) {
@@ -107,7 +107,7 @@ export default function PricingPage() {
             <Globe className="w-6 h-6" />
           </div>
           <span className="text-2xl font-black tracking-tighter text-slate-900 uppercase">
-            Nexus
+            TarasAI
           </span>
         </div>
         <div className="flex gap-6 items-center">
@@ -211,3 +211,4 @@ export default function PricingPage() {
     </div>
   );
 }
+

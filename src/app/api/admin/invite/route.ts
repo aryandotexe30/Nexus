@@ -50,14 +50,14 @@ export async function POST(req: Request) {
     // Set default password to 12345678
     const tempPassword = "12345678";
     const hashedPassword = await bcrypt.hash(tempPassword, 10);
-    const domain = email.split('@')[1] || "nexus.admin";
+    const domain = email.split('@')[1] || "TarasAI.admin";
 
     // Create the new admin
     await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
-        companyName: companyName || "Nexus Admin",
+        companyName: companyName || "TarasAI Admin",
         domain,
         role: "ADMIN",
         credits: 9999, // Admins get unlimited credits effectively
@@ -72,3 +72,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+

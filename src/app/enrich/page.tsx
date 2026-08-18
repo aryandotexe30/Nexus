@@ -82,7 +82,7 @@ export default function Home() {
           className="text-center mb-16"
         >
           <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 drop-shadow-sm pb-2">
-            Nexus Intelligence
+            TarasAI Intelligence
           </h1>
           <p className="text-xl md:text-2xl text-slate-600 max-w-2xl mx-auto font-medium leading-relaxed">
             Upload your company lists and instantly gather deep insights on financials, personnel, and news using autonomous AI.
@@ -173,3 +173,4 @@ export default function Home() {
     </main>
   );
 }
+

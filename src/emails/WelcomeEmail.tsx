@@ -21,13 +21,13 @@ export default function WelcomeEmail({ companyName = "New Company" }: WelcomeEma
   return (
     <Html>
       <Head />
-      <Preview>Welcome to Nexus - Your new B2B Lead Engine</Preview>
+      <Preview>Welcome to TarasAI - Your new B2B Lead Engine</Preview>
       <Body style={main}>
         <Container style={container}>
-          <Heading style={h1}>Welcome to Nexus 🚀</Heading>
+          <Heading style={h1}>Welcome to TarasAI 🚀</Heading>
           
           <Text style={text}>
-            Hi there, and welcome aboard! We are thrilled to have <strong>{companyName}</strong> on the Nexus platform.
+            Hi there, and welcome aboard! We are thrilled to have <strong>{companyName}</strong> on the TarasAI platform.
           </Text>
           
           <Text style={text}>
@@ -60,7 +60,7 @@ export default function WelcomeEmail({ companyName = "New Company" }: WelcomeEma
           <Hr style={hr} />
           <Text style={footer}>
             If you need any help getting started, just reply to this email. We're here for you. <br />
-            — The Nexus Team
+            — The TarasAI Team
           </Text>
         </Container>
       </Body>
@@ -143,3 +143,4 @@ const footer = {
   lineHeight: '22px',
   textAlign: 'center' as const,
 };
+

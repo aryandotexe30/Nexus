@@ -18,12 +18,12 @@ export default function TermsOfService() {
 
           <div>
             <h2 className="text-2xl font-bold text-slate-900 mb-3">1. Acceptance of Terms</h2>
-            <p>By accessing and using Nexus, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.</p>
+            <p>By accessing and using TarasAI, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.</p>
           </div>
 
           <div>
             <h2 className="text-2xl font-bold text-slate-900 mb-3">2. Use of Platform & Acceptable Conduct</h2>
-            <p className="mb-2">You agree to use Nexus only for lawful business purposes. You must not:</p>
+            <p className="mb-2">You agree to use TarasAI only for lawful business purposes. You must not:</p>
             <ul className="list-disc pl-5 space-y-2 text-slate-600">
               <li>Post fraudulent, illegal, or deceptive marketplace listings.</li>
               <li>Use the AI tools to generate harmful or malicious content.</li>
@@ -33,7 +33,7 @@ export default function TermsOfService() {
 
           <div>
             <h2 className="text-2xl font-bold text-slate-900 mb-3">3. Intermediary Liability (Marketplace)</h2>
-            <p>Nexus acts as an intermediary for B2B transactions as defined under applicable IT laws (e.g., Section 79 of the Indian IT Act). We provide the platform but do not guarantee the quality, safety, or legality of items listed by third parties. We reserve the right to remove any content flagged by our automated systems or user reports.</p>
+            <p>TarasAI acts as an intermediary for B2B transactions as defined under applicable IT laws (e.g., Section 79 of the Indian IT Act). We provide the platform but do not guarantee the quality, safety, or legality of items listed by third parties. We reserve the right to remove any content flagged by our automated systems or user reports.</p>
           </div>
 
           <div>
@@ -43,15 +43,16 @@ export default function TermsOfService() {
 
           <div>
             <h2 className="text-2xl font-bold text-slate-900 mb-3">5. Limitation of Liability</h2>
-            <p>In no event shall Nexus be liable for any indirect, incidental, special, or consequential damages arising out of your use of the platform.</p>
+            <p>In no event shall TarasAI be liable for any indirect, incidental, special, or consequential damages arising out of your use of the platform.</p>
           </div>
 
           <div>
             <h2 className="text-2xl font-bold text-slate-900 mb-3">6. Contact Us</h2>
-            <p>For support or inquiries regarding these terms, please contact <strong className="text-slate-900">NexusB2BAI@outlook.com</strong>.</p>
+            <p>For support or inquiries regarding these terms, please contact <strong className="text-slate-900">TarasAIB2BAI@outlook.com</strong>.</p>
           </div>
         </div>
       </div>
     </div>
   );
 }
+

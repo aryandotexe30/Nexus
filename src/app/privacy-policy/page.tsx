@@ -18,7 +18,7 @@ export default function PrivacyPolicy() {
 
           <div>
             <h2 className="text-2xl font-bold text-slate-900 mb-3">1. Introduction</h2>
-            <p>Welcome to Nexus. We respect your privacy and are committed to protecting your personal data in compliance with the Digital Personal Data Protection (DPDP) Act and applicable international frameworks. This policy explains how we collect, use, and safeguard your data.</p>
+            <p>Welcome to TarasAI. We respect your privacy and are committed to protecting your personal data in compliance with the Digital Personal Data Protection (DPDP) Act and applicable international frameworks. This policy explains how we collect, use, and safeguard your data.</p>
           </div>
 
           <div>
@@ -50,10 +50,11 @@ export default function PrivacyPolicy() {
 
           <div>
             <h2 className="text-2xl font-bold text-slate-900 mb-3">5. Contact Us</h2>
-            <p>If you have any questions about this Privacy Policy, please contact us at <strong className="text-slate-900">NexusB2BAI@outlook.com</strong>.</p>
+            <p>If you have any questions about this Privacy Policy, please contact us at <strong className="text-slate-900">TarasAIB2BAI@outlook.com</strong>.</p>
           </div>
         </div>
       </div>
     </div>
   );
 }
+

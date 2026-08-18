@@ -194,7 +194,7 @@ export default function LandingPage() {
             <Globe className="w-6 h-6 relative z-10" />
           </div>
           <span className="text-2xl font-black tracking-tighter text-slate-900 uppercase">
-            Nexus
+            TarasAI
           </span>
         </div>
         <div className="flex gap-6 items-center">
@@ -244,7 +244,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4, duration: 0.5 }}
               className="text-xl md:text-2xl text-slate-600 font-medium max-w-2xl mb-12 leading-relaxed border-l-4 border-blue-600 pl-6"
             >
-              Stop burning margin on dead databases. Nexus actively extracts, verifies, and secures real-world buyers for Indian MSMEs so you can scale faster. <strong>Automate or stagnate.</strong>
+              Stop burning margin on dead databases. TarasAI actively extracts, verifies, and secures real-world buyers for Indian MSMEs so you can scale faster. <strong>Automate or stagnate.</strong>
             </motion.p>
 
             <motion.div 
@@ -284,7 +284,7 @@ export default function LandingPage() {
               Everything You Need to Scale
             </h2>
             <p className="text-xl text-slate-600 font-medium max-w-3xl border-l-4 border-slate-900 pl-4">
-              We replaced expensive consultants and broken software with a single, highly engineered platform. Here is exactly how Nexus benefits your business:
+              We replaced expensive consultants and broken software with a single, highly engineered platform. Here is exactly how TarasAI benefits your business:
             </p>
           </motion.div>
 
@@ -378,7 +378,7 @@ export default function LandingPage() {
               Deploy Your Final <br/> Competitive Advantage.
             </h2>
             <p className="text-xl text-slate-400 font-medium mb-12 max-w-2xl mx-auto">
-              You are losing money every day you rely on manual research. Initialize your Nexus instance today and start closing verified leads.
+              You are losing money every day you rely on manual research. Initialize your TarasAI instance today and start closing verified leads.
             </p>
             
             <Link href="/signup">
@@ -396,7 +396,7 @@ export default function LandingPage() {
                   <div className="w-8 h-8 bg-blue-600 flex items-center justify-center text-white">
                     <Globe className="w-5 h-5" />
                   </div>
-                  <span className="text-2xl font-black tracking-tighter text-white uppercase">Nexus</span>
+                  <span className="text-2xl font-black tracking-tighter text-white uppercase">TarasAI</span>
                 </div>
                 <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-md font-medium">
                   The military-grade operating system for Indian MSMEs. We verify the buyers, extract the data, and generate the strategies so you can focus entirely on scaling.
@@ -424,7 +424,7 @@ export default function LandingPage() {
               <div>
                 <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Contact Us</h4>
                 <ul className="space-y-4 text-sm font-medium text-slate-400">
-                  <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div> NexusB2BAI@outlook.com</li>
+                  <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div> TarasAIB2BAI@outlook.com</li>
                   <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div> +91 7892401512</li>
                   <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div> Bengaluru, India</li>
                 </ul>
@@ -432,7 +432,7 @@ export default function LandingPage() {
             </div>
 
             <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-slate-500 uppercase tracking-widest">
-              <p>© {new Date().getFullYear()} Nexus AI System. Built in India.</p>
+              <p>© {new Date().getFullYear()} TarasAI AI System. Built in India.</p>
               <div className="flex gap-6">
                 <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms</Link>
                 <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy</Link>
@@ -444,3 +444,4 @@ export default function LandingPage() {
     </div>
   );
 }
+

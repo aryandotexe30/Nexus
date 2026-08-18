@@ -11,7 +11,7 @@ export default function AdminInvitePanel() {
   const [formData, setFormData] = useState({
     email: "",
     name: "",
-    companyName: "Nexus Admin"
+    companyName: "TarasAI Admin"
   });
 
   const handleInvite = async (e: React.FormEvent) => {
@@ -34,7 +34,7 @@ export default function AdminInvitePanel() {
       }
 
       setSuccess("Admin account created successfully with password '12345678'");
-      setFormData({ email: "", name: "", companyName: "Nexus Admin" });
+      setFormData({ email: "", name: "", companyName: "TarasAI Admin" });
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -80,7 +80,7 @@ export default function AdminInvitePanel() {
               value={formData.email}
               onChange={e => setFormData({...formData, email: e.target.value})}
               className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-lg py-2 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500"
-              placeholder="john@nexus.com"
+              placeholder="john@TarasAI.com"
             />
           </div>
         </div>
@@ -110,3 +110,4 @@ export default function AdminInvitePanel() {
     </div>
   );
 }
+

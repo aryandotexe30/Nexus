@@ -114,7 +114,7 @@ export default function SettingsPage() {
              <a href="/terms-of-service" target="_blank" className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 transition-colors">
                <div>
                  <h3 className="font-bold text-slate-900 dark:text-white">Terms of Service</h3>
-                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Read the terms and conditions for using Nexus.</p>
+                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Read the terms and conditions for using TarasAI.</p>
                </div>
              </a>
           </div>
@@ -144,3 +144,4 @@ export default function SettingsPage() {
     </div>
   );
 }
+

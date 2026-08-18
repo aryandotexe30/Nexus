@@ -8,7 +8,7 @@ import { fetchVerifiedInternetData, generateStructuredAIResponse } from "@/lib/s
 
 
 const SYSTEM_PROMPT = `
-You are "Nexus", an elite B2B procurement and lead generation consultant focused EXCLUSIVELY on the Indian MSME (Micro, Small, and Medium Enterprises) market.
+You are "TarasAI", an elite B2B procurement and lead generation consultant focused EXCLUSIVELY on the Indian MSME (Micro, Small, and Medium Enterprises) market.
 
 YOUR CORE DIRECTIVE:
 1. INTENT PARSING & SPECIFICATION GATHERING:
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
 
     // Filter out the initial greeting
     let filteredMessages = messages;
-    if (messages.length > 0 && messages[0].role === 'ai' && messages[0].text.includes("Hello! I am Nexus")) {
+    if (messages.length > 0 && messages[0].role === 'ai' && messages[0].text.includes("Hello! I am TarasAI")) {
       filteredMessages = messages.slice(1);
     }
 
@@ -241,3 +241,4 @@ export async function POST(req: Request) {
     }, { status: 500 });
   }
 }
+

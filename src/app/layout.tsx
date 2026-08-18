@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nexus - B2B Lead Engine",
+  title: "TarasAI - B2B Lead Engine",
   description: "Advanced B2B Personnel & Financial Insight Engine",
 };
 
@@ -40,3 +40,4 @@ export default function RootLayout({
     </html>
   );
 }
+

@@ -19,7 +19,7 @@ export default function AboutPage() {
             <Globe className="w-6 h-6" />
           </div>
           <span className="text-2xl font-black tracking-tighter text-slate-900 uppercase">
-            Nexus
+            TarasAI
           </span>
         </div>
         <div className="flex gap-6 items-center">
@@ -35,7 +35,7 @@ export default function AboutPage() {
           Built For The <span className="text-blue-600">Builders.</span>
         </h1>
         <p className="text-xl text-slate-600 font-medium max-w-3xl mx-auto leading-relaxed">
-          Indian MSMEs are the backbone of the economy, yet they are forced to rely on outdated, static B2B directories filled with dead contacts and middlemen taking aggressive cuts. We built Nexus to arm MSMEs with the same military-grade data infrastructure used by enterprise corporations.
+          Indian MSMEs are the backbone of the economy, yet they are forced to rely on outdated, static B2B directories filled with dead contacts and middlemen taking aggressive cuts. We built TarasAI to arm MSMEs with the same military-grade data infrastructure used by enterprise corporations.
         </p>
       </section>
 
@@ -63,7 +63,7 @@ export default function AboutPage() {
             <Building2 className="w-12 h-12 text-indigo-600 mb-6" />
             <h3 className="text-2xl font-black uppercase tracking-tight mb-4">Automated Scale</h3>
             <p className="text-slate-600 font-medium">
-              You should be focusing on manufacturing and product quality, not scrolling through Google for leads. Nexus automates your business development, acting as an autonomous sales and strategy division.
+              You should be focusing on manufacturing and product quality, not scrolling through Google for leads. TarasAI automates your business development, acting as an autonomous sales and strategy division.
             </p>
           </div>
 
@@ -82,3 +82,4 @@ export default function AboutPage() {
     </div>
   );
 }
+

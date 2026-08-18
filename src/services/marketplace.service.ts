@@ -42,7 +42,7 @@ export class MarketplaceService {
       throw new Error("Invalid or expired target token");
     }
 
-    const nexusEmail = "NexusB2BAI@outlook.com";
+    const TarasAIEmail = "TarasAIB2BAI@outlook.com";
     const tempToken = Math.random().toString(36).substring(2, 8).toUpperCase();
 
     // 2. Send Email
@@ -55,9 +55,9 @@ export class MarketplaceService {
       
       if (supplierEmail && emailUser && emailPass) {
         await transporter.sendMail({
-          from: `"Nexus B2B Platform" <${emailUser}>`,
+          from: `"TarasAI B2B Platform" <${emailUser}>`,
           to: supplierEmail,
-          replyTo: nexusEmail,
+          replyTo: TarasAIEmail,
           subject: `New B2B Enquiry: ${productName || 'Product'} - Ref: ENQ-${tempToken}`,
           html: `<p>New Enquiry for ${supplierName}: ${details}</p>`, // Simplified for now
         });
@@ -102,3 +102,4 @@ export class MarketplaceService {
     return { success: true, ticketId: ticket.id, token: displayToken, emailSent };
   }
 }
+

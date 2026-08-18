@@ -10,7 +10,7 @@ export default function CopilotPage() {
   const [messages, setMessages] = useState<{ role: 'user' | 'ai', text: string, isFinalPitch?: boolean, productData?: any, options?: string[] }[]>([
     {
       role: 'ai',
-      text: "Hello! I am Nexus. What kind of industrial products or raw materials are you looking for today?"
+      text: "Hello! I am TarasAI. What kind of industrial products or raw materials are you looking for today?"
     }
   ]);
   const [input, setInput] = useState("");
@@ -137,7 +137,7 @@ export default function CopilotPage() {
             <Bot className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-slate-900">Nexus</h1>
+            <h1 className="text-lg font-bold text-slate-900">TarasAI</h1>
           </div>
         </div>
         <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">
@@ -283,7 +283,7 @@ export default function CopilotPage() {
           </button>
         </form>
         <p className="text-center text-xs text-slate-400 mt-3 font-medium">
-          Nexus acts as an anonymous middleman. Supplier identities are protected.
+          TarasAI acts as an anonymous middleman. Supplier identities are protected.
         </p>
       </div>
 
@@ -366,3 +366,4 @@ export default function CopilotPage() {
     </div>
   );
 }
+
