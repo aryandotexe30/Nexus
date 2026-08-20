@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
     }
 
-    const queryKey = `v6-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
+    const queryKey = `v7-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
 
     // Determine target node type based on action
     let targetType = "Company";
@@ -103,8 +103,8 @@ Extract EVERY SINGLE highly specific, distinct item related to the query found i
 - If asking for "Suppliers", "Manufacturers", or "Competitors", output EXACT COMPANY NAMES (e.g., "Tata Steel", "Suraj Metal Corp", "Reliance Industries"). Do NOT output product names.
 - If asking for "Raw Materials", output specific materials like "Lithium Cobalt Oxide", "Graphite Anode", "Polyethylene Separator", rather than generic terms.
 - If asking for "Products", you MUST adhere strictly to these rules:
-  1. SCRUB ALL BRANDING: Completely remove brand names (e.g., "3M", "Dollar", "Tesa", "Srivasavi", "Havells") from the product name.
-  2. For each product, you MUST include its comprehensive details, technical specifications, and properties alongside the generic name. Format the string cleanly, e.g., "LED Troffer - 40W, 4000K, 120-277V, Dimmable".
+  1. DO NOT SCRUB BRANDING OR MODEL NUMBERS. You must include the EXACT product name, including proprietary model numbers, series codes, and brand identifiers exactly as they appear on the website (e.g., "DMT-308 - Masking Tape General Purpose", "DKT-25 CR Polyimide Insulation Tape").
+  2. For each product, you MUST include its comprehensive details, technical specifications, and properties alongside the full exact name.
 
 Search Context:
 ${searchContext}
