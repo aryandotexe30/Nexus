@@ -104,7 +104,7 @@ Extract EVERY SINGLE highly specific, distinct item related to the query found i
 - If asking for "Raw Materials", output specific materials like "Lithium Cobalt Oxide", "Graphite Anode", "Polyethylene Separator", rather than generic terms.
 - If asking for "Products", you MUST adhere strictly to these rules:
   1. SCRUB ALL BRANDING: Completely remove brand names (e.g., "3M", "Dollar", "Tesa", "Srivasavi", "Havells") from the product name.
-  2. Return ONLY the generic technical or industrial name of the product (e.g., "LED Troffer", "Industrial Motor", "Copper Wire"). Do not include properties, descriptions, or specs.
+  2. For each product, you MUST include its comprehensive details, technical specifications, and properties alongside the generic name. Format the string cleanly, e.g., "LED Troffer - 40W, 4000K, 120-277V, Dimmable".
 
 Search Context:
 ${searchContext}
