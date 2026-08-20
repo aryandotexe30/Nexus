@@ -46,7 +46,7 @@ export async function generateStructuredAIResponse(
     while (attempt < 2 && !success) {
       try {
         const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error("Gemini SDK Timeout")), 25000)
+          setTimeout(() => reject(new Error("Gemini SDK Timeout")), 60000)
         );
 
         const response: any = await Promise.race([

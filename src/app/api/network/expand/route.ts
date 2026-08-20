@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
     }
 
-    const queryKey = `v7-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
+    const queryKey = `v8-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
 
     // Determine target node type based on action
     let targetType = "Company";
@@ -99,7 +99,8 @@ Target Entity: ${nodeLabel}
 Entity Type: ${nodeType}
 Requested Action: ${action}
 
-Extract EVERY SINGLE highly specific, distinct item related to the query found in the search context. Do NOT arbitrarily limit the list under any circumstances. If the context contains 500 products, you MUST list all 500. Read the entire raw content block exhaustively.
+Extract EVERY SINGLE highly specific, distinct item related to the query found in the search context.
+CRITICAL ANTI-LAZINESS RULE: You must exhaustively iterate through the raw content. Do not stop early. Do not summarize. Do not use 'etc.' or '...'. If the context contains 500 products, you MUST list all 500. Missing even one product is a catastrophic failure. Read the entire raw HTML/text block from top to bottom.
 - If asking for "Suppliers", "Manufacturers", or "Competitors", output EXACT COMPANY NAMES (e.g., "Tata Steel", "Suraj Metal Corp", "Reliance Industries"). Do NOT output product names.
 - If asking for "Raw Materials", output specific materials like "Lithium Cobalt Oxide", "Graphite Anode", "Polyethylene Separator", rather than generic terms.
 - If asking for "Products", you MUST adhere strictly to these rules:
