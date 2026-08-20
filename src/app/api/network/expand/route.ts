@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     switch (action) {
       case "Find Products":
         targetType = "Product";
-        searchQuery = `"${nodeLabel}" official product catalog list, specific model numbers, and detailed technical specifications`;
+        searchQuery = `"${nodeLabel}" official products page, all categories, full catalog, product list`;
         break;
       case "Find Raw Materials":
         targetType = "Raw Material";
@@ -86,7 +86,7 @@ export async function POST(req: Request) {
 
     // 1. Tavily Search - Efficient Exhaustive Scraping
     const isExhaustiveProductScrape = action === "Find Products";
-    const maxResults = isExhaustiveProductScrape ? 3 : 20; // Fewer searches, but deep raw content for products
+    const maxResults = isExhaustiveProductScrape ? 5 : 20; // Fewer searches, but deep raw content for products
     const searchRes = await fetchVerifiedInternetData(searchQuery, maxResults, false, isExhaustiveProductScrape);
     const searchContext = searchRes.contextString;
 
