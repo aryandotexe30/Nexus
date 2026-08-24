@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
     }
 
-    const queryKey = `v8-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
+    const queryKey = `v9-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
 
     // Determine target node type based on action
     let targetType = "Company";
@@ -105,7 +105,8 @@ CRITICAL ANTI-LAZINESS RULE: You must exhaustively iterate through the raw conte
 - If asking for "Raw Materials", output specific materials like "Lithium Cobalt Oxide", "Graphite Anode", "Polyethylene Separator", rather than generic terms.
 - If asking for "Products", you MUST adhere strictly to these rules:
   1. DO NOT SCRUB BRANDING OR MODEL NUMBERS. You must include the EXACT product name, including proprietary model numbers, series codes, and brand identifiers exactly as they appear on the website (e.g., "DMT-308 - Masking Tape General Purpose", "DKT-25 CR Polyimide Insulation Tape").
-  2. For each product, you MUST include its comprehensive details, technical specifications, and properties alongside the full exact name.
+  2. For each product, you MUST extract and append its comprehensive details: description, characteristics, applications, and technical specifications. Format the string cleanly, e.g., "DMT-308 - Masking Tape General Purpose | Description: ... | Applications: ... | Characteristics: ...".
+  3. CRITICAL: ONLY extract products from the company's OFFICIAL website content. Absolutely IGNORE any content from B2B directories (like IndiaMart, TradeIndia, Alibaba, JustDial) or generic overviews.
 
 Search Context:
 ${searchContext}

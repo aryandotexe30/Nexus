@@ -4,8 +4,9 @@ import axios from 'axios';
 // Unified constants
 export const TAVILY_EXCLUDED_DOMAINS = [
   "amazon.com", "amazon.in", "flipkart.com", "ebay.com", 
-  "justdial.com", "indiamart.com", "tradeindia.com", 
-  "facebook.com", "instagram.com"
+  "justdial.com", "indiamart.com", "dir.indiamart.com", "tradeindia.com", 
+  "facebook.com", "instagram.com", "exportersindia.com", "alibaba.com", 
+  "made-in-china.com", "thomasnet.com", "kompass.com", "crunchbase.com", "linkedin.com"
 ];
 
 export const TAVILY_VERIFIED_DOMAINS = [
