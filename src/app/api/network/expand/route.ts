@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
     }
 
-    const queryKey = `v9-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
+    const queryKey = `v10-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
 
     // Determine target node type based on action
     let targetType = "Company";
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     switch (action) {
       case "Find Products":
         targetType = "Product";
-        searchQuery = `"${nodeLabel}" official products page, all categories, full catalog, product list`;
+        searchQuery = `"${nodeLabel}" specific product models, technical specifications, detailed catalog list`;
         break;
       case "Find Raw Materials":
         targetType = "Raw Material";
@@ -86,7 +86,7 @@ export async function POST(req: Request) {
 
     // 1. Tavily Search - Efficient Exhaustive Scraping
     const isExhaustiveProductScrape = action === "Find Products";
-    const maxResults = isExhaustiveProductScrape ? 5 : 20; // Fewer searches, but deep raw content for products
+    const maxResults = isExhaustiveProductScrape ? 15 : 20; // Deep crawl of 15 pages to catch all subcategory and product pages
     const searchRes = await fetchVerifiedInternetData(searchQuery, maxResults, false, isExhaustiveProductScrape);
     const searchContext = searchRes.contextString;
 
@@ -105,8 +105,9 @@ CRITICAL ANTI-LAZINESS RULE: You must exhaustively iterate through the raw conte
 - If asking for "Raw Materials", output specific materials like "Lithium Cobalt Oxide", "Graphite Anode", "Polyethylene Separator", rather than generic terms.
 - If asking for "Products", you MUST adhere strictly to these rules:
   1. DO NOT SCRUB BRANDING OR MODEL NUMBERS. You must include the EXACT product name, including proprietary model numbers, series codes, and brand identifiers exactly as they appear on the website (e.g., "DMT-308 - Masking Tape General Purpose", "DKT-25 CR Polyimide Insulation Tape").
-  2. For each product, you MUST extract and append its comprehensive details: description, characteristics, applications, and technical specifications. Format the string cleanly, e.g., "DMT-308 - Masking Tape General Purpose | Description: ... | Applications: ... | Characteristics: ...".
-  3. CRITICAL: ONLY extract products from the company's OFFICIAL website content. Absolutely IGNORE any content from B2B directories (like IndiaMart, TradeIndia, Alibaba, JustDial) or generic overviews.
+  2. DO NOT extract top-level category names (like "Masking Tapes", "Die Cuts"). You must only extract the INDIVIDUAL specific product models.
+  3. For each product, you MUST extract and append its comprehensive details: description, characteristics, applications, and technical specifications. Format the string cleanly, e.g., "DMT-308 - Masking Tape General Purpose | Description: ... | Applications: ... | Characteristics: ...".
+  4. CRITICAL: ONLY extract products from the company's OFFICIAL website content. Absolutely IGNORE any content from B2B directories (like IndiaMart, TradeIndia, Alibaba, JustDial) or generic overviews.
 
 Search Context:
 ${searchContext}
