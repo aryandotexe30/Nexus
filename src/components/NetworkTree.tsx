@@ -222,45 +222,56 @@ export default function NetworkTree() {
     <div className="w-full h-full relative overflow-y-auto bg-transparent p-6 sm:p-10">
       
       {/* Search Header */}
-      <div className="max-w-4xl mx-auto mb-10">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row gap-4 items-center">
-          <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
-            <Layers className="w-6 h-6" />
+      <motion.div 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        className="max-w-4xl mx-auto mb-10"
+      >
+        <div className="bg-white/60 backdrop-blur-2xl p-6 rounded-3xl shadow-xl border border-white/80 flex flex-col sm:flex-row gap-5 items-center relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-50/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+          <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-50 text-blue-600 rounded-2xl flex items-center justify-center shrink-0 shadow-inner relative z-10 border border-white">
+            <Layers className="w-7 h-7" />
           </div>
-          <div className="flex-1 w-full">
-            <h2 className="text-xl font-bold text-slate-900 mb-1">Value Chain Explorer</h2>
-            <p className="text-sm text-slate-500">Search a company to begin recursively mapping its supply chain.</p>
+          <div className="flex-1 w-full relative z-10">
+            <h2 className="text-2xl font-black text-slate-800 tracking-tight mb-1">Value Chain Explorer</h2>
+            <p className="text-sm font-medium text-slate-500">Search a company to begin recursively mapping its supply chain.</p>
           </div>
-          <div className="flex gap-2 w-full sm:w-auto">
+          <div className="flex gap-3 w-full sm:w-auto relative z-10">
             <input
               type="text"
               placeholder="e.g. Tesla, TSMC..."
               value={search}
               onChange={e => setSearch(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && startTree()}
-              className="flex-1 sm:w-64 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-900"
+              className="flex-1 sm:w-72 px-5 py-3 bg-white/80 border border-slate-200/60 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-500/20 text-slate-900 shadow-sm transition-all placeholder:text-slate-400 font-medium"
             />
             <button 
               onClick={startTree}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors shadow-md shadow-blue-500/20 flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2 transform hover:scale-105 active:scale-95"
             >
-              <Search className="w-4 h-4" />
+              <Search className="w-5 h-5" />
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Tree View Canvas */}
+      {/* Tree Area */}
       <div className="max-w-4xl mx-auto pb-32">
         {rootNode ? (
-          <TreeNode label={rootNode.label} type={rootNode.type} level={0} />
+          <TreeNode label={rootNode.label} type={rootNode.type} context={rootNode.label} />
         ) : (
-          <div className="text-center py-20">
-            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Layers className="w-10 h-10 text-slate-300" />
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
+            className="h-64 flex flex-col items-center justify-center text-center p-8 bg-white/40 backdrop-blur-xl border border-white/60 rounded-3xl shadow-xl"
+          >
+            <div className="w-24 h-24 bg-gradient-to-br from-blue-50 to-indigo-50/50 rounded-full flex items-center justify-center mb-6 shadow-inner border border-white">
+              <Layers className="w-12 h-12 text-blue-200" />
             </div>
-            <h3 className="text-lg font-semibold text-slate-400">Your network map will appear here</h3>
-          </div>
+            <p className="text-xl font-bold text-slate-400 tracking-tight">Your fluid network map will appear here</p>
+          </motion.div>
         )}
       </div>
 

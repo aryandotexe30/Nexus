@@ -26,7 +26,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const isUnverified = user?.isVerified === false && user?.role !== "ADMIN";
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 dark:bg-slate-950 dark:text-slate-50 flex transition-colors duration-300">
+    <div className="min-h-screen bg-transparent text-slate-900 dark:text-slate-50 flex transition-colors duration-300">
       
       <Sidebar />
       <main className="flex-1 w-full max-w-[100vw] md:ml-[288px] p-4 md:p-8 pt-20 md:pt-10 overflow-x-hidden">
