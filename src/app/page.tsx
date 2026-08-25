@@ -425,7 +425,6 @@ export default function LandingPage() {
                 <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Contact Us</h4>
                 <ul className="space-y-4 text-sm font-medium text-slate-400">
                   <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div> TarasAIB2BAI@outlook.com</li>
-                  <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div> +91 7892401512</li>
                   <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></div> Bengaluru, India</li>
                 </ul>
               </div>
