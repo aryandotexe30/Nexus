@@ -76,23 +76,23 @@ export default function Sidebar() {
         />
       )}
 
-      <div className={`w-64 h-[calc(100vh-32px)] m-4 rounded-[2rem] bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-white/50 dark:border-slate-700/50 flex flex-col fixed left-0 top-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none z-50 overflow-hidden transform transition-transform duration-300 md:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-[120%]"}`}>
+      <div className={`w-72 h-[calc(100vh-32px)] m-4 rounded-[2rem] bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-white/50 dark:border-slate-700/50 flex flex-col fixed left-0 top-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none z-50 overflow-hidden transform transition-transform duration-300 md:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-[120%]"}`}>
         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
       
-      <div className="p-6 border-b border-slate-200/50 dark:border-slate-800/50 relative z-10">
-        <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 tracking-tight flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
-            <Building2 className="w-4 h-4" />
+      <div className="p-8 pb-4 relative z-10">
+        <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 tracking-tight flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 border border-white/20">
+            <Building2 className="w-5 h-5" />
           </div>
           TarasAI
         </h1>
-        <div className="mt-4 px-3 py-2 bg-slate-100/50 dark:bg-slate-800/50 rounded-lg border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm">
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Workspace</p>
-          <p className="text-sm text-slate-900 dark:text-slate-200 font-bold truncate">{companyName}</p>
+        <div className="mt-6 px-4 py-3 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-white/60 dark:border-slate-700/50 backdrop-blur-md shadow-sm">
+          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest mb-0.5">Workspace</p>
+          <p className="text-sm text-slate-800 dark:text-slate-200 font-bold truncate">{companyName}</p>
         </div>
       </div>
 
-      <div className="flex-1 py-4 px-4 space-y-2 relative z-10 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
+      <div className="flex-1 py-4 px-5 space-y-1.5 relative z-10 overflow-y-auto scrollbar-hide">
         {routes.map((route) => {
           const isActive = pathname === route.path;
           const userPlan = (session.user as any)?.plan || "FREE";
@@ -101,18 +101,18 @@ export default function Sidebar() {
 
           return (
             <Link key={route.path} href={isLocked ? "/pricing" : route.path}>
-              <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group relative ${isActive ? 'text-blue-600 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-slate-200'} ${isLocked ? 'opacity-70' : ''}`}>
+              <div className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all duration-300 group relative ${isActive ? 'text-slate-900 dark:text-white font-semibold' : 'text-slate-500 dark:text-slate-400 font-medium hover:text-slate-900 dark:hover:text-slate-200'} ${isLocked ? 'opacity-50' : ''}`}>
                 {isActive && !isLocked && (
                   <motion.div 
                     layoutId="sidebar-active"
-                    className="absolute inset-0 bg-white dark:bg-blue-600/10 border border-slate-200/50 dark:border-blue-500/20 shadow-md shadow-slate-200/50 dark:shadow-none rounded-2xl"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    className="absolute inset-0 bg-white/80 dark:bg-slate-800/80 border border-white dark:border-slate-700 shadow-sm rounded-2xl backdrop-blur-md"
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
-                <div className={`absolute inset-0 bg-blue-50/50 dark:bg-slate-800/50 rounded-2xl opacity-0 transition-opacity duration-300 ${(isActive && !isLocked) ? 'hidden' : 'group-hover:opacity-100'} ${isLocked ? 'hidden' : 'block'}`}></div>
-                <route.icon className={`w-5 h-5 relative z-10 ${isActive && !isLocked ? 'text-blue-500 dark:text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]' : 'group-hover:text-blue-500 dark:group-hover:text-slate-300 transition-colors'}`} />
-                <span className={`font-bold relative z-10 flex-1 ${isActive && !isLocked ? 'drop-shadow-sm' : ''}`}>{route.name}</span>
-                {isLocked && <Lock className="w-4 h-4 text-slate-400 relative z-10" />}
+                <div className={`absolute inset-0 bg-white/40 dark:bg-slate-800/40 rounded-2xl opacity-0 transition-opacity duration-300 ${(isActive && !isLocked) ? 'hidden' : 'group-hover:opacity-100'} ${isLocked ? 'hidden' : 'block'}`}></div>
+                <route.icon className={`w-5 h-5 relative z-10 ${isActive && !isLocked ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 group-hover:text-blue-500 transition-colors'}`} />
+                <span className={`relative z-10 flex-1 text-sm tracking-tight`}>{route.name}</span>
+                {isLocked && <Lock className="w-4 h-4 text-slate-300 relative z-10" />}
               </div>
             </Link>
           );
