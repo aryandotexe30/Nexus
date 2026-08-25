@@ -87,6 +87,8 @@ export async function generateStructuredAIResponse(
   return JSON.parse(resultText);
 }
 
+import { search } from 'duck-duck-scrape';
+
 // Unified internet fetcher
 export async function fetchVerifiedInternetData(
   query: string,
@@ -95,36 +97,57 @@ export async function fetchVerifiedInternetData(
   includeRawContent: boolean = false
 ) {
   try {
-    const payload: any = {
-      api_key: process.env.TAVILY_API_KEY,
-      query: query,
-      search_depth: 'advanced',
-      include_answer: true,
-      max_results: maxResults,
-      include_raw_content: includeRawContent,
-    };
-
+    // Modify query for exclusions
+    let finalQuery = query;
     if (useStrictWhitelists) {
-      payload.include_domains = TAVILY_VERIFIED_DOMAINS;
+      finalQuery += ' site:' + TAVILY_VERIFIED_DOMAINS.join(' OR site:');
     } else {
-      payload.exclude_domains = TAVILY_EXCLUDED_DOMAINS;
+      TAVILY_EXCLUDED_DOMAINS.forEach(domain => {
+        finalQuery += ` -site:${domain}`;
+      });
     }
 
-    const res = await axios.post('https://api.tavily.com/search', payload, { timeout: 20000 });
+    console.log(`[Free Search] Executing query: ${finalQuery}`);
     
-    // Efficiently map context: include raw_content if requested, else just the snippet
-    const mappedContext = res.data.results?.map((r: any) => ({ 
-      t: r.title, 
-      c: includeRawContent && r.raw_content ? r.raw_content : r.content?.substring(0, 800) 
+    // 1. Search DDG
+    const searchResults = await search(finalQuery, {
+      safeSearch: 'off'
+    });
+
+    const topResults = searchResults.results.slice(0, maxResults);
+    
+    // 2. Fetch raw HTML for deep extraction if requested
+    const mappedContext = await Promise.all(topResults.map(async (r: any) => {
+      let content = r.description;
+      if (includeRawContent) {
+        try {
+          const pageRes = await axios.get(r.url, {
+             timeout: 15000,
+             headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+          });
+          // Basic HTML cleaning to save tokens
+          const cleanHtml = pageRes.data
+            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+            .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+            
+          content = cleanHtml.substring(0, 20000); // 20k characters max per page
+        } catch (e) {
+          console.warn(`Could not fetch raw HTML for ${r.url}`);
+        }
+      }
+      return { t: r.title, c: content };
     }));
 
     return {
-      answer: res.data.answer || "",
-      context: res.data.results || [],
+      answer: "",
+      context: topResults,
       contextString: JSON.stringify(mappedContext)
     };
   } catch (e: any) {
-    console.error(`Tavily search failed for query: ${query}.`, e.message);
+    console.error(`Free search failed for query: ${query}.`, e.message);
     return { answer: "", context: [], contextString: "No internet data could be fetched." };
   }
 }
