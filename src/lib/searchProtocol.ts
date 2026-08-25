@@ -97,74 +97,34 @@ export async function fetchVerifiedInternetData(
   includeRawContent: boolean = false
 ) {
   try {
-    console.log(`[Free Search] Executing DDG Lite query: ${query}`);
+    console.log(`[Gemini Grounding] Executing native search query: ${query}`);
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     
-    // 1. Search DDG Lite directly (bypasses VQD and API limits)
-    const searchRes = await axios.post('https://lite.duckduckgo.com/lite/', `q=${encodeURIComponent(query)}`, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
-      },
-      timeout: 10000
+    // Step 1: Instruct Gemini to use its native Google Search to find all raw data
+    const searchPrompt = `
+      You are an expert researcher. Use Google Search to exhaustively find information for this query: "${query}"
+      If looking for products, extract EVERY SINGLE product model number, name, application, and specification you can find. 
+      List them out in extreme detail. Do not summarize.
+    `;
+    
+    const searchResponse = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: searchPrompt,
+      config: {
+        tools: [{ googleSearch: {} }]
+      }
     });
-    
-    const html = searchRes.data;
-    const urlRegex = /<a[^>]*href="([^"]+)"[^>]*>/gi;
-    const allLinks = [];
-    let match;
-    while ((match = urlRegex.exec(html)) !== null) {
-      let href = match[1];
-      if (href.startsWith('//duckduckgo.com/l/?uddg=')) {
-        href = decodeURIComponent(href.split('uddg=')[1].split('&')[0]);
-      }
-      // Only keep actual http links, ignore relative/duckduckgo links
-      if (href.startsWith('http') && !href.includes('duckduckgo.com')) {
-        allLinks.push({ url: href, title: "Search Result" });
-      }
-    }
 
-    // Filter results internally in Javascript
-    let validResults = allLinks;
-    if (useStrictWhitelists) {
-      validResults = validResults.filter((r: any) => TAVILY_VERIFIED_DOMAINS.some(domain => r.url.includes(domain)));
-    } else {
-      validResults = validResults.filter((r: any) => !TAVILY_EXCLUDED_DOMAINS.some(domain => r.url.includes(domain)));
-    }
-
-    const topResults = validResults.slice(0, maxResults);
-    
-    // 2. Fetch raw HTML for deep extraction if requested
-    const mappedContext = await Promise.all(topResults.map(async (r: any) => {
-      let content = r.description;
-      if (includeRawContent) {
-        try {
-          const pageRes = await axios.get(r.url, {
-             timeout: 15000,
-             headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
-          });
-          // Basic HTML cleaning to save tokens
-          const cleanHtml = pageRes.data
-            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-            .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
-            .replace(/<[^>]+>/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
-            
-          content = cleanHtml.substring(0, 150000); // 150k characters max per page (Gemini Flash has 1M token context)
-        } catch (e) {
-          console.warn(`Could not fetch raw HTML for ${r.url}`);
-        }
-      }
-      return { t: r.title, c: content };
-    }));
+    const rawData = searchResponse.text || "No data found.";
+    console.log(`[Gemini Grounding] Found ${rawData.length} characters of grounded data.`);
 
     return {
       answer: "",
-      context: topResults,
-      contextString: JSON.stringify(mappedContext)
+      context: [{ url: "google-search-grounding", title: "Native Search" }],
+      contextString: rawData.substring(0, 150000)
     };
   } catch (e: any) {
-    console.error(`Free search failed for query: ${query}.`, e.message);
+    console.error(`Gemini native search failed for query: ${query}.`, e.message);
     return { answer: "", context: [], contextString: "No internet data could be fetched." };
   }
 }
