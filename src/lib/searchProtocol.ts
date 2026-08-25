@@ -97,17 +97,38 @@ export async function fetchVerifiedInternetData(
   includeRawContent: boolean = false
 ) {
   try {
-    console.log(`[Free Search] Executing query: ${query}`);
+    console.log(`[Free Search] Executing DDG Lite query: ${query}`);
     
-    // 1. Search DDG without massive site: exclusions to prevent VQD crash
-    const searchResults = await search(query);
+    // 1. Search DDG Lite directly (bypasses VQD and API limits)
+    const searchRes = await axios.post('https://lite.duckduckgo.com/lite/', `q=${encodeURIComponent(query)}`, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+      },
+      timeout: 10000
+    });
+    
+    const html = searchRes.data;
+    const urlRegex = /<a[^>]*href="([^"]+)"[^>]*>/gi;
+    const allLinks = [];
+    let match;
+    while ((match = urlRegex.exec(html)) !== null) {
+      let href = match[1];
+      if (href.startsWith('//duckduckgo.com/l/?uddg=')) {
+        href = decodeURIComponent(href.split('uddg=')[1].split('&')[0]);
+      }
+      // Only keep actual http links, ignore relative/duckduckgo links
+      if (href.startsWith('http') && !href.includes('duckduckgo.com')) {
+        allLinks.push({ url: href, title: "Search Result" });
+      }
+    }
 
     // Filter results internally in Javascript
-    let validResults = searchResults.results;
+    let validResults = allLinks;
     if (useStrictWhitelists) {
-      validResults = validResults.filter(r => TAVILY_VERIFIED_DOMAINS.some(domain => r.url.includes(domain)));
+      validResults = validResults.filter((r: any) => TAVILY_VERIFIED_DOMAINS.some(domain => r.url.includes(domain)));
     } else {
-      validResults = validResults.filter(r => !TAVILY_EXCLUDED_DOMAINS.some(domain => r.url.includes(domain)));
+      validResults = validResults.filter((r: any) => !TAVILY_EXCLUDED_DOMAINS.some(domain => r.url.includes(domain)));
     }
 
     const topResults = validResults.slice(0, maxResults);
