@@ -4,7 +4,7 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key');
 
 // The verified domain email you set up in Resend
-const FROM_EMAIL = 'TarasAI <support@tarasai.com>'; 
+const FROM_EMAIL = 'TarasAI <support@tarasai.in>'; 
 
 export const sendWelcomeEmail = async (to: string, companyName: string) => {
   try {
