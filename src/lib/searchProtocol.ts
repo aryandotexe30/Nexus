@@ -97,22 +97,20 @@ export async function fetchVerifiedInternetData(
   includeRawContent: boolean = false
 ) {
   try {
-    // Modify query for exclusions
-    let finalQuery = query;
+    console.log(`[Free Search] Executing query: ${query}`);
+    
+    // 1. Search DDG without massive site: exclusions to prevent VQD crash
+    const searchResults = await search(query);
+
+    // Filter results internally in Javascript
+    let validResults = searchResults.results;
     if (useStrictWhitelists) {
-      finalQuery += ' site:' + TAVILY_VERIFIED_DOMAINS.join(' OR site:');
+      validResults = validResults.filter(r => TAVILY_VERIFIED_DOMAINS.some(domain => r.url.includes(domain)));
     } else {
-      TAVILY_EXCLUDED_DOMAINS.forEach(domain => {
-        finalQuery += ` -site:${domain}`;
-      });
+      validResults = validResults.filter(r => !TAVILY_EXCLUDED_DOMAINS.some(domain => r.url.includes(domain)));
     }
 
-    console.log(`[Free Search] Executing query: ${finalQuery}`);
-    
-    // 1. Search DDG
-    const searchResults = await search(finalQuery);
-
-    const topResults = searchResults.results.slice(0, maxResults);
+    const topResults = validResults.slice(0, maxResults);
     
     // 2. Fetch raw HTML for deep extraction if requested
     const mappedContext = await Promise.all(topResults.map(async (r: any) => {
