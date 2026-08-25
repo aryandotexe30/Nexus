@@ -42,7 +42,6 @@ body {
 .bg-fluid {
   position: relative;
   background-color: #F5F5F7;
-  overflow: hidden;
 }
 
 .bg-fluid::before {
