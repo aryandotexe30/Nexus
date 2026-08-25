@@ -23,3 +23,15 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Fluid Background Animations */
+@keyframes fluidMesh {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.bg-fluid {
+  background: linear-gradient(-45deg, #f8fafc, #eff6ff, #e0e7ff, #f1f5f9);
+  background-size: 400% 400%;
+  animation: fluidMesh 15s ease infinite;
+}

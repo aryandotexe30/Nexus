@@ -43,7 +43,7 @@ export default async function NetworkMapperPage() {
         </p>
       </header>
       
-      <div className="flex-1 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-inner relative">
+      <div className="flex-1 bg-white/40 backdrop-blur-2xl border border-white/60 rounded-3xl overflow-hidden shadow-2xl relative">
         <NetworkTree />
       </div>
     </div>
