@@ -101,11 +101,15 @@ export async function fetchVerifiedInternetData(
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     
     // Step 1: Instruct Gemini to use its native Google Search to find all raw data
-    const searchPrompt = `
-      You are an expert researcher. Use Google Search to exhaustively find information for this query: "${query}"
-      If looking for products, extract EVERY SINGLE product model number, name, application, and specification you can find. 
-      List them out in extreme detail. Do not summarize.
-    `;
+    let searchPrompt = `You are a fast research assistant. Use Google Search to find concise, factual data for this query: "${query}". Summarize the key facts quickly.`;
+    
+    if (includeRawContent) {
+      searchPrompt = `
+        You are an expert researcher. Use Google Search to exhaustively find information for this query: "${query}"
+        If looking for products, extract EVERY SINGLE product model number, name, application, and specification you can find. 
+        List them out in extreme detail. Do not summarize.
+      `;
+    }
     
     const searchResponse = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
