@@ -75,6 +75,14 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       }
     });
 
+    // Send email notification to the post author
+    const author = await prisma.user.findUnique({ where: { id: post.authorId } });
+    if (author?.email) {
+      import('@/lib/email').then(({ sendMarketplaceBidEmail }) => {
+        sendMarketplaceBidEmail(author.email, post.title, user.companyName || user.email, amount);
+      });
+    }
+
     return NextResponse.json({ success: true, bid: newBid });
   } catch (error: any) {
     console.error("Submit bid error:", error);

@@ -83,6 +83,13 @@ export async function POST(req: Request) {
 
     // Notify admins about the new ticket
     await pusherServer?.trigger('admin-notifications', 'new-ticket', ticket);
+    
+    // Send email confirmation to the user
+    import('@/lib/email').then(({ sendSupportTicketConfirmation }) => {
+      if (user.email && user.companyName) {
+        sendSupportTicketConfirmation(user.email, user.companyName, ticket.id);
+      }
+    });
 
     return NextResponse.json({ ticket });
   } catch (error) {

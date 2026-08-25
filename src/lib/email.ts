@@ -52,3 +52,50 @@ export const sendAdminInviteEmail = async (to: string, name: string, tempPasswor
     console.error(`[Resend] Failed to send admin invite to ${to}:`, error);
   }
 };
+
+export const sendSupportTicketConfirmation = async (to: string, companyName: string, ticketId: string) => {
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `Support Ticket Received [${ticketId}] 🛠️`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #4F46E5;">Ticket Received</h2>
+          <p>Hi ${companyName},</p>
+          <p>We have successfully received your support request.</p>
+          <p>Your Ticket ID is: <strong>${ticketId}</strong></p>
+          <p>One of our team members will review it and get back to you shortly via the Support Chat on your dashboard.</p>
+          <br/>
+          <p>Best regards,<br/>TarasAI Support</p>
+        </div>
+      `,
+    });
+    console.log(`[Resend] Successfully sent support ticket email to ${to}`);
+  } catch (error) {
+    console.error(`[Resend] Failed to send support ticket email to ${to}:`, error);
+  }
+};
+
+export const sendMarketplaceBidEmail = async (to: string, postTitle: string, bidderName: string, amount: string) => {
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `New Bid on your Post: ${postTitle} 💰`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #4F46E5;">You have a new bid!</h2>
+          <p>Great news!</p>
+          <p><strong>${bidderName}</strong> has just submitted a bid of <strong>${amount}</strong> on your marketplace post: <em>${postTitle}</em>.</p>
+          <p>Log in to your TarasAI dashboard to review their proposal and start a chat with them.</p>
+          <br/>
+          <p>Best regards,<br/>The TarasAI Marketplace</p>
+        </div>
+      `,
+    });
+    console.log(`[Resend] Successfully sent bid email to ${to}`);
+  } catch (error) {
+    console.error(`[Resend] Failed to send bid email to ${to}:`, error);
+  }
+};
