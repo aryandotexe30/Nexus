@@ -26,45 +26,27 @@ export async function POST(req: Request) {
     }
 
     // 1. Run all searches in parallel using native Gemini Search Grounding
-    let generalRes = "", financialRes = "", stockRes = "", signalHireRes = "", productRes = "";
+    let companyRes = "", productRes = "";
 
     try {
       console.log(`Starting deep enrichment for ${name}`);
       
       // Fire all API requests in parallel for maximum speed
-      const [generalReq, financialReq, stockReq, signalHireReq, productReq] = await Promise.allSettled([
+      const [companyReq, productReq] = await Promise.allSettled([
         fetchVerifiedInternetData(
-          `"${name}" GST ${gst || ''} company profile products services directors contact india`,
+          `"${name}" GST ${gst || ''} company profile registration financial statements revenue profit loss balance sheet`,
           5,
           false
         ),
         fetchVerifiedInternetData(
-          `"${name}" exact financial statements revenue profit loss balance sheet annual report`,
-          5,
-          false
-        ),
-        fetchVerifiedInternetData(
-          `"${name}" stock ticker symbol market cap share price performance NASDAQ NSE BSE`,
-          3,
-          false
-        ),
-        fetchVerifiedInternetData(
-          `site:signalhire.com/companies "${name}" (Sales OR "Sales Manager" OR HR OR "Human Resources" OR "Business Head")`,
-          5,
-          false
-        ),
-        fetchVerifiedInternetData(
-          `"${name}" specific product models, technical specifications, detailed catalog list`,
-          15,
+          `"${name}" specific product models technical specifications catalog AND site:signalhire.com/companies (Sales OR HR)`,
+          10,
           false,
           true
         )
       ]);
 
-      if (generalReq.status === 'fulfilled') generalRes = generalReq.value.contextString;
-      if (financialReq.status === 'fulfilled') financialRes = financialReq.value.contextString;
-      if (stockReq.status === 'fulfilled') stockRes = stockReq.value.contextString;
-      if (signalHireReq.status === 'fulfilled') signalHireRes = signalHireReq.value.contextString;
+      if (companyReq.status === 'fulfilled') companyRes = companyReq.value.contextString;
       if (productReq.status === 'fulfilled') productRes = productReq.value.contextString;
 
     } catch (e) {
@@ -79,16 +61,10 @@ export async function POST(req: Request) {
       GST Number: ${gst || 'Not provided'}
       
       Web Search Context:
-      --- GENERAL SEARCH ---
-      ${generalRes.substring(0, 40000)}
-      --- FINANCIAL SEARCH ---
-      ${financialRes.substring(0, 40000)}
-      --- STOCK SEARCH ---
-      ${stockRes.substring(0, 40000)}
-      --- EXECUTIVE CONTACT DATA ---
-      ${signalHireRes.substring(0, 40000)}
-      --- EXHAUSTIVE PRODUCT SEARCH ---
-      ${productRes.substring(0, 40000)}
+      --- COMPANY & FINANCIAL SEARCH ---
+      ${companyRes.substring(0, 50000)}
+      --- EXHAUSTIVE PRODUCT & EMPLOYEE SEARCH ---
+      ${productRes.substring(0, 50000)}
 
       CRITICAL: Extract high-value B2B intelligence. If specific fields are not found directly, logically infer based on your industry knowledge. Use the Executive Contact Data specifically for the personnel_contacts field!
       For 'products_and_services' and 'products', you must exhaustively list every single specific product model, specification, and catalog item found. DO NOT summarize.

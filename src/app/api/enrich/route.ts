@@ -136,40 +136,25 @@ async function processCompany(company: CompanyInput) {
   try {
     console.log(`Processing company: ${company.name}`);
 
-    // Run all searches in parallel to avoid Vercel 60s timeout
-    const [generalSearch, verifiedSearch, financialSearch, signalHireSearch, productSearch] = await Promise.all([
+    // Run optimized searches in parallel to avoid Gemini 15 RPM rate limits
+    const [companySearch, productAndEmployeeSearch] = await Promise.all([
       fetchVerifiedInternetData(
-        `${company.name} ${company.address} official company profile products services directors`,
+        `"${company.name}" ${company.address} official company profile registration GSTIN MCA financial statements revenue profit balance sheet`,
         5,
         false
       ),
       fetchVerifiedInternetData(
-        `"${company.name}" registration details directors GSTIN MCA`,
-        3,
-        true
-      ),
-      fetchVerifiedInternetData(
-        `"${company.name}" exact financial statements revenue profit balance sheet annual report`,
-        5,
-        false
-      ),
-      fetchVerifiedInternetData(
-        `site:signalhire.com/companies "${company.name}" (Sales OR "Sales Manager" OR HR OR "Human Resources" OR "Business Head")`,
-        5,
-        false
-      ),
-      fetchVerifiedInternetData(
-        `"${company.name}" specific product models, technical specifications, detailed catalog list`,
-        15,
+        `"${company.name}" specific product models technical specifications catalog AND site:signalhire.com/companies (Sales OR HR)`,
+        10,
         false,
-        true
+        true // exhaustive product scrape flag
       )
     ]);
 
     // 6. Free GSTIN Website Crawler
     let scrapedGstNumbers: string[] = [];
     try {
-      const generalResults = generalSearch.context;
+      const generalResults = companySearch.context;
       const firstUrl = generalResults.length > 0 ? generalResults[0].url : null;
       if (firstUrl && !firstUrl.includes('linkedin.com') && !firstUrl.includes('facebook.com')) {
         console.log(`Crawling ${firstUrl} for GSTIN...`);
@@ -222,16 +207,10 @@ Target Fields to Extract:
 14. "financial_chart_data": An ARRAY of JSON objects representing historical financial data to plot on a chart. Must contain { "year": "2023", "revenue": number_in_millions, "profit": number_in_millions }. Infer or extract this from the text. Ensure it is a valid JSON array of objects, NOT markdown.
 
 Context:
---- TAVILY GENERAL SEARCH ---
-${generalSearch.contextString}
---- TAVILY VERIFIED REGISTRY SEARCH ---
-${verifiedSearch.contextString}
---- EXACT FINANCIAL SEARCH ---
-${financialSearch.contextString}
---- SIGNALHIRE EMPLOYEE DATA ---
-${signalHireSearch.contextString}
---- EXHAUSTIVE PRODUCT SEARCH ---
-${productSearch.contextString}
+--- COMPANY, FINANCIAL & REGISTRY SEARCH ---
+${companySearch.contextString}
+--- EXHAUSTIVE PRODUCT & EMPLOYEE SEARCH ---
+${productAndEmployeeSearch.contextString}
 --- SCRAPED GST NUMBERS (HIGH ACCURACY) ---
 ${scrapedGstNumbers.length > 0 ? scrapedGstNumbers.join(', ') : 'None found directly'}
 --- END CONTEXT ---
