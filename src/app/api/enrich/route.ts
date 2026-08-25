@@ -136,41 +136,35 @@ async function processCompany(company: CompanyInput) {
   try {
     console.log(`Processing company: ${company.name}`);
 
-    // 1. Tavily General Search (Filtered for official/B2B data)
-    const generalSearch = await fetchVerifiedInternetData(
-      `${company.name} ${company.address} official company profile products services directors`,
-      5,
-      false
-    );
-
-    // 2. Tavily Official Govt & Registration Search
-    const verifiedSearch = await fetchVerifiedInternetData(
-      `"${company.name}" registration details directors GSTIN MCA`,
-      3,
-      true
-    );
-
-    // 3. Exact Financial Information Search
-    const financialSearch = await fetchVerifiedInternetData(
-      `"${company.name}" exact financial statements revenue profit balance sheet annual report`,
-      5,
-      false
-    );
-
-    // 4. SignalHire Domain Search (For Employees, Sales, HR)
-    const signalHireSearch = await fetchVerifiedInternetData(
-      `site:signalhire.com/companies "${company.name}" (Sales OR "Sales Manager" OR HR OR "Human Resources" OR "Business Head")`,
-      5,
-      false
-    );
-
-    // 5. Exhaustive Product Search (Same as Network Mapper)
-    const productSearch = await fetchVerifiedInternetData(
-      `"${company.name}" specific product models, technical specifications, detailed catalog list`,
-      15,
-      false,
-      true // exhaustive product scrape flag
-    );
+    // Run all searches in parallel to avoid Vercel 60s timeout
+    const [generalSearch, verifiedSearch, financialSearch, signalHireSearch, productSearch] = await Promise.all([
+      fetchVerifiedInternetData(
+        `${company.name} ${company.address} official company profile products services directors`,
+        5,
+        false
+      ),
+      fetchVerifiedInternetData(
+        `"${company.name}" registration details directors GSTIN MCA`,
+        3,
+        true
+      ),
+      fetchVerifiedInternetData(
+        `"${company.name}" exact financial statements revenue profit balance sheet annual report`,
+        5,
+        false
+      ),
+      fetchVerifiedInternetData(
+        `site:signalhire.com/companies "${company.name}" (Sales OR "Sales Manager" OR HR OR "Human Resources" OR "Business Head")`,
+        5,
+        false
+      ),
+      fetchVerifiedInternetData(
+        `"${company.name}" specific product models, technical specifications, detailed catalog list`,
+        15,
+        false,
+        true
+      )
+    ]);
 
     // 6. Free GSTIN Website Crawler
     let scrapedGstNumbers: string[] = [];

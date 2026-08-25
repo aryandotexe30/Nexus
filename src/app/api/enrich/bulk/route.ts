@@ -6,6 +6,7 @@ import { GoogleGenAI } from '@google/genai';
 import axios from 'axios';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
+import { fetchVerifiedInternetData } from "@/lib/searchProtocol";
 
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -24,61 +25,47 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Company name is required' }, { status: 400 });
     }
 
-    // 1. Tavily General Search
-    let tavilyGeneralRes: any = { data: { results: [] } };
-    let tavilyFinancialRes: any = { data: { results: [] } };
-    let tavilyStockRes: any = { data: { results: [] } };
-    let signalHireData: any = null;
+    // 1. Run all searches in parallel using native Gemini Search Grounding
+    let generalRes = "", financialRes = "", stockRes = "", signalHireRes = "", productRes = "";
 
     try {
       console.log(`Starting deep enrichment for ${name}`);
       
       // Fire all API requests in parallel for maximum speed
-      const [generalReq, financialReq, stockReq, signalHireReq] = await Promise.allSettled([
-        axios.post('https://api.tavily.com/search', {
-          api_key: process.env.TAVILY_API_KEY,
-          query: `"${name}" GST ${gst || ''} company profile products services directors contact india`,
-          search_depth: 'advanced',
-          include_answer: true,
-          max_results: 3
-        }, { timeout: 15000 }),
-        
-        axios.post('https://api.tavily.com/search', {
-          api_key: process.env.TAVILY_API_KEY,
-          query: `site:economictimes.indiatimes.com OR site:tofler.in OR site:zaubacorp.com "${name}" financials revenue profit loss balance sheet`,
-          search_depth: 'advanced',
-          include_answer: true,
-          max_results: 4
-        }, { timeout: 15000 }),
-
-        axios.post('https://api.tavily.com/search', {
-          api_key: process.env.TAVILY_API_KEY,
-          query: `"${name}" stock ticker symbol market cap share price performance NASDAQ NSE BSE`,
-          search_depth: 'advanced',
-          include_answer: true,
-          max_results: 2
-        }, { timeout: 15000 }),
-
-        axios.post(`https://www.signalhire.com/api/v1/candidate/search`, {
-          companyName: name, 
-          keywords: "Sales Manager, Business Head, Director, Procurement, HR",
-          items: 10 
-        }, {
-          headers: { apikey: process.env.SIGNALHIRE_API_KEY },
-          timeout: 15000
-        })
+      const [generalReq, financialReq, stockReq, signalHireReq, productReq] = await Promise.allSettled([
+        fetchVerifiedInternetData(
+          `"${name}" GST ${gst || ''} company profile products services directors contact india`,
+          5,
+          false
+        ),
+        fetchVerifiedInternetData(
+          `"${name}" exact financial statements revenue profit loss balance sheet annual report`,
+          5,
+          false
+        ),
+        fetchVerifiedInternetData(
+          `"${name}" stock ticker symbol market cap share price performance NASDAQ NSE BSE`,
+          3,
+          false
+        ),
+        fetchVerifiedInternetData(
+          `site:signalhire.com/companies "${name}" (Sales OR "Sales Manager" OR HR OR "Human Resources" OR "Business Head")`,
+          5,
+          false
+        ),
+        fetchVerifiedInternetData(
+          `"${name}" specific product models, technical specifications, detailed catalog list`,
+          15,
+          false,
+          true
+        )
       ]);
 
-      if (generalReq.status === 'fulfilled') tavilyGeneralRes = generalReq.value;
-      if (financialReq.status === 'fulfilled') tavilyFinancialRes = financialReq.value;
-      if (stockReq.status === 'fulfilled') tavilyStockRes = stockReq.value;
-      
-      if (signalHireReq.status === 'fulfilled') {
-        signalHireData = signalHireReq.value.data;
-      } else {
-        console.error("SignalHire Error:", signalHireReq.reason);
-        signalHireData = { error: "Failed to fetch from SignalHire. Check API key." };
-      }
+      if (generalReq.status === 'fulfilled') generalRes = generalReq.value.contextString;
+      if (financialReq.status === 'fulfilled') financialRes = financialReq.value.contextString;
+      if (stockReq.status === 'fulfilled') stockRes = stockReq.value.contextString;
+      if (signalHireReq.status === 'fulfilled') signalHireRes = signalHireReq.value.contextString;
+      if (productReq.status === 'fulfilled') productRes = productReq.value.contextString;
 
     } catch (e) {
       console.log(`Parallel requests failed for ${name}:`, e);
@@ -92,16 +79,19 @@ export async function POST(req: Request) {
       GST Number: ${gst || 'Not provided'}
       
       Web Search Context:
-      --- TAVILY GENERAL SEARCH ---
-      ${JSON.stringify(tavilyGeneralRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 800) })))}
-      --- TAVILY FINANCIAL SEARCH (Economic Times, Tofler, Zauba) ---
-      ${JSON.stringify(tavilyFinancialRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 800) })))}
-      --- TAVILY STOCK SEARCH ---
-      ${JSON.stringify(tavilyStockRes.data.results?.map((r: any) => ({ t: r.title, c: r.content?.substring(0, 800) })))}
-      --- SIGNALHIRE EXECUTIVE CONTACT DATA ---
-      ${JSON.stringify(signalHireData)}
+      --- GENERAL SEARCH ---
+      ${generalRes.substring(0, 40000)}
+      --- FINANCIAL SEARCH ---
+      ${financialRes.substring(0, 40000)}
+      --- STOCK SEARCH ---
+      ${stockRes.substring(0, 40000)}
+      --- EXECUTIVE CONTACT DATA ---
+      ${signalHireRes.substring(0, 40000)}
+      --- EXHAUSTIVE PRODUCT SEARCH ---
+      ${productRes.substring(0, 40000)}
 
-      CRITICAL: Extract high-value B2B intelligence. If specific fields are not found directly, logically infer based on your industry knowledge. Use the SignalHire data specifically for the personnel_contacts field!
+      CRITICAL: Extract high-value B2B intelligence. If specific fields are not found directly, logically infer based on your industry knowledge. Use the Executive Contact Data specifically for the personnel_contacts field!
+      For 'products_and_services' and 'products', you must exhaustively list every single specific product model, specification, and catalog item found. DO NOT summarize.
       
       Return ONLY a valid JSON object with this exact structure. NEVER output null. Use "Unknown" or [] if truly unavailable.
       {
