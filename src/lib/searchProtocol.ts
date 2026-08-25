@@ -133,7 +133,7 @@ export async function fetchVerifiedInternetData(
             .replace(/\s+/g, ' ')
             .trim();
             
-          content = cleanHtml.substring(0, 20000); // 20k characters max per page
+          content = cleanHtml.substring(0, 150000); // 150k characters max per page (Gemini Flash has 1M token context)
         } catch (e) {
           console.warn(`Could not fetch raw HTML for ${r.url}`);
         }
