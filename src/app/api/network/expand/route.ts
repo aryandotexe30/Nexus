@@ -22,9 +22,9 @@ export async function POST(req: Request) {
 
     const user = await prisma.user.findUnique({ where: { email: session.user.email } });
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    // if (user.credits <= 0) {
-    //   return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
-    // }
+    if (user.credits <= 0) {
+      return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
+    }
 
     const queryKey = `v12-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
 
@@ -143,11 +143,11 @@ Output exactly the JSON object containing a "thinking" chain of thought and an "
       console.error("Failed to save to cache:", cacheError);
     }
 
-    // Deduct credits (disabled because scraping is now free)
-    // await prisma.user.update({
-    //   where: { id: user.id },
-    //   data: { credits: { decrement: 1 } }
-    // });
+    // Deduct credits
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { credits: { decrement: 1 } }
+    });
 
     return NextResponse.json({ 
       success: true, 
