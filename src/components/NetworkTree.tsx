@@ -92,9 +92,9 @@ const TreeNode = ({ label, type, level = 0, context = "" }: { label: string; typ
       {/* Node Content */}
       <motion.div 
         whileHover={{ scale: 1.01, boxShadow: "0px 10px 30px -10px rgba(59, 130, 246, 0.2)" }}
-        className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-5 bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-2xl transition-all shadow-sm relative overflow-hidden group"
+        className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-5 bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-2xl transition-all shadow-sm relative group"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 to-purple-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 to-purple-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
         
         <div className="flex items-start gap-4 relative z-10 w-full">
           <div className="mt-1 p-3 bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl border border-slate-200 shadow-sm">
