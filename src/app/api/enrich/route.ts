@@ -140,40 +140,39 @@ async function processCompany(company: CompanyInput) {
     const generalSearch = await fetchVerifiedInternetData(
       `${company.name} ${company.address} official company profile products services directors`,
       5,
-      false // use excluded domains
-    );
-
-    // 2. Tavily Official Govt & Registration Search (ZaubaCorp / MCA / Verified)
-    const verifiedSearch = await fetchVerifiedInternetData(
-      `"${company.name}" registration details directors GSTIN MCA`,
-      3,
-      true // use strict whitelist
-    );
-
-    // 3. Tavily Stock & Market Search
-    const stockSearch = await fetchVerifiedInternetData(
-      `"${company.name}" stock ticker symbol market cap share price performance NASDAQ NSE BSE`,
-      3,
       false
     );
 
-    // 3. SignalHire Search (Targeting Dealmakers)
-    let signalHireData = null;
-    try {
-      const shRes = await axios.post(`https://www.signalhire.com/api/v1/candidate/search`, {
-        companyName: company.name, 
-        keywords: "Sales Manager, Business Head, Director, Procurement",
-        items: 10 
-      }, {
-        headers: { apikey: process.env.SIGNALHIRE_API_KEY }
-      });
-      signalHireData = shRes.data;
-    } catch (shError) {
-      console.error("SignalHire Error:", shError);
-      signalHireData = { error: "Failed to fetch from SignalHire" };
-    }
+    // 2. Tavily Official Govt & Registration Search
+    const verifiedSearch = await fetchVerifiedInternetData(
+      `"${company.name}" registration details directors GSTIN MCA`,
+      3,
+      true
+    );
 
-    // 4. Free GSTIN Website Crawler (Option 1)
+    // 3. Exact Financial Information Search
+    const financialSearch = await fetchVerifiedInternetData(
+      `"${company.name}" exact financial statements revenue profit balance sheet annual report`,
+      5,
+      false
+    );
+
+    // 4. SignalHire Domain Search (For Employees, Sales, HR)
+    const signalHireSearch = await fetchVerifiedInternetData(
+      `site:signalhire.com/companies "${company.name}" (Sales OR "Sales Manager" OR HR OR "Human Resources" OR "Business Head")`,
+      5,
+      false
+    );
+
+    // 5. Exhaustive Product Search (Same as Network Mapper)
+    const productSearch = await fetchVerifiedInternetData(
+      `"${company.name}" specific product models, technical specifications, detailed catalog list`,
+      15,
+      false,
+      true // exhaustive product scrape flag
+    );
+
+    // 6. Free GSTIN Website Crawler
     let scrapedGstNumbers: string[] = [];
     try {
       const generalResults = generalSearch.context;
@@ -192,7 +191,7 @@ async function processCompany(company: CompanyInput) {
       console.log("Failed to crawl for GSTIN:", e.message);
     }
 
-    // 5. Feed all context to Gemini to extract JSON
+    // 7. Feed all context to Gemini to extract JSON
     const prompt = `
 You are an expert B2B financial and corporate data analyst. 
 I have gathered raw information from the web about a company. 
@@ -204,6 +203,9 @@ CRITICAL FORMATTING RULES:
 - For ANY links, citations, or references, strictly use standard markdown links: [Link Name](https://url.com).
 - Ensure the text is written beautifully like a premium Notion document.
 
+CRITICAL ANTI-LAZINESS RULE FOR PRODUCTS:
+- For 'products_and_services', you must exhaustively list every single specific product model, specification, and catalog item found in the context. DO NOT summarize. Output the EXACT product names and technical specs as a comprehensive markdown list.
+
 Company Name: ${company.name}
 Address: ${company.address}
 Pincode: ${company.pincode}
@@ -211,16 +213,16 @@ Pincode: ${company.pincode}
 Target Fields to Extract:
 1. "gst_number": GST Number of the company (Markdown text)
 2. "industry": Industry of the company (e.g. IT, Power, Healthcare, Finance) (Markdown text)
-3. "financials": All available financials (Revenue, etc.) (Markdown text)
+3. "financials": All available exact financial information (Revenue, etc.) (Markdown text)
 4. "goods_sold": Goods sold (Markdown text)
 5. "goods_purchased": Goods Purchased (Markdown text)
-6. "profits_made": Profits made (Markdown text)
-7. "loss_made": loss made (Markdown text)
+6. "profits_made": Exact profits made (Markdown text)
+7. "loss_made": Exact loss made (Markdown text)
 8. "economic_times_info": All information available on economic times (Markdown text with [Links](url))
-9. "sales_and_business_heads": The primary dealmakers. Extract Regional Sales Managers, Business Heads, Procurement Officers, or Directors. If none exist, fallback to CEO. Include names and contact info if available. (Markdown text)
+9. "sales_and_business_heads": The primary dealmakers extracted from SignalHire or other context. Extract Sales Managers, Business Heads, Procurement Officers, or Directors. (Markdown text)
 10. "board_of_directors": Board of directors (Markdown text)
-11. "products_and_services": Products and services (Markdown text)
-12. "hr_contacts": HR and people available (Markdown text)
+11. "products_and_services": exhaustive, highly detailed list of specific product models and specifications. (Markdown text)
+12. "hr_contacts": HR and people available extracted from SignalHire or context (Markdown text)
 13. "all_available_info": A summary of all other available information (Markdown text)
 13. "stock_information": Live or recent stock data (Ticker, Market Cap, Share Price, Exchange, Performance). If private, say "Private Company". (Markdown text)
 14. "financial_chart_data": An ARRAY of JSON objects representing historical financial data to plot on a chart. Must contain { "year": "2023", "revenue": number_in_millions, "profit": number_in_millions }. Infer or extract this from the text. Ensure it is a valid JSON array of objects, NOT markdown.
@@ -230,10 +232,12 @@ Context:
 ${generalSearch.contextString}
 --- TAVILY VERIFIED REGISTRY SEARCH ---
 ${verifiedSearch.contextString}
---- TAVILY STOCK SEARCH ---
-${stockSearch.contextString}
---- SIGNALHIRE DATA ---
-${JSON.stringify(signalHireData)}
+--- EXACT FINANCIAL SEARCH ---
+${financialSearch.contextString}
+--- SIGNALHIRE EMPLOYEE DATA ---
+${signalHireSearch.contextString}
+--- EXHAUSTIVE PRODUCT SEARCH ---
+${productSearch.contextString}
 --- SCRAPED GST NUMBERS (HIGH ACCURACY) ---
 ${scrapedGstNumbers.length > 0 ? scrapedGstNumbers.join(', ') : 'None found directly'}
 --- END CONTEXT ---
