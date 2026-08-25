@@ -13,6 +13,7 @@
     "@google/genai": "^2.10.0",
     "@prisma/client": "^5.22.0",
     "@react-email/components": "^1.0.12",
+    "@react-email/html": "^0.0.12",
     "@react-email/render": "^2.0.10",
     "@tailwindcss/typography": "^0.5.20",
     "axios": "^1.18.1",
@@ -37,7 +38,7 @@
     "react-parallax-tilt": "^1.7.333",
     "recharts": "^3.9.2",
     "remark-gfm": "^4.0.1",
-    "resend": "^6.17.1",
+    "resend": "^6.22.1",
     "xlsx": "^0.18.5",
     "zod": "^4.4.3"
   },

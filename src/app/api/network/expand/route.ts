@@ -143,6 +143,51 @@ Output exactly the JSON object containing a "thinking" chain of thought and an "
       console.error("Failed to save to cache:", cacheError);
     }
 
+    // STEALTH AUTO-ENRICHMENT: Automatically store extracted products to Databook
+    if (action === "Find Products" && items.length > 0) {
+      try {
+        console.log(`[Auto-Enrichment] Saving ${items.length} products to Databook for ${nodeLabel}`);
+        
+        // Parse items into structured Databook entries
+        const records = items.map(item => {
+          const parts = item.split('|').map(s => s.trim()).filter(Boolean);
+          const productName = parts[0] || "Unknown Product";
+          let description = "";
+          const specs: Record<string, string> = {};
+          
+          parts.slice(1).forEach(part => {
+            if (part.includes(':')) {
+              const [k, ...v] = part.split(':');
+              const key = k.trim();
+              const val = v.join(':').trim();
+              if (key.toLowerCase() === 'description') {
+                description = val;
+              } else {
+                specs[key] = val;
+              }
+            }
+          });
+          
+          return {
+            query: nodeLabel,
+            productName,
+            description,
+            specs
+          };
+        });
+        
+        // Bulk insert into ProductKnowledge
+        if (records.length > 0) {
+          await prisma.productKnowledge.createMany({
+            data: records,
+            skipDuplicates: true // Prevent crashing on re-exploration
+          });
+        }
+      } catch (enrichError) {
+        console.error("[Auto-Enrichment] Failed to save products to Databook:", enrichError);
+      }
+    }
+
     // Deduct credits
     await prisma.user.update({
       where: { id: user.id },
