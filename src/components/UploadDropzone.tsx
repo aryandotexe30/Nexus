@@ -80,7 +80,7 @@ export default function UploadDropzone({ onDataParsed }: UploadDropzoneProps) {
           onClick={() => !file && fileInputRef.current?.click()}
           className={`
             relative overflow-hidden cursor-pointer
-            bg-white backdrop-blur-xl border-2
+            bg-white  border-2
             rounded-[2rem] p-12 transition-all duration-500 ease-out shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)]
             ${isDragging 
               ? 'border-blue-400 bg-blue-50/50 shadow-[0_20px_50px_-12px_rgba(59,130,246,0.2)]' 

@@ -72,11 +72,11 @@ export default function Sidebar() {
       {isOpen && (
         <div 
           onClick={() => setIsOpen(false)}
-          className="md:hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[45]"
+          className="md:hidden fixed inset-0 bg-slate-900/50  z-[45]"
         />
       )}
 
-      <div className={`w-72 h-[calc(100vh-32px)] m-4 rounded-[2rem] bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-white/50 dark:border-slate-700/50 flex flex-col fixed left-0 top-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none z-50 overflow-hidden transform transition-transform duration-300 md:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-[120%]"}`}>
+      <div className={`w-72 h-[calc(100vh-32px)] m-4 rounded-[2rem] bg-white/70 dark:bg-slate-900/70  border border-white/50 dark:border-slate-700/50 flex flex-col fixed left-0 top-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none z-50 overflow-hidden transform transition-transform duration-300 md:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-[120%]"}`}>
         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
       
       <div className="p-8 pb-4 relative z-10">
@@ -86,7 +86,7 @@ export default function Sidebar() {
           </div>
           TarasAI
         </h1>
-        <div className="mt-6 px-4 py-3 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-white/60 dark:border-slate-700/50 backdrop-blur-md shadow-sm">
+        <div className="mt-6 px-4 py-3 bg-white/50 dark:bg-slate-800/50 rounded-2xl border border-white/60 dark:border-slate-700/50  shadow-sm">
           <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest mb-0.5">Workspace</p>
           <p className="text-sm text-slate-800 dark:text-slate-200 font-bold truncate">{companyName}</p>
         </div>
@@ -105,7 +105,7 @@ export default function Sidebar() {
                 {isActive && !isLocked && (
                   <motion.div 
                     layoutId="sidebar-active"
-                    className="absolute inset-0 bg-white/80 dark:bg-slate-800/80 border border-white dark:border-slate-700 shadow-sm rounded-2xl backdrop-blur-md"
+                    className="absolute inset-0 bg-white/80 dark:bg-slate-800/80 border border-white dark:border-slate-700 shadow-sm rounded-2xl "
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}

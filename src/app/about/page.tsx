@@ -13,7 +13,7 @@ export default function AboutPage() {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-50 flex items-center justify-between p-6 md:px-12 backdrop-blur-md bg-white/80 border-b border-slate-200 shadow-sm">
+      <nav className="relative z-50 flex items-center justify-between p-6 md:px-12  bg-white/80 border-b border-slate-200 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-slate-900 flex items-center justify-center text-white rounded-none shadow-[4px_4px_0px_0px_rgba(37,99,235,0.5)]">
             <Globe className="w-6 h-6" />

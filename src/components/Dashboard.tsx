@@ -126,7 +126,7 @@ export default function Dashboard({ data }: DashboardProps) {
         </Tilt>
       </div>
 
-      <div className="bg-white/80 backdrop-blur-2xl rounded-[2.5rem] border border-white overflow-hidden shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)]">
+      <div className="bg-white/80  rounded-[2.5rem] border border-white overflow-hidden shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)]">
         <div className="flex border-b border-slate-100 bg-slate-50/50 p-2 gap-2 overflow-x-auto">
           {tabs.map(tab => {
             const Icon = tab.icon;

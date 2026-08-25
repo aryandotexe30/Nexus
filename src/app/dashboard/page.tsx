@@ -121,7 +121,7 @@ export default function HubDashboard() {
             )}
           </div>
 
-          <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl border border-white/40 dark:border-slate-700/50 rounded-3xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-none min-h-[500px]">
+          <div className="bg-white/40 dark:bg-slate-900/40  border border-white/40 dark:border-slate-700/50 rounded-3xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-none min-h-[500px]">
             {loadingFeed ? (
               <div className="h-full w-full flex items-center justify-center text-slate-500">
                 <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -182,7 +182,7 @@ export default function HubDashboard() {
         <div className="lg:w-[350px] space-y-6">
           <motion.div 
             whileHover={{ y: -5 }}
-            className="relative overflow-hidden bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl rounded-3xl p-6 border border-white/40 dark:border-slate-700/50 shadow-xl"
+            className="relative overflow-hidden bg-white/40 dark:bg-slate-900/40  rounded-3xl p-6 border border-white/40 dark:border-slate-700/50 shadow-xl"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
             <div className="flex items-center gap-4 relative z-10">
@@ -220,7 +220,7 @@ export default function HubDashboard() {
             <motion.div 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="group relative overflow-hidden rounded-3xl p-8 bg-white dark:bg-slate-800/80 backdrop-blur-xl border border-slate-200 dark:border-slate-700 shadow-xl shadow-slate-200/50 dark:shadow-none"
+              className="group relative overflow-hidden rounded-3xl p-8 bg-white dark:bg-slate-800/80  border border-slate-200 dark:border-slate-700 shadow-xl shadow-slate-200/50 dark:shadow-none"
             >
               <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-indigo-500/10 transition-colors"></div>
               <UploadCloud className="w-10 h-10 mb-6 text-indigo-500 group-hover:text-indigo-600 transition-colors" />

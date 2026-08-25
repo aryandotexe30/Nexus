@@ -187,7 +187,7 @@ export default function LandingPage() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-6 md:px-12 backdrop-blur-md bg-white/80 border-b border-slate-200 shadow-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-6 md:px-12  bg-white/80 border-b border-slate-200 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-slate-900 flex items-center justify-center text-white rounded-none shadow-[4px_4px_0px_0px_rgba(37,99,235,0.5)] relative overflow-hidden group">
             <div className="absolute inset-0 bg-blue-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>

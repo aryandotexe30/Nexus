@@ -92,7 +92,7 @@ const TreeNode = ({ label, type, level = 0, context = "" }: { label: string; typ
       {/* Node Content */}
       <motion.div 
         whileHover={{ scale: 1.01, boxShadow: "0px 10px 30px -10px rgba(59, 130, 246, 0.2)" }}
-        className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-5 bg-white/80 backdrop-blur-xl border border-slate-200/60 rounded-2xl transition-all shadow-sm relative group"
+        className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-5 bg-white/80  border border-slate-200/60 rounded-2xl transition-all shadow-sm relative group"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 to-purple-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
         
@@ -135,7 +135,7 @@ const TreeNode = ({ label, type, level = 0, context = "" }: { label: string; typ
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -10, scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  className="absolute right-0 top-full mt-3 w-64 bg-white/90 backdrop-blur-xl border border-slate-200 rounded-2xl shadow-2xl z-50 py-2"
+                  className="absolute right-0 top-full mt-3 w-64 bg-white/90  border border-slate-200 rounded-2xl shadow-2xl z-50 py-2"
                 >
                   {options.map(opt => (
                     <button
@@ -228,7 +228,7 @@ export default function NetworkTree() {
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
         className="max-w-4xl mx-auto mb-10"
       >
-        <div className="bg-white/60 backdrop-blur-2xl p-6 rounded-3xl shadow-xl border border-white/80 flex flex-col sm:flex-row gap-5 items-center relative overflow-hidden group">
+        <div className="bg-white/60  p-6 rounded-3xl shadow-xl border border-white/80 flex flex-col sm:flex-row gap-5 items-center relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-50/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
           <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-50 text-blue-600 rounded-2xl flex items-center justify-center shrink-0 shadow-inner relative z-10 border border-white">
             <Layers className="w-7 h-7" />
@@ -265,7 +265,7 @@ export default function NetworkTree() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
-            className="h-64 flex flex-col items-center justify-center text-center p-8 bg-white/40 backdrop-blur-xl border border-white/60 rounded-3xl shadow-xl"
+            className="h-64 flex flex-col items-center justify-center text-center p-8 bg-white/40  border border-white/60 rounded-3xl shadow-xl"
           >
             <div className="w-24 h-24 bg-gradient-to-br from-blue-50 to-indigo-50/50 rounded-full flex items-center justify-center mb-6 shadow-inner border border-white">
               <Layers className="w-12 h-12 text-blue-200" />
