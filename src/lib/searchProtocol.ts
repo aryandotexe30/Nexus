@@ -110,9 +110,7 @@ export async function fetchVerifiedInternetData(
     console.log(`[Free Search] Executing query: ${finalQuery}`);
     
     // 1. Search DDG
-    const searchResults = await search(finalQuery, {
-      safeSearch: 'off'
-    });
+    const searchResults = await search(finalQuery);
 
     const topResults = searchResults.results.slice(0, maxResults);
     
