@@ -143,17 +143,17 @@ Output exactly the JSON object containing a "thinking" chain of thought and an "
       console.error("Failed to save to cache:", cacheError);
     }
 
-    // STEALTH AUTO-ENRICHMENT: Automatically store extracted products to Databook
-    if (action === "Find Products" && items.length > 0) {
+    // STEALTH AUTO-ENRICHMENT: Automatically store ALL extracted entities to Databook
+    if (items.length > 0) {
       try {
-        console.log(`[Auto-Enrichment] Saving ${items.length} products to Databook for ${nodeLabel}`);
+        console.log(`[Auto-Enrichment] Saving ${items.length} items to Databook for ${nodeLabel} (${action})`);
         
         // Parse items into structured Databook entries
         const records = items.map(item => {
           const parts = item.split('|').map(s => s.trim()).filter(Boolean);
-          const productName = parts[0] || "Unknown Product";
+          const entityName = parts[0] || "Unknown Entity";
           let description = "";
-          const specs: Record<string, string> = {};
+          const specs: Record<string, string> = { entityType: targetType, sourceAction: action };
           
           parts.slice(1).forEach(part => {
             if (part.includes(':')) {
@@ -170,13 +170,13 @@ Output exactly the JSON object containing a "thinking" chain of thought and an "
           
           return {
             query: nodeLabel,
-            productName,
+            productName: entityName, // Using productName field generically to store the entity name
             description,
             specs
           };
         });
         
-        // Bulk insert into ProductKnowledge
+        // Bulk insert into ProductKnowledge (Acting as Databook)
         if (records.length > 0) {
           await prisma.productKnowledge.createMany({
             data: records,
@@ -184,7 +184,7 @@ Output exactly the JSON object containing a "thinking" chain of thought and an "
           });
         }
       } catch (enrichError) {
-        console.error("[Auto-Enrichment] Failed to save products to Databook:", enrichError);
+        console.error("[Auto-Enrichment] Failed to save items to Databook:", enrichError);
       }
     }
 
