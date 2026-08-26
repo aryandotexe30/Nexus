@@ -112,7 +112,7 @@ export async function fetchVerifiedInternetData(
     }
     
     const searchResponse = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-1.5-flash',
       contents: searchPrompt,
       config: {
         tools: [{ googleSearch: {} }]
