@@ -182,7 +182,7 @@ export default function LandingPage() {
         >
           <div className="absolute w-[80%] h-[80%] border border-indigo-500/20 rounded-full animate-[spin_60s_linear_infinite]"></div>
           <div className="absolute w-[60%] h-[60%] border-2 border-dashed border-blue-600/20 rounded-full animate-[spin_40s_linear_infinite_reverse]"></div>
-          <div className="absolute w-[40%] h-[40%] bg-gradient-to-br from-blue-500/5 to-indigo-500/5 rounded-full blur-3xl"></div>
+          <div className="absolute w-[40%] h-[40%] bg-gradient-to-br from-blue-500/5 to-indigo-500/5 rounded-full "></div>
         </motion.div>
       </div>
 

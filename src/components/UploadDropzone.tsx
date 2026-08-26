@@ -89,7 +89,7 @@ export default function UploadDropzone({ onDataParsed }: UploadDropzoneProps) {
         >
           {/* Animated Gradient Border Glow */}
           {isDragging && (
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 opacity-20 blur-xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 opacity-20 "></div>
           )}
 
           <input
@@ -136,7 +136,7 @@ export default function UploadDropzone({ onDataParsed }: UploadDropzoneProps) {
                 className="flex flex-col items-center justify-center text-center py-4 relative z-10"
               >
                 <div className="relative">
-                  <div className="absolute inset-0 bg-emerald-400 blur-xl opacity-20 rounded-full animate-pulse"></div>
+                  <div className="absolute inset-0 bg-emerald-400  opacity-20 rounded-full animate-pulse"></div>
                   <FileSpreadsheet size={64} className="text-emerald-500 relative z-10 mb-6" />
                   <motion.div 
                     initial={{ scale: 0 }}

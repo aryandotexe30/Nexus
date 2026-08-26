@@ -46,7 +46,7 @@ export default function SupplyChainAnalyzer() {
 
   return (
     <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl relative overflow-hidden mb-6">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+      <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full  -translate-y-1/2 translate-x-1/2"></div>
       
       <div className="flex items-center gap-3 mb-6 relative z-10">
         <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center">

@@ -72,7 +72,7 @@ export default function BusinessPlanPage() {
     <div className="max-w-5xl mx-auto space-y-8 p-4">
       {/* Header */}
       <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full  -translate-y-1/2 translate-x-1/2"></div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
@@ -134,7 +134,7 @@ export default function BusinessPlanPage() {
               <motion.div 
                 animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.8, 0.3] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="absolute -inset-8 bg-blue-400/30 blur-2xl rounded-full"
+                className="absolute -inset-8 bg-blue-400/30  rounded-full"
               />
               <div className="bg-white p-6 rounded-3xl shadow-xl relative z-10 border border-slate-100 flex gap-4 items-center">
                  <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />

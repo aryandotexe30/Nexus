@@ -77,7 +77,7 @@ export default function Sidebar() {
       )}
 
       <div className={`w-72 h-[calc(100vh-32px)] m-4 rounded-[2rem] bg-white/70 dark:bg-slate-900/70  border border-white/50 dark:border-slate-700/50 flex flex-col fixed left-0 top-0 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none z-50 overflow-hidden transform transition-transform duration-300 md:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-[120%]"}`}>
-        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full  -translate-y-1/2 translate-x-1/2"></div>
       
       <div className="p-8 pb-4 relative z-10">
         <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 tracking-tight flex items-center gap-3">

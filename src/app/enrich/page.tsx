@@ -63,7 +63,7 @@ export default function Home() {
           scale: [1, 1.05, 1],
         }}
         transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-        className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-blue-200/40 rounded-full blur-[100px] pointer-events-none mix-blend-multiply"
+        className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-blue-200/40 rounded-full  pointer-events-none mix-blend-multiply"
       />
       <motion.div 
         animate={{ 
@@ -71,7 +71,7 @@ export default function Home() {
           scale: [1, 1.1, 1],
         }}
         transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-        className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-purple-200/40 rounded-full blur-[120px] pointer-events-none mix-blend-multiply"
+        className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-purple-200/40 rounded-full  pointer-events-none mix-blend-multiply"
       />
       
       <div className="relative z-20 container mx-auto px-4 py-16">
@@ -139,7 +139,7 @@ export default function Home() {
                 <motion.div 
                   animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.8, 0.3] }}
                   transition={{ duration: 2, repeat: Infinity }}
-                  className="absolute -inset-8 bg-blue-400/30 blur-2xl rounded-full"
+                  className="absolute -inset-8 bg-blue-400/30  rounded-full"
                 />
                 <Loader2 className="w-20 h-20 text-blue-600 animate-spin relative z-10" />
               </div>
