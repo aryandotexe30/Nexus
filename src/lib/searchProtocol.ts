@@ -89,6 +89,8 @@ export async function generateStructuredAIResponse(
 
 import { search } from 'duck-duck-scrape';
 
+import * as cheerio from 'cheerio';
+
 // Unified internet fetcher
 export async function fetchVerifiedInternetData(
   query: string,
@@ -97,38 +99,58 @@ export async function fetchVerifiedInternetData(
   includeRawContent: boolean = false
 ) {
   try {
-    console.log(`[Gemini Grounding] Executing native search query: ${query}`);
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    console.log(`[DuckDuckGo Search] Executing query: ${query}`);
+    const searchResults = await search(query, { safeSearch: search.SafeSearchType.OFF });
     
-    // Step 1: Instruct Gemini to use its native Google Search to find all raw data
-    let searchPrompt = `You are a fast research assistant. Use Google Search to find concise, factual data for this query: "${query}". Summarize the key facts quickly.`;
-    
-    if (includeRawContent) {
-      searchPrompt = `
-        You are an expert researcher. Use Google Search to exhaustively find information for this query: "${query}"
-        If looking for products, extract EVERY SINGLE product model number, name, application, and specification you can find. 
-        List them out in extreme detail. Do not summarize.
-      `;
+    // Filter results if whitelist is requested
+    let filteredResults = searchResults.results;
+    if (useStrictWhitelists) {
+      filteredResults = filteredResults.filter(r => 
+        TAVILY_VERIFIED_DOMAINS.some(domain => r.url.toLowerCase().includes(domain))
+      );
     }
     
-    const searchResponse = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: searchPrompt,
-      config: {
-        tools: [{ googleSearch: {} }]
+    // Exclude blacklisted domains
+    filteredResults = filteredResults.filter(r => 
+      !TAVILY_EXCLUDED_DOMAINS.some(domain => r.url.toLowerCase().includes(domain))
+    );
+
+    const topResults = filteredResults.slice(0, maxResults);
+    let contextString = "";
+
+    // Fetch actual page content
+    const fetchPromises = topResults.map(async (result) => {
+      let pageText = result.description;
+      if (includeRawContent) {
+        try {
+          const res = await axios.get(result.url, { 
+            timeout: 5000,
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+          });
+          const $ = cheerio.load(res.data);
+          // Strip unnecessary tags
+          $('script, style, noscript, nav, footer, header').remove();
+          const text = $('body').text().replace(/\s+/g, ' ').trim();
+          if (text.length > 200) {
+            pageText = text.substring(0, 15000); // Take top 15k chars per page
+          }
+        } catch (e) {
+          console.log(`Failed to scrape raw content from ${result.url}`);
+        }
       }
+      return `URL: ${result.url}\nTitle: ${result.title}\nContent: ${pageText}\n\n`;
     });
 
-    const rawData = searchResponse.text || "No data found.";
-    console.log(`[Gemini Grounding] Found ${rawData.length} characters of grounded data.`);
+    const scrapedContents = await Promise.all(fetchPromises);
+    contextString = scrapedContents.join("\n---\n");
 
     return {
       answer: "",
-      context: [{ url: "google-search-grounding", title: "Native Search" }],
-      contextString: rawData.substring(0, 150000)
+      context: topResults.map(r => ({ url: r.url, title: r.title })),
+      contextString
     };
   } catch (e: any) {
-    console.error(`Gemini native search failed for query: ${query}.`, e.message);
+    console.error(`DuckDuckGo search failed for query: ${query}.`, e.message);
     return { answer: "", context: [], contextString: "No internet data could be fetched." };
   }
 }
