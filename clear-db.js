@@ -1,12 +1,9 @@
-require('dotenv').config({ path: '.env' });
 require('dotenv').config({ path: '.env.local' });
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
-
 async function main() {
-  await prisma.company.deleteMany({});
   await prisma.productKnowledge.deleteMany({});
-  await prisma.networkCache.deleteMany({});
-  console.log('Databook cleared.');
+  await prisma.company.deleteMany({});
+  console.log('Databook and Cache completely cleared.');
 }
 main().catch(console.error).finally(() => prisma.$disconnect());

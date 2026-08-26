@@ -144,25 +144,18 @@ async function processCompany(company: CompanyInput) {
   try {
     console.log(`Processing company: ${company.name}`);
 
-    // Run optimized searches in parallel to avoid Gemini 15 RPM rate limits
-    const [companySearch, productAndEmployeeSearch] = await Promise.all([
-      fetchVerifiedInternetData(
-        `"${company.name}" ${company.address} official company profile registration GSTIN MCA financial statements revenue profit balance sheet`,
-        5,
-        false
-      ),
-      fetchVerifiedInternetData(
-        `"${company.name}" specific product models technical specifications catalog AND site:signalhire.com/companies (Sales OR HR)`,
-        10,
-        false,
-        true // exhaustive product scrape flag
-      )
-    ]);
+    // Run a single MEGA search to prevent Gemini 15 RPM rate limits
+    const searchRes = await fetchVerifiedInternetData(
+      `"${company.name}" ${company.address} official company profile registration GSTIN MCA financial statements revenue profit balance sheet specific product models technical specifications catalog site:signalhire.com/companies (Sales OR HR)`,
+      10, // Max 10 results
+      false, // Skip DB
+      true  // Include Raw Content for Exhaustive Extraction
+    );
 
     // 6. Free GSTIN Website Crawler
     let scrapedGstNumbers: string[] = [];
     try {
-      const generalResults = companySearch.context;
+      const generalResults = searchRes.context;
       const firstUrl = generalResults.length > 0 ? generalResults[0].url : null;
       if (firstUrl && !firstUrl.includes('linkedin.com') && !firstUrl.includes('facebook.com')) {
         console.log(`Crawling ${firstUrl} for GSTIN...`);
@@ -215,10 +208,8 @@ Target Fields to Extract:
 14. "financial_chart_data": An ARRAY of JSON objects representing historical financial data to plot on a chart. Must contain { "year": "2023", "revenue": number_in_millions, "profit": number_in_millions }. Infer or extract this from the text. Ensure it is a valid JSON array of objects, NOT markdown.
 
 Context:
---- COMPANY, FINANCIAL & REGISTRY SEARCH ---
-${companySearch.contextString}
---- EXHAUSTIVE PRODUCT & EMPLOYEE SEARCH ---
-${productAndEmployeeSearch.contextString}
+--- EXHAUSTIVE COMPANY SEARCH ---
+${searchRes.contextString}
 --- SCRAPED GST NUMBERS (HIGH ACCURACY) ---
 ${scrapedGstNumbers.length > 0 ? scrapedGstNumbers.join(', ') : 'None found directly'}
 --- END CONTEXT ---

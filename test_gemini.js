@@ -1,29 +1,27 @@
-import { GoogleGenAI, Type } from '@google/genai';
-import * as dotenv from 'dotenv';
-dotenv.config();
+require('dotenv').config({ path: '.env.local' });
+const { GoogleGenAI } = require('@google/genai');
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-async function test() {
+async function testGemini(modelName) {
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: 'Find specific tape models for Sri Vasavi Adhesive Tapes Limited.',
+      model: modelName,
+      contents: 'Hello',
       config: {
-        tools: [{ googleSearch: {} }],
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            items: { type: Type.ARRAY, items: { type: Type.STRING } }
-          }
-        }
+        tools: [{ googleSearch: {} }]
       }
     });
-    console.log(response.text);
-  } catch (e) {
-    console.error(e);
+    console.log(`Success for ${modelName}:`, response.text.substring(0, 50));
+  } catch (err) {
+    console.error(`Failed for ${modelName}:`, err.message);
   }
 }
 
-test();
+async function main() {
+  await testGemini('gemini-2.5-flash');
+  await testGemini('gemini-1.5-flash');
+  await testGemini('gemini-1.5-pro');
+  await testGemini('gemini-2.5-pro');
+}
+main();
