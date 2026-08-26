@@ -79,7 +79,15 @@ export async function POST(req: Request) {
 
       const isExpired = isCacheExpired(existingCompany?.updatedAt, 30);
 
-      if (existingCompany && existingCompany.data && !isExpired) {
+      let isBlank = false;
+      if (existingCompany && existingCompany.data) {
+        const d = existingCompany.data as any;
+        if (d.description === 'Unknown' || d.description === '' || !d.description) {
+           isBlank = true;
+        }
+      }
+
+      if (existingCompany && existingCompany.data && !isExpired && !isBlank) {
         console.log(`[Cache Hit] Enriched data found for: ${normalizedName}`);
         results.push({
           company_input: company,
