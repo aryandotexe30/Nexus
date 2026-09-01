@@ -111,8 +111,8 @@ export async function POST(req: Request) {
           }
         }
         
-        // Delay 3 seconds between API calls to avoid rate limits
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        // Delay 500ms between API calls
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
 
@@ -159,7 +159,7 @@ async function processCompany(company: CompanyInput) {
       const firstUrl = generalResults.length > 0 ? generalResults[0].url : null;
       if (firstUrl && !firstUrl.includes('linkedin.com') && !firstUrl.includes('facebook.com')) {
         console.log(`Crawling ${firstUrl} for GSTIN...`);
-        const homepageRes = await axios.get(firstUrl, { timeout: 8000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } });
+        const homepageRes = await axios.get(firstUrl, { timeout: 3000, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } });
         const gstRegex = /\b[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}\b/gi;
         const matches = typeof homepageRes.data === 'string' ? homepageRes.data.match(gstRegex) : null;
         if (matches) {
