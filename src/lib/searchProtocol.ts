@@ -1,5 +1,6 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import axios from 'axios';
+import * as cheerio from 'cheerio';
 
 // Unified constants
 export const TAVILY_EXCLUDED_DOMAINS = [
@@ -21,12 +22,21 @@ export function isCacheExpired(date: Date | null | undefined, days: number = 30)
   return date < timeLimit;
 }
 
-// Unified AI generator with robust error handling and timeout
+// Model priority list - using valid Google GenAI v1beta model names
+export const VALID_GEMINI_MODELS = [
+  'gemini-2.0-flash',
+  'gemini-2.5-flash',
+  'gemini-2.0-flash-lite',
+  'gemini-1.5-flash-002',
+  'gemini-1.5-pro-002'
+];
+
+// Unified AI generator with robust error handling and model fallback
 export async function generateStructuredAIResponse(
   prompt: string, 
   schemaProps: any, 
   requiredKeys: string[],
-  modelName: string = 'gemini-2.5-flash'
+  preferredModel: string = 'gemini-2.0-flash'
 ) {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   
@@ -38,7 +48,12 @@ export async function generateStructuredAIResponse(
     }
   }
 
-  const modelsToTry = [modelName, 'gemini-2.5-flash-lite', 'gemini-flash-lite-latest'];
+  // Prioritize preferred model, followed by all valid fallback models
+  const modelsToTry = [
+    preferredModel,
+    ...VALID_GEMINI_MODELS.filter(m => m !== preferredModel)
+  ];
+
   let responseText = "";
 
   for (const model of modelsToTry) {
@@ -47,7 +62,7 @@ export async function generateStructuredAIResponse(
     while (attempt < 2 && !success) {
       try {
         const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error("Gemini SDK Timeout")), 60000)
+          setTimeout(() => reject(new Error("Gemini SDK Timeout")), 45000)
         );
 
         const response: any = await Promise.race([
@@ -67,15 +82,19 @@ export async function generateStructuredAIResponse(
         ]);
         
         responseText = response.text || "";
-        success = true;
-        break;
+        if (responseText) {
+          success = true;
+          break;
+        }
       } catch (err: any) {
-        console.log(`Model ${model} Error: ${err.message}. Retrying... (Attempt ${attempt + 1})`);
-        await new Promise(r => setTimeout(r, 4000));
+        console.log(`[AI Generation] Model ${model} Attempt ${attempt + 1} Error: ${err.message}`);
+        if (err.message?.includes('429') || err.message?.includes('RESOURCE_EXHAUSTED')) {
+          await new Promise(r => setTimeout(r, 2000));
+        }
         attempt++;
       }
     }
-    if (success) break;
+    if (success && responseText) break;
   }
 
   if (!responseText) {
@@ -87,70 +106,138 @@ export async function generateStructuredAIResponse(
   return JSON.parse(resultText);
 }
 
-import { search } from 'duck-duck-scrape';
+function decodeBingUrl(url: string): string {
+  if (!url) return '';
+  if (!url.includes('/ck/a?')) return url;
+  try {
+    const match = url.match(/[?&]u=a1([A-Za-z0-9_-]+)/);
+    if (match && match[1]) {
+      let b64 = match[1].replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      const decoded = Buffer.from(b64, 'base64').toString('utf8');
+      if (decoded.startsWith('http')) return decoded;
+    }
+  } catch (e) {}
+  return url;
+}
 
-import * as cheerio from 'cheerio';
+// Fallback search using Bing + live page scraping
+async function searchWebFallback(query: string, maxResults: number = 6): Promise<{ answer: string, context: any[], contextString: string }> {
+  try {
+    console.log(`[Web Fallback Search] Querying Bing for: ${query}`);
+    const res = await axios.get('https://www.bing.com/search', {
+      params: { q: query },
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9'
+      },
+      timeout: 8000
+    });
 
-// Unified internet fetcher
+    const $ = cheerio.load(res.data);
+    const results: { title: string, url: string, snippet: string }[] = [];
+
+    $('li.b_algo').each((i, el) => {
+      const title = $(el).find('h2 a').text().trim();
+      const rawUrl = $(el).find('h2 a').attr('href') || '';
+      const url = decodeBingUrl(rawUrl);
+      const snippet = $(el).find('.b_caption p, .b_algoSlug, p').text().trim();
+      if (title && url && !url.includes('bing.com/search')) {
+        results.push({ title, url, snippet });
+      }
+    });
+
+    const topResults = results.slice(0, maxResults);
+    if (topResults.length === 0) {
+      return { answer: "", context: [], contextString: "No web results found." };
+    }
+
+    // Scrape pages
+    const fetchPromises = topResults.map(async (r) => {
+      let pageContent = r.snippet;
+      try {
+        const pageRes = await axios.get(r.url, {
+          timeout: 5000,
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+        });
+        const page$ = cheerio.load(pageRes.data);
+        page$('script, style, noscript, nav, footer, header').remove();
+        const text = page$('body').text().replace(/\s+/g, ' ').trim();
+        if (text.length > 200) {
+          pageContent = text.substring(0, 10000);
+        }
+      } catch (e) {}
+      return `URL: ${r.url}\nTitle: ${r.title}\nContent: ${pageContent}\n\n`;
+    });
+
+    const scraped = await Promise.all(fetchPromises);
+    return {
+      answer: "",
+      context: topResults.map(r => ({ url: r.url, title: r.title })),
+      contextString: scraped.join("\n---\n")
+    };
+  } catch (err: any) {
+    console.error('[Web Fallback Search] Error:', err.message);
+    return { answer: "", context: [], contextString: "No internet data could be fetched." };
+  }
+}
+
+// Unified internet fetcher: Gemini Google Search Grounding with seamless fallback
 export async function fetchVerifiedInternetData(
   query: string,
   maxResults: number = 5,
   useStrictWhitelists: boolean = false,
   includeRawContent: boolean = false
 ) {
-  try {
-    console.log(`[DuckDuckGo Search] Executing query: ${query}`);
-    const searchResults = await search(query, { safeSearch: search.SafeSearchType.OFF });
-    
-    // Filter results if whitelist is requested
-    let filteredResults = searchResults.results;
-    if (useStrictWhitelists) {
-      filteredResults = filteredResults.filter(r => 
-        TAVILY_VERIFIED_DOMAINS.some(domain => r.url.toLowerCase().includes(domain))
-      );
-    }
-    
-    // Exclude blacklisted domains
-    filteredResults = filteredResults.filter(r => 
-      !TAVILY_EXCLUDED_DOMAINS.some(domain => r.url.toLowerCase().includes(domain))
-    );
-
-    const topResults = filteredResults.slice(0, maxResults);
-    let contextString = "";
-
-    // Fetch actual page content
-    const fetchPromises = topResults.map(async (result) => {
-      let pageText = result.description;
+  // Step 1: Attempt Gemini Google Search Grounding
+  const groundingModels = ['gemini-2.0-flash', 'gemini-2.5-flash'];
+  
+  for (const model of groundingModels) {
+    try {
+      console.log(`[Gemini Grounding] Searching with ${model}: ${query}`);
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      
+      let searchPrompt = `You are a high-speed research assistant. Use Google Search to find concise, factual data for this query: "${query}". Include all key business facts, dates, financials, and details.`;
+      
       if (includeRawContent) {
-        try {
-          const res = await axios.get(result.url, { 
-            timeout: 5000,
-            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
-          });
-          const $ = cheerio.load(res.data);
-          // Strip unnecessary tags
-          $('script, style, noscript, nav, footer, header').remove();
-          const text = $('body').text().replace(/\s+/g, ' ').trim();
-          if (text.length > 200) {
-            pageText = text.substring(0, 15000); // Take top 15k chars per page
-          }
-        } catch (e) {
-          console.log(`Failed to scrape raw content from ${result.url}`);
-        }
+        searchPrompt = `
+          You are an expert researcher. Use Google Search to exhaustively find information for this query: "${query}"
+          Extract EVERY SINGLE product model number, name, technical specification, and contact found.
+          List them in high detail. Do not summarize.
+        `;
       }
-      return `URL: ${result.url}\nTitle: ${result.title}\nContent: ${pageText}\n\n`;
-    });
 
-    const scrapedContents = await Promise.all(fetchPromises);
-    contextString = scrapedContents.join("\n---\n");
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Gemini Grounding Timeout")), 30000)
+      );
 
-    return {
-      answer: "",
-      context: topResults.map(r => ({ url: r.url, title: r.title })),
-      contextString
-    };
-  } catch (e: any) {
-    console.error(`DuckDuckGo search failed for query: ${query}.`, e.message);
-    return { answer: "", context: [], contextString: "No internet data could be fetched." };
+      const searchResponse: any = await Promise.race([
+        ai.models.generateContent({
+          model: model,
+          contents: searchPrompt,
+          config: {
+            tools: [{ googleSearch: {} }]
+          }
+        }),
+        timeoutPromise
+      ]);
+
+      const rawData = searchResponse.text || "";
+      if (rawData.length > 50) {
+        console.log(`[Gemini Grounding] Successfully fetched ${rawData.length} chars of data.`);
+        return {
+          answer: "",
+          context: [{ url: "google-search-grounding", title: "Google Search Grounding" }],
+          contextString: rawData.substring(0, 150000)
+        };
+      }
+    } catch (e: any) {
+      console.warn(`[Gemini Grounding] ${model} failed (${e.message}).`);
+    }
   }
+
+  // Step 2: Fallback to live web search & scraping
+  console.log(`[Search Protocol] Falling back to direct web scraper for: ${query}`);
+  return await searchWebFallback(query, maxResults);
 }

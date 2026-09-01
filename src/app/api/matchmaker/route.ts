@@ -27,8 +27,8 @@ export async function POST(req: Request) {
     }
 
     
-    // Search the internet globally for matches using Tavily
-    let searchContext = [];
+    // Search the internet globally for matches using searchProtocol
+    let searchContext: any[] = [];
     let searchAnswer = "";
     try {
       const searchRes = await fetchVerifiedInternetData(

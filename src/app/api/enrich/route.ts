@@ -253,7 +253,7 @@ Output strictly valid JSON matching the exact keys above. Do not include markdow
       "hr_contacts", "all_available_info", "stock_information", "financial_chart_data"
     ];
 
-    const jsonResult = await generateStructuredAIResponse(prompt, schemaProps, requiredKeys, 'gemini-1.5-flash');
+    const jsonResult = await generateStructuredAIResponse(prompt, schemaProps, requiredKeys, 'gemini-2.0-flash');
 
     // Merge original inputs
     return {
