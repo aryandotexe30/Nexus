@@ -35,18 +35,19 @@ export const VALID_GEMINI_MODELS = [
 
 // Active Open-Weight / Groq model list
 export const GROQ_MODELS = [
-  'llama-3.3-70b-versatile',
-  'llama-3.1-8b-instant',
-  'deepseek-r1-distill-llama-70b',
-  'mixtral-8x7b-32768'
+  'openai/gpt-oss-120b',
+  'openai/gpt-oss-20b',
+  'qwen/qwen3.6-27b',
+  'groq/compound-mini',
+  'qwen/qwen3.8-27b'
 ];
 
-// Universal Structured AI Generator (Groq Llama 3.3 -> Local Ollama -> Gemini Fallback)
+// Universal Structured AI Generator (Groq LPU Engine -> Local Ollama -> Gemini Fallback)
 export async function generateStructuredAIResponse(
   prompt: string, 
   schemaProps: any, 
   requiredKeys: string[],
-  preferredModel: string = 'llama-3.3-70b-versatile'
+  preferredModel: string = 'openai/gpt-oss-120b'
 ) {
   let responseText = "";
 
