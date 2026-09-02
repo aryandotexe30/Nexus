@@ -68,33 +68,26 @@ export async function POST(req: Request) {
     const searchRes = await fetchVerifiedInternetData(searchQuery, maxResults, false, isExhaustiveProductScrape);
     const searchContext = searchRes.contextString;
 
-    // 2. Gemini Extraction
+    // 2. Universal Structured AI Extraction
     const prompt = `
-You are an expert supply chain and industrial analyst.
-Based on the following search context, perform the requested action.
-
+You are an elite B2B product catalog and industrial supply chain analyst.
 Target Entity: ${nodeLabel}
 Entity Type: ${nodeType}
 Requested Action: ${action}
 
-Extract EVERY SINGLE highly specific, distinct item related to the query found in the search context.
-CRITICAL ANTI-LAZINESS RULE: You must exhaustively iterate through the raw content. Do not stop early. Do not summarize. Do not use 'etc.' or '...'. If the context contains 500 products, you MUST list all 500. Missing even one product is a catastrophic failure. Read the entire raw HTML/text block from top to bottom.
-- If asking for "Suppliers", "Manufacturers", or "Competitors", output EXACT COMPANY NAMES (e.g., "Tata Steel", "Suraj Metal Corp", "Reliance Industries"). Do NOT output product names.
-- If asking for "Raw Materials", output specific materials like "Lithium Cobalt Oxide", "Graphite Anode", "Polyethylene Separator", rather than generic terms.
-- If asking for "Products", you MUST adhere strictly to these rules:
-  1. DO NOT SCRUB BRANDING OR MODEL NUMBERS. You must include the EXACT product name, including proprietary model numbers, series codes, and brand identifiers exactly as they appear on the website (e.g., "DMT-308 - Masking Tape General Purpose", "DKT-25 CR Polyimide Insulation Tape").
-  2. DO NOT extract top-level category names (like "Masking Tapes", "Die Cuts"). You must only extract the INDIVIDUAL specific product models.
-  3. For each product, you MUST extract and append its comprehensive details: description, characteristics, applications, and technical specifications. Format the string cleanly, e.g., "DMT-308 - Masking Tape General Purpose | Description: ... | Applications: ... | Characteristics: ...".
-  4. CRITICAL: ONLY extract products from the company's OFFICIAL website content. Absolutely IGNORE any content from B2B directories (like IndiaMart, TradeIndia, Alibaba, JustDial) or generic overviews.
-
 Search Context:
 ${searchContext}
 
-Output strictly valid JSON with this exact schema:
+CRITICAL EXHAUSTIVE CATALOG EXTRACTION:
+- Extract and list EVERY SINGLE distinct product model, catalog item, and specialized industrial material/component manufactured or supplied by ${nodeLabel}.
+- Do NOT stop at 5 or 10 items. Exhaustively cover ALL product categories and individual item models.
+- Format each item cleanly: "Product Model / Name | Category: ... | Description: ... | Specs: ..."
+
+Output strictly a valid JSON object with the "items" array:
 {
   "items": [
-    "Item 1 Model/Name | Description: Specific description | Specs: Key specifications and applications",
-    "Item 2 Model/Name | Description: Specific description | Specs: Key specifications and applications"
+    "Exact Product Model/Name | Category: Subcategory | Description: Detailed function | Specs: Technical parameters",
+    ...
   ]
 }
     `;
@@ -130,19 +123,18 @@ Output strictly valid JSON with this exact schema:
     // Knowledge base fallback if web scraper yielded 0 items
     if (items.length === 0) {
       try {
-        console.log(`[Network Expand] Running fallback B2B extraction for ${nodeLabel} (${action})...`);
+        console.log(`[Network Expand] Running fallback exhaustive B2B extraction for ${nodeLabel} (${action})...`);
         const fallbackPrompt = `
-You are an expert supply chain and industrial analyst.
+You are an expert supply chain and industrial catalog analyst.
 Target Entity: ${nodeLabel}
 Entity Type: ${nodeType}
 Requested Action: ${action}
 
-List 5 to 8 specific industrial products, materials, or supply chain entities for ${nodeLabel}.
+CRITICAL: Provide an exhaustive, extensive list of all known product lines, models, materials, or supply chain nodes for ${nodeLabel} across all its industrial categories.
 Output strictly valid JSON with this exact schema:
 {
   "items": [
-    "Item 1 Model/Name | Description: Specific description | Specs: Key specifications and applications",
-    "Item 2 Model/Name | Description: Specific description | Specs: Key specifications and applications"
+    "Product Model/Name | Category: Subcategory | Description: Detailed function | Specs: Technical parameters"
   ]
 }
         `;
