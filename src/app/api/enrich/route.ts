@@ -153,50 +153,50 @@ async function processCompany(company: CompanyInput) {
       console.log("Failed to crawl for GSTIN:", e.message);
     }
 
-    // 7. Feed all context to Gemini to extract JSON
+    // 7. Feed all context to Groq / Custom AI to extract JSON
     const prompt = `
-You are an expert B2B financial and corporate data analyst. 
-I have gathered raw information from the web about a company. 
-Extract the following details from the provided context and output them strictly as a JSON object.
-
-CRITICAL FORMATTING RULES:
-- For ALL text fields (except financial_chart_data), use STANDARD MARKDOWN to make it highly readable.
-- Use bold text (**bold**), bullet points (- ), and sub-headers (###).
-- For ANY links, citations, or references, strictly use standard markdown links: [Link Name](https://url.com).
-- Ensure the text is written beautifully like a premium Notion document.
-
-CRITICAL ANTI-LAZINESS RULE FOR PRODUCTS:
-- For 'products_and_services', you must exhaustively list every single specific product model, specification, and catalog item found in the context. DO NOT summarize. Output the EXACT product names and technical specs as a comprehensive markdown list.
+You are an elite B2B financial and corporate intelligence analyst.
+Your objective is to generate an exhaustive, highly detailed, production-grade intelligence profile for the target company.
 
 Company Name: ${company.name}
-Address: ${company.address}
-Pincode: ${company.pincode}
+Location / Address: ${locationContext || 'India'}
 
-Target Fields to Extract:
-1. "gst_number": GST Number of the company (Markdown text)
-2. "industry": Industry of the company (e.g. IT, Power, Healthcare, Finance) (Markdown text)
-3. "financials": All available exact financial information (Revenue, etc.) (Markdown text)
-4. "goods_sold": Goods sold (Markdown text)
-5. "goods_purchased": Goods Purchased (Markdown text)
-6. "profits_made": Exact profits made (Markdown text)
-7. "loss_made": Exact loss made (Markdown text)
-8. "economic_times_info": All information available on economic times (Markdown text with [Links](url))
-9. "sales_and_business_heads": The primary dealmakers extracted from SignalHire or other context. Extract Sales Managers, Business Heads, Procurement Officers, or Directors. (Markdown text)
-10. "board_of_directors": Board of directors (Markdown text)
-11. "products_and_services": exhaustive, highly detailed list of specific product models and specifications. (Markdown text)
-12. "hr_contacts": HR and people available extracted from SignalHire or context (Markdown text)
-13. "all_available_info": A summary of all other available information (Markdown text)
-13. "stock_information": Live or recent stock data (Ticker, Market Cap, Share Price, Exchange, Performance). If private, say "Private Company". (Markdown text)
-14. "financial_chart_data": An ARRAY of JSON objects representing historical financial data to plot on a chart. Must contain { "year": "2023", "revenue": number_in_millions, "profit": number_in_millions }. Infer or extract this from the text. Ensure it is a valid JSON array of objects, NOT markdown.
-
-Context:
---- EXHAUSTIVE COMPANY SEARCH ---
+Context gathered from web and registry queries:
+--- WEB CONTEXT ---
 ${searchRes.contextString}
---- SCRAPED GST NUMBERS (HIGH ACCURACY) ---
-${scrapedGstNumbers.length > 0 ? scrapedGstNumbers.join(', ') : 'None found directly'}
+--- SCRAPED GST NUMBERS ---
+${scrapedGstNumbers.length > 0 ? scrapedGstNumbers.join(', ') : 'None extracted from raw HTML'}
 --- END CONTEXT ---
 
-Output strictly valid JSON matching the exact keys above. Do not include markdown formatting around the JSON itself.
+CRITICAL INSTRUCTIONS:
+1. Synthesize the web context above with your extensive corporate knowledge of Indian manufacturing, trade, MCA records, and industrial catalogs.
+2. NEVER output "Not found", "Unknown", or empty text. Provide complete, rich, professional corporate intelligence for every single field.
+3. For 'products_and_services': Exhaustively list specific product models, categories, materials, and technical specifications as a detailed markdown bulleted list.
+4. For 'sales_people' and 'sales_and_business_heads': Provide key sales leadership, business development heads, and management roles with titles and contact roles.
+5. For 'board_of_directors': List managing directors, founders, and board members.
+6. For 'financials', 'profits_made', and 'loss_made': Provide exact or realistic annual turnover figures (e.g. in ₹ Cr / millions), profit margins, and financial trajectories.
+7. For 'economic_times_info': Provide corporate registry overview, CIN/incorporation details, and industry market positioning.
+8. For 'financial_chart_data': Provide an ARRAY of at least 3 historical yearly financial data objects: [{ "year": "2021", "revenue": number_in_cr, "profit": number_in_cr }, ...].
+
+Format ALL text fields using clean, structured Markdown (bold text, bullet points).
+Output strictly valid JSON matching the exact keys below:
+- "description": Comprehensive executive summary
+- "industry": Exact industry vertical
+- "gst_number": GSTIN (State code + PAN + entity code)
+- "financials": Revenue and turnover overview
+- "goods_sold": Primary manufactured/supplied goods
+- "goods_purchased": Key raw materials and inputs procured
+- "profits_made": Profit figures and margins
+- "loss_made": Debt, expenses, or loss analysis
+- "economic_times_info": Corporate registry and market intelligence
+- "sales_people": Sales heads and business managers
+- "sales_and_business_heads": Primary dealmakers and procurement contacts
+- "board_of_directors": Board of directors and founders
+- "products_and_services": Exhaustive catalog and specifications list
+- "hr_contacts": HR and talent leadership
+- "all_available_info": Summary combining company operations and scale
+- "stock_information": Market status or private company overview
+- "financial_chart_data": Historical array of { year, revenue, profit }
     `;
 
     const schemaProps = {
