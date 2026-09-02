@@ -11,6 +11,7 @@ import {
   fetchVerifiedInternetData, 
   generateStructuredAIResponse 
 } from "@/lib/searchProtocol";
+import { fetchSignalHirePersonnel } from "@/lib/signalhire";
 
 // Interfaces
 interface CompanyInput {
@@ -149,13 +150,16 @@ async function processCompany(company: CompanyInput) {
     const cleanPincode = (company.pincode && company.pincode.toLowerCase() !== 'unknown' && company.pincode.toLowerCase() !== 'n/a') ? company.pincode : '';
     const locationContext = [cleanAddress, cleanPincode].filter(Boolean).join(' ');
 
-    // Run a single MEGA search to prevent Gemini 15 RPM rate limits
-    const searchRes = await fetchVerifiedInternetData(
-      `"${company.name}" ${locationContext} official company website products catalog specifications contact MCA GSTIN financial statements`.trim(),
-      10, // Max 10 results
-      false, // Skip DB
-      true  // Include Raw Content for Exhaustive Extraction
-    );
+    // 5. Parallel Data Fetching: Deep Web Crawl + SignalHire LinkedIn Contacts
+    const [searchRes, signalHireData] = await Promise.all([
+      fetchVerifiedInternetData(
+        `"${company.name}" ${locationContext} official company website products catalog specifications contact MCA GSTIN financial statements`.trim(),
+        10,
+        false,
+        true
+      ),
+      fetchSignalHirePersonnel(company.name)
+    ]);
 
     // 6. Free GSTIN Website Crawler
     let scrapedGstNumbers: string[] = [];
@@ -176,6 +180,19 @@ async function processCompany(company: CompanyInput) {
       console.log("Failed to crawl for GSTIN:", e.message);
     }
 
+    // Format SignalHire Candidates
+    let signalHireContext = "";
+    if (signalHireData.salesContacts.length > 0 || signalHireData.managementContacts.length > 0 || signalHireData.hrContacts.length > 0) {
+      signalHireContext = `
+--- VERIFIED SIGNALHIRE LINKEDIN PERSONNEL ---
+Sales & BD: ${signalHireData.salesContacts.map(c => `${c.name} (${c.title}) - ${c.email || ''} ${c.phone || ''} ${c.linkedinUrl || ''}`).join('; ')}
+Management: ${signalHireData.managementContacts.map(c => `${c.name} (${c.title}) - ${c.email || ''} ${c.phone || ''} ${c.linkedinUrl || ''}`).join('; ')}
+HR & People: ${signalHireData.hrContacts.map(c => `${c.name} (${c.title}) - ${c.email || ''} ${c.phone || ''} ${c.linkedinUrl || ''}`).join('; ')}
+`;
+    } else if (signalHireData.rawContext) {
+      signalHireContext = `\n--- LINKEDIN SEARCH SNIPPETS ---\n${signalHireData.rawContext}\n`;
+    }
+
     // 7. Feed all context to Groq / Custom AI to extract JSON
     const prompt = `
 You are an elite B2B financial and corporate intelligence analyst.
@@ -184,9 +201,10 @@ Your objective is to generate an exhaustive, highly detailed, production-grade i
 Company Name: ${company.name}
 Location / Address: ${locationContext || 'India'}
 
-Context gathered from web and registry queries:
+Context gathered from web, registries, and SignalHire LinkedIn intelligence:
 --- WEB CONTEXT ---
 ${searchRes.contextString}
+${signalHireContext}
 --- SCRAPED GST NUMBERS ---
 ${scrapedGstNumbers.length > 0 ? scrapedGstNumbers.join(', ') : 'None extracted from raw HTML'}
 --- END CONTEXT ---

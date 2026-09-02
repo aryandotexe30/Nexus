@@ -59,30 +59,8 @@ export async function POST(req: Request) {
         break;
     }
 
-    // 0. Check Database Cache
-    const cached = await prisma.networkCache.findUnique({
-      where: { queryKey }
-    });
-
-    const isExpired = isCacheExpired(cached?.createdAt, 30);
-
-    if (cached && cached.result && !isExpired) {
-      console.log(`[Cache Hit] Network data found for: ${queryKey}`);
-      return NextResponse.json({ 
-        success: true, 
-        items: cached.result,
-        targetType 
-      });
-    }
-
-    if (isExpired) {
-      // Clean up old cache entry to prevent DB bloat
-      try {
-        await prisma.networkCache.delete({ where: { queryKey } });
-      } catch (e) {
-        // Ignore if it was already deleted or doesn't exist
-      }
-    }
+    // Fresh live web crawl & graph expansion (Cache reads disabled)
+    console.log(`[Fresh Network Expansion] Action: ${action} for ${nodeLabel}`);
 
     // 1. Tavily Search - Efficient Exhaustive Scraping
     const isExhaustiveProductScrape = action === "Find Products";
