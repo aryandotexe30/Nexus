@@ -191,13 +191,15 @@ ${searchRes.contextString}
 ${scrapedGstNumbers.length > 0 ? scrapedGstNumbers.join(', ') : 'None extracted from raw HTML'}
 --- END CONTEXT ---
 
-CRITICAL INSTRUCTIONS:
-1. Synthesize the web context above with your extensive corporate knowledge of Indian manufacturing, trade, MCA records, and industrial catalogs.
-2. NEVER output "Not found", "Unknown", or empty text. Provide complete, rich, professional corporate intelligence for every single field.
-3. For 'products_and_services': Exhaustively list specific product models, categories, materials, and technical specifications as a detailed markdown bulleted list.
-4. For 'sales_people' and 'sales_and_business_heads': Provide key sales leadership, business development heads, and management roles with titles and contact roles.
-5. For 'board_of_directors': List managing directors, founders, and board members.
-6. For 'financials', 'profits_made', and 'loss_made': Provide exact or realistic annual turnover figures (e.g. in ₹ Cr / millions), profit margins, and financial trajectories.
+CRITICAL ANTI-HALLUCINATION & FACTUAL RULES:
+1. STRICT AUTHENTICITY: NEVER invent fake placeholder personal names (such as "Mr. Vasavi" or "Mr. P. Kumar") or sequential dummy phone numbers (such as 1234-5678, 2345-6789).
+2. For 'board_of_directors': Extract the real registered directors from MCA filings (e.g. D. N. V. Ananth Kumar, Anand Kumar) or verified corporate leadership designations.
+3. For 'sales_people' and 'sales_and_business_heads':
+   - Provide verified commercial leadership roles, corporate sales desks, official switchboard numbers (+91 80 4110 5000 / +91 ...), and official corporate inboxes (e.g. sales@company.com, info@company.com).
+   - If individual direct personal cell phones are private, state the official corporate sales phone line and verified domain email.
+4. For 'hr_contacts': Provide verified HR departments, official contact lines, and career inboxes (e.g. hr@company.com, careers@company.com).
+5. For 'products_and_services': Exhaustively list specific product models, categories, materials, and technical specifications as a detailed markdown bulleted list.
+6. For 'financials', 'profits_made', and 'loss_made': Provide exact or benchmark annual turnover figures (e.g. in ₹ Cr / millions), profit margins, and financial trajectories.
 7. For 'economic_times_info': Provide corporate registry overview, CIN/incorporation details, and industry market positioning.
 8. For 'financial_chart_data': Provide an ARRAY of at least 3 historical yearly financial data objects: [{ "year": "2021", "revenue": number_in_cr, "profit": number_in_cr }, ...].
 
