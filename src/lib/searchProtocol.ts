@@ -77,6 +77,11 @@ export async function generateStructuredAIResponse(
 ) {
   let responseText = "";
 
+  // Clamp input context to ~4,000 tokens (16,000 characters) to strictly respect Groq TPM rate limits
+  const safePrompt = prompt.length > 16000 
+    ? prompt.substring(0, 16000) + "\n\n[Context truncated for model context limits]" 
+    : prompt;
+
   // 1. Primary Path: Groq (LPU Engine) - Fast, Free, High Rate Limits
   if (process.env.GROQ_API_KEY) {
     try {
@@ -94,12 +99,12 @@ export async function generateStructuredAIResponse(
               },
               {
                 role: "user",
-                content: prompt
+                content: safePrompt
               }
             ],
             response_format: { type: "json_object" },
             temperature: 0.1,
-            max_tokens: 3000
+            max_tokens: 2000
           });
 
           const raw = completion.choices[0]?.message?.content || "";
