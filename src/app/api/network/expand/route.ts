@@ -90,7 +90,13 @@ CRITICAL ANTI-LAZINESS RULE: You must exhaustively iterate through the raw conte
 Search Context:
 ${searchContext}
 
-Output exactly the JSON object containing a "thinking" chain of thought and an "items" array of strings.
+Output strictly valid JSON with this exact schema:
+{
+  "items": [
+    "Item 1 Model/Name | Description: Specific description | Specs: Key specifications and applications",
+    "Item 2 Model/Name | Description: Specific description | Specs: Key specifications and applications"
+  ]
+}
     `;
 
     const schemaProps = {
@@ -104,10 +110,21 @@ Output exactly the JSON object containing a "thinking" chain of thought and an "
     let items: string[] = [];
     try {
       const parsedObject = await generateStructuredAIResponse(prompt, schemaProps, ["items"]);
-      items = parsedObject.items || [];
+      if (Array.isArray(parsedObject?.items) && parsedObject.items.length > 0) {
+        items = parsedObject.items;
+      } else if (Array.isArray(parsedObject?.products) && parsedObject.products.length > 0) {
+        items = parsedObject.products;
+      } else if (Array.isArray(parsedObject?.results) && parsedObject.results.length > 0) {
+        items = parsedObject.results;
+      } else if (Array.isArray(parsedObject) && parsedObject.length > 0) {
+        items = parsedObject;
+      } else {
+        const anyArray = Object.values(parsedObject || {}).find(v => Array.isArray(v) && v.length > 0);
+        items = (anyArray as string[]) || [];
+      }
     } catch (parseError) {
-      console.error("Failed to parse Gemini output:", parseError);
-      items = ["No data found"];
+      console.error("Failed to parse AI output:", parseError);
+      items = [];
     }
 
 
