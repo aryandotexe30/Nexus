@@ -33,28 +33,54 @@ export const VALID_GEMINI_MODELS = [
   'gemini-2.5-pro'
 ];
 
-// Active Open-Weight / Groq model list
+// Active Open-Weight / Groq model list (Ranked by speed, reliability, and JSON mode stability)
 export const GROQ_MODELS = [
-  'openai/gpt-oss-120b',
   'openai/gpt-oss-20b',
   'qwen/qwen3.6-27b',
-  'groq/compound-mini',
-  'qwen/qwen3.8-27b'
+  'qwen/qwen3.8-27b',
+  'openai/gpt-oss-120b'
 ];
+
+function safeParseJson(raw: string): any {
+  if (!raw) return null;
+  const clean = raw.trim();
+  try {
+    return JSON.parse(clean);
+  } catch (e) {}
+
+  // Extract from ```json ... ``` code fence
+  const codeBlockMatch = clean.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (codeBlockMatch && codeBlockMatch[1]) {
+    try {
+      return JSON.parse(codeBlockMatch[1].trim());
+    } catch (e) {}
+  }
+
+  // Extract from outer braces { ... }
+  const firstBrace = clean.indexOf('{');
+  const lastBrace = clean.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    try {
+      return JSON.parse(clean.substring(firstBrace, lastBrace + 1));
+    } catch (e) {}
+  }
+
+  throw new Error(`Failed to parse AI output into JSON: ${raw.substring(0, 80)}...`);
+}
 
 // Universal Structured AI Generator (Groq LPU Engine -> Local Ollama -> Gemini Fallback)
 export async function generateStructuredAIResponse(
   prompt: string, 
   schemaProps: any, 
   requiredKeys: string[],
-  preferredModel: string = 'openai/gpt-oss-120b'
+  preferredModel: string = 'openai/gpt-oss-20b'
 ) {
   let responseText = "";
 
-  // 1. Primary Path: Groq (Llama 3.3 70B / DeepSeek) - Fast, Free, High Rate Limits
+  // 1. Primary Path: Groq (LPU Engine) - Fast, Free, High Rate Limits
   if (process.env.GROQ_API_KEY) {
     try {
-      console.log(`[Custom AI Engine] Routing extraction to Groq (Llama 3.3 70B)...`);
+      console.log(`[Custom AI Engine] Routing extraction to Groq LPU engine...`);
       const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
       for (const model of GROQ_MODELS) {
@@ -64,7 +90,7 @@ export async function generateStructuredAIResponse(
             messages: [
               {
                 role: "system",
-                content: `You are an elite B2B data extraction analyst. You strictly output valid, minified JSON matching the exact requested schema.`
+                content: `You are an elite B2B corporate intelligence analyst. You strictly output valid JSON matching the requested schema. Never output conversational preamble.`
               },
               {
                 role: "user",
@@ -73,13 +99,17 @@ export async function generateStructuredAIResponse(
             ],
             response_format: { type: "json_object" },
             temperature: 0.1,
-            max_tokens: 4096
+            max_tokens: 3000
           });
 
-          responseText = completion.choices[0]?.message?.content || "";
-          if (responseText) {
-            console.log(`[Custom AI Engine] Successfully generated extraction with Groq (${model}).`);
-            break;
+          const raw = completion.choices[0]?.message?.content || "";
+          if (raw) {
+            // Validate JSON parsing immediately
+            const parsed = safeParseJson(raw);
+            if (parsed) {
+              console.log(`[Custom AI Engine] Successfully generated extraction with Groq (${model}).`);
+              return parsed;
+            }
           }
         } catch (groqErr: any) {
           console.warn(`[Custom AI Engine] Groq ${model} failed (${groqErr.message}), trying next Groq model...`);
@@ -93,40 +123,36 @@ export async function generateStructuredAIResponse(
   // 2. Secondary Path: Self-Hosted / Local Ollama (if OLLAMA_BASE_URL is configured)
   if (!responseText && process.env.OLLAMA_BASE_URL) {
     try {
-      console.log(`[Custom AI Engine] Routing to private Ollama instance: ${process.env.OLLAMA_BASE_URL}`);
+      console.log(`[Custom AI Engine] Cascading to local Ollama (${process.env.OLLAMA_BASE_URL})...`);
       const ollamaRes = await axios.post(`${process.env.OLLAMA_BASE_URL}/api/generate`, {
-        model: process.env.OLLAMA_MODEL || "llama3.3",
-        prompt: prompt,
+        model: process.env.OLLAMA_MODEL || "llama3.3:70b",
+        prompt: `You are a B2B intelligence engine. Output strictly JSON matching schema.\n\n${prompt}`,
         format: "json",
         stream: false
-      }, { timeout: 30000 });
+      }, { timeout: 15000 });
 
-      responseText = ollamaRes.data?.response || "";
+      const raw = ollamaRes.data?.response;
+      if (raw) {
+        const parsed = safeParseJson(raw);
+        if (parsed) {
+          console.log(`[Custom AI Engine] Successfully extracted via local Ollama.`);
+          return parsed;
+        }
+      }
     } catch (ollamaErr: any) {
-      console.warn(`[Custom AI Engine] Ollama failed (${ollamaErr.message}), cascading to cloud models.`);
+      console.warn(`[Custom AI Engine] Ollama failed (${ollamaErr.message}), cascading to Gemini fallback.`);
     }
   }
 
-  // 3. Fallback Path: Google Gemini (if Groq / Ollama not configured or failed)
-  if (!responseText && process.env.GEMINI_API_KEY) {
+  // 3. Fallback Path: Google Gemini (if available)
+  if (process.env.GEMINI_API_KEY) {
+    console.log(`[Custom AI Engine] Cascading to Gemini fallback...`);
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    
-    if (!schemaProps.thinking) {
-      schemaProps.thinking = { type: Type.STRING, description: "Your chain of thought reasoning." };
-      if (!requiredKeys.includes("thinking")) {
-        requiredKeys.unshift("thinking");
-      }
-    }
 
-    const modelsToTry = [
-      'gemini-3.6-flash',
-      ...VALID_GEMINI_MODELS.filter(m => m !== 'gemini-3.6-flash')
-    ];
-
-    for (const model of modelsToTry) {
+    for (const model of VALID_GEMINI_MODELS) {
       try {
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error(`Timeout for ${model}`)), 10000)
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error(`Timeout on ${model}`)), 10000)
         );
 
         const response: any = await Promise.race([
@@ -145,9 +171,10 @@ export async function generateStructuredAIResponse(
           timeoutPromise
         ]);
         
-        responseText = response.text || "";
-        if (responseText) {
-          break;
+        const raw = response.text || "";
+        if (raw) {
+          const parsed = safeParseJson(raw);
+          if (parsed) return parsed;
         }
       } catch (err: any) {
         console.log(`[AI Generation] Gemini ${model} failed (${err.message}), trying next...`);
@@ -155,12 +182,7 @@ export async function generateStructuredAIResponse(
     }
   }
 
-  if (!responseText) {
-    throw new Error("All AI extraction engines (Groq, Ollama, Gemini) are currently unavailable.");
-  }
-
-  const resultText = responseText.replace(/^```json/gi, "").replace(/```$/gi, "").trim();
-  return JSON.parse(resultText);
+  throw new Error("All AI extraction engines (Groq, Ollama, Gemini) are currently unavailable.");
 }
 
 function decodeBingUrl(url: string): string {
