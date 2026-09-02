@@ -1,4 +1,5 @@
 import { GoogleGenAI, Type } from '@google/genai';
+import Groq from 'groq-sdk';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 
@@ -15,14 +16,14 @@ export const TAVILY_VERIFIED_DOMAINS = [
   "bloomberg.com", "pitchbook.com", "dunandbradstreet.com"
 ];
 
-// Unified memory TTl checker
+// Unified memory TTL checker
 export function isCacheExpired(date: Date | null | undefined, days: number = 30): boolean {
   if (!date) return true;
   const timeLimit = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
   return date < timeLimit;
 }
 
-// Active Gemini model priority list
+// Active Gemini model fallback list
 export const VALID_GEMINI_MODELS = [
   'gemini-3.6-flash',
   'gemini-3.5-flash-lite',
@@ -32,62 +33,129 @@ export const VALID_GEMINI_MODELS = [
   'gemini-2.5-pro'
 ];
 
-// Unified AI generator with fast failover and tight timeouts
+// Active Open-Weight / Groq model list
+export const GROQ_MODELS = [
+  'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant',
+  'deepseek-r1-distill-llama-70b',
+  'mixtral-8x7b-32768'
+];
+
+// Universal Structured AI Generator (Groq Llama 3.3 -> Local Ollama -> Gemini Fallback)
 export async function generateStructuredAIResponse(
   prompt: string, 
   schemaProps: any, 
   requiredKeys: string[],
-  preferredModel: string = 'gemini-3.6-flash'
+  preferredModel: string = 'llama-3.3-70b-versatile'
 ) {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-  
-  if (!schemaProps.thinking) {
-    schemaProps.thinking = { type: Type.STRING, description: "Your chain of thought reasoning." };
-    if (!requiredKeys.includes("thinking")) {
-      requiredKeys.unshift("thinking");
+  let responseText = "";
+
+  // 1. Primary Path: Groq (Llama 3.3 70B / DeepSeek) - Fast, Free, High Rate Limits
+  if (process.env.GROQ_API_KEY) {
+    try {
+      console.log(`[Custom AI Engine] Routing extraction to Groq (Llama 3.3 70B)...`);
+      const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+      for (const model of GROQ_MODELS) {
+        try {
+          const completion = await groq.chat.completions.create({
+            model: model,
+            messages: [
+              {
+                role: "system",
+                content: `You are an elite B2B data extraction analyst. You strictly output valid, minified JSON matching the exact requested schema.`
+              },
+              {
+                role: "user",
+                content: prompt
+              }
+            ],
+            response_format: { type: "json_object" },
+            temperature: 0.1,
+            max_tokens: 4096
+          });
+
+          responseText = completion.choices[0]?.message?.content || "";
+          if (responseText) {
+            console.log(`[Custom AI Engine] Successfully generated extraction with Groq (${model}).`);
+            break;
+          }
+        } catch (groqErr: any) {
+          console.warn(`[Custom AI Engine] Groq ${model} failed (${groqErr.message}), trying next Groq model...`);
+        }
+      }
+    } catch (err: any) {
+      console.warn(`[Custom AI Engine] Groq client failed (${err.message}), cascading to fallback engines.`);
     }
   }
 
-  const modelsToTry = [
-    preferredModel,
-    ...VALID_GEMINI_MODELS.filter(m => m !== preferredModel)
-  ];
-
-  let responseText = "";
-
-  for (const model of modelsToTry) {
+  // 2. Secondary Path: Self-Hosted / Local Ollama (if OLLAMA_BASE_URL is configured)
+  if (!responseText && process.env.OLLAMA_BASE_URL) {
     try {
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error(`Timeout for ${model}`)), 10000)
-      );
+      console.log(`[Custom AI Engine] Routing to private Ollama instance: ${process.env.OLLAMA_BASE_URL}`);
+      const ollamaRes = await axios.post(`${process.env.OLLAMA_BASE_URL}/api/generate`, {
+        model: process.env.OLLAMA_MODEL || "llama3.3",
+        prompt: prompt,
+        format: "json",
+        stream: false
+      }, { timeout: 30000 });
 
-      const response: any = await Promise.race([
-        ai.models.generateContent({
-          model: model,
-          contents: prompt,
-          config: {
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: Type.OBJECT,
-              properties: schemaProps,
-              required: requiredKeys
-            }
-          }
-        }),
-        timeoutPromise
-      ]);
-      
-      responseText = response.text || "";
-      if (responseText) {
-        break;
+      responseText = ollamaRes.data?.response || "";
+    } catch (ollamaErr: any) {
+      console.warn(`[Custom AI Engine] Ollama failed (${ollamaErr.message}), cascading to cloud models.`);
+    }
+  }
+
+  // 3. Fallback Path: Google Gemini (if Groq / Ollama not configured or failed)
+  if (!responseText && process.env.GEMINI_API_KEY) {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    
+    if (!schemaProps.thinking) {
+      schemaProps.thinking = { type: Type.STRING, description: "Your chain of thought reasoning." };
+      if (!requiredKeys.includes("thinking")) {
+        requiredKeys.unshift("thinking");
       }
-    } catch (err: any) {
-      console.log(`[AI Generation] Model ${model} failed (${err.message}), trying next model...`);
+    }
+
+    const modelsToTry = [
+      'gemini-3.6-flash',
+      ...VALID_GEMINI_MODELS.filter(m => m !== 'gemini-3.6-flash')
+    ];
+
+    for (const model of modelsToTry) {
+      try {
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error(`Timeout for ${model}`)), 10000)
+        );
+
+        const response: any = await Promise.race([
+          ai.models.generateContent({
+            model: model,
+            contents: prompt,
+            config: {
+              responseMimeType: "application/json",
+              responseSchema: {
+                type: Type.OBJECT,
+                properties: schemaProps,
+                required: requiredKeys
+              }
+            }
+          }),
+          timeoutPromise
+        ]);
+        
+        responseText = response.text || "";
+        if (responseText) {
+          break;
+        }
+      } catch (err: any) {
+        console.log(`[AI Generation] Gemini ${model} failed (${err.message}), trying next...`);
+      }
     }
   }
 
   if (!responseText) {
-    throw new Error("All AI models are currently overloaded or rate-limited. Please try again later.");
+    throw new Error("All AI extraction engines (Groq, Ollama, Gemini) are currently unavailable.");
   }
 
   const resultText = responseText.replace(/^```json/gi, "").replace(/```$/gi, "").trim();
@@ -109,10 +177,10 @@ function decodeBingUrl(url: string): string {
   return url;
 }
 
-// Fast Fallback search using Bing + live page scraping
-async function searchWebFallback(query: string, maxResults: number = 5): Promise<{ answer: string, context: any[], contextString: string }> {
+// Autonomous Regional Search Harvester (Zero API Cost, No Quota Limits)
+export async function searchWebFallback(query: string, maxResults: number = 5): Promise<{ answer: string, context: any[], contextString: string }> {
   try {
-    console.log(`[Web Fallback Search] Querying Bing for: ${query}`);
+    console.log(`[Autonomous Harvester] Crawling regional search for: ${query}`);
     const res = await axios.get('https://www.bing.com/search', {
       params: { 
         q: query,
@@ -147,19 +215,19 @@ async function searchWebFallback(query: string, maxResults: number = 5): Promise
       return { answer: "", context: [], contextString: "No web results found." };
     }
 
-    // Scrape top 3 pages in parallel with 3s timeout
-    const fetchPromises = topResults.slice(0, 3).map(async (r) => {
+    // Scrape top pages in parallel with 3.5s timeout
+    const fetchPromises = topResults.slice(0, 4).map(async (r) => {
       let pageContent = r.snippet;
       try {
         const pageRes = await axios.get(r.url, {
-          timeout: 3000,
+          timeout: 3500,
           headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
         });
         const page$ = cheerio.load(pageRes.data);
         page$('script, style, noscript, nav, footer, header').remove();
         const text = page$('body').text().replace(/\s+/g, ' ').trim();
         if (text.length > 200) {
-          pageContent = text.substring(0, 8000);
+          pageContent = text.substring(0, 10000);
         }
       } catch (e) {}
       return `URL: ${r.url}\nTitle: ${r.title}\nContent: ${pageContent}\n\n`;
@@ -172,72 +240,65 @@ async function searchWebFallback(query: string, maxResults: number = 5): Promise
       contextString: scraped.join("\n---\n")
     };
   } catch (err: any) {
-    console.error('[Web Fallback Search] Error:', err.message);
+    console.error('[Autonomous Harvester] Error:', err.message);
     return { answer: "", context: [], contextString: "No internet data could be fetched." };
   }
 }
 
-// Unified fast internet fetcher: Gemini Google Search Grounding with seamless fallback
+// Unified internet fetcher
 export async function fetchVerifiedInternetData(
   query: string,
   maxResults: number = 5,
   useStrictWhitelists: boolean = false,
   includeRawContent: boolean = false
 ) {
-  const searchModels = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'];
-  
-  for (const model of searchModels) {
-    try {
-      console.log(`[Gemini Grounding] Searching with ${model}: ${query}`);
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      
-      let searchPrompt = `You are an elite corporate intelligence researcher. Use Google Search to thoroughly research: "${query}".
-Extract:
-1. Complete company overview, official website, products catalog, models, and specifications.
-2. SignalHire (signalhire.com) and LinkedIn employee profiles (extract exact names and titles of Sales Managers, Business Heads, HR, Directors).
-3. Economic Times (economictimes.indiatimes.com), MCA filings, Tofler, or ZaubaCorp financial statements (annual revenue, profit/loss, turnover, paid-up capital).
-Output all extracted factual data, names, numbers, specifications, and URLs in detail.`;
-      
-      if (includeRawContent) {
-        searchPrompt = `
-          You are an expert corporate researcher. Use Google Search to exhaustively find information for: "${query}"
+  // Try Google Search Grounding if Gemini Key is available
+  if (process.env.GEMINI_API_KEY) {
+    const searchModels = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'];
+    
+    for (const model of searchModels) {
+      try {
+        console.log(`[Gemini Grounding] Searching with ${model}: ${query}`);
+        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        
+        const searchPrompt = `
+          You are an elite corporate intelligence researcher. Use Google Search to thoroughly research: "${query}"
           1. PRODUCTS: Extract EVERY single product model name, category, and technical specification.
           2. PERSONNEL (SignalHire & LinkedIn): Search SignalHire and LinkedIn to extract names, job titles, and roles of Sales heads, Business Development, HR, and Directors.
           3. FINANCIALS & ECONOMIC TIMES: Search Economic Times and registry databases for revenue, profits, net worth, and historical financials.
           List all specific names, specs, numbers, and links in extreme detail without summarizing.
         `;
+
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error(`Timeout on ${model}`)), 8000)
+        );
+
+        const searchResponse: any = await Promise.race([
+          ai.models.generateContent({
+            model: model,
+            contents: searchPrompt,
+            config: {
+              tools: [{ googleSearch: {} }]
+            }
+          }),
+          timeoutPromise
+        ]);
+
+        const rawData = searchResponse.text || "";
+        if (rawData.length > 50) {
+          console.log(`[Gemini Grounding] Successfully fetched ${rawData.length} chars with ${model}.`);
+          return {
+            answer: "",
+            context: [{ url: "google-search-grounding", title: "Google Search Grounding" }],
+            contextString: rawData.substring(0, 100000)
+          };
+        }
+      } catch (e: any) {
+        console.warn(`[Gemini Grounding] ${model} unavailable (${e.message}), continuing.`);
       }
-
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error(`Timeout on ${model}`)), 8000)
-      );
-
-      const searchResponse: any = await Promise.race([
-        ai.models.generateContent({
-          model: model,
-          contents: searchPrompt,
-          config: {
-            tools: [{ googleSearch: {} }]
-          }
-        }),
-        timeoutPromise
-      ]);
-
-      const rawData = searchResponse.text || "";
-      if (rawData.length > 50) {
-        console.log(`[Gemini Grounding] Successfully fetched ${rawData.length} chars of data with ${model}.`);
-        return {
-          answer: "",
-          context: [{ url: "google-search-grounding", title: "Google Search Grounding" }],
-          contextString: rawData.substring(0, 100000)
-        };
-      }
-    } catch (e: any) {
-      console.warn(`[Gemini Grounding] ${model} failed (${e.message}), trying next...`);
     }
   }
 
-  // Step 2: Instant fallback to live web scraper
-  console.log(`[Search Protocol] Executing fast web scraper for: ${query}`);
+  // Autonomous Harvester (Default / Fallback)
   return await searchWebFallback(query, maxResults);
 }
