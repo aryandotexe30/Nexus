@@ -7,7 +7,7 @@ import { motion, AnimatePresence, Variants } from 'framer-motion';
 import Tilt from 'react-parallax-tilt';
 import dynamic from 'next/dynamic';
 
-const MarkdownViewer = dynamic(() => import('@/components/MarkdownViewer'), { ssr: false });
+import MarkdownViewer from '@/components/MarkdownViewer';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface DashboardProps {
@@ -63,7 +63,7 @@ export default function Dashboard({ data }: DashboardProps) {
   };
 
   const renderMarkdown = (content: any) => {
-    if (!content) return <span className="text-slate-400 italic">No data available</span>;
+    if (!content) return <span className="text-slate-400 italic">No details available</span>;
     
     let textContent = '';
     if (typeof content === 'string') {
@@ -140,7 +140,7 @@ export default function Dashboard({ data }: DashboardProps) {
                 }`}
               >
                 {isActive && (
-                  <motion.div
+                  <motion.div 
                     layoutId="activeTab"
                     className="absolute inset-0 bg-white rounded-2xl shadow-sm border border-slate-100"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
@@ -222,8 +222,26 @@ export default function Dashboard({ data }: DashboardProps) {
                     
                     {activeTab === 'overview' && (
                       <>
-                        <td className="py-6 px-6 align-top bg-slate-50/30">{renderMarkdown(item.extracted_data?.gst_number)}</td>
-                        <td className="py-6 px-6 align-top">{renderMarkdown(item.extracted_data?.all_available_info)}</td>
+                        <td className="py-6 px-6 align-top bg-slate-50/30">
+                          <div className="font-bold text-slate-900 text-sm mb-1">GSTIN</div>
+                          {renderMarkdown(item.extracted_data?.gst_number || item.extracted_data?.gstin || 'Not found')}
+                          {item.extracted_data?.industry && (
+                            <div className="mt-4">
+                              <div className="font-bold text-slate-900 text-sm mb-1">Industry</div>
+                              <span className="inline-block px-3 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-medium border border-blue-100">
+                                {item.extracted_data.industry}
+                              </span>
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-6 px-6 align-top">
+                          {renderMarkdown(
+                            item.extracted_data?.all_available_info || 
+                            item.extracted_data?.description || 
+                            item.extracted_data?.overview || 
+                            item.extracted_data?.products_and_services
+                          )}
+                        </td>
                       </>
                     )}
                     
