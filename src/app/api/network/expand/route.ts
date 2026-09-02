@@ -70,7 +70,7 @@ export async function POST(req: Request) {
 
     // 2. Universal Structured AI Extraction
     const prompt = `
-You are an elite B2B product catalog and industrial supply chain analyst.
+You are an expert industrial product catalog extractor and B2B supply chain analyst.
 Target Entity: ${nodeLabel}
 Entity Type: ${nodeType}
 Requested Action: ${action}
@@ -79,14 +79,14 @@ Search Context:
 ${searchContext}
 
 CRITICAL EXHAUSTIVE CATALOG EXTRACTION:
-- Extract and list EVERY SINGLE distinct product model, catalog item, and specialized industrial material/component manufactured or supplied by ${nodeLabel}.
-- Do NOT stop at 5 or 10 items. Exhaustively cover ALL product categories and individual item models.
-- Format each item cleanly: "Product Model / Name | Category: ... | Description: ... | Specs: ..."
+Extract and list EVERY SINGLE distinct product model, catalog item, and specialized industrial tape/material manufactured or supplied by ${nodeLabel}.
+You must exhaustively iterate through all categories and sub-pages. Do NOT stop early. Do not summarize. Do not use 'etc.' or '...'. If there are 30, 50, 100 or more products, list every single one of them.
+Include exact model numbers, proprietary series codes, categories, and technical parameters (e.g. Masking Tapes, Kapton Polyimide Tapes, Double Sided Tapes, Foam Tapes, Surface Protection Films, High Temp Insulation, Metallic Foil Tapes, Custom Die-Cuts, Filament Tapes, Cloth Tapes, Electrical Tapes).
 
 Output strictly a valid JSON object with the "items" array:
 {
   "items": [
-    "Exact Product Model/Name | Category: Subcategory | Description: Detailed function | Specs: Technical parameters",
+    "Product Model / Name | Category: Subcategory | Description: Detailed function | Specs: Technical parameters",
     ...
   ]
 }
@@ -130,7 +130,7 @@ Target Entity: ${nodeLabel}
 Entity Type: ${nodeType}
 Requested Action: ${action}
 
-CRITICAL: Provide an exhaustive, extensive list of all known product lines, models, materials, or supply chain nodes for ${nodeLabel} across all its industrial categories.
+CRITICAL: Provide an extensive, exhaustive list of all known product models and specialized tapes for ${nodeLabel} across all industrial categories (Masking, Kapton, Foam, Double Sided, Protection Film, Thermal, Metal Foil, Die-Cuts).
 Output strictly valid JSON with this exact schema:
 {
   "items": [

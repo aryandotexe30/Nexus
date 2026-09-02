@@ -33,12 +33,12 @@ export const VALID_GEMINI_MODELS = [
   'gemini-2.5-pro'
 ];
 
-// Active Open-Weight / Groq model list (Ranked by speed, reliability, and JSON mode stability)
+// Active Open-Weight / Groq model list (Ranked by speed, reasoning depth, and large context capacity)
 export const GROQ_MODELS = [
+  'openai/gpt-oss-120b',
   'openai/gpt-oss-20b',
   'qwen/qwen3.6-27b',
-  'qwen/qwen3.8-27b',
-  'openai/gpt-oss-120b'
+  'qwen/qwen3.8-27b'
 ];
 
 function safeParseJson(raw: string): any {
