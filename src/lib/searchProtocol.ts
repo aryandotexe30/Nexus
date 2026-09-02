@@ -253,9 +253,20 @@ export async function fetchVerifiedInternetData(
   useStrictWhitelists: boolean = false,
   includeRawContent: boolean = false
 ) {
-  // Try Google Search Grounding if Gemini Key is available
+  // 1. Primary Path: Autonomous Harvester (Fast, Free, No Google Rate Limits)
+  try {
+    const scrapedResult = await searchWebFallback(query, maxResults);
+    if (scrapedResult.contextString && scrapedResult.contextString.length > 100 && scrapedResult.context.length > 0) {
+      console.log(`[Autonomous Harvester] Successfully crawled ${scrapedResult.context.length} sources (${scrapedResult.contextString.length} chars).`);
+      return scrapedResult;
+    }
+  } catch (err: any) {
+    console.warn(`[Autonomous Harvester] Scraper failed (${err.message}), trying auxiliary sources...`);
+  }
+
+  // 2. Secondary Path: Gemini Search Grounding (if available)
   if (process.env.GEMINI_API_KEY) {
-    const searchModels = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'];
+    const searchModels = ['gemini-3.6-flash', 'gemini-3.5-flash'];
     
     for (const model of searchModels) {
       try {
@@ -271,7 +282,7 @@ export async function fetchVerifiedInternetData(
         `;
 
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error(`Timeout on ${model}`)), 8000)
+          setTimeout(() => reject(new Error(`Timeout on ${model}`)), 6000)
         );
 
         const searchResponse: any = await Promise.race([
@@ -300,6 +311,5 @@ export async function fetchVerifiedInternetData(
     }
   }
 
-  // Autonomous Harvester (Default / Fallback)
-  return await searchWebFallback(query, maxResults);
+  return { answer: "", context: [], contextString: "No internet data could be fetched." };
 }
