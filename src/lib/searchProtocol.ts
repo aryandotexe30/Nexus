@@ -206,44 +206,77 @@ function decodeBingUrl(url: string): string {
 }
 
 // Autonomous Regional Search Harvester (Zero API Cost, No Quota Limits)
-export async function searchWebFallback(query: string, maxResults: number = 5): Promise<{ answer: string, context: any[], contextString: string }> {
+export async function searchWebFallback(query: string, maxResults: number = 8): Promise<{ answer: string, context: any[], contextString: string }> {
   try {
     console.log(`[Autonomous Harvester] Crawling regional search for: ${query}`);
-    const res = await axios.get('https://www.bing.com/search', {
-      params: { 
-        q: query,
-        cc: 'IN',
-        setlang: 'en-IN',
-        setmkt: 'en-IN'
-      },
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-IN,en;q=0.9',
-        'Cookie': 'SRCHHPGUSR=ADLT=OFF&NRSLT=10&SRCHLANG=en&LOCATION=1'
-      },
-      timeout: 6000
-    });
-
-    const $ = cheerio.load(res.data);
     const results: { title: string, url: string, snippet: string }[] = [];
 
-    $('li.b_algo').each((i, el) => {
-      const title = $(el).find('h2 a').text().trim();
-      const rawUrl = $(el).find('h2 a').attr('href') || '';
-      const url = decodeBingUrl(rawUrl);
-      const snippet = $(el).find('.b_caption p, .b_algoSlug, p').text().trim();
-      if (title && url && !url.includes('bing.com/search')) {
-        results.push({ title, url, snippet });
-      }
-    });
+    // 1. Primary Engine: DuckDuckGo Lite (Highly accurate direct corporate domain discovery)
+    try {
+      const ddgRes = await axios.post('https://lite.duckduckgo.com/lite/', `q=${encodeURIComponent(query)}`, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        timeout: 4500
+      });
 
-    const topResults = results.slice(0, maxResults);
-    if (topResults.length === 0) {
+      const ddg$ = cheerio.load(ddgRes.data);
+      ddg$('a.result-link').each((_, el) => {
+        const title = ddg$(el).text().trim();
+        const href = ddg$(el).attr('href') || '';
+        if (href.startsWith('http') && !href.includes('duckduckgo.com')) {
+          results.push({ title, url: href, snippet: '' });
+        }
+      });
+    } catch (ddgErr) {
+      console.warn('[Autonomous Harvester] DDG Lite notice, using Bing...');
+    }
+
+    // 2. Secondary Engine: Bing Regional Search
+    if (results.length < 4) {
+      try {
+        const bingRes = await axios.get('https://www.bing.com/search', {
+          params: { q: query, cc: 'IN', setlang: 'en-IN', setmkt: 'en-IN' },
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept-Language': 'en-IN,en;q=0.9',
+            'Cookie': 'SRCHHPGUSR=ADLT=OFF&NRSLT=10&SRCHLANG=en&LOCATION=1'
+          },
+          timeout: 4500
+        });
+
+        const bing$ = cheerio.load(bingRes.data);
+        bing$('li.b_algo').each((_, el) => {
+          const title = bing$(el).find('h2 a').text().trim();
+          const rawUrl = bing$(el).find('h2 a').attr('href') || '';
+          const url = decodeBingUrl(rawUrl);
+          const snippet = bing$(el).find('.b_caption p, .b_algoSlug, p').text().trim();
+          if (title && url && !url.includes('bing.com/search') && !results.some(r => r.url === url)) {
+            results.push({ title, url, snippet });
+          }
+        });
+      } catch (bingErr) {}
+    }
+
+    if (results.length === 0) {
       return { answer: "", context: [], contextString: "No web results found." };
     }
 
-    // Deep Crawl: Scrape top pages AND their internal product/about/contact sub-pages
+    // 3. Domain & Content Prioritization: Prioritize .com corporate portals over .in brochure landing pages
+    const prioritizedResults = results.sort((a, b) => {
+      const aUrl = a.url.toLowerCase();
+      const bUrl = b.url.toLowerCase();
+      const aIsCom = aUrl.includes('.com');
+      const bIsCom = bUrl.includes('.com');
+      if (aIsCom && !bIsCom) return -1;
+      if (!aIsCom && bIsCom) return 1;
+      return 0;
+    });
+
+    const topResults = prioritizedResults.slice(0, maxResults);
+
+    // 4. Deep Crawl: Scrape top pages AND their internal product/catalog sub-pages
     const fetchPromises = topResults.slice(0, 5).map(async (r) => {
       let pageContent = r.snippet;
       let subPageTexts: string[] = [];
@@ -269,13 +302,14 @@ export async function searchWebFallback(query: string, maxResults: number = 5): 
               if (
                 lower.includes('product') || 
                 lower.includes('catalog') || 
+                lower.includes('brochure') ||
                 lower.includes('spec') || 
                 lower.includes('about') || 
                 lower.includes('contact') || 
                 lower.includes('profile') ||
                 lower.includes('management') ||
                 lower.includes('director') ||
-                lower.includes('financial')
+                lower.includes('tape')
               ) {
                 subLinks.add(fullUrl);
               }
