@@ -69,44 +69,15 @@ export async function POST(req: Request) {
     try {
       const results = [];
 
-    // For testing, process them sequentially to avoid rate limits
-    for (const company of companiesToProcess) {
-      const normalizedName = company.name.trim();
+      for (const company of companiesToProcess) {
+        const normalizedName = company.name.trim();
 
-      const existingCompany = await prisma.company.findUnique({
-        where: { name: normalizedName }
-      });
-
-      const isExpired = isCacheExpired(existingCompany?.updatedAt, 30);
-
-      let isBlank = false;
-      if (existingCompany && existingCompany.data) {
-        const d = existingCompany.data as any;
-        if (
-          !d ||
-          d.error ||
-          !d.products_and_services ||
-          d.products_and_services === 'Unknown' ||
-          d.products_and_services === 'None found' ||
-          !d.gst_number ||
-          d.gst_number === 'Unknown'
-        ) {
-           isBlank = true;
-        }
-      }
-
-      if (existingCompany && existingCompany.data && !isExpired && !isBlank) {
-        console.log(`[Cache Hit] Enriched data found for: ${normalizedName}`);
-        results.push({
-          company_input: company,
-          extracted_data: existingCompany.data
-        });
-      } else {
-        // 2. Fetch from APIs if not found
+        // Always run fresh live crawling & enrichment (Cache reads disabled)
+        console.log(`[Fresh Enrichment] Processing company: ${normalizedName}`);
         const enrichedData = await processCompany(company);
         results.push(enrichedData);
 
-        // Save to global database for Matchmaker
+        // Update global database
         if (enrichedData.extracted_data) {
           try {
             await prisma.company.upsert({
@@ -119,10 +90,9 @@ export async function POST(req: Request) {
           }
         }
         
-        // Delay 500ms between API calls
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Delay 300ms between companies
+        await new Promise(resolve => setTimeout(resolve, 300));
       }
-    }
 
     return NextResponse.json({ 
       success: true, 
