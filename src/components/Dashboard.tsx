@@ -29,7 +29,7 @@ export default function Dashboard({ data }: DashboardProps) {
 
   const jsonToMarkdown = (data: any, depth = 0): string => {
     if (!data) return '';
-    if (typeof data !== 'object') return String(data);
+    if (typeof data !== 'object') return String(data).replace(/\\n/g, '\n');
     
     let md = '';
     const indent = '  '.repeat(depth);
@@ -39,14 +39,14 @@ export default function Dashboard({ data }: DashboardProps) {
         if (typeof item === 'object' && item !== null) {
           const entries = Object.entries(item);
           if (entries.length > 0) {
-            md += `${indent}- **${entries[0][1]}**\n`;
+            md += `${indent}- **${String(entries[0][1]).replace(/\\n/g, '\n')}**\n`;
             for (let i = 1; i < entries.length; i++) {
               const cleanKey = entries[i][0].replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-              md += `${indent}  - *${cleanKey}*: ${entries[i][1]}\n`;
+              md += `${indent}  - *${cleanKey}*: ${String(entries[i][1]).replace(/\\n/g, '\n')}\n`;
             }
           }
         } else {
-          md += `${indent}- ${item}\n`;
+          md += `${indent}- ${String(item).replace(/\\n/g, '\n')}\n`;
         }
       });
     } else {
@@ -55,7 +55,7 @@ export default function Dashboard({ data }: DashboardProps) {
         if (typeof v === 'object' && v !== null) {
           md += `${indent}- **${cleanKey}**:\n${jsonToMarkdown(v, depth + 1)}`;
         } else {
-          md += `${indent}- **${cleanKey}**: ${v}\n`;
+          md += `${indent}- **${cleanKey}**: ${String(v).replace(/\\n/g, '\n')}\n`;
         }
       });
     }
@@ -63,7 +63,7 @@ export default function Dashboard({ data }: DashboardProps) {
   };
 
   const renderMarkdown = (content: any) => {
-    if (!content) return <span className="text-slate-400 italic">No details available</span>;
+    if (!content) return <span className="text-slate-400 italic text-sm">No details available</span>;
     
     let textContent = '';
     if (typeof content === 'string') {
@@ -71,7 +71,7 @@ export default function Dashboard({ data }: DashboardProps) {
         const parsed = JSON.parse(content);
         textContent = jsonToMarkdown(parsed);
       } catch (e) {
-        textContent = content; // If it's already markdown/plain text
+        textContent = content.replace(/\\n/g, '\n').replace(/\\t/g, ' ');
       }
     } else {
       textContent = jsonToMarkdown(content);
@@ -249,13 +249,17 @@ export default function Dashboard({ data }: DashboardProps) {
                       <>
                         <td className="py-6 px-6 align-top bg-slate-50/30">
                           {renderMarkdown(item.extracted_data?.financials)}
-                          <div className="mt-4 grid grid-cols-2 gap-4">
-                            <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
-                              <h4 className="text-xs font-bold text-emerald-600 uppercase mb-2">Profits</h4>
+                          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-100/80">
+                              <h4 className="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Profits & Margins
+                              </h4>
                               {renderMarkdown(item.extracted_data?.profits_made)}
                             </div>
-                            <div className="bg-rose-50 p-4 rounded-xl border border-rose-100">
-                              <h4 className="text-xs font-bold text-rose-600 uppercase mb-2">Losses / Debt</h4>
+                            <div className="bg-rose-50/80 p-4 rounded-2xl border border-rose-100/80">
+                              <h4 className="text-xs font-bold text-rose-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-rose-500"></span> Losses & Debt
+                              </h4>
                               {renderMarkdown(item.extracted_data?.loss_made)}
                             </div>
                           </div>
@@ -263,35 +267,54 @@ export default function Dashboard({ data }: DashboardProps) {
                         <td className="py-6 px-6 align-top">
                           {chartData.length > 0 ? (
                             <Tilt tiltMaxAngleX={5} tiltMaxAngleY={5} scale={1.01} transitionSpeed={2000} className="w-full">
-                              <div className="h-72 w-full bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
-                                <ResponsiveContainer width="100%" height="100%">
-                                  <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                              <div className="h-80 w-full bg-white rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                                <div className="flex items-center justify-between mb-3 px-1">
+                                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Historical Financial Trend</span>
+                                  <div className="flex items-center gap-3 text-xs font-semibold">
+                                    <span className="flex items-center gap-1.5 text-blue-600">
+                                      <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span> Revenue
+                                    </span>
+                                    <span className="flex items-center gap-1.5 text-emerald-600">
+                                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Profit
+                                    </span>
+                                  </div>
+                                </div>
+                                <ResponsiveContainer width="100%" height={230}>
+                                  <AreaChart data={chartData} margin={{ top: 10, right: 15, left: 5, bottom: 0 }}>
                                     <defs>
                                       <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.35}/>
                                         <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                                       </linearGradient>
                                       <linearGradient id="colorProf" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.35}/>
                                         <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                                       </linearGradient>
                                     </defs>
                                     <XAxis dataKey="year" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                                    <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis 
+                                      stroke="#94a3b8" 
+                                      fontSize={11} 
+                                      tickLine={false} 
+                                      axisLine={false}
+                                      width={45}
+                                      tickFormatter={(val) => val >= 1000 ? `${(val/1000).toFixed(0)}k` : val}
+                                    />
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                                     <Tooltip 
                                       contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)' }}
                                       labelStyle={{ fontWeight: 'bold', color: '#0f172a' }}
+                                      formatter={(val: any, name: any) => [`₹${val} Cr`, name]}
                                     />
-                                    <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
-                                    <Area type="monotone" dataKey="profit" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorProf)" />
+                                    <Area type="monotone" dataKey="revenue" name="Revenue" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
+                                    <Area type="monotone" dataKey="profit" name="Profit" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorProf)" />
                                   </AreaChart>
                                 </ResponsiveContainer>
                               </div>
                             </Tilt>
                           ) : (
-                            <div className="h-full flex items-center justify-center bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-slate-400 italic">
-                              No chart data available
+                            <div className="h-full flex items-center justify-center bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-slate-400 italic p-8">
+                              No historical chart data available
                             </div>
                           )}
                         </td>
