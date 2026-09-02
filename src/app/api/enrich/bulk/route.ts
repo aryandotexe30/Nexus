@@ -92,7 +92,7 @@ export async function POST(req: Request) {
       }
     `;
 
-    const modelsToTry = ['gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash-002', 'gemini-1.5-pro-002'];
+    const modelsToTry = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-2.5-flash', 'gemini-3.6-pro'];
     let text = "";
     
     for (const model of modelsToTry) {

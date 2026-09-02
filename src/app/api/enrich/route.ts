@@ -144,9 +144,13 @@ async function processCompany(company: CompanyInput) {
   try {
     console.log(`Processing company: ${company.name}`);
 
+    const cleanAddress = (company.address && company.address.toLowerCase() !== 'unknown' && company.address.toLowerCase() !== 'n/a') ? company.address : '';
+    const cleanPincode = (company.pincode && company.pincode.toLowerCase() !== 'unknown' && company.pincode.toLowerCase() !== 'n/a') ? company.pincode : '';
+    const locationContext = [cleanAddress, cleanPincode].filter(Boolean).join(' ');
+
     // Run a single MEGA search to prevent Gemini 15 RPM rate limits
     const searchRes = await fetchVerifiedInternetData(
-      `"${company.name}" ${company.address} official company profile registration GSTIN MCA financial statements revenue profit balance sheet specific product models technical specifications catalog site:signalhire.com/companies (Sales OR HR)`,
+      `"${company.name}" ${locationContext} official company website products catalog specifications contact MCA GSTIN financial statements`.trim(),
       10, // Max 10 results
       false, // Skip DB
       true  // Include Raw Content for Exhaustive Extraction
@@ -253,7 +257,7 @@ Output strictly valid JSON matching the exact keys above. Do not include markdow
       "hr_contacts", "all_available_info", "stock_information", "financial_chart_data"
     ];
 
-    const jsonResult = await generateStructuredAIResponse(prompt, schemaProps, requiredKeys, 'gemini-2.0-flash');
+    const jsonResult = await generateStructuredAIResponse(prompt, schemaProps, requiredKeys, 'gemini-3.6-flash');
 
     // Merge original inputs
     return {
