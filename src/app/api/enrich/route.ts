@@ -94,12 +94,11 @@ export async function POST(req: Request) {
               await prisma.company.update({
                 where: { id: existing.id },
                 data: {
-                  name: normalizedName,
                   data: enrichedData.extracted_data,
                   updatedAt: new Date()
                 }
               });
-              console.log(`[Databook Updated] Overwrote ${normalizedName} with fresh information.`);
+              console.log(`[Databook Updated] Overwrote data for existing company: ${existing.name}`);
             } else {
               await prisma.company.create({
                 data: {
