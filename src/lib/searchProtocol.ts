@@ -280,11 +280,12 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
     const fetchPromises = topResults.slice(0, 5).map(async (r) => {
       let pageContent = r.snippet;
       let subPageTexts: string[] = [];
+      const discoveredModels = new Set<string>();
 
       try {
         const pageRes = await axios.get(r.url, {
           timeout: 3500,
-          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
         });
 
         const page$ = cheerio.load(pageRes.data);
@@ -292,13 +293,17 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
 
         // Discover internal sub-pages (products, catalog, specs, about, contact)
         const subLinks = new Set<string>();
+
         page$('a[href]').each((_, el) => {
           let href = page$(el).attr('href')?.trim();
+          let linkText = page$(el).text().trim().replace(/\s+/g, ' ');
           if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
           try {
             const fullUrl = new URL(href, origin).toString();
             if (fullUrl.startsWith(origin)) {
               const lower = fullUrl.toLowerCase();
+              const lowerText = linkText.toLowerCase();
+
               if (
                 lower.includes('product') || 
                 lower.includes('catalog') || 
@@ -309,9 +314,22 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
                 lower.includes('profile') ||
                 lower.includes('management') ||
                 lower.includes('director') ||
-                lower.includes('tape')
+                lower.includes('tape') ||
+                lower.includes('foam') ||
+                lower.includes('film') ||
+                lower.includes('die-cut')
               ) {
                 subLinks.add(fullUrl);
+
+                // Collect exact product model names from link texts and URL slugs
+                if (linkText.length > 5 && !lowerText.includes('skip') && !lowerText.includes('contact') && !lowerText.includes('about') && !lowerText.includes('privacy')) {
+                  discoveredModels.add(linkText);
+                } else {
+                  const slug = fullUrl.split('/').filter(Boolean).pop();
+                  if (slug && slug.length > 5 && !slug.includes('.pdf') && !slug.includes('contact') && !slug.includes('about')) {
+                    discoveredModels.add(slug.replace(/-/g, ' ').toUpperCase());
+                  }
+                }
               }
             }
           } catch (e) {}
@@ -344,9 +362,11 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
         }
       } catch (e) {}
 
+      const discoveredList = Array.from(discoveredModels);
       const fullBlock = [
         `URL: ${r.url}`,
         `Title: ${r.title}`,
+        discoveredList.length > 0 ? `=== DIRECT PRODUCT CATALOG MODELS DISCOVERED ON SITE ===\n${discoveredList.map((m, i) => `${i + 1}. ${m}`).join('\n')}` : '',
         `Main Content: ${pageContent}`,
         subPageTexts.length > 0 ? `--- Deep Crawled Sub-pages ---\n${subPageTexts.join('\n\n')}` : ''
       ].filter(Boolean).join('\n');
