@@ -110,16 +110,6 @@ Output exactly the JSON object containing a "thinking" chain of thought and an "
       items = ["No data found"];
     }
 
-    try {
-      await prisma.networkCache.create({
-        data: {
-          queryKey,
-          result: items
-        }
-      });
-    } catch (cacheError) {
-      console.error("Failed to save to cache:", cacheError);
-    }
 
     // STEALTH AUTO-ENRICHMENT: Automatically store ALL extracted entities to Databook
     if (items.length > 0) {
