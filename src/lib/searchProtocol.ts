@@ -216,22 +216,81 @@ export async function searchWebFallback(query: string, maxResults: number = 5): 
       return { answer: "", context: [], contextString: "No web results found." };
     }
 
-    // Scrape top pages in parallel with 3.5s timeout
-    const fetchPromises = topResults.slice(0, 4).map(async (r) => {
+    // Deep Crawl: Scrape top pages AND their internal product/about/contact sub-pages
+    const fetchPromises = topResults.slice(0, 5).map(async (r) => {
       let pageContent = r.snippet;
+      let subPageTexts: string[] = [];
+
       try {
         const pageRes = await axios.get(r.url, {
           timeout: 3500,
-          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
         });
+
         const page$ = cheerio.load(pageRes.data);
+        const origin = new URL(r.url).origin;
+
+        // Discover internal sub-pages (products, catalog, specs, about, contact)
+        const subLinks = new Set<string>();
+        page$('a[href]').each((_, el) => {
+          let href = page$(el).attr('href')?.trim();
+          if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+          try {
+            const fullUrl = new URL(href, origin).toString();
+            if (fullUrl.startsWith(origin)) {
+              const lower = fullUrl.toLowerCase();
+              if (
+                lower.includes('product') || 
+                lower.includes('catalog') || 
+                lower.includes('spec') || 
+                lower.includes('about') || 
+                lower.includes('contact') || 
+                lower.includes('profile') ||
+                lower.includes('management') ||
+                lower.includes('director') ||
+                lower.includes('financial')
+              ) {
+                subLinks.add(fullUrl);
+              }
+            }
+          } catch (e) {}
+        });
+
+        // Parallel scrape up to 3 high-priority sub-pages
+        const subPagePromises = Array.from(subLinks).slice(0, 3).map(async (subUrl) => {
+          try {
+            const subRes = await axios.get(subUrl, {
+              timeout: 3000,
+              headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
+            });
+            const sub$ = cheerio.load(subRes.data);
+            sub$('script, style, noscript, nav, footer, header').remove();
+            const subText = sub$('body').text().replace(/\s+/g, ' ').trim();
+            if (subText.length > 100) {
+              return `[Subpage: ${subUrl}]\n${subText.substring(0, 6000)}`;
+            }
+          } catch (e) {}
+          return '';
+        });
+
+        const resolvedSubs = await Promise.all(subPagePromises);
+        subPageTexts = resolvedSubs.filter(Boolean);
+
         page$('script, style, noscript, nav, footer, header').remove();
-        const text = page$('body').text().replace(/\s+/g, ' ').trim();
-        if (text.length > 200) {
-          pageContent = text.substring(0, 10000);
+        const mainText = page$('body').text().replace(/\s+/g, ' ').trim();
+        if (mainText.length > 150) {
+          pageContent = mainText.substring(0, 8000);
         }
       } catch (e) {}
-      return `URL: ${r.url}\nTitle: ${r.title}\nContent: ${pageContent}\n\n`;
+
+      const fullBlock = [
+        `URL: ${r.url}`,
+        `Title: ${r.title}`,
+        `Main Content: ${pageContent}`,
+        subPageTexts.length > 0 ? `--- Deep Crawled Sub-pages ---\n${subPageTexts.join('\n\n')}` : ''
+      ].filter(Boolean).join('\n');
+
+      return fullBlock;
     });
 
     const scraped = await Promise.all(fetchPromises);
