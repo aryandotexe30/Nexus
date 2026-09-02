@@ -15,24 +15,34 @@ export default function Home() {
 
   const handleDataParsed = async (companies: ParsedCompany[]) => {
     setIsProcessing(true);
-    setStatus(`Initializing enrichment for ${companies.length} companies...`);
+    setStatus(`Initializing verified enrichment for ${companies.length} companies...`);
     
     try {
-      const response = await fetch('/api/enrich', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ companies })
-      });
+      const BATCH_SIZE = 3;
+      let accumulated: any[] = [];
       
-      const result = await response.json();
-      
-      if (result.success) {
-        setData(result.data);
-        if (result.processedCount < companies.length) {
-          alert(`Free Tier Limit: We processed ${result.processedCount} out of ${companies.length} companies based on your available credits.`);
+      for (let i = 0; i < companies.length; i += BATCH_SIZE) {
+        const batch = companies.slice(i, i + BATCH_SIZE);
+        const currentBatchNumber = Math.floor(i / BATCH_SIZE) + 1;
+        const totalBatches = Math.ceil(companies.length / BATCH_SIZE);
+        
+        setStatus(`Enriching & Verifying batch ${currentBatchNumber} of ${totalBatches} (${Math.min(i + BATCH_SIZE, companies.length)}/${companies.length} companies)...`);
+
+        const response = await fetch('/api/enrich', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ companies: batch })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success && Array.isArray(result.data)) {
+          accumulated = [...accumulated, ...result.data];
+          setData([...accumulated]);
+        } else if (result.error) {
+          alert("Error during enrichment: " + result.error);
+          break;
         }
-      } else {
-        alert("Error during enrichment: " + result.error);
       }
     } catch (error: any) {
       alert("Failed to process data: " + error.message);
