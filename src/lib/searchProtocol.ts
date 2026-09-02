@@ -110,17 +110,23 @@ function decodeBingUrl(url: string): string {
 }
 
 // Fast Fallback search using Bing + live page scraping
-async function searchWebFallback(query: string, maxResults: number = 4): Promise<{ answer: string, context: any[], contextString: string }> {
+async function searchWebFallback(query: string, maxResults: number = 5): Promise<{ answer: string, context: any[], contextString: string }> {
   try {
     console.log(`[Web Fallback Search] Querying Bing for: ${query}`);
     const res = await axios.get('https://www.bing.com/search', {
-      params: { q: query },
+      params: { 
+        q: query,
+        cc: 'IN',
+        setlang: 'en-IN',
+        setmkt: 'en-IN'
+      },
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9'
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-IN,en;q=0.9',
+        'Cookie': 'SRCHHPGUSR=ADLT=OFF&NRSLT=10&SRCHLANG=en&LOCATION=1'
       },
-      timeout: 4000
+      timeout: 6000
     });
 
     const $ = cheerio.load(res.data);
