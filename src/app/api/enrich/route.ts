@@ -82,7 +82,15 @@ export async function POST(req: Request) {
       let isBlank = false;
       if (existingCompany && existingCompany.data) {
         const d = existingCompany.data as any;
-        if (d.description === 'Unknown' || d.description === '' || !d.description) {
+        if (
+          !d ||
+          d.error ||
+          !d.products_and_services ||
+          d.products_and_services === 'Unknown' ||
+          d.products_and_services === 'None found' ||
+          !d.gst_number ||
+          d.gst_number === 'Unknown'
+        ) {
            isBlank = true;
         }
       }
