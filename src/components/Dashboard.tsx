@@ -299,7 +299,7 @@ export default function Dashboard({ data }: DashboardProps) {
 
                     {activeTab === 'personnel' && (
                       <>
-                        <td className="py-6 px-6 align-top bg-slate-50/30">{renderMarkdown(item.extracted_data?.sales_people)}</td>
+                        <td className="py-6 px-6 align-top bg-slate-50/30">{renderMarkdown(item.extracted_data?.sales_people || item.extracted_data?.sales_and_business_heads)}</td>
                         <td className="py-6 px-6 align-top">{renderMarkdown(item.extracted_data?.board_of_directors)}</td>
                         <td className="py-6 px-6 align-top bg-slate-50/30">{renderMarkdown(item.extracted_data?.hr_contacts)}</td>
                       </>

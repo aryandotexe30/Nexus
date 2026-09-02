@@ -230,6 +230,7 @@ Output strictly valid JSON matching the exact keys above. Do not include markdow
       profits_made: { type: Type.STRING, description: "Profits made (Markdown text)" },
       loss_made: { type: Type.STRING, description: "loss made (Markdown text)" },
       economic_times_info: { type: Type.STRING, description: "All information from verified sources (Markdown text with links)" },
+      sales_people: { type: Type.STRING, description: "Sales heads, business managers, directors with contact info (Markdown text)" },
       sales_and_business_heads: { type: Type.STRING, description: "Primary dealmakers, managers, directors (Markdown text)" },
       board_of_directors: { type: Type.STRING, description: "Board of directors (Markdown text)" },
       products_and_services: { type: Type.STRING, description: "Products and services (Markdown text)" },
@@ -253,11 +254,20 @@ Output strictly valid JSON matching the exact keys above. Do not include markdow
     const requiredKeys = [
       "gst_number", "industry", "financials", "goods_sold", 
       "goods_purchased", "profits_made", "loss_made", "economic_times_info", 
-      "sales_and_business_heads", "board_of_directors", "products_and_services", 
+      "sales_people", "sales_and_business_heads", "board_of_directors", "products_and_services", 
       "hr_contacts", "all_available_info", "stock_information", "financial_chart_data"
     ];
 
     const jsonResult = await generateStructuredAIResponse(prompt, schemaProps, requiredKeys, 'gemini-3.6-flash');
+
+    if (jsonResult) {
+      if (!jsonResult.sales_people && jsonResult.sales_and_business_heads) {
+        jsonResult.sales_people = jsonResult.sales_and_business_heads;
+      }
+      if (!jsonResult.sales_and_business_heads && jsonResult.sales_people) {
+        jsonResult.sales_and_business_heads = jsonResult.sales_people;
+      }
+    }
 
     // Merge original inputs
     return {

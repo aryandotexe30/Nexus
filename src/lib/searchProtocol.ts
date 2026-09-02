@@ -185,13 +185,20 @@ export async function fetchVerifiedInternetData(
       console.log(`[Gemini Grounding] Searching with ${model}: ${query}`);
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
       
-      let searchPrompt = `You are a high-speed research assistant. Use Google Search to find concise, factual data for this query: "${query}". Include all key business facts, dates, financials, and details.`;
+      let searchPrompt = `You are an elite corporate intelligence researcher. Use Google Search to thoroughly research: "${query}".
+Extract:
+1. Complete company overview, official website, products catalog, models, and specifications.
+2. SignalHire (signalhire.com) and LinkedIn employee profiles (extract exact names and titles of Sales Managers, Business Heads, HR, Directors).
+3. Economic Times (economictimes.indiatimes.com), MCA filings, Tofler, or ZaubaCorp financial statements (annual revenue, profit/loss, turnover, paid-up capital).
+Output all extracted factual data, names, numbers, specifications, and URLs in detail.`;
       
       if (includeRawContent) {
         searchPrompt = `
-          You are an expert researcher. Use Google Search to exhaustively find information for this query: "${query}"
-          Extract EVERY SINGLE product model number, name, technical specification, and contact found.
-          List them in high detail. Do not summarize.
+          You are an expert corporate researcher. Use Google Search to exhaustively find information for: "${query}"
+          1. PRODUCTS: Extract EVERY single product model name, category, and technical specification.
+          2. PERSONNEL (SignalHire & LinkedIn): Search SignalHire and LinkedIn to extract names, job titles, and roles of Sales heads, Business Development, HR, and Directors.
+          3. FINANCIALS & ECONOMIC TIMES: Search Economic Times and registry databases for revenue, profits, net worth, and historical financials.
+          List all specific names, specs, numbers, and links in extreme detail without summarizing.
         `;
       }
 
