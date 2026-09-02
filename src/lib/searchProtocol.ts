@@ -317,8 +317,8 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
           } catch (e) {}
         });
 
-        // Parallel scrape up to 3 high-priority sub-pages
-        const subPagePromises = Array.from(subLinks).slice(0, 3).map(async (subUrl) => {
+        // Parallel scrape up to 8 high-priority product and catalog sub-pages
+        const subPagePromises = Array.from(subLinks).slice(0, 8).map(async (subUrl) => {
           try {
             const subRes = await axios.get(subUrl, {
               timeout: 3000,
