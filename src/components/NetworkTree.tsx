@@ -70,9 +70,13 @@ const TreeNode = ({ label, type, level = 0, context = "" }: { label: string; typ
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
 
+      const rawItems = Array.isArray(data.items) ? data.items : [];
       setExpandedGroups((prev: any) => ({
         ...prev,
-        [action]: data.items.map((item: string) => ({ label: item, type: data.targetType }))
+        [action]: rawItems.map((item: any) => ({ 
+          label: typeof item === 'string' ? item : (item.name || item.title || JSON.stringify(item)), 
+          type: data.targetType || "Product"
+        }))
       }));
     } catch (error: any) {
       console.error(error);

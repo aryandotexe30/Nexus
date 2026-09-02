@@ -127,6 +127,34 @@ Output strictly valid JSON with this exact schema:
       items = [];
     }
 
+    // Knowledge base fallback if web scraper yielded 0 items
+    if (items.length === 0) {
+      try {
+        console.log(`[Network Expand] Running fallback B2B extraction for ${nodeLabel} (${action})...`);
+        const fallbackPrompt = `
+You are an expert supply chain and industrial analyst.
+Target Entity: ${nodeLabel}
+Entity Type: ${nodeType}
+Requested Action: ${action}
+
+List 5 to 8 specific industrial products, materials, or supply chain entities for ${nodeLabel}.
+Output strictly valid JSON with this exact schema:
+{
+  "items": [
+    "Item 1 Model/Name | Description: Specific description | Specs: Key specifications and applications",
+    "Item 2 Model/Name | Description: Specific description | Specs: Key specifications and applications"
+  ]
+}
+        `;
+        const fallbackRes = await generateStructuredAIResponse(fallbackPrompt, schemaProps, ["items"]);
+        if (Array.isArray(fallbackRes?.items) && fallbackRes.items.length > 0) {
+          items = fallbackRes.items;
+        }
+      } catch (fallbackErr) {
+        console.error("Fallback extraction error:", fallbackErr);
+      }
+    }
+
 
     // STEALTH AUTO-ENRICHMENT: Automatically store ALL extracted entities to Databook
     if (items.length > 0) {
