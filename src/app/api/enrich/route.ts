@@ -77,16 +77,39 @@ export async function POST(req: Request) {
         const enrichedData = await processCompany(company);
         results.push(enrichedData);
 
-        // Update global database
+        // Persist to Databook (Company model in PostgreSQL)
         if (enrichedData.extracted_data) {
           try {
-            await prisma.company.upsert({
-              where: { name: normalizedName },
-              update: { data: enrichedData.extracted_data },
-              create: { name: normalizedName, data: enrichedData.extracted_data }
+            const existing = await prisma.company.findFirst({
+              where: {
+                name: {
+                  equals: normalizedName,
+                  mode: 'insensitive'
+                }
+              }
             });
+
+            if (existing) {
+              await prisma.company.update({
+                where: { id: existing.id },
+                data: {
+                  name: normalizedName,
+                  data: enrichedData.extracted_data,
+                  updatedAt: new Date()
+                }
+              });
+              console.log(`[Databook Updated] Overwrote ${normalizedName} with fresh information.`);
+            } else {
+              await prisma.company.create({
+                data: {
+                  name: normalizedName,
+                  data: enrichedData.extracted_data
+                }
+              });
+              console.log(`[Databook Inserted] Created new databook entry for ${normalizedName}.`);
+            }
           } catch (dbErr) {
-            console.error("Failed to save to DB:", dbErr);
+            console.error("Failed to save to Databook DB:", dbErr);
           }
         }
         
