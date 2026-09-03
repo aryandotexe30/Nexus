@@ -3,7 +3,8 @@ import { Type } from '@google/genai';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
-import { isCacheExpired, fetchVerifiedInternetData, generateStructuredAIResponse } from "@/lib/searchProtocol";
+import { BrainEngine } from "@/lib/brainEngine";
+import { isCacheExpired } from "@/lib/searchProtocol";
 
 
 
@@ -59,106 +60,11 @@ export async function POST(req: Request) {
         break;
     }
 
-    // Fresh live web crawl & graph expansion (Cache reads disabled)
-    console.log(`[Fresh Network Expansion] Action: ${action} for ${nodeLabel}`);
-
-    // 1. Tavily Search - Efficient Exhaustive Scraping
-    const isExhaustiveProductScrape = action === "Find Products";
-    const maxResults = isExhaustiveProductScrape ? 15 : 20; // Deep crawl of 15 pages to catch all subcategory and product pages
-    const searchRes = await fetchVerifiedInternetData(searchQuery, maxResults, false, isExhaustiveProductScrape);
-    const searchContext = searchRes.contextString;
-
-    // 2. Universal Structured AI Extraction
-    const prompt = `
-You are an expert industrial product catalog extractor and B2B supply chain analyst.
-Target Entity: ${nodeLabel}
-Entity Type: ${nodeType}
-Requested Action: ${action}
-
-Search Context:
-${searchContext}
-
-CRITICAL EXHAUSTIVE CATALOG EXTRACTION:
-- Extract and list EVERY SINGLE distinct product model, catalog item, and specialized industrial material manufactured or supplied by ${nodeLabel}.
-- If the search context contains a section "=== DIRECT PRODUCT CATALOG MODELS DISCOVERED ON SITE ===", you MUST extract and format EVERY SINGLE ONE of those exact discovered models (e.g. DMT-308, DMT-310, DKT-25 CR, DCFT-202B, DAFT-3020H, DST-90FR, etc.) into the "items" array.
-- For each model, format it cleanly with its category, function, and technical specs:
-  "Exact Model Name / Series | Category: Specific Type | Description: Detailed industrial use | Specs: Thickness, Temperature, Adhesive Type, Substrate"
-- Do NOT stop early. Do not omit any model. List all of them.
-
-Output strictly a valid JSON object with the "items" array:
-{
-  "items": [
-    "DMT-308 Masking Tape General Purpose | Category: Masking Tape | Description: Crepe paper masking tape for industrial bundling and painting | Specs: Thickness 130µm, Temp 80°C, Rubber adhesive",
-    "DKT-25 CR Polyimide Insulation Tape 1 mil | Category: Kapton & Polyimide Tape | Description: High temperature electrical insulation tape | Specs: Thickness 25µm, Temp up to 260°C, Silicone adhesive"
-  ]
-}
-    `;
-
-    const schemaProps = {
-      items: {
-        type: Type.ARRAY,
-        items: { type: Type.STRING },
-        description: "Array of highly specific extracted items."
-      }
-    };
-
-    let items: string[] = [];
-
-    // Prioritize direct genuine catalog products harvested straight from the official company website
-    if (action === "Find Products" && Array.isArray((searchRes as any).directProducts) && (searchRes as any).directProducts.length >= 5) {
-      console.log(`[Network Expand] Using ${(searchRes as any).directProducts.length} direct verified genuine catalog products from official site.`);
-      items = (searchRes as any).directProducts;
-    } else {
-      try {
-        const parsedObject = await generateStructuredAIResponse(prompt, schemaProps, ["items"]);
-        if (Array.isArray(parsedObject?.items) && parsedObject.items.length > 0) {
-          items = parsedObject.items;
-        } else if (Array.isArray(parsedObject?.products) && parsedObject.products.length > 0) {
-          items = parsedObject.products;
-        } else if (Array.isArray(parsedObject?.results) && parsedObject.results.length > 0) {
-          items = parsedObject.results;
-        } else if (Array.isArray(parsedObject) && parsedObject.length > 0) {
-          items = parsedObject;
-        } else {
-          const anyArray = Object.values(parsedObject || {}).find(v => Array.isArray(v) && v.length > 0);
-          items = (anyArray as string[]) || [];
-        }
-      } catch (parseError) {
-        console.error("Failed to parse AI output:", parseError);
-        items = [];
-      }
-    }
-
-    // Knowledge base fallback if web scraper yielded 0 items
-    if (items.length === 0) {
-      try {
-        console.log(`[Network Expand] Running fallback authentic B2B extraction for ${nodeLabel} (${action})...`);
-        const fallbackPrompt = `
-You are an expert enterprise supply chain and industrial catalog analyst.
-Target Entity: ${nodeLabel}
-Entity Type: ${nodeType}
-Requested Action: ${action}
-
-CRITICAL RULES:
-1. Automatically identify the exact core industry and sector of "${nodeLabel}" (e.g., Havells = Electrical appliances, fans, lighting, switchgear; Sri Vasavi = Industrial adhesive tapes; Tata Motors = Commercial and passenger vehicles; Sun Pharma = Pharmaceuticals).
-2. Extract and provide an extensive, authentic catalog list of genuine products and model series that "${nodeLabel}" ACTUALLY manufactures and sells.
-3. STRICT ANTI-HALLUCINATION RULE: Absolutely FORBIDDEN from outputting products from unrelated industries (e.g. NEVER output tapes for an electrical company, NEVER output medicines for a steel manufacturer).
-
-Output strictly valid JSON with this exact schema:
-{
-  "items": [
-    "Product Model/Name | Category: Specific Sector | Description: Detailed function | Specs: Technical parameters"
-  ]
-}
-        `;
-        const fallbackRes = await generateStructuredAIResponse(fallbackPrompt, schemaProps, ["items"]);
-        if (Array.isArray(fallbackRes?.items) && fallbackRes.items.length > 0) {
-          items = fallbackRes.items;
-        }
-      } catch (fallbackErr) {
-        console.error("Fallback extraction error:", fallbackErr);
-      }
-    }
+    // Execute intelligent expansion via TarasAI Brain Engine
+    console.log(`[TarasAI Brain] Expanding node "${nodeLabel}" [${nodeType}] -> Action: ${action}`);
+    
+    const brainResult = await BrainEngine.query(nodeLabel, nodeType, action, context);
+    let items = brainResult.items || [];
 
 
     // STEALTH AUTO-ENRICHMENT: Automatically store ALL extracted entities to Databook

@@ -205,3 +205,39 @@ model CreditTransaction {
   description String?
   createdAt DateTime @default(now())
 }
+
+model BrainEntity {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  entityType  String   // COMPANY, PRODUCT, RAW_MATERIAL, SUPPLIER, APPLICATION
+  industry    String?
+  summary     String?
+  attributes  Json?    // Specs, certifications, technical properties
+  categories  Json?    // Product families, divisions
+  sources     Json?    // Verified website URLs and citations
+  confidence  Float    @default(1.0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  outgoingRelations BrainRelation[] @relation("SourceEntity")
+  incomingRelations BrainRelation[] @relation("TargetEntity")
+
+  @@index([name])
+  @@index([entityType])
+}
+
+model BrainRelation {
+  id            String      @id @default(cuid())
+  sourceId      String
+  source        BrainEntity @relation("SourceEntity", fields: [sourceId], references: [id], onDelete: Cascade)
+  targetId      String
+  target        BrainEntity @relation("TargetEntity", fields: [targetId], references: [id], onDelete: Cascade)
+  relationType  String      // MANUFACTURES, USES_RAW_MATERIAL, SUPPLIES_TO, APPLIED_IN, COMPETES_WITH
+  metadata      Json?       // specs, notes, strength
+  createdAt     DateTime    @default(now())
+
+  @@unique([sourceId, targetId, relationType])
+  @@index([sourceId])
+  @@index([targetId])
+}
+

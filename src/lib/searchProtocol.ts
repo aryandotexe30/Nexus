@@ -220,22 +220,27 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
     ];
 
     const cleanQuery = query.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').trim();
-    const allWords = cleanQuery.split(/\s+/).filter(w => w.length > 1);
+    const allWords = cleanQuery.split(/\s+/).filter(w => w.length > 1 && !['specific', 'product', 'products', 'models', 'technical', 'specifications', 'detailed', 'catalog', 'list', 'what', 'materials', 'components'].includes(w));
     const brandWords = allWords.filter(w => !GENERIC_SECTOR_WORDS.includes(w));
     const words = brandWords.length > 0 ? brandWords : allWords;
 
     const domainCandidates: string[] = [];
     if (words.length > 0) {
       domainCandidates.push(words.join(''));
+      if (allWords.length > 1) {
+        domainCandidates.push(allWords.slice(0, 3).join(''));
+      }
       if (words.length >= 1) {
         domainCandidates.push(words[0]);
       }
       if (words.length >= 2) {
         domainCandidates.push(words.slice(0, 2).join(''));
         domainCandidates.push(words[1]);
-      }
-      if (words.length > 2) {
-        domainCandidates.push(words.slice(1).join(''));
+        if (allWords.some(w => ['tapes', 'tape', 'wires', 'wire', 'cables', 'cable', 'appliances', 'motors'].includes(w))) {
+          const sectorWord = allWords.find(w => ['tapes', 'tape', 'wires', 'wire', 'cables', 'cable', 'appliances', 'motors'].includes(w));
+          domainCandidates.push(words[1] + sectorWord);
+          domainCandidates.push(words[0] + sectorWord);
+        }
       }
     }
 
@@ -263,10 +268,10 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
         });
         if (res.status === 200 && typeof res.data === 'string' && res.data.length > 1000) {
           let matchScore = 0;
-          words.forEach(w => {
+          allWords.forEach(w => {
             if (url.toLowerCase().includes(w)) matchScore += 10;
           });
-          if (url.includes('.com')) matchScore += 2;
+          if (url.includes('.com')) matchScore += 5;
           validDirectDomains.push({ url, html: res.data, matchScore });
         }
       } catch (e) {}
