@@ -132,18 +132,22 @@ Output strictly a valid JSON object with the "items" array:
     // Knowledge base fallback if web scraper yielded 0 items
     if (items.length === 0) {
       try {
-        console.log(`[Network Expand] Running fallback exhaustive B2B extraction for ${nodeLabel} (${action})...`);
+        console.log(`[Network Expand] Running fallback authentic B2B extraction for ${nodeLabel} (${action})...`);
         const fallbackPrompt = `
-You are an expert supply chain and industrial catalog analyst.
+You are an expert enterprise supply chain and industrial catalog analyst.
 Target Entity: ${nodeLabel}
 Entity Type: ${nodeType}
 Requested Action: ${action}
 
-CRITICAL: Provide an extensive, exhaustive list of all known product models and specialized tapes for ${nodeLabel} across all industrial categories (Masking, Kapton, Foam, Double Sided, Protection Film, Thermal, Metal Foil, Die-Cuts).
+CRITICAL RULES:
+1. Automatically identify the exact core industry and sector of "${nodeLabel}" (e.g., Havells = Electrical appliances, fans, lighting, switchgear; Sri Vasavi = Industrial adhesive tapes; Tata Motors = Commercial and passenger vehicles; Sun Pharma = Pharmaceuticals).
+2. Extract and provide an extensive, authentic catalog list of genuine products and model series that "${nodeLabel}" ACTUALLY manufactures and sells.
+3. STRICT ANTI-HALLUCINATION RULE: Absolutely FORBIDDEN from outputting products from unrelated industries (e.g. NEVER output tapes for an electrical company, NEVER output medicines for a steel manufacturer).
+
 Output strictly valid JSON with this exact schema:
 {
   "items": [
-    "Product Model/Name | Category: Subcategory | Description: Detailed function | Specs: Technical parameters"
+    "Product Model/Name | Category: Specific Sector | Description: Detailed function | Specs: Technical parameters"
   ]
 }
         `;

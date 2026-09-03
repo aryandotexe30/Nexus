@@ -246,9 +246,11 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
         const res = await axios.get(url, {
           headers: {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br'
           },
-          timeout: 3500,
+          timeout: 4000,
           maxRedirects: 5
         });
         if (res.status === 200 && typeof res.data === 'string' && res.data.length > 1000) {
@@ -309,9 +311,15 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
           if (modelName.length > 3 && modelName.length < 90 && !seen.has(modelName.toLowerCase())) {
             seen.add(modelName.toLowerCase());
 
-            let category = "Industrial Product";
+            let category = "Verified Catalog Item";
             const lower = modelName.toLowerCase();
-            if (lower.includes('masking')) category = "Masking Tape";
+            if (lower.includes('fan')) category = "Fans & Ventilation";
+            else if (lower.includes('light') || lower.includes('led') || lower.includes('lamp') || lower.includes('batten') || lower.includes('panel')) category = "Lighting & Luminaires";
+            else if (lower.includes('switch') || lower.includes('socket') || lower.includes('modular') || lower.includes('mcb') || lower.includes('rccb')) category = "Switches & Switchgear";
+            else if (lower.includes('wire') || lower.includes('cable') || lower.includes('conductor')) category = "Wires & Cables";
+            else if (lower.includes('appliance') || lower.includes('heater') || lower.includes('cooler') || lower.includes('iron') || lower.includes('mixer') || lower.includes('cooker') || lower.includes('purifier') || lower.includes('geyser')) category = "Home & Kitchen Appliances";
+            else if (lower.includes('motor') || lower.includes('pump') || lower.includes('solar')) category = "Heavy Industrial & Motors";
+            else if (lower.includes('masking')) category = "Masking Tape";
             else if (lower.includes('polyimide') || lower.includes('kapton')) category = "Polyimide & Kapton Tape";
             else if (lower.includes('filament')) category = "Filament Tape";
             else if (lower.includes('aluminium') || lower.includes('foil')) category = "Aluminium Foil Tape";
