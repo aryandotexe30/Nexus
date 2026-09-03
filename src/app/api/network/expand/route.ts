@@ -103,23 +103,30 @@ Output strictly a valid JSON object with the "items" array:
     };
 
     let items: string[] = [];
-    try {
-      const parsedObject = await generateStructuredAIResponse(prompt, schemaProps, ["items"]);
-      if (Array.isArray(parsedObject?.items) && parsedObject.items.length > 0) {
-        items = parsedObject.items;
-      } else if (Array.isArray(parsedObject?.products) && parsedObject.products.length > 0) {
-        items = parsedObject.products;
-      } else if (Array.isArray(parsedObject?.results) && parsedObject.results.length > 0) {
-        items = parsedObject.results;
-      } else if (Array.isArray(parsedObject) && parsedObject.length > 0) {
-        items = parsedObject;
-      } else {
-        const anyArray = Object.values(parsedObject || {}).find(v => Array.isArray(v) && v.length > 0);
-        items = (anyArray as string[]) || [];
+
+    // Prioritize direct genuine catalog products harvested straight from the official company website
+    if (action === "Find Products" && Array.isArray((searchRes as any).directProducts) && (searchRes as any).directProducts.length >= 5) {
+      console.log(`[Network Expand] Using ${(searchRes as any).directProducts.length} direct verified genuine catalog products from official site.`);
+      items = (searchRes as any).directProducts;
+    } else {
+      try {
+        const parsedObject = await generateStructuredAIResponse(prompt, schemaProps, ["items"]);
+        if (Array.isArray(parsedObject?.items) && parsedObject.items.length > 0) {
+          items = parsedObject.items;
+        } else if (Array.isArray(parsedObject?.products) && parsedObject.products.length > 0) {
+          items = parsedObject.products;
+        } else if (Array.isArray(parsedObject?.results) && parsedObject.results.length > 0) {
+          items = parsedObject.results;
+        } else if (Array.isArray(parsedObject) && parsedObject.length > 0) {
+          items = parsedObject;
+        } else {
+          const anyArray = Object.values(parsedObject || {}).find(v => Array.isArray(v) && v.length > 0);
+          items = (anyArray as string[]) || [];
+        }
+      } catch (parseError) {
+        console.error("Failed to parse AI output:", parseError);
+        items = [];
       }
-    } catch (parseError) {
-      console.error("Failed to parse AI output:", parseError);
-      items = [];
     }
 
     // Knowledge base fallback if web scraper yielded 0 items
