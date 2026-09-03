@@ -304,30 +304,51 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
               const lower = fullUrl.toLowerCase();
               const lowerText = linkText.toLowerCase();
 
-              if (
+              const isUniversalMatch = 
                 lower.includes('product') || 
                 lower.includes('catalog') || 
+                lower.includes('catalogue') || 
                 lower.includes('brochure') ||
                 lower.includes('spec') || 
+                lower.includes('model') || 
+                lower.includes('series') || 
+                lower.includes('range') || 
+                lower.includes('portfolio') || 
+                lower.includes('solution') || 
+                lower.includes('equipment') || 
+                lower.includes('machinery') || 
+                lower.includes('component') || 
+                lower.includes('material') || 
+                lower.includes('chemical') || 
+                lower.includes('drug') || 
+                lower.includes('part') || 
+                lower.includes('device') || 
+                lower.includes('hardware') || 
+                lower.includes('system') || 
+                lower.includes('vehicle') || 
+                lower.includes('cable') || 
+                lower.includes('wire') || 
+                lower.includes('tape') || 
+                lower.includes('foam') || 
+                lower.includes('film') || 
+                lower.includes('die-cut') ||
                 lower.includes('about') || 
                 lower.includes('contact') || 
-                lower.includes('profile') ||
-                lower.includes('management') ||
-                lower.includes('director') ||
-                lower.includes('tape') ||
-                lower.includes('foam') ||
-                lower.includes('film') ||
-                lower.includes('die-cut')
-              ) {
+                lower.includes('profile') || 
+                lower.includes('management') || 
+                lower.includes('director') || 
+                lower.includes('investor');
+
+              if (isUniversalMatch) {
                 subLinks.add(fullUrl);
 
                 // Collect exact product model names from link texts and URL slugs
-                if (linkText.length > 5 && !lowerText.includes('skip') && !lowerText.includes('contact') && !lowerText.includes('about') && !lowerText.includes('privacy')) {
+                if (linkText.length > 3 && linkText.length < 90 && !lowerText.includes('skip') && !lowerText.includes('contact') && !lowerText.includes('about') && !lowerText.includes('privacy') && !lowerText.includes('terms') && !lowerText.includes('cookie') && !lowerText.includes('login') && !lowerText.includes('signup')) {
                   discoveredModels.add(linkText);
                 } else {
                   const slug = fullUrl.split('/').filter(Boolean).pop();
-                  if (slug && slug.length > 5 && !slug.includes('.pdf') && !slug.includes('contact') && !slug.includes('about')) {
-                    discoveredModels.add(slug.replace(/-/g, ' ').toUpperCase());
+                  if (slug && slug.length > 3 && !slug.includes('.pdf') && !slug.includes('.html') && !slug.includes('contact') && !slug.includes('about') && !slug.includes('privacy')) {
+                    discoveredModels.add(slug.replace(/[-_]/g, ' ').toUpperCase());
                   }
                 }
               }
