@@ -263,7 +263,7 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
             'Accept-Language': 'en-US,en;q=0.9',
             'Accept-Encoding': 'gzip, deflate, br'
           },
-          timeout: 2500,
+          timeout: 4500,
           maxRedirects: 5
         });
         if (res.status === 200 && typeof res.data === 'string' && res.data.length > 1000) {
@@ -271,6 +271,10 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
           allWords.forEach(w => {
             if (url.toLowerCase().includes(w)) matchScore += 10;
           });
+          // Bonus for matching core industry keywords
+          if (allWords.some(w => ['tapes', 'tape', 'wires', 'wire', 'cables', 'cable', 'appliances', 'motors', 'paints'].includes(w) && url.toLowerCase().includes(w))) {
+            matchScore += 20;
+          }
           if (url.includes('.com')) matchScore += 5;
           validDirectDomains.push({ url, html: res.data, matchScore });
         }

@@ -39,9 +39,18 @@ interface ParsedNodeData {
 const parseLabel = (label: string): ParsedNodeData => {
   if (!label || typeof label !== 'string') return { title: String(label), tags: [] };
   const parts = label.split('|').map(s => s.trim()).filter(Boolean);
-  if (parts.length === 1) return { title: parts[0], tags: [] };
   
-  const title = parts[0];
+  let rawTitle = parts[0] || "";
+  // Sanitize title from placeholder endings
+  rawTitle = rawTitle
+    .replace(/\s*\/\s*N\/A$/i, '')
+    .replace(/\s*-\s*Model:\s*Not disclosed$/i, '')
+    .replace(/\s*-\s*N\/A$/i, '')
+    .trim();
+
+  if (parts.length === 1) return { title: rawTitle, tags: [] };
+  
+  const title = rawTitle;
   let category: string | undefined;
   let description: string | undefined;
   let specs: string | undefined;
@@ -54,6 +63,10 @@ const parseLabel = (label: string): ParsedNodeData => {
       const [k, ...v] = t.split(':');
       const keyTrimmed = k.trim().toLowerCase();
       const valTrimmed = v.join(':').trim();
+
+      if (valTrimmed.toLowerCase() === 'not disclosed' || valTrimmed.toLowerCase() === 'n/a') {
+        return;
+      }
 
       if (keyTrimmed.includes('category') || keyTrimmed.includes('family') || keyTrimmed.includes('type')) {
         category = valTrimmed;
