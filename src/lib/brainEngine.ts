@@ -52,8 +52,14 @@ export class BrainEngine {
     let searchContext = "";
     let directProducts: string[] = [];
 
+    // Smart acronym expansion (e.g. CGAPL -> CG Adhesive Products Limited / CGAPL)
+    let expandedEntity = cleanEntity;
+    if (/^[A-Z]{3,7}$/.test(cleanEntity)) {
+      expandedEntity = `"${cleanEntity}" company products manufacturing India`;
+    }
+
     try {
-      const searchRes = await searchWebFallback(`${cleanEntity} ${action.replace('Find ', '')}`, 10);
+      const searchRes = await searchWebFallback(`${expandedEntity} ${action.replace('Find ', '')}`, 12);
       searchContext = searchRes.contextString || "";
       if (Array.isArray(searchRes.directProducts) && searchRes.directProducts.length > 0) {
         directProducts = searchRes.directProducts;
@@ -77,7 +83,7 @@ export class BrainEngine {
     }
 
     // 3. AI Brain Reasoning & Synthesis for analytical actions (Raw Materials, Suppliers, Applications)
-    const clampedContext = searchContext.length > 10000 ? searchContext.substring(0, 10000) : searchContext;
+    const clampedContext = searchContext.length > 12000 ? searchContext.substring(0, 12000) : searchContext;
 
     const synthesisPrompt = `
 You are the TarasAI Enterprise Brain Engine.
@@ -91,12 +97,14 @@ ${clampedContext}
 ${directProducts.length > 0 ? `DIRECT OFFICIAL MODELS DISCOVERED ON SITE:\n${directProducts.join('\n')}\n` : ''}
 
 MISSION:
-1. Identify the genuine core industry of "${cleanEntity}" (e.g., Electrical Switchgear & Appliances, Industrial Adhesive Tapes, Commercial Vehicles, Specialty Chemicals).
+1. DISAMBIGUATE ENTITY IDENTITY:
+   - Carefully identify the exact legal company name and core business (e.g., CGAPL = CG Adhesive Products Limited / CG-PPI Adhesive Products Ltd, manufacturing specialty self-adhesive tapes, glass fabric tapes, polyimide tapes, die-cut components).
+   - If an acronym has multiple subsidiaries or meanings, prioritize the specific dedicated manufacturing division associated with industrial products/tapes/chemicals.
 2. Synthesize an extensive, structured, and authentic list for "${action}".
 3. Group products into meaningful "families" or subcategories.
 4. STRICT ANTI-HALLUCINATION & NOISE REDUCTION RULES:
    - FORBIDDEN from including website navigation text (e.g. "Privacy Policy", "Terms", "Career", "Stories", "About Us", "Contact").
-   - FORBIDDEN from outputting products from unrelated industries.
+   - FORBIDDEN from outputting products from unrelated businesses (e.g. if the company is CG Adhesive Products Ltd, do NOT output power transformers from the parent electrical group).
    - For every product, provide genuine model numbers, technical parameters (thickness, voltage, temp rating, adhesive type, material grade), and applications.
    - For "Find Raw Materials", identify the exact underlying polymers, adhesives, base substrates, and chemicals.
    - For "Find Suppliers" or "Find Competitors", identify real active manufacturers.
