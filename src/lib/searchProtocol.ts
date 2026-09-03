@@ -211,23 +211,31 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
     console.log(`[Autonomous Harvester] Crawling regional search for: ${query}`);
     
     // 0. Direct Corporate Domain Prober (Instant, 100% Genuine, Bot-Immune)
+    const GENERIC_SECTOR_WORDS = [
+      'ltd', 'limited', 'pvt', 'private', 'corp', 'corporation', 'inc', 'co', 'company', 'india', 
+      'industries', 'industry', 'specific', 'product', 'products', 'models', 'model', 'technical', 
+      'specifications', 'detailed', 'catalog', 'list', 'what', 'materials', 'components',
+      'tapes', 'tape', 'wires', 'wire', 'cables', 'cable', 'electronics', 'appliances', 
+      'motors', 'paints', 'paint', 'chemical', 'chemicals', 'solutions', 'group'
+    ];
+
     const cleanQuery = query.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').trim();
-    const words = cleanQuery
-      .split(/\s+/)
-      .filter(w => !['ltd', 'limited', 'pvt', 'private', 'corp', 'corporation', 'inc', 'co', 'company', 'india', 'industries', 'specific', 'product', 'models', 'technical', 'specifications', 'detailed', 'catalog', 'list', 'what', 'materials', 'components'].includes(w));
+    const allWords = cleanQuery.split(/\s+/).filter(w => w.length > 1);
+    const brandWords = allWords.filter(w => !GENERIC_SECTOR_WORDS.includes(w));
+    const words = brandWords.length > 0 ? brandWords : allWords;
 
     const domainCandidates: string[] = [];
     if (words.length > 0) {
       domainCandidates.push(words.join(''));
-      if (words.length > 2) {
-        domainCandidates.push(words.slice(1).join(''));
-        domainCandidates.push(words.slice(0, 2).join(''));
-      }
-      if (words.length >= 2) {
-        domainCandidates.push(words[1]);
-      }
       if (words.length >= 1) {
         domainCandidates.push(words[0]);
+      }
+      if (words.length >= 2) {
+        domainCandidates.push(words.slice(0, 2).join(''));
+        domainCandidates.push(words[1]);
+      }
+      if (words.length > 2) {
+        domainCandidates.push(words.slice(1).join(''));
       }
     }
 
@@ -250,7 +258,7 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
             'Accept-Language': 'en-US,en;q=0.9',
             'Accept-Encoding': 'gzip, deflate, br'
           },
-          timeout: 4000,
+          timeout: 2500,
           maxRedirects: 5
         });
         if (res.status === 200 && typeof res.data === 'string' && res.data.length > 1000) {
@@ -274,6 +282,8 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
       const discoveredDirectProducts: string[] = [];
       const seen = new Set<string>();
 
+      const isDedicatedBathroomCompany = cleanQuery.includes('bathroom') || cleanQuery.includes('sanitary') || cleanQuery.includes('faucet') || cleanQuery.includes('kohler') || cleanQuery.includes('jaquar') || cleanQuery.includes('cera') || cleanQuery.includes('hindware');
+
       const NON_PRODUCT_WORDS = [
         'privacy', 'terms', 'cookie', 'login', 'signup', 'sign in', 'register', 
         'cart', 'checkout', 'subscribe', 'copyright', 'all rights', 'sitemap', 
@@ -283,60 +293,139 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
         'enquiry', 'gallery', 'awards', 'strength', 'statement', 'career', 'contact', 'exhibition',
         'announcement', 'shareholding', 'grievance', 'draft', 'abridge', 'pdf', 'image', 'policy',
         'certification', 'initial public', 'group companies', 'annual returns', 'echopx', 'industry',
-        'download e-brochure', 'e-brochures'
+        'download e-brochure', 'e-brochures', 'stories', 'press', 'homepage', 'markets', 'applications',
+        'products', 'sustainability', 'home & office', 'contact us', 'vacancies', 'employer', 'graduates',
+        'students', 'memberships', 'subsidiaries', 'read more', 'learn more', 'find out more'
       ];
 
+      const NON_CORE_CONSUMER_HARDWARE = isDedicatedBathroomCompany ? [] : [
+        'shower', 'towel', 'squeegee', 'soap', 'bathroom', 'toilet', 'curtain', 'mirror', 'dispenser', 
+        'hooks', 'ring', 'holder', 'rack', 'bath', 'dustbin', 'sink', 'shelf', 'organizer', 'cosmetic', 
+        'basket', 'aluxx', 'baboo', 'baath', 'deluxxe', 'draad', 'elegaant', 'esteetic', 'exxclusiv', 
+        'exxcellent', 'ekkro', 'hukk'
+      ];
+
+      // Deep crawl industry/product section if present (e.g. /industry or /products)
+      const industryLinks: string[] = [];
       $('a[href]').each((_, el) => {
-        const linkText = $(el).text().trim().replace(/\s+/g, ' ');
         const href = $(el).attr('href')?.trim() || '';
-        const lowerText = linkText.toLowerCase();
-        const lowerHref = href.toLowerCase();
-
-        if (
-          !NON_PRODUCT_WORDS.some(np => lowerText.includes(np) || lowerHref.includes(np)) &&
-          !lowerText.includes('@') &&
-          !lowerText.includes('1800') &&
-          !lowerText.includes('+91') &&
-          !lowerHref.startsWith('mailto:') &&
-          !lowerHref.startsWith('tel:')
-        ) {
-          let modelName = linkText;
-          if (modelName.length <= 3 || lowerText.includes('view') || lowerText.includes('more') || lowerText.includes('read')) {
-            const slug = href.split('/').filter(Boolean).pop();
-            if (slug && slug.length > 3 && !NON_PRODUCT_WORDS.some(np => slug.toLowerCase().includes(np))) {
-              modelName = slug.replace(/[-_]/g, ' ').toUpperCase();
+        if (href.includes('/industry') || href.includes('/products') || href.includes('/solutions') || href.includes('/catalog')) {
+          try {
+            const full = new URL(href, origin).toString();
+            if (full.startsWith(origin) && !industryLinks.includes(full)) {
+              industryLinks.push(full);
             }
-          }
-
-          if (modelName.length > 3 && modelName.length < 90 && !seen.has(modelName.toLowerCase())) {
-            seen.add(modelName.toLowerCase());
-
-            let category = "Verified Catalog Item";
-            const lower = modelName.toLowerCase();
-            if (lower.includes('fan')) category = "Fans & Ventilation";
-            else if (lower.includes('light') || lower.includes('led') || lower.includes('lamp') || lower.includes('batten') || lower.includes('panel')) category = "Lighting & Luminaires";
-            else if (lower.includes('switch') || lower.includes('socket') || lower.includes('modular') || lower.includes('mcb') || lower.includes('rccb')) category = "Switches & Switchgear";
-            else if (lower.includes('wire') || lower.includes('cable') || lower.includes('conductor')) category = "Wires & Cables";
-            else if (lower.includes('appliance') || lower.includes('heater') || lower.includes('cooler') || lower.includes('iron') || lower.includes('mixer') || lower.includes('cooker') || lower.includes('purifier') || lower.includes('geyser')) category = "Home & Kitchen Appliances";
-            else if (lower.includes('motor') || lower.includes('pump') || lower.includes('solar')) category = "Heavy Industrial & Motors";
-            else if (lower.includes('masking')) category = "Masking Tape";
-            else if (lower.includes('polyimide') || lower.includes('kapton')) category = "Polyimide & Kapton Tape";
-            else if (lower.includes('filament')) category = "Filament Tape";
-            else if (lower.includes('aluminium') || lower.includes('foil')) category = "Aluminium Foil Tape";
-            else if (lower.includes('tissue')) category = "Double Sided Tissue Tape";
-            else if (lower.includes('double') || lower.includes('ds ')) category = "Double Sided Tape";
-            else if (lower.includes('foam')) category = "Foam Tape & Gasket";
-            else if (lower.includes('duct')) category = "Duct Tape";
-            else if (lower.includes('wire harness') || lower.includes('pvc')) category = "Wire Harness Tape";
-            else if (lower.includes('hdpe') || lower.includes('fabric')) category = "Fabric Tape";
-            else if (lower.includes('transfer')) category = "Adhesive Transfer Tape";
-            else if (lower.includes('bopp')) category = "BOPP Packaging Tape";
-
-            const formatted = `${modelName} | Category: ${category} | Specs: Official Manufacturer Catalog Item`;
-            discoveredDirectProducts.push(formatted);
-          }
+          } catch (e) {}
         }
       });
+
+      // Crawl top industry sub-pages in parallel
+      if (industryLinks.length > 0) {
+        try {
+          const industrySubResults = await Promise.all(industryLinks.slice(0, 3).map(async (subUrl) => {
+            try {
+              const subRes = await axios.get(subUrl, {
+                headers: {
+                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+                  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                  'Accept-Language': 'en-US,en;q=0.9',
+                  'Accept-Encoding': 'gzip, deflate, br'
+                },
+                timeout: 3500
+              });
+              return subRes.data;
+            } catch (e) {
+              return null;
+            }
+          }));
+
+          industrySubResults.forEach((subHtml) => {
+            if (subHtml && typeof subHtml === 'string') {
+              const sub$ = cheerio.load(subHtml);
+              sub$('a[href]').each((_, el) => {
+                const linkText = sub$(el).text().trim().replace(/\s+/g, ' ');
+                const href = sub$(el).attr('href')?.trim() || '';
+                const lowerText = linkText.toLowerCase();
+
+                if (
+                  !NON_PRODUCT_WORDS.some(np => lowerText === np || lowerText.includes(np)) &&
+                  !NON_CORE_CONSUMER_HARDWARE.some(nch => lowerText.includes(nch)) &&
+                  !lowerText.includes('@') &&
+                  !lowerText.includes('1800') &&
+                  !lowerText.includes('+91') &&
+                  linkText.length > 3 && linkText.length < 90 &&
+                  !seen.has(lowerText)
+                ) {
+                  seen.add(lowerText);
+                  let category = "Industrial Tape & Adhesive Solution";
+                  if (lowerText.includes('wire harness')) category = "Wire Harnessing Tapes";
+                  else if (lowerText.includes('masking')) category = "Masking Tapes";
+                  else if (lowerText.includes('foam') || lowerText.includes('acrylic')) category = "Acrylic Core & Foam Tapes";
+                  else if (lowerText.includes('double') || lowerText.includes('film')) category = "Double-Sided Filmic Tapes";
+                  else if (lowerText.includes('packaging')) category = "Packaging Tapes";
+                  discoveredDirectProducts.push(`${linkText} | Category: ${category} | Specs: Official Manufacturer Industrial Product`);
+                }
+              });
+            }
+          });
+        } catch (e) {}
+      }
+
+      // If industry sub-pages already yielded genuine products, avoid falling back to consumer homepage accessories
+      if (discoveredDirectProducts.length < 10) {
+        $('a[href]').each((_, el) => {
+          const linkText = $(el).text().trim().replace(/\s+/g, ' ');
+          const href = $(el).attr('href')?.trim() || '';
+          const lowerText = linkText.toLowerCase();
+          const lowerHref = href.toLowerCase();
+
+          if (
+            !NON_PRODUCT_WORDS.some(np => lowerText.includes(np) || lowerHref.includes(np)) &&
+            !NON_CORE_CONSUMER_HARDWARE.some(nch => lowerText.includes(nch) || lowerHref.includes(nch)) &&
+            !lowerText.includes('@') &&
+            !lowerText.includes('1800') &&
+            !lowerText.includes('+91') &&
+            !lowerHref.startsWith('mailto:') &&
+            !lowerHref.startsWith('tel:')
+          ) {
+            let modelName = linkText;
+            if (modelName.length <= 3 || lowerText.includes('view') || lowerText.includes('more') || lowerText.includes('read')) {
+              const slug = href.split('/').filter(Boolean).pop();
+              if (slug && slug.length > 3 && !NON_PRODUCT_WORDS.some(np => slug.toLowerCase().includes(np))) {
+                modelName = slug.replace(/[-_]/g, ' ').toUpperCase();
+              }
+            }
+
+            if (modelName.length > 3 && modelName.length < 90 && !seen.has(modelName.toLowerCase())) {
+              seen.add(modelName.toLowerCase());
+
+              let category = "Verified Catalog Item";
+              const lower = modelName.toLowerCase();
+              if (lower.includes('fan')) category = "Fans & Ventilation";
+              else if (lower.includes('light') || lower.includes('led') || lower.includes('lamp') || lower.includes('batten') || lower.includes('panel')) category = "Lighting & Luminaires";
+              else if (lower.includes('switch') || lower.includes('socket') || lower.includes('modular') || lower.includes('mcb') || lower.includes('rccb')) category = "Switches & Switchgear";
+              else if (lower.includes('wire') || lower.includes('cable') || lower.includes('conductor')) category = "Wires & Cables";
+              else if (lower.includes('appliance') || lower.includes('heater') || lower.includes('cooler') || lower.includes('iron') || lower.includes('mixer') || lower.includes('cooker') || lower.includes('purifier') || lower.includes('geyser')) category = "Home & Kitchen Appliances";
+              else if (lower.includes('motor') || lower.includes('pump') || lower.includes('solar')) category = "Heavy Industrial & Motors";
+              else if (lower.includes('masking')) category = "Masking Tape";
+              else if (lower.includes('polyimide') || lower.includes('kapton')) category = "Polyimide & Kapton Tape";
+              else if (lower.includes('filament')) category = "Filament Tape";
+              else if (lower.includes('aluminium') || lower.includes('foil')) category = "Aluminium Foil Tape";
+              else if (lower.includes('tissue')) category = "Double Sided Tissue Tape";
+              else if (lower.includes('double') || lower.includes('ds ')) category = "Double Sided Tape";
+              else if (lower.includes('foam')) category = "Foam Tape & Gasket";
+              else if (lower.includes('duct')) category = "Duct Tape";
+              else if (lower.includes('wire harness') || lower.includes('pvc')) category = "Wire Harness Tape";
+              else if (lower.includes('hdpe') || lower.includes('fabric')) category = "Fabric Tape";
+              else if (lower.includes('transfer')) category = "Adhesive Transfer Tape";
+              else if (lower.includes('bopp')) category = "BOPP Packaging Tape";
+
+              const formatted = `${modelName} | Category: ${category} | Specs: Official Manufacturer Catalog Item`;
+              discoveredDirectProducts.push(formatted);
+            }
+          }
+        });
+      }
 
       if (discoveredDirectProducts.length >= 5) {
         console.log(`[Autonomous Harvester] Discovered ${discoveredDirectProducts.length} genuine product models directly from ${primaryDirect.url}`);
