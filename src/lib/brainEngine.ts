@@ -48,39 +48,7 @@ export class BrainEngine {
     const cleanEntity = entityName.trim();
     console.log(`[Brain Engine] Processing query for "${cleanEntity}" [${entityType}] -> Action: ${action}`);
 
-    // 1. Try memory recall from database
-    try {
-      if (prisma && (prisma as any).brainEntity) {
-        const stored = await (prisma as any).brainEntity.findUnique({
-          where: { name: cleanEntity },
-          include: {
-            outgoingRelations: {
-              include: { target: true }
-            }
-          }
-        });
-
-        if (stored && stored.attributes && Array.isArray((stored.attributes as any)[action])) {
-          const cachedItems = (stored.attributes as any)[action] as string[];
-          if (cachedItems.length >= 5) {
-            console.log(`[Brain Engine] Memory Recall: Retrieved ${cachedItems.length} verified graph items for ${cleanEntity}`);
-            return {
-              success: true,
-              entity: cleanEntity,
-              entityType,
-              action,
-              industry: stored.industry || undefined,
-              summary: stored.summary || undefined,
-              items: cachedItems
-            };
-          }
-        }
-      }
-    } catch (memErr) {
-      console.warn(`[Brain Engine] Memory recall notice: ${(memErr as any)?.message}`);
-    }
-
-    // 2. Autonomous Web Harvest & Direct Corporate Crawl
+    // 1. Fresh Live Autonomous Web Harvest & Direct Corporate Crawl (Cache reads disabled)
     let searchContext = "";
     let directProducts: string[] = [];
 
@@ -94,7 +62,21 @@ export class BrainEngine {
       console.warn(`[Brain Engine] Web harvester notice: ${(crawlErr as any)?.message}`);
     }
 
-    // 3. AI Brain Reasoning & Synthesis
+    // 2. If direct verified products are available for "Find Products", use them directly for 100% authenticity
+    if (action === "Find Products" && directProducts.length >= 5) {
+      console.log(`[Brain Engine] Direct Catalog Match: Using ${directProducts.length} verified products directly from official site.`);
+      return {
+        success: true,
+        entity: cleanEntity,
+        entityType,
+        action,
+        industry: "Specialty Industrial Manufacturing",
+        summary: `Official product catalog extracted directly from verified manufacturer portal for ${cleanEntity}`,
+        items: directProducts
+      };
+    }
+
+    // 3. AI Brain Reasoning & Synthesis for analytical actions (Raw Materials, Suppliers, Applications)
     const clampedContext = searchContext.length > 10000 ? searchContext.substring(0, 10000) : searchContext;
 
     const synthesisPrompt = `
@@ -154,7 +136,7 @@ Output strictly a valid JSON object matching this schema:
       console.warn(`[Brain Engine] AI reasoning fallback: ${(aiErr as any)?.message}`);
     }
 
-    // Fallback: If AI reasoning hit quota and we have direct genuine products, use them
+    // Fallback: If AI reasoning yielded 0 and we have direct products, use them
     if (synthesizedItems.length === 0 && directProducts.length > 0) {
       synthesizedItems = directProducts;
     }

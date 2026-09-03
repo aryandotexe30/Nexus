@@ -224,29 +224,32 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
     const brandWords = allWords.filter(w => !GENERIC_SECTOR_WORDS.includes(w));
     const words = brandWords.length > 0 ? brandWords : allWords;
 
-    const domainCandidates: string[] = [];
-    if (words.length > 0) {
-      domainCandidates.push(words.join(''));
-      if (allWords.length > 1) {
-        domainCandidates.push(allWords.slice(0, 3).join(''));
-      }
-      if (words.length >= 1) {
-        domainCandidates.push(words[0]);
-      }
-      if (words.length >= 2) {
-        domainCandidates.push(words.slice(0, 2).join(''));
-        domainCandidates.push(words[1]);
-        if (allWords.some(w => ['tapes', 'tape', 'wires', 'wire', 'cables', 'cable', 'appliances', 'motors'].includes(w))) {
-          const sectorWord = allWords.find(w => ['tapes', 'tape', 'wires', 'wire', 'cables', 'cable', 'appliances', 'motors'].includes(w));
-          domainCandidates.push(words[1] + sectorWord);
-          domainCandidates.push(words[0] + sectorWord);
-        }
+    const domainCandidateSet = new Set<string>();
+    // 1. Full brand combined + sector (e.g. srivasavitapes)
+    if (brandWords.length >= 2) {
+      const combinedBrand = brandWords.join('');
+      domainCandidateSet.add(combinedBrand);
+      for (const s of allWords.filter(w => ['tapes', 'tape', 'wires', 'wire', 'cables', 'cable', 'appliances', 'motors', 'paints', 'chemicals', 'adhesives'].includes(w))) {
+        domainCandidateSet.add(combinedBrand + s);
       }
     }
 
-    const tlds = ['.com', '.in', '.co.in', '.org'];
+    // 2. Main distinctive brand word + sector (e.g. vasavitapes)
+    const distinctiveBrandWords = brandWords.filter(b => b.length >= 4);
+    for (const b of (distinctiveBrandWords.length > 0 ? distinctiveBrandWords : brandWords)) {
+      for (const s of allWords.filter(w => ['tapes', 'tape', 'wires', 'wire', 'cables', 'cable', 'appliances', 'motors', 'paints', 'chemicals', 'adhesives'].includes(w))) {
+        domainCandidateSet.add(b + s);
+      }
+      domainCandidateSet.add(b);
+    }
+
+    if (allWords.length > 0) {
+      domainCandidateSet.add(allWords.join(''));
+    }
+
+    const tlds = ['.com', '.co.in', '.in'];
     const testUrls: string[] = [];
-    for (const name of Array.from(new Set(domainCandidates))) {
+    for (const name of Array.from(domainCandidateSet).slice(0, 6)) {
       for (const tld of tlds) {
         testUrls.push(`https://${name}${tld}`);
         testUrls.push(`https://www.${name}${tld}`);
@@ -269,11 +272,11 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
         if (res.status === 200 && typeof res.data === 'string' && res.data.length > 1000) {
           let matchScore = 0;
           allWords.forEach(w => {
-            if (url.toLowerCase().includes(w)) matchScore += 10;
+            if (url.toLowerCase().includes(w)) matchScore += w.length >= 4 ? 15 : 5;
           });
           // Bonus for matching core industry keywords
-          if (allWords.some(w => ['tapes', 'tape', 'wires', 'wire', 'cables', 'cable', 'appliances', 'motors', 'paints'].includes(w) && url.toLowerCase().includes(w))) {
-            matchScore += 20;
+          if (allWords.some(w => ['tapes', 'tape', 'wires', 'wire', 'cables', 'cable', 'appliances', 'motors', 'paints', 'chemicals', 'adhesives'].includes(w) && url.toLowerCase().includes(w))) {
+            matchScore += 30;
           }
           if (url.includes('.com')) matchScore += 5;
           validDirectDomains.push({ url, html: res.data, matchScore });
@@ -304,7 +307,9 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
         'certification', 'initial public', 'group companies', 'annual returns', 'echopx', 'industry',
         'download e-brochure', 'e-brochures', 'stories', 'press', 'homepage', 'markets', 'applications',
         'products', 'sustainability', 'home & office', 'contact us', 'vacancies', 'employer', 'graduates',
-        'students', 'memberships', 'subsidiaries', 'read more', 'learn more', 'find out more'
+        'students', 'memberships', 'subsidiaries', 'read more', 'learn more', 'find out more', 'certificate',
+        'iso-9001', 'dun & bradstreet', 'home', '#home', 'r & d', 'quality', 'infrastructure', 'downloads',
+        'reach us', 'quick links'
       ];
 
       const NON_CORE_CONSUMER_HARDWARE = isDedicatedBathroomCompany ? [] : [
