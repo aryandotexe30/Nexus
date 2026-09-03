@@ -79,15 +79,17 @@ Search Context:
 ${searchContext}
 
 CRITICAL EXHAUSTIVE CATALOG EXTRACTION:
-Extract and list EVERY SINGLE distinct product model, catalog item, and specialized industrial tape/material manufactured or supplied by ${nodeLabel}.
-You must exhaustively iterate through all categories and sub-pages. Do NOT stop early. Do not summarize. Do not use 'etc.' or '...'. If there are 30, 50, 100 or more products, list every single one of them.
-Include exact model numbers, proprietary series codes, categories, and technical parameters (e.g. Masking Tapes, Kapton Polyimide Tapes, Double Sided Tapes, Foam Tapes, Surface Protection Films, High Temp Insulation, Metallic Foil Tapes, Custom Die-Cuts, Filament Tapes, Cloth Tapes, Electrical Tapes).
+- Extract and list EVERY SINGLE distinct product model, catalog item, and specialized industrial material manufactured or supplied by ${nodeLabel}.
+- If the search context contains a section "=== DIRECT PRODUCT CATALOG MODELS DISCOVERED ON SITE ===", you MUST extract and format EVERY SINGLE ONE of those exact discovered models (e.g. DMT-308, DMT-310, DKT-25 CR, DCFT-202B, DAFT-3020H, DST-90FR, etc.) into the "items" array.
+- For each model, format it cleanly with its category, function, and technical specs:
+  "Exact Model Name / Series | Category: Specific Type | Description: Detailed industrial use | Specs: Thickness, Temperature, Adhesive Type, Substrate"
+- Do NOT stop early. Do not omit any model. List all of them.
 
 Output strictly a valid JSON object with the "items" array:
 {
   "items": [
-    "Product Model / Name | Category: Subcategory | Description: Detailed function | Specs: Technical parameters",
-    ...
+    "DMT-308 Masking Tape General Purpose | Category: Masking Tape | Description: Crepe paper masking tape for industrial bundling and painting | Specs: Thickness 130µm, Temp 80°C, Rubber adhesive",
+    "DKT-25 CR Polyimide Insulation Tape 1 mil | Category: Kapton & Polyimide Tape | Description: High temperature electrical insulation tape | Specs: Thickness 25µm, Temp up to 260°C, Silicone adhesive"
   ]
 }
     `;
