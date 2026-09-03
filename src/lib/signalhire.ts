@@ -59,47 +59,48 @@ export async function fetchSignalHirePersonnel(companyName: string): Promise<{
   // 2. Query Official SignalHire API to unlock direct verified emails & phone numbers
   if (apiKey) {
     try {
-      const itemsToEnrich = foundLinkedInUrls.length > 0 
-        ? foundLinkedInUrls.slice(0, 5) 
-        : [companyName];
+      const itemsToEnrich = foundLinkedInUrls.filter(u => u.includes('linkedin.com/in/')).slice(0, 5);
 
-      console.log(`[SignalHire API] Querying candidate enrichment for ${itemsToEnrich.length} items...`);
-      const res = await axios.post(
-        'https://www.signalhire.com/api/v1/candidate/search',
-        { items: itemsToEnrich },
-        {
-          headers: {
-            'apiKey': apiKey,
-            'Content-Type': 'application/json'
-          },
-          timeout: 6000
-        }
-      );
+      if (itemsToEnrich.length > 0) {
+        console.log(`[SignalHire API] Querying candidate enrichment for ${itemsToEnrich.length} items...`);
+        const res = await axios.post(
+          'https://www.signalhire.com/api/v1/candidate/search',
+          { items: itemsToEnrich },
+          {
+            headers: {
+              'apiKey': apiKey,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            timeout: 6000
+          }
+        );
 
-      const candidates = res.data?.items || res.data?.candidates || (Array.isArray(res.data) ? res.data : []);
-      if (Array.isArray(candidates) && candidates.length > 0) {
-        console.log(`[SignalHire API] Successfully unlocked ${candidates.length} verified LinkedIn profiles.`);
-        for (const c of candidates) {
-          const name = c.fullName || `${c.firstName || ''} ${c.lastName || ''}`.trim() || c.name;
-          const title = c.currentPosition || c.title || c.headline || 'Executive';
-          const email = c.emails?.[0]?.value || c.email || '';
-          const phone = c.phones?.[0]?.value || c.phone || '';
-          const linkedinUrl = c.socialProfiles?.find((s: any) => s.type === 'linkedin')?.url || c.linkedin || c.profileUrl || '';
+        const candidates = res.data?.items || res.data?.candidates || (Array.isArray(res.data) ? res.data : []);
+        if (Array.isArray(candidates) && candidates.length > 0) {
+          console.log(`[SignalHire API] Successfully unlocked ${candidates.length} verified LinkedIn profiles.`);
+          for (const c of candidates) {
+            const name = c.fullName || `${c.firstName || ''} ${c.lastName || ''}`.trim() || c.name;
+            const title = c.currentPosition || c.title || c.headline || 'Executive';
+            const email = c.emails?.[0]?.value || c.email || '';
+            const phone = c.phones?.[0]?.value || c.phone || '';
+            const linkedinUrl = c.socialProfiles?.find((s: any) => s.type === 'linkedin')?.url || c.linkedin || c.profileUrl || '';
 
-          const lowerTitle = title.toLowerCase();
-          let dept: 'Sales' | 'Management' | 'HR' | 'Other' = 'Other';
+            const lowerTitle = title.toLowerCase();
+            let dept: 'Sales' | 'Management' | 'HR' | 'Other' = 'Other';
 
-          if (lowerTitle.includes('sale') || lowerTitle.includes('business') || lowerTitle.includes('commercial') || lowerTitle.includes('procurement') || lowerTitle.includes('marketing')) {
-            dept = 'Sales';
-            salesContacts.push({ name, title, department: dept, email, phone, linkedinUrl, source: 'SignalHire (Verified LinkedIn)' });
-          } else if (lowerTitle.includes('director') || lowerTitle.includes('founder') || lowerTitle.includes('ceo') || lowerTitle.includes('president') || lowerTitle.includes('managing') || lowerTitle.includes('vp') || lowerTitle.includes('head')) {
-            dept = 'Management';
-            managementContacts.push({ name, title, department: dept, email, phone, linkedinUrl, source: 'SignalHire (Verified LinkedIn)' });
-          } else if (lowerTitle.includes('hr') || lowerTitle.includes('human') || lowerTitle.includes('talent') || lowerTitle.includes('recruit') || lowerTitle.includes('people')) {
-            dept = 'HR';
-            hrContacts.push({ name, title, department: dept, email, phone, linkedinUrl, source: 'SignalHire (Verified LinkedIn)' });
-          } else {
-            salesContacts.push({ name, title, department: dept, email, phone, linkedinUrl, source: 'SignalHire (Verified LinkedIn)' });
+            if (lowerTitle.includes('sale') || lowerTitle.includes('business') || lowerTitle.includes('commercial') || lowerTitle.includes('procurement') || lowerTitle.includes('marketing')) {
+              dept = 'Sales';
+              salesContacts.push({ name, title, department: dept, email, phone, linkedinUrl, source: 'SignalHire (Verified LinkedIn)' });
+            } else if (lowerTitle.includes('director') || lowerTitle.includes('founder') || lowerTitle.includes('ceo') || lowerTitle.includes('president') || lowerTitle.includes('managing') || lowerTitle.includes('vp') || lowerTitle.includes('head')) {
+              dept = 'Management';
+              managementContacts.push({ name, title, department: dept, email, phone, linkedinUrl, source: 'SignalHire (Verified LinkedIn)' });
+            } else if (lowerTitle.includes('hr') || lowerTitle.includes('human') || lowerTitle.includes('talent') || lowerTitle.includes('recruit') || lowerTitle.includes('people')) {
+              dept = 'HR';
+              hrContacts.push({ name, title, department: dept, email, phone, linkedinUrl, source: 'SignalHire (Verified LinkedIn)' });
+            } else {
+              salesContacts.push({ name, title, department: dept, email, phone, linkedinUrl, source: 'SignalHire (Verified LinkedIn)' });
+            }
           }
         }
       }

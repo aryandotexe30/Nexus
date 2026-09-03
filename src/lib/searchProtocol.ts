@@ -216,11 +216,22 @@ export async function searchWebFallback(query: string, maxResults: number = 8): 
       'industries', 'industry', 'specific', 'product', 'products', 'models', 'model', 'technical', 
       'specifications', 'detailed', 'catalog', 'list', 'what', 'materials', 'components',
       'tapes', 'tape', 'wires', 'wire', 'cables', 'cable', 'electronics', 'appliances', 
-      'motors', 'paints', 'paint', 'chemical', 'chemicals', 'solutions', 'group'
+      'motors', 'paints', 'paint', 'chemical', 'chemicals', 'solutions', 'group',
+      'contact', 'website', 'official', 'mca', 'gstin', 'financial', 'statements', 'annual', 'report',
+      'gst', 'cin', 'pan', 'director', 'address', 'phone', 'email', 'about', 'overview'
     ];
 
-    const cleanQuery = query.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').trim();
-    const allWords = cleanQuery.split(/\s+/).filter(w => w.length > 1 && !['specific', 'product', 'products', 'models', 'technical', 'specifications', 'detailed', 'catalog', 'list', 'what', 'materials', 'components'].includes(w));
+    // Extract core target entity from query (e.g. "CGAPL" from '"CGAPL" official company website...')
+    let targetEntityStr = query;
+    const quoteMatch = query.match(/"([^"]+)"/);
+    if (quoteMatch) {
+      targetEntityStr = quoteMatch[1];
+    } else {
+      targetEntityStr = query.split(/\s+(?:official|company|website|products|catalog|specifications|contact|mca|gstin|financial|statements|annual|report)\b/i)[0] || query;
+    }
+
+    const cleanQuery = targetEntityStr.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').trim();
+    const allWords = cleanQuery.split(/\s+/).filter(w => w.length > 1 && !GENERIC_SECTOR_WORDS.includes(w));
     const brandWords = allWords.filter(w => !GENERIC_SECTOR_WORDS.includes(w));
     const words = brandWords.length > 0 ? brandWords : allWords;
 
