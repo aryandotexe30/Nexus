@@ -167,7 +167,7 @@ const TreeNode = ({
       {/* Main Node Card */}
       <motion.div 
         whileHover={{ scale: 1.008, boxShadow: "0px 10px 35px -8px rgba(59, 130, 246, 0.15)" }}
-        className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-5 sm:p-6 bg-white border border-slate-200/80 rounded-2xl transition-all shadow-sm relative group overflow-hidden"
+        className={`flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-5 sm:p-6 bg-white border border-slate-200/80 rounded-2xl transition-all shadow-sm relative group ${menuOpen ? 'z-30' : 'z-10'}`}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 via-transparent to-purple-50/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none" />
         
@@ -264,7 +264,7 @@ const TreeNode = ({
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -8, scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    className="absolute right-0 top-full mt-2 w-60 bg-white border border-slate-200 rounded-2xl shadow-2xl z-50 py-2 overflow-hidden"
+                    className="absolute right-0 top-full mt-2 w-60 bg-white border border-slate-200/90 rounded-2xl shadow-2xl z-[100] py-2 overflow-hidden"
                   >
                     {options.map(opt => (
                       <button
