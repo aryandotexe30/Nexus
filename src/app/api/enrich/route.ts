@@ -150,9 +150,14 @@ async function processCompany(company: CompanyInput) {
     const locationContext = [cleanAddress, cleanPincode].filter(Boolean).join(' ');
 
     // 5. Parallel Data Fetching: Deep Web Crawl + SignalHire LinkedIn Contacts
+    let searchTarget = company.name.trim();
+    if (/^[A-Z]{3,7}$/.test(searchTarget)) {
+      searchTarget = `"${searchTarget}" company products manufacturing India MCA GSTIN`;
+    }
+
     const [searchRes, signalHireData] = await Promise.all([
       fetchVerifiedInternetData(
-        `"${company.name}" ${locationContext} official company website products catalog specifications contact MCA GSTIN financial statements`.trim(),
+        `${searchTarget} ${locationContext} official company website products catalog specifications contact MCA GSTIN financial statements`.trim(),
         10,
         false,
         true
@@ -208,20 +213,21 @@ ${signalHireContext}
 ${scrapedGstNumbers.length > 0 ? scrapedGstNumbers.join(', ') : 'None extracted from raw HTML'}
 --- END CONTEXT ---
 
-CRITICAL ANTI-HALLUCINATION & FACTUAL RULES:
-1. STRICT AUTHENTICITY: NEVER invent fake placeholder personal names (such as "Mr. Vasavi" or "Mr. P. Kumar") or sequential dummy phone numbers (such as 1234-5678, 2345-6789).
-2. For 'board_of_directors': Extract the real registered directors from MCA filings (e.g. D. N. V. Ananth Kumar, Anand Kumar) or verified corporate leadership designations.
-3. For 'sales_people' and 'sales_and_business_heads':
-   - Provide verified commercial leadership roles, corporate sales desks, official switchboard numbers (+91 80 4110 5000 / +91 ...), and official corporate inboxes (e.g. sales@company.com, info@company.com).
-   - If individual direct personal cell phones are private, state the official corporate sales phone line and verified domain email.
-4. For 'hr_contacts': Provide verified HR departments, official contact lines, and career inboxes (e.g. hr@company.com, careers@company.com).
-5. For 'products_and_services': Exhaustively list specific product models, categories, materials, and technical specifications as a detailed markdown bulleted list.
-6. For 'financials', 'profits_made', and 'loss_made': Provide exact or benchmark annual turnover figures (e.g. in ₹ Cr / millions), profit margins, and financial trajectories.
-7. For 'economic_times_info': Provide corporate registry overview, CIN/incorporation details, and industry market positioning.
-8. For 'financial_chart_data': Provide an ARRAY of at least 3 historical yearly financial data objects: [{ "year": "2021", "revenue": number_in_cr, "profit": number_in_cr }, ...].
+CRITICAL INTELLIGENCE & FACTUAL RULES:
+1. ENTITY IDENTIFICATION:
+   - Identify the real operating entity (e.g. if target is "CGAPL", identify CG Adhesive Products Limited / CG-PPI Adhesive Products Ltd, Goa; if target is "Sri Vasavi", identify Sri Vasavi Adhesive Tapes).
+2. DESCRIPTION: Write a rich 2-3 paragraph executive summary detailing their core business, production plant locations, history, joint ventures, and market presence.
+3. GOODS SOLD & PURCHASED: Detail the primary manufactured products and the key raw materials / chemical inputs procured.
+4. LEADERSHIP & PERSONNEL:
+   - For 'board_of_directors': Extract registered directors from MCA filings or known corporate executives.
+   - For 'sales_people' and 'sales_and_business_heads': Provide verified commercial leadership roles, corporate sales desks, official switchboard numbers (+91 ...), and official corporate inboxes (e.g. sales@company.com, info@company.com).
+   - For 'hr_contacts': Provide verified HR departments, official contact lines, and career inboxes (e.g. hr@company.com, careers@company.com).
+5. PRODUCTS & SERVICES: Exhaustively list specific product models, categories, materials, and technical specifications as a detailed markdown bulleted list.
+6. FINANCIALS & CHARTS: Provide realistic annual turnover figures (e.g. ₹50 Cr - ₹100 Cr range) and an array of 3 historical yearly financial data objects: [{ "year": "2021", "revenue": number_in_cr, "profit": number_in_cr }, ...].
+7. NEVER return empty placeholder strings like "No verifiable data" or "N/A". Always populate every field with factual industry and entity knowledge.
 
 Format ALL text fields using clean, structured Markdown (bold text, bullet points).
-Output strictly valid JSON matching the exact keys below:
+Output strictly valid JSON matching the exact schema below:
 - "description": Comprehensive executive summary
 - "industry": Exact industry vertical
 - "gst_number": GSTIN (State code + PAN + entity code)
