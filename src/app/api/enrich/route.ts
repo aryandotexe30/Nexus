@@ -215,16 +215,19 @@ ${scrapedGstNumbers.length > 0 ? scrapedGstNumbers.join(', ') : 'None extracted 
 
 CRITICAL INTELLIGENCE & FACTUAL RULES:
 1. ENTITY IDENTIFICATION:
-   - Identify the real operating entity (e.g. if target is "CGAPL", identify CG Adhesive Products Limited / CG-PPI Adhesive Products Ltd, Goa; if target is "Sri Vasavi", identify Sri Vasavi Adhesive Tapes).
-2. DESCRIPTION: Write a rich 2-3 paragraph executive summary detailing their core business, production plant locations, history, joint ventures, and market presence.
-3. GOODS SOLD & PURCHASED: Detail the primary manufactured products and the key raw materials / chemical inputs procured.
-4. LEADERSHIP & PERSONNEL:
+   - Identify the real operating entity (e.g. if target is "CGAPL", identify CG Adhesive Products Limited / CG-PPI Adhesive Products Ltd, Kundaim, Goa).
+2. STRICT ZERO-FABRICATION RULE FOR PHONE NUMBERS & CONTACTS:
+   - NEVER invent sequential or dummy fake phone numbers (e.g. 1234567, 7654321, 2345678, 9876543210, 0000000).
+   - If an individual's personal mobile number is not in the live context, DO NOT make one up. Provide the official corporate plant/headquarters switchboard line (+91 ...), verified corporate domain email (e.g. sales@company.com, info@company.com), or verified LinkedIn profile.
+   - NEVER invent fake placeholder personal names. If exact names are not verified, refer to the department or official desk (e.g. "Commercial Sales Desk", "Procurement Division", "HR Department").
+3. DESCRIPTION: Write a rich 2-3 paragraph executive summary detailing their core business, production plant locations, history, joint ventures, and market presence.
+4. GOODS SOLD & PURCHASED: Detail the primary manufactured products and the key raw materials / chemical inputs procured.
+5. LEADERSHIP & PERSONNEL:
    - For 'board_of_directors': Extract registered directors from MCA filings or known corporate executives.
    - For 'sales_people' and 'sales_and_business_heads': Provide verified commercial leadership roles, corporate sales desks, official switchboard numbers (+91 ...), and official corporate inboxes (e.g. sales@company.com, info@company.com).
    - For 'hr_contacts': Provide verified HR departments, official contact lines, and career inboxes (e.g. hr@company.com, careers@company.com).
-5. PRODUCTS & SERVICES: Exhaustively list specific product models, categories, materials, and technical specifications as a detailed markdown bulleted list.
-6. FINANCIALS & CHARTS: Provide realistic annual turnover figures (e.g. ₹50 Cr - ₹100 Cr range) and an array of 3 historical yearly financial data objects: [{ "year": "2021", "revenue": number_in_cr, "profit": number_in_cr }, ...].
-7. NEVER return empty placeholder strings like "No verifiable data" or "N/A". Always populate every field with factual industry and entity knowledge.
+6. PRODUCTS & SERVICES: Exhaustively list specific product models, categories, materials, and technical specifications as a detailed markdown bulleted list.
+7. FINANCIALS & CHARTS: Provide realistic annual turnover figures (e.g. ₹50 Cr - ₹100 Cr range) and an array of 3 historical yearly financial data objects: [{ "year": "2021", "revenue": number_in_cr, "profit": number_in_cr }, ...].
 
 Format ALL text fields using clean, structured Markdown (bold text, bullet points).
 Output strictly valid JSON matching the exact schema below:
@@ -293,6 +296,22 @@ Output strictly valid JSON matching the exact schema below:
       if (!jsonResult.sales_and_business_heads && jsonResult.sales_people) {
         jsonResult.sales_and_business_heads = jsonResult.sales_people;
       }
+
+      // Sanitize any dummy sequential phone patterns from AI output
+      const sanitizeDummyNumbers = (text: string): string => {
+        if (!text || typeof text !== 'string') return text;
+        return text
+          .replace(/(?:\+?91[\s-]?)?(?:\(?\d{2,4}\)?[\s-]?)?(?:1234567|7654321|2345678|1234567890|9876543210|0000000|1111111)\b/g, '')
+          .replace(/\s*–\s*–\s*/g, ' – ')
+          .replace(/–\s*$/gm, '')
+          .replace(/\s{2,}/g, ' ')
+          .trim();
+      };
+
+      if (jsonResult.sales_people) jsonResult.sales_people = sanitizeDummyNumbers(jsonResult.sales_people);
+      if (jsonResult.sales_and_business_heads) jsonResult.sales_and_business_heads = sanitizeDummyNumbers(jsonResult.sales_and_business_heads);
+      if (jsonResult.hr_contacts) jsonResult.hr_contacts = sanitizeDummyNumbers(jsonResult.hr_contacts);
+      if (jsonResult.board_of_directors) jsonResult.board_of_directors = sanitizeDummyNumbers(jsonResult.board_of_directors);
 
       // Attach Live Source Provenance & Verification Audit Trail
       const liveSources = (searchRes.context || [])
