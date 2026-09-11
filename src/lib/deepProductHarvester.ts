@@ -543,10 +543,17 @@ Return a valid JSON object with the property "products" containing this array.`;
     }
   }
 
-  // Filter out any non-product pages, SEO blogs, redirects, or media tags
-  const productsList = Array.from(discoveredProducts.values()).filter(prod =>
-    isValidProduct(prod.name, prod.productUrl, Object.keys(prod.specs || {}).length)
-  );
+  // Filter out any non-product pages, SEO blogs, redirects, corporate metadata or media tags
+  const productsList = Array.from(discoveredProducts.values()).filter(prod => {
+    const specsObj = prod.specs && typeof prod.specs === 'object' ? prod.specs : {};
+    const specKeys = Object.keys(specsObj);
+    const hasCorporateSpecs = specKeys.some(k => {
+      const lk = k.toLowerCase();
+      return lk.includes('year of establishment') || lk.includes('import market') || lk.includes('no of staff') || lk.includes('business type') || lk.includes('nature of business');
+    });
+    if (hasCorporateSpecs) return false;
+    return isValidProduct(prod.name, prod.productUrl, specKeys.length);
+  });
 
   // 6. Persist to PostgreSQL Database (ExtractedProduct Table) in High-Speed Bulk Batches
   if (productsList.length > 0) {
@@ -573,6 +580,19 @@ Return a valid JSON object with the property "products" containing this array.`;
               { name: { equals: 'Audio', mode: 'insensitive' } },
               { name: { equals: 'Video', mode: 'insensitive' } },
               { name: { equals: 'Gallery', mode: 'insensitive' } },
+              { name: { equals: 'Showroom', mode: 'insensitive' } },
+              { name: { contains: 'Showroom', mode: 'insensitive' } },
+              { name: { contains: 'Company Profile', mode: 'insensitive' } },
+              { name: { contains: 'Corporate Profile', mode: 'insensitive' } },
+              { name: { contains: 'AGM Report', mode: 'insensitive' } },
+              { name: { contains: 'Annual Report', mode: 'insensitive' } },
+              { name: { contains: 'Financial Report', mode: 'insensitive' } },
+              { name: { contains: 'Car Care Products', mode: 'insensitive' } },
+              { name: { contains: ' in Bangalore', mode: 'insensitive' } },
+              { name: { contains: ' in Mumbai', mode: 'insensitive' } },
+              { name: { contains: ' in Delhi', mode: 'insensitive' } },
+              { name: { contains: ' in Chennai', mode: 'insensitive' } },
+              { name: { contains: ' in India', mode: 'insensitive' } },
               { name: { contains: 'procurement guide', mode: 'insensitive' } },
               { name: { contains: 'manufacturers in', mode: 'insensitive' } },
               { name: { contains: 'suppliers in', mode: 'insensitive' } },
@@ -652,21 +672,27 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
   const lowerName = name.toLowerCase().trim();
   const lowerUrl = (urlStr || '').toLowerCase().trim();
 
-  // 1. Definite garbage / redirect / generic tags
+  // 1. Definite garbage / redirect / corporate metadata / generic tags
   if (
     lowerName === 'redirecting...' || lowerName.startsWith('redirect') ||
     lowerName === 'audio' || lowerName === 'video' || lowerName === 'gallery' ||
     lowerName === 'home' || lowerName === 'about us' || lowerName === 'contact us' ||
     lowerName === 'enquiry' || lowerName === 'products' || lowerName === 'our products' ||
+    lowerName === 'all products' || lowerName === 'product list' || lowerName === 'product catalog' ||
     lowerName === 'privacy policy' || lowerName === 'terms and conditions' ||
     lowerName === 'page not found' || lowerName.includes('404') ||
     lowerName === 'sitemap' || lowerName === 'search' || lowerName === 'cart' ||
+    lowerName === 'showroom' || lowerName.includes('showroom') ||
+    lowerName === 'company profile' || lowerName.includes('company profile') || lowerName.includes('corporate profile') ||
+    lowerName.includes('about the company') || lowerName.includes('our story') ||
+    lowerName.includes('agm report') || lowerName.includes('annual report') || lowerName.includes('financial report') ||
+    lowerName.includes('statutory report') || lowerName.includes('investor relations') || lowerName.includes('investor presentation') ||
+    lowerName.includes('board of director') || lowerName.includes('board meeting') ||
     lowerName.includes('mission statement') || lowerName.includes('vision statement') ||
     lowerName.includes('ethic statement') || lowerName.includes('commitment statement') ||
-    lowerName.includes('board of director') || lowerName.includes('quality policy') ||
-    lowerName.includes('quality certification') || lowerName.includes('group companies') ||
-    lowerName.includes('initial public offer') || lowerName === 'strength' ||
-    lowerName.includes('leadership team') || lowerName.includes('annual report') ||
+    lowerName.includes('quality policy') || lowerName.includes('quality certification') ||
+    lowerName.includes('group companies') || lowerName.includes('initial public offer') ||
+    lowerName === 'strength' || lowerName.includes('leadership team') ||
     lowerName.includes('import market') || lowerName.includes('year of establishment') ||
     lowerName.includes('business type') || lowerName.includes('nature of business') ||
     lowerName.includes('annual turnover') || lowerName.includes('gst no') ||
@@ -677,7 +703,10 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     lowerName.includes('packaging details') || lowerName.includes('payment terms') ||
     lowerName.includes('shipment mode') || lowerName.includes('trade leads') ||
     lowerName.includes('sample policy') || lowerName.includes('supply ability') ||
-    lowerName.includes('main domestic market') || lowerName.includes('offered by')
+    lowerName.includes('main domestic market') || lowerName.includes('offered by') ||
+    lowerName.includes('infrastructure') || lowerName.includes('clientele') ||
+    lowerName.includes('certificates') || lowerName.includes('awards') ||
+    lowerName.includes('career') || lowerName.includes('job openings')
   ) {
     return false;
   }
@@ -689,19 +718,19 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     lowerName.includes('buying guide') ||
     lowerName.includes('ultimate guide') ||
     lowerName.includes('selection guide') ||
-    lowerName.includes('manufacturers in ') ||
-    lowerName.includes('suppliers in ') ||
-    lowerName.includes('distributors in ') ||
-    lowerName.includes('wholesale in ') ||
-    lowerName.includes('dealers in ') ||
-    lowerName.includes('exporters in ') ||
-    lowerName.includes('traders in ') ||
-    lowerName.includes('best 10 ') ||
-    lowerName.includes('top 10 ') ||
-    lowerName.includes('best 5 ') ||
-    lowerName.includes('top 5 ') ||
-    lowerName.includes('best 20 ') ||
-    lowerName.includes('top 20 ') ||
+    lowerName.includes('manufacturers in') ||
+    lowerName.includes('suppliers in') ||
+    lowerName.includes('distributors in') ||
+    lowerName.includes('wholesale in') ||
+    lowerName.includes('dealers in') ||
+    lowerName.includes('exporters in') ||
+    lowerName.includes('traders in') ||
+    lowerName.includes('best 10') ||
+    lowerName.includes('top 10') ||
+    lowerName.includes('best 5') ||
+    lowerName.includes('top 5') ||
+    lowerName.includes('best 20') ||
+    lowerName.includes('top 20') ||
     lowerName.includes('how to ') ||
     lowerName.includes('what is ') ||
     lowerName.includes('benefits of ') ||
@@ -714,6 +743,7 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     lowerName.startsWith('buy ') ||
     lowerName.includes('price in india') ||
     lowerName.includes('best price') ||
+    /\b(in\s+(bangalore|bengaluru|delhi|mumbai|chennai|hyderabad|pune|kolkata|ahmedabad|jaipur|surat|india|noida|gurgaon|faridabad|ghaziabad|coimbatore|karnataka|maharashtra|tamil nadu|gujarat|chandigarh|vadodara|indore|bhopal|nagpur|lucknow|kanpur|patna))\b/i.test(lowerName) ||
     lowerUrl.includes('manufacturers-in-') ||
     lowerUrl.includes('suppliers-in-') ||
     lowerUrl.includes('wholesale-in-') ||
@@ -731,7 +761,21 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     return false;
   }
 
-  // 4. Must have either verified specs, a model code, or a clean concise tape product name
+  // 4. Check for generic category headings with no model number or specs
+  if (specsCount === 0) {
+    if (
+      lowerName === 'car care products' ||
+      lowerName === 'industrial products' ||
+      lowerName === 'consumer products' ||
+      lowerName === 'packaging products' ||
+      lowerName === 'electronic products' ||
+      lowerName === 'automotive products'
+    ) {
+      return false;
+    }
+  }
+
+  // 5. Must have either verified specs, a model code, or a clean concise tape product name
   const hasModelCode = 
     /\b[a-z]{2,5}-?\d{2,6}[a-z0-9]*\b/i.test(name) ||
     /\b\d{4,5}\b/.test(name) ||

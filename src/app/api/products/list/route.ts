@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { isValidProduct } from '@/lib/deepProductHarvester';
 
 export async function GET(req: Request) {
   try {
@@ -18,12 +19,48 @@ export async function GET(req: Request) {
     const limit = Math.min(parseInt(searchParams.get('limit') || '1000', 10), 2000);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
 
+    // Auto-clean legacy database entries matching corporate/SEO pages
+    try {
+      await prisma.extractedProduct.deleteMany({
+        where: {
+          OR: [
+            { name: { contains: 'Company Profile', mode: 'insensitive' } },
+            { name: { contains: 'Corporate Profile', mode: 'insensitive' } },
+            { name: { equals: 'Showroom', mode: 'insensitive' } },
+            { name: { contains: 'Showroom', mode: 'insensitive' } },
+            { name: { contains: 'AGM Report', mode: 'insensitive' } },
+            { name: { contains: 'Annual Report', mode: 'insensitive' } },
+            { name: { contains: 'Financial Report', mode: 'insensitive' } },
+            { name: { contains: 'Car Care Products', mode: 'insensitive' } },
+            { name: { contains: ' in Bangalore', mode: 'insensitive' } },
+            { name: { contains: ' in Mumbai', mode: 'insensitive' } },
+            { name: { contains: ' in Delhi', mode: 'insensitive' } },
+            { name: { contains: ' in Chennai', mode: 'insensitive' } },
+            { name: { contains: ' in India', mode: 'insensitive' } },
+            { name: { contains: 'procurement guide', mode: 'insensitive' } },
+            { name: { contains: 'manufacturers in', mode: 'insensitive' } },
+            { name: { contains: 'suppliers in', mode: 'insensitive' } },
+            { name: { contains: 'dealers in', mode: 'insensitive' } },
+            { name: { contains: 'wholesale in', mode: 'insensitive' } }
+          ]
+        }
+      });
+    } catch (cleanupErr: any) {
+      // Non-blocking cleanup
+    }
+
     const where: any = {
       NOT: [
         { name: { contains: 'redirect', mode: 'insensitive' } },
         { name: { equals: 'Audio', mode: 'insensitive' } },
         { name: { equals: 'Video', mode: 'insensitive' } },
         { name: { equals: 'Gallery', mode: 'insensitive' } },
+        { name: { equals: 'Showroom', mode: 'insensitive' } },
+        { name: { contains: 'Company Profile', mode: 'insensitive' } },
+        { name: { contains: 'Corporate Profile', mode: 'insensitive' } },
+        { name: { contains: 'AGM Report', mode: 'insensitive' } },
+        { name: { contains: 'Annual Report', mode: 'insensitive' } },
+        { name: { contains: 'Car Care Products', mode: 'insensitive' } },
         { name: { contains: 'procurement guide', mode: 'insensitive' } },
         { name: { contains: 'manufacturers in', mode: 'insensitive' } },
         { name: { contains: 'suppliers in', mode: 'insensitive' } },
@@ -31,7 +68,12 @@ export async function GET(req: Request) {
         { name: { contains: 'wholesale in', mode: 'insensitive' } },
         { name: { contains: 'dealers in', mode: 'insensitive' } },
         { name: { contains: 'best 10', mode: 'insensitive' } },
-        { name: { contains: 'top 10', mode: 'insensitive' } }
+        { name: { contains: 'top 10', mode: 'insensitive' } },
+        { name: { contains: ' in Bangalore', mode: 'insensitive' } },
+        { name: { contains: ' in Mumbai', mode: 'insensitive' } },
+        { name: { contains: ' in Delhi', mode: 'insensitive' } },
+        { name: { contains: ' in Chennai', mode: 'insensitive' } },
+        { name: { contains: ' in India', mode: 'insensitive' } }
       ]
     };
 
@@ -57,15 +99,29 @@ export async function GET(req: Request) {
     let total = 0;
 
     try {
-      [products, total] = await Promise.all([
-        prisma.extractedProduct.findMany({
-          where,
-          orderBy: { createdAt: 'desc' },
-          take: limit,
-          skip: offset
-        }),
-        prisma.extractedProduct.count({ where })
-      ]);
+      const dbProducts = await prisma.extractedProduct.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take: limit * 2, // Fetch buffer to account for post-filtering
+        skip: offset
+      });
+
+      // Strict post-filter to guarantee 100% genuine physical products
+      products = dbProducts.filter((p: any) => {
+        const specsObj = p.specs && typeof p.specs === 'object' ? p.specs : {};
+        const specKeys = Object.keys(specsObj);
+        
+        // Reject if specs only contain corporate metadata
+        const hasCorporateSpecs = specKeys.some(k => {
+          const lk = k.toLowerCase();
+          return lk.includes('year of establishment') || lk.includes('import market') || lk.includes('no of staff') || lk.includes('business type');
+        });
+        if (hasCorporateSpecs) return false;
+
+        return isValidProduct(p.name, p.productUrl || '', specKeys.length);
+      }).slice(0, limit);
+
+      total = products.length;
     } catch (dbErr: any) {
       console.warn(`[API /api/products/list] Database notice: ${dbErr.message}`);
     }
