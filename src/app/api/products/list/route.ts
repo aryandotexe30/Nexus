@@ -62,13 +62,13 @@ export async function GET(req: Request) {
         select: { companyName: true },
         distinct: ['companyName']
       });
-      companies = distinctCompanies.map(c => c.companyName).filter(Boolean);
+      companies = Array.from(new Set(distinctCompanies.map(c => c.companyName).filter(Boolean)));
 
       const distinctMarkets = await prisma.extractedProduct.findMany({
         select: { market: true },
         distinct: ['market']
       });
-      markets = distinctMarkets.map(m => m.market).filter(Boolean) as string[];
+      markets = Array.from(new Set(distinctMarkets.map(m => m.market).filter(Boolean) as string[]));
     } catch {}
 
     return NextResponse.json({

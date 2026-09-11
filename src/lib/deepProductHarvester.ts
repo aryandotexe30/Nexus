@@ -38,6 +38,31 @@ const AXIOS_HEADERS = {
  * Recursively crawls any corporate website or company name, traverses market/application trees,
  * parses structured specification tables & catalog arrays, and persists all products to PostgreSQL.
  */
+export function canonicalizeCompanyName(raw: string): string {
+  const clean = raw
+    .toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .replace(/\.(com|co\.in|in|org|net|de|eu).*$/, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .trim();
+
+  if (clean.includes('tesa')) return 'Tesa';
+  if (clean.includes('vasavi')) return 'Sri Vasavi Tapes';
+  if (clean.includes('havell')) return 'Havells India';
+  if (clean.includes('polycab')) return 'Polycab India';
+  if (clean.includes('cgapl') || clean.includes('cg adhesive')) return 'CG Adhesive Products Ltd';
+  if (clean.includes('3m')) return '3M';
+  if (clean.includes('nitto')) return 'Nitto Denko';
+  if (clean.includes('saint gobain')) return 'Saint-Gobain';
+  if (clean.includes('pidilite')) return 'Pidilite';
+
+  return clean
+    .split(/\s+/)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ') || raw;
+}
+
 export async function harvestCompanyProducts(
   input: string, 
   onLog?: (msg: string) => void
@@ -49,17 +74,15 @@ export async function harvestCompanyProducts(
 
   const cleanInput = input.trim();
   let targetUrl = cleanInput;
-  let companyName = cleanInput;
+  const companyName = canonicalizeCompanyName(cleanInput);
 
-  log(`[RESOLVER] Initializing autonomous crawler for: "${cleanInput}"`);
+  log(`[RESOLVER] Initializing autonomous crawler for: "${cleanInput}" (Canonical: ${companyName})`);
 
   // 1. Resolve Target Domain
   if (!cleanInput.startsWith('http://') && !cleanInput.startsWith('https://')) {
-    companyName = cleanInput;
     if (cleanInput.includes('.')) {
       targetUrl = `https://${cleanInput.replace(/^www\./, '')}`;
     } else {
-      // Resolve company name to domain
       const lower = cleanInput.toLowerCase();
       if (lower.includes('tesa')) targetUrl = 'https://www.tesa.com/en-in/industry';
       else if (lower.includes('vasavi')) targetUrl = 'https://vasavitapes.com';
@@ -68,22 +91,13 @@ export async function harvestCompanyProducts(
       else if (lower.includes('3m')) targetUrl = 'https://www.3mindia.in';
       else if (lower.includes('cgapl') || lower.includes('cg adhesive')) targetUrl = 'https://cgapl.co.in';
       else {
-        // Fallback domain probe
         const brand = lower.replace(/[^a-z0-9]/g, '');
         targetUrl = `https://www.${brand}.com`;
       }
     }
-  } else {
-    try {
-      const parsedUrl = new URL(cleanInput);
-      const hostParts = parsedUrl.hostname.replace('www.', '').split('.');
-      companyName = hostParts[0].toUpperCase();
-    } catch {
-      companyName = cleanInput;
-    }
   }
 
-  log(`[DOMAIN] Verified Target Root URL: ${targetUrl} (Entity: ${companyName})`);
+  log(`[DOMAIN] Verified Target Root URL: ${targetUrl} (Company: ${companyName})`);
 
   const discoveredProducts: Map<string, ExtractedProductItem> = new Map();
   const visitedUrls = new Set<string>();
@@ -238,7 +252,20 @@ export async function harvestCompanyProducts(
   // 4. Persist to PostgreSQL Database (ExtractedProduct Table) in High-Speed Bulk Batches
   if (productsList.length > 0) {
     try {
-      log(`[DATABASE] Bulk saving ${productsList.length} items to PostgreSQL ExtractedProduct...`);
+      log(`[DATABASE] Bulk saving ${productsList.length} items to PostgreSQL ExtractedProduct for ${companyName}...`);
+
+      // Clean up previous entries to avoid duplicate rows and multiple company name variants
+      try {
+        await prisma.extractedProduct.deleteMany({
+          where: {
+            OR: [
+              { companyName: { equals: companyName, mode: 'insensitive' } },
+              { companyName: { equals: cleanInput, mode: 'insensitive' } },
+              { companyName: { contains: companyName.toLowerCase(), mode: 'insensitive' } }
+            ]
+          }
+        });
+      } catch (cleanErr) {}
 
       const records = productsList.map(prod => ({
         companyName: companyName,

@@ -185,7 +185,7 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 md:p-10 ml-0 md:ml-72 transition-all duration-300">
+    <div className="w-full space-y-8">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header */}
