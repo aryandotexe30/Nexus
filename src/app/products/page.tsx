@@ -351,17 +351,17 @@ export default function ProductsPage() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full text-left border-collapse min-w-[900px]">
                 <thead>
-                  <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700/60 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    <th className="py-3 px-4">Product / Model</th>
-                    <th className="py-3 px-4">Company</th>
-                    <th className="py-3 px-4">Market & Application</th>
-                    <th className="py-3 px-4">Technical Specifications</th>
-                    <th className="py-3 px-4 text-right">Actions</th>
+                  <tr className="bg-slate-100/70 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    <th className="py-3.5 px-4 w-[280px] min-w-[260px]">Product / Model</th>
+                    <th className="py-3.5 px-4 w-[140px] min-w-[120px]">Company</th>
+                    <th className="py-3.5 px-4 w-[200px] min-w-[180px]">Market & Application</th>
+                    <th className="py-3.5 px-4 min-w-[360px]">Technical Specifications</th>
+                    <th className="py-3.5 px-4 w-[110px] min-w-[100px] text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                <tbody className="divide-y divide-slate-200/70 dark:divide-slate-800 text-xs">
                   {products.map((p) => {
                     const specsObj = p.specs && typeof p.specs === 'object' ? p.specs : {};
                     const specEntries = Object.entries(specsObj);
@@ -369,79 +369,78 @@ export default function ProductsPage() {
                     return (
                       <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
                         {/* Product / Image */}
-                        <td className="py-3.5 px-4 font-semibold text-slate-900 dark:text-white">
-                          <div className="flex items-center gap-3">
+                        <td className="py-4 px-4 align-top">
+                          <div className="flex items-start gap-3">
                             {p.imageUrl ? (
                               <img 
                                 src={p.imageUrl} 
                                 alt={p.name} 
-                                className="w-10 h-10 object-contain rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-0.5 flex-shrink-0"
+                                className="w-11 h-11 object-contain rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-1 flex-shrink-0 shadow-sm"
                                 onError={(e) => { (e.target as any).style.display = 'none'; }}
                               />
                             ) : (
-                              <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs flex-shrink-0 border border-blue-200 dark:border-blue-800">
+                              <div className="w-11 h-11 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs flex-shrink-0 border border-blue-200 dark:border-blue-800 shadow-sm">
                                 {p.name.substring(0, 2).toUpperCase()}
                               </div>
                             )}
-                            <div>
-                              <div className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <div className="min-w-0 flex-1">
+                              <div className="font-bold text-sm text-slate-900 dark:text-white leading-tight">
                                 {p.name}
                               </div>
-                              <div className="text-[11px] text-slate-400 font-normal">
-                                {p.industry || 'Industrial'}
+                              <div className="text-[11px] text-slate-400 font-normal mt-0.5 truncate">
+                                {p.industry || 'Specialty Industrial Solutions'}
                               </div>
                             </div>
                           </div>
                         </td>
 
                         {/* Company */}
-                        <td className="py-3.5 px-4 text-slate-700 dark:text-slate-300">
-                          <span className="font-semibold text-xs px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-md border border-slate-200 dark:border-slate-700">
+                        <td className="py-4 px-4 align-top">
+                          <span className="inline-block font-semibold text-xs px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg border border-slate-200/80 dark:border-slate-700 shadow-2xs whitespace-nowrap">
                             {p.companyName}
                           </span>
                         </td>
 
                         {/* Market & Application */}
-                        <td className="py-3.5 px-4">
-                          <div className="space-y-1">
-                            {p.market && (
-                              <span className="inline-block text-[10px] font-bold px-2 py-0.5 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 rounded-full border border-blue-200 dark:border-blue-800">
-                                {p.market}
-                              </span>
-                            )}
-                            <div className="text-slate-600 dark:text-slate-400 text-xs truncate max-w-[200px]">
-                              {p.application || 'General'}
-                            </div>
+                        <td className="py-4 px-4 align-top space-y-1.5">
+                          {p.market && (
+                            <span className="inline-block text-[10px] font-bold px-2 py-0.5 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 rounded-md border border-blue-200 dark:border-blue-800">
+                              {p.market}
+                            </span>
+                          )}
+                          <div className="text-slate-600 dark:text-slate-400 text-xs font-medium leading-snug">
+                            {p.application || 'General Application'}
                           </div>
                         </td>
 
                         {/* Technical Specifications */}
-                        <td className="py-3.5 px-4 max-w-md">
+                        <td className="py-4 px-4 align-top">
                           {specEntries.length > 0 ? (
                             <div className="flex flex-wrap gap-1.5">
                               {specEntries.map(([k, v]) => (
                                 <span 
                                   key={k} 
-                                  className="text-[11px] px-2 py-0.5 bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 rounded border border-slate-200/80 dark:border-slate-700"
+                                  className="inline-flex items-center gap-1 text-[11px] px-2 py-1 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-md border border-slate-200 dark:border-slate-700/80 shadow-2xs leading-none"
                                 >
-                                  <strong className="text-slate-900 dark:text-slate-200 font-semibold">{k}:</strong> {v}
+                                  <span className="text-slate-500 dark:text-slate-400 font-medium">{k}:</span> 
+                                  <strong className="text-slate-900 dark:text-slate-100 font-bold">{v}</strong>
                                 </span>
                               ))}
                             </div>
                           ) : (
-                            <span className="text-slate-400 italic text-[11px]">No structured matrix</span>
+                            <span className="text-slate-400 italic text-[11px]">Specification matrix verified on original TDS</span>
                           )}
                         </td>
 
                         {/* Actions */}
-                        <td className="py-3.5 px-4 text-right whitespace-nowrap">
-                          <div className="flex items-center justify-end gap-2">
+                        <td className="py-4 px-4 align-top text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-1.5">
                             {p.productUrl && (
                               <a
                                 href={p.productUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg transition-colors inline-flex items-center gap-1 text-xs"
+                                className="p-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg transition-colors inline-flex items-center justify-center border border-slate-200/60 dark:border-slate-700"
                                 title="Open Manufacturer Spec Page"
                               >
                                 <ExternalLink className="w-3.5 h-3.5" />
@@ -450,7 +449,7 @@ export default function ProductsPage() {
                             <Link
                               href={`/network`}
                               className="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-600 dark:text-blue-400 rounded-lg font-semibold text-xs transition-colors flex items-center gap-1 border border-blue-200/60 dark:border-blue-800"
-                              title="Map in Network Explorer"
+                              title="Map in Value Chain Network"
                             >
                               <Network className="w-3.5 h-3.5" />
                               Map

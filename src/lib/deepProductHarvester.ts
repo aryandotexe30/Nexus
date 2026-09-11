@@ -83,7 +83,41 @@ export async function harvestCompanyProducts(input: string): Promise<HarvestResu
 
   const baseOrigin = new URL(targetUrl).origin;
 
-  // 2. Fetch Root Page and Discover Hierarchy
+  // 2. Fetch Root Page and Discover Full Market Hierarchy
+  const knownMarketPaths = [
+    '/en-in/industry/markets/appliances',
+    '/en-in/industry/markets/automotive',
+    '/en-in/industry/markets/electronics',
+    '/en-in/industry/markets/building-components',
+    '/en-in/industry/markets/paper-print',
+    '/en-in/industry/markets/healthcare',
+    '/en-in/industry/markets/renewable-energy',
+    '/en-in/industry/markets/craftsmen',
+    '/en-in/industry/products',
+    '/products',
+    '/catalog',
+    '/category'
+  ];
+
+  // Pre-seed known market roots if crawling tesa or industrial catalog
+  for (const p of knownMarketPaths) {
+    if (targetUrl.includes('tesa.com') && p.startsWith('/en-in')) {
+      const full = `${baseOrigin}${p}`;
+      let market = 'Industrial';
+      if (p.includes('appliance')) market = 'Appliances Tapes';
+      else if (p.includes('automotive')) market = 'Automotive';
+      else if (p.includes('electronic')) market = 'Electronics';
+      else if (p.includes('building')) market = 'Building Components';
+      else if (p.includes('paper-print')) market = 'Paper & Print';
+      else if (p.includes('healthcare')) market = 'Healthcare';
+      else if (p.includes('renewable')) market = 'Renewable Energy';
+      else if (p.includes('craftsmen')) market = 'Craftsmen & Trade';
+      else if (p.includes('products')) market = 'All Products Master';
+
+      urlsToVisit.push({ url: full, market, application: 'Market Overview' });
+    }
+  }
+
   try {
     const rootRes = await axios.get(targetUrl, { headers: AXIOS_HEADERS, timeout: 9000 });
     visitedUrls.add(targetUrl);
@@ -103,7 +137,6 @@ export async function harvestCompanyProducts(input: string): Promise<HarvestResu
       if (!fullUrl.startsWith(baseOrigin)) return;
 
       const lowerHref = fullUrl.toLowerCase();
-      const lowerText = text.toLowerCase();
 
       // Filter for industry / market / application / product sub-pages
       const isRelevant = 
@@ -111,13 +144,13 @@ export async function harvestCompanyProducts(input: string): Promise<HarvestResu
          lowerHref.includes('/product') || lowerHref.includes('/catalog') || lowerHref.includes('/solutions') ||
          lowerHref.includes('/tapes') || lowerHref.includes('/appliances') || lowerHref.includes('/automotive') ||
          lowerHref.includes('/electronics') || lowerHref.includes('/building') || lowerHref.includes('/paper-print') ||
-         lowerHref.includes('/healthcare') || lowerHref.includes('/renewable') || lowerHref.includes('/craftsmen')) &&
+         lowerHref.includes('/healthcare') || lowerHref.includes('/renewable') || lowerHref.includes('/craftsmen') ||
+         lowerHref.includes('/tape-') || lowerHref.includes('/double-sided') || lowerHref.includes('/masking')) &&
         !lowerHref.includes('#') && !lowerHref.includes('privacy') && !lowerHref.includes('cookie') &&
         !lowerHref.includes('login') && !lowerHref.includes('contact') && !lowerHref.includes('career') &&
         !lowerHref.includes('sustainability') && !lowerHref.includes('press') && !lowerHref.includes('stories');
 
-      if (isRelevant && !visitedUrls.has(fullUrl) && urlsToVisit.length < 35) {
-        // Infer market / application from URL path or text
+      if (isRelevant && !visitedUrls.has(fullUrl) && urlsToVisit.length < 120) {
         let market = 'Industrial';
         let application = text || 'General Application';
 
@@ -142,21 +175,39 @@ export async function harvestCompanyProducts(input: string): Promise<HarvestResu
     console.warn(`[Deep Harvester] Notice visiting root: ${err.message}`);
   }
 
-  // 3. Concurrently Crawl Discovered Hierarchy Subpages (Up to 25 pages)
+  // 3. Concurrently Crawl Discovered Hierarchy Subpages in Batches of 5
   console.log(`[Deep Harvester] Queued ${urlsToVisit.length} hierarchy sub-pages for deep extraction...`);
 
-  const pagesToCrawl = urlsToVisit.slice(0, 25);
-  for (const page of pagesToCrawl) {
-    if (visitedUrls.has(page.url)) continue;
-    visitedUrls.add(page.url);
+  const pagesToCrawl = urlsToVisit.slice(0, 100);
+  const BATCH_SIZE = 5;
 
-    try {
-      const res = await axios.get(page.url, { headers: AXIOS_HEADERS, timeout: 8000 });
-      const $ = cheerio.load(res.data);
-      extractProductsFromCheerio($, page.url, discoveredProducts, marketsDiscovered, applicationsDiscovered, page.market, page.application);
-    } catch {
-      // Continue next page
-    }
+  for (let i = 0; i < pagesToCrawl.length; i += BATCH_SIZE) {
+    const batch = pagesToCrawl.slice(i, i + BATCH_SIZE);
+    await Promise.all(
+      batch.map(async (page) => {
+        if (visitedUrls.has(page.url)) return;
+        visitedUrls.add(page.url);
+
+        try {
+          const res = await axios.get(page.url, { headers: AXIOS_HEADERS, timeout: 8000 });
+          const $ = cheerio.load(res.data);
+          extractProductsFromCheerio($, page.url, discoveredProducts, marketsDiscovered, applicationsDiscovered, page.market, page.application);
+          
+          // Also discover 2nd level links
+          $('a[href*="/industry/markets/"], a[href*="/industry/products/"]').each((_, a) => {
+            const href = $(a).attr('href');
+            if (href && urlsToVisit.length < 120) {
+              const full = href.startsWith('/') ? `${baseOrigin}${href}` : href;
+              if (full.startsWith(baseOrigin) && !visitedUrls.has(full)) {
+                urlsToVisit.push({ url: full, market: page.market, application: $(a).text().trim() || page.application });
+              }
+            }
+          });
+        } catch {
+          // Continue
+        }
+      })
+    );
   }
 
   console.log(`[Deep Harvester] Extraction finished. Discovered ${discoveredProducts.size} unique products.`);
