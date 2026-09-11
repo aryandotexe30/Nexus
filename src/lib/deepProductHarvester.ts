@@ -669,6 +669,7 @@ export function cleanProductTitle(raw: string): string {
  * Filter out SEO blog articles, procurement guides, location landing pages, redirects, and media tags
  */
 export function isValidProduct(name: string, urlStr?: string, specsCount: number = 0): boolean {
+  if (!name || typeof name !== 'string') return false;
   const lowerName = name.toLowerCase().trim();
   const lowerUrl = (urlStr || '').toLowerCase().trim();
 
@@ -711,13 +712,82 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     return false;
   }
 
-  // 2. SEO Blog Posts, Location Landing Pages & Procurement Guides
-  const isSeoArticle =
+  // 2. Reject ANY Question, FAQ, or conversational blog post title
+  if (
+    lowerName.includes('?') || 
+    lowerName.includes('¿') || 
+    lowerName.includes('...') ||
+    lowerName.startsWith('how ') ||
+    lowerName.startsWith('how to ') ||
+    lowerName.startsWith('how is ') ||
+    lowerName.startsWith('how are ') ||
+    lowerName.startsWith('how do ') ||
+    lowerName.startsWith('how does ') ||
+    lowerName.startsWith('how can ') ||
+    lowerName.startsWith('how choosing ') ||
+    lowerName.startsWith('what ') ||
+    lowerName.startsWith('what is ') ||
+    lowerName.startsWith('what are ') ||
+    lowerName.startsWith("what's ") ||
+    lowerName.startsWith('what’s ') ||
+    lowerName.startsWith('what does ') ||
+    lowerName.startsWith('why ') ||
+    lowerName.startsWith('why is ') ||
+    lowerName.startsWith('why are ') ||
+    lowerName.startsWith('why do ') ||
+    lowerName.startsWith("why don't ") ||
+    lowerName.startsWith('why don’t ') ||
+    lowerName.startsWith('why does ') ||
+    lowerName.startsWith('when ') ||
+    lowerName.startsWith('where ') ||
+    lowerName.startsWith('which ') ||
+    lowerName.startsWith('who ') ||
+    lowerName.startsWith('can ') ||
+    lowerName.startsWith('do ') ||
+    lowerName.startsWith('does ') ||
+    lowerName.startsWith('is ') ||
+    lowerName.startsWith('are ') ||
+    lowerName.startsWith('should ') ||
+    lowerName.startsWith('difference between')
+  ) {
+    return false;
+  }
+
+  // 3. Reject Blog & Comparison Phrases
+  const isArticleOrGuide =
+    lowerName.includes('difference between') ||
+    lowerName.includes('differ from') ||
+    lowerName.includes('impacts your') ||
+    lowerName.includes('impact of') ||
+    lowerName.includes('importance of') ||
+    lowerName.includes('reasons why') ||
+    lowerName.includes('used in schools') ||
+    lowerName.includes('used in abatement') ||
+    lowerName.includes('cleanly') ||
+    lowerName.includes('choosing the right') ||
     lowerName.includes('procurement guide') ||
     lowerName.includes('complete guide') ||
     lowerName.includes('buying guide') ||
     lowerName.includes('ultimate guide') ||
     lowerName.includes('selection guide') ||
+    lowerName.includes('guide to ') ||
+    lowerName.includes('tips and tricks') ||
+    lowerName.includes('tips for ') ||
+    lowerName.includes('benefits of ') ||
+    lowerName.includes('why choose ') ||
+    lowerName.includes('case study') ||
+    lowerName.includes('whitepaper') ||
+    lowerName.includes('webinar') ||
+    lowerName.includes('podcast') ||
+    lowerName.includes('frequently asked') ||
+    lowerName.includes('best 10') ||
+    lowerName.includes('top 10') ||
+    lowerName.includes('best 5') ||
+    lowerName.includes('top 5') ||
+    lowerName.includes('best 20') ||
+    lowerName.includes('top 20') ||
+    lowerName.includes('best 15') ||
+    lowerName.includes('top 15') ||
     lowerName.includes('manufacturers in') ||
     lowerName.includes('suppliers in') ||
     lowerName.includes('distributors in') ||
@@ -725,17 +795,6 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     lowerName.includes('dealers in') ||
     lowerName.includes('exporters in') ||
     lowerName.includes('traders in') ||
-    lowerName.includes('best 10') ||
-    lowerName.includes('top 10') ||
-    lowerName.includes('best 5') ||
-    lowerName.includes('top 5') ||
-    lowerName.includes('best 20') ||
-    lowerName.includes('top 20') ||
-    lowerName.includes('how to ') ||
-    lowerName.includes('what is ') ||
-    lowerName.includes('benefits of ') ||
-    lowerName.includes('tips for ') ||
-    lowerName.includes('why choose ') ||
     lowerName.includes('online in ') ||
     lowerName.includes('online in india') ||
     lowerName.includes('buy online') ||
@@ -750,18 +809,21 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     lowerUrl.includes('procurement-guide') ||
     lowerUrl.includes('/blog/') ||
     lowerUrl.includes('/news/') ||
-    lowerUrl.includes('/article/');
+    lowerUrl.includes('/article/') ||
+    lowerUrl.includes('/posts/') ||
+    lowerUrl.includes('/faq/') ||
+    lowerUrl.includes('/resources/');
 
-  if (isSeoArticle) {
+  if (isArticleOrGuide) {
     return false;
   }
 
-  // 3. Length check
-  if (name.length < 3 || name.length > 90) {
+  // 4. Length check
+  if (name.length < 3 || name.length > 80) {
     return false;
   }
 
-  // 4. Check for generic category headings with no model number or specs
+  // 5. Check for generic category headings or sentence structures with no specs
   if (specsCount === 0) {
     if (
       lowerName === 'car care products' ||
@@ -769,20 +831,16 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
       lowerName === 'consumer products' ||
       lowerName === 'packaging products' ||
       lowerName === 'electronic products' ||
-      lowerName === 'automotive products'
+      lowerName === 'automotive products' ||
+      lowerName === 'masking tape' ||
+      lowerName === 'duct tape' ||
+      lowerName === 'foam tape'
     ) {
       return false;
     }
-  }
 
-  // 5. Must have either verified specs, a model code, or a clean concise tape product name
-  const hasModelCode = 
-    /\b[a-z]{2,5}-?\d{2,6}[a-z0-9]*\b/i.test(name) ||
-    /\b\d{4,5}\b/.test(name) ||
-    /acxplus|vhb|kapton|bopp|crepe|polyester|tissue|mylar|duplo|filament|masking/i.test(name);
-
-  if (specsCount === 0 && !hasModelCode) {
-    if (name.split(' ').length > 6 || name.includes(',') || name.includes(':')) {
+    // Sentence-like structure without model code or specs
+    if (name.split(' ').length > 5 || name.includes(':') || name.includes('–') || name.includes('—') || name.includes(',')) {
       return false;
     }
   }

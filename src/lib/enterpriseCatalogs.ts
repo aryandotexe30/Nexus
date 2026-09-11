@@ -401,54 +401,140 @@ export const ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
 
   'Shurtape': [
     {
-      name: 'Shurtape CP-106 High Temperature Masking Tape',
+      name: 'Shurtape CP 105 General Purpose Masking Tape',
       industry: 'Specialty Adhesive Tapes & Industrial Solutions',
-      market: 'Industrial Surface Processing & Automotive',
-      application: 'Automotive Paint Baking & Metal Powder Coating Masking',
+      market: 'Building & Construction',
+      application: 'General Purpose Masking, Bundling, Labeling & Holding',
       specs: {
-        'Backing material': 'Smooth Crepe Paper',
-        'Adhesive type': 'Synthetic Rubber Blend',
-        'Total thickness': '0.15 mm (6.0 mil)',
-        'Temperature resistance': 'Up to 150°C for 30 min',
-        'Adhesion to Steel': '40 oz/in',
-        'Tensile strength': '26 lbs/in',
-        'Color': 'Natural Tan'
+        'Backing material': 'Crepe Paper',
+        'Adhesive type': 'Synthetic Rubber Adhesive',
+        'Total thickness': '0.127 mm (5.0 mil)',
+        'Temperature resistance': '10°C to 65°C',
+        'Adhesion to Steel': '32 oz/in width (3.5 N/cm)',
+        'Tensile strength': '19 lbs/in width (33.3 N/cm)',
+        'Elongation at break': '9%',
+        'Color': 'Natural / Beige'
       },
-      imageUrl: 'https://www.shurtape.com/images/cp106.jpg',
-      productUrl: 'https://www.shurtape.com/products/cp-106/'
+      imageUrl: 'https://www.shurtape.com/images/cp105.jpg',
+      productUrl: 'https://www.shurtape.com/products/cp-105/'
     },
     {
-      name: 'Shurtape PC-600 General Duty Duct Tape',
+      name: 'Shurtape CP 201 Medium-High Adhesion Masking Tape',
       industry: 'Specialty Adhesive Tapes & Industrial Solutions',
-      market: 'Packaging & Logistics',
-      application: 'Industrial Bundling, Waterproof Carton Sealing & Repair',
+      market: 'Industrial Surface Processing & Painting',
+      application: 'Industrial Paint Masking, Light Splicing & Bundling',
       specs: {
-        'Backing material': 'Polyethylene Coated Cloth Scrim',
-        'Adhesive type': 'High Tack Natural Rubber',
+        'Backing material': 'Coarse Crepe Paper',
+        'Adhesive type': 'Rubber Resin Adhesive',
+        'Total thickness': '0.14 mm (5.5 mil)',
+        'Temperature resistance': 'Up to 93°C for 30 min',
+        'Adhesion to Steel': '38 oz/in width (4.16 N/cm)',
+        'Tensile strength': '22 lbs/in width (38.5 N/cm)',
+        'Color': 'Natural'
+      },
+      imageUrl: 'https://www.shurtape.com/images/cp201.jpg',
+      productUrl: 'https://www.shurtape.com/products/cp-201/'
+    },
+    {
+      name: 'Shurtape PC 600 General Purpose Duct Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'HVAC & Industrial Logistics',
+      application: 'Industrial Packaging, Moisture Proofing & Sealing',
+      specs: {
+        'Backing material': 'Polyethylene Film with Poly-Cotton Blend Cloth Scrim',
+        'Adhesive type': 'Natural Rubber Adhesive',
         'Total thickness': '0.23 mm (9.0 mil)',
         'Temperature resistance': '10°C to 93°C',
-        'Adhesion to Steel': '55 oz/in',
-        'Tensile strength': '27 lbs/in',
-        'Color': 'Silver / Black'
+        'Adhesion to Steel': '50 oz/in width (5.47 N/cm)',
+        'Tensile strength': '24 lbs/in width (42.0 N/cm)',
+        'Color': 'Silver / Black / Red / White / Blue'
       },
       imageUrl: 'https://www.shurtape.com/images/pc600.jpg',
       productUrl: 'https://www.shurtape.com/products/pc-600/'
     },
     {
-      name: 'Shurtape HP-200 Production Grade Packaging Tape',
+      name: 'Shurtape PC 957 Heavy Duty Foil Duct Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'HVAC & Power Engineering',
+      application: 'Sheet Metal Duct Joint Sealing & Thermal Moisture Barrier',
+      specs: {
+        'Backing material': 'Dead Soft Aluminum Foil with Cloth Scrim',
+        'Adhesive type': 'High Performance Acrylic Adhesive',
+        'Total thickness': '0.28 mm (11.0 mil)',
+        'Temperature resistance': '-29°C to 121°C',
+        'Adhesion to Steel': '60 oz/in width (6.56 N/cm)',
+        'Tensile strength': '30 lbs/in width (52.5 N/cm)',
+        'Color': 'Aluminum Silver'
+      },
+      imageUrl: 'https://www.shurtape.com/images/pc957.jpg',
+      productUrl: 'https://www.shurtape.com/products/pc-957/'
+    },
+    {
+      name: 'Shurtape HP 200 Production Grade Packaging Tape',
       industry: 'Specialty Adhesive Tapes & Industrial Solutions',
       market: 'Packaging & Logistics',
-      application: 'Medium-to-Heavy Carton Box Automated Sealing',
+      application: 'Medium-Weight Box Sealing & Automated Case Sealing',
       specs: {
-        'Backing material': 'Biaxially Oriented Polypropylene (BOPP)',
-        'Adhesive type': 'Synthetic Hot Melt Rubber',
+        'Backing material': 'Biaxially-Oriented Polypropylene (BOPP) Film',
+        'Adhesive type': 'Synthetic Hot Melt Rubber Adhesive',
         'Total thickness': '0.048 mm (1.9 mil)',
-        'Adhesion to Steel': '44 oz/in',
-        'Tensile strength': '27 lbs/in',
+        'Temperature resistance': '7°C to 60°C',
+        'Adhesion to Steel': '44 oz/in width (4.81 N/cm)',
+        'Tensile strength': '27 lbs/in width (47.3 N/cm)',
         'Color': 'Clear / Tan'
       },
       imageUrl: 'https://www.shurtape.com/images/hp200.jpg',
       productUrl: 'https://www.shurtape.com/products/hp-200/'
+    },
+    {
+      name: 'Shurtape DF 65 Double-Coated Cloth Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Building Components & Tradeshow Flooring',
+      application: 'Carpet Hold-Down & Temporary Floor Attachment with Clean Peel',
+      specs: {
+        'Backing material': 'Cotton Cloth Mesh',
+        'Adhesive type': 'Differential Natural Rubber Resin',
+        'Total thickness': '0.35 mm (14.0 mil)',
+        'Temperature resistance': '10°C to 93°C',
+        'Adhesion to Steel': '40 oz/in width (4.38 N/cm)',
+        'Color': 'Natural White'
+      },
+      imageUrl: 'https://www.shurtape.com/images/df65.jpg',
+      productUrl: 'https://www.shurtape.com/products/df-65/'
+    },
+    {
+      name: 'Shurtape AF 100 Cold Temperature Foil Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'HVAC & Refrigeration',
+      application: 'Cold Weather HVAC Duct Sealing & Vapor Barrier (UL 181A-P/B-FX)',
+      specs: {
+        'Backing material': 'Aluminum Foil (2.0 mil)',
+        'Adhesive type': 'Cold Weather Acrylic Adhesive',
+        'Total thickness': '0.10 mm (4.0 mil)',
+        'Temperature resistance': '-34°C to 121°C',
+        'Adhesion to Steel': '65 oz/in width (7.11 N/cm)',
+        'Tensile strength': '27 lbs/in width (47.3 N/cm)',
+        'Color': 'Silver'
+      },
+      imageUrl: 'https://www.shurtape.com/images/af100.jpg',
+      productUrl: 'https://www.shurtape.com/products/af-100/'
+    },
+    {
+      name: 'Shurtape T-Rex Ferociously Strong Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Extreme Industrial Repair & Construction',
+      application: 'Rough Surface Repair, Waterproof Holding & Heavy Securing',
+      specs: {
+        'Backing material': 'Co-extruded Heavy Polyethylene & High Tensile Cloth',
+        'Adhesive type': 'Double-Thick Natural Rubber Adhesive',
+        'Total thickness': '0.43 mm (17.0 mil)',
+        'Temperature resistance': '-18°C to 93°C',
+        'Adhesion to Steel': '90 oz/in width (9.85 N/cm)',
+        'Tensile strength': '55 lbs/in width (96.3 N/cm)',
+        'Color': 'Gunmetal Gray'
+      },
+      imageUrl: 'https://www.shurtape.com/images/trex.jpg',
+      productUrl: 'https://www.shurtape.com/products/t-rex-tape/'
     }
   ],
 

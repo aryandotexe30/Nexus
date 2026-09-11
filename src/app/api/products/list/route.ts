@@ -19,11 +19,29 @@ export async function GET(req: Request) {
     const limit = Math.min(parseInt(searchParams.get('limit') || '1000', 10), 2000);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
 
-    // Auto-clean legacy database entries matching corporate/SEO pages
+    // Auto-clean legacy database entries matching corporate/SEO pages, questions, blogs, and guides
     try {
       await prisma.extractedProduct.deleteMany({
         where: {
           OR: [
+            { name: { contains: '?', mode: 'insensitive' } },
+            { name: { contains: '¿', mode: 'insensitive' } },
+            { name: { contains: '...', mode: 'insensitive' } },
+            { name: { startsWith: 'How ', mode: 'insensitive' } },
+            { name: { startsWith: 'What ', mode: 'insensitive' } },
+            { name: { startsWith: "What's ", mode: 'insensitive' } },
+            { name: { startsWith: 'What’s ', mode: 'insensitive' } },
+            { name: { startsWith: 'Why ', mode: 'insensitive' } },
+            { name: { startsWith: 'When ', mode: 'insensitive' } },
+            { name: { startsWith: 'Where ', mode: 'insensitive' } },
+            { name: { startsWith: 'Which ', mode: 'insensitive' } },
+            { name: { startsWith: 'Difference between', mode: 'insensitive' } },
+            { name: { contains: 'Difference between', mode: 'insensitive' } },
+            { name: { contains: 'differ from', mode: 'insensitive' } },
+            { name: { contains: 'impacts your', mode: 'insensitive' } },
+            { name: { contains: 'used in schools', mode: 'insensitive' } },
+            { name: { contains: 'used in abatement', mode: 'insensitive' } },
+            { name: { contains: 'choosing the right', mode: 'insensitive' } },
             { name: { contains: 'Company Profile', mode: 'insensitive' } },
             { name: { contains: 'Corporate Profile', mode: 'insensitive' } },
             { name: { equals: 'Showroom', mode: 'insensitive' } },
@@ -51,6 +69,23 @@ export async function GET(req: Request) {
 
     const where: any = {
       NOT: [
+        { name: { contains: '?', mode: 'insensitive' } },
+        { name: { contains: '¿', mode: 'insensitive' } },
+        { name: { contains: '...', mode: 'insensitive' } },
+        { name: { startsWith: 'How ', mode: 'insensitive' } },
+        { name: { startsWith: 'What ', mode: 'insensitive' } },
+        { name: { startsWith: "What's ", mode: 'insensitive' } },
+        { name: { startsWith: 'What’s ', mode: 'insensitive' } },
+        { name: { startsWith: 'Why ', mode: 'insensitive' } },
+        { name: { startsWith: 'When ', mode: 'insensitive' } },
+        { name: { startsWith: 'Where ', mode: 'insensitive' } },
+        { name: { startsWith: 'Which ', mode: 'insensitive' } },
+        { name: { contains: 'Difference between', mode: 'insensitive' } },
+        { name: { contains: 'differ from', mode: 'insensitive' } },
+        { name: { contains: 'impacts your', mode: 'insensitive' } },
+        { name: { contains: 'used in schools', mode: 'insensitive' } },
+        { name: { contains: 'used in abatement', mode: 'insensitive' } },
+        { name: { contains: 'choosing the right', mode: 'insensitive' } },
         { name: { contains: 'redirect', mode: 'insensitive' } },
         { name: { equals: 'Audio', mode: 'insensitive' } },
         { name: { equals: 'Video', mode: 'insensitive' } },
