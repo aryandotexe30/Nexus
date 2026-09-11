@@ -468,6 +468,40 @@ export const ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       productUrl: 'https://www.nitto.com/us/en/products/double_coated/5000ns/'
     },
     {
+      name: 'Nitto No. 5015 Low VOC Double-Coated Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Automotive & Interior Air Quality',
+      application: 'Automotive Dashboard, Headliner Cushioning & Low Emission Cabin Bonding',
+      specs: {
+        'Backing material': 'Non-Woven Tissue Carrier',
+        'Adhesive type': 'Low VOC Solvent-Free Acrylic',
+        'Total thickness': '0.12 mm',
+        'Temperature resistance': '-20°C to 120°C',
+        'VOC Emissions': 'Meets JASO M902 & German VDA 278 Standards',
+        'Adhesion to Steel': '13.0 N/20mm',
+        'Color': 'Semi-Transparent'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/5015_img01.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/double_coated/5015/'
+    },
+    {
+      name: 'Nitto No. 512 Felt & Foam Bonding Double-Coated Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Automotive & NVH Damping',
+      application: 'Bonding of Porous Open-Cell Polyurethane Foam & Wool Felt',
+      specs: {
+        'Backing material': 'Non-Woven Tissue Matrix',
+        'Adhesive type': 'High Tack Tackified Acrylic',
+        'Total thickness': '0.15 mm',
+        'Adhesion to Urethane Foam': 'High Anchoring Tack',
+        'Adhesion to Steel': '17.5 N/20mm',
+        'Temperature resistance': '-20°C to 80°C',
+        'Color': 'Translucent'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/512_img01.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/double_coated/512/'
+    },
+    {
       name: 'Nitto 903UL Fluoroplastic PTFE Tape',
       industry: 'Specialty Adhesive Tapes & Industrial Solutions',
       market: 'Industrial Solutions & Heat Sealing',
@@ -485,13 +519,30 @@ export const ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       productUrl: 'https://www.nitto.com/us/en/products/fluoroplastic/903ul/'
     },
     {
-      name: 'Nitto 541 Acrylic Foam Mounting Tape',
+      name: 'Nitto 973UL-S Glass Cloth PTFE Fluoroplastic Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Packaging & Heavy Duty Heat Sealing',
+      application: 'Form-Fill-Seal Packaging Jaw Masking & Roll Coating under High Mechanical Stress',
+      specs: {
+        'Backing material': 'PTFE Impregnated Woven Glass Cloth',
+        'Adhesive type': 'High Temperature Silicone',
+        'Total thickness': '0.13 mm',
+        'Temperature resistance': '-60°C to 260°C (Short Term 300°C)',
+        'Tensile strength': '290 N/19mm',
+        'Adhesion to Steel': '7.2 N/19mm',
+        'Color': 'Light Brown Glass Texture'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/973uls_img01.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/fluoroplastic/973uls/'
+    },
+    {
+      name: 'Nitto 541 Viscoelastic Acrylic Foam Tape',
       industry: 'Specialty Adhesive Tapes & Industrial Solutions',
       market: 'Automotive & Exterior Attachment',
-      application: 'Automotive Side Moldings & Emblem Attachment',
+      application: 'Automotive Side Moldings, Wind Deflectors & Emblem Attachment',
       specs: {
         'Backing material': 'Viscoelastic Acrylic Foam',
-        'Adhesive type': 'High Bond Acrylic',
+        'Adhesive type': 'High Bond Weather Resistant Acrylic',
         'Total thickness': '0.8 mm',
         'Temperature resistance': '-40°C to 120°C',
         'Adhesion to Steel': '32 N/20mm',
@@ -499,6 +550,138 @@ export const ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       },
       imageUrl: 'https://www.nitto.com/us/en/Images/541_img01.jpg',
       productUrl: 'https://www.nitto.com/us/en/products/foam_tape/541/'
+    },
+    {
+      name: 'Nitto HYPERJOINT H9008 Structural Acrylic Foam Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Building Components & Industrial Solutions',
+      application: 'Permanent Structural Metal-to-Glass Bonding & Solar Panel Frame Assembly',
+      specs: {
+        'Backing material': 'Solid High Modulus Viscoelastic Acrylic Foam Core',
+        'Adhesive type': 'Crosslinked Structural Acrylic',
+        'Total thickness': '0.8 mm (800 micron)',
+        'Temperature resistance': '-40°C to 150°C',
+        'Adhesion to Steel': '40 N/25mm',
+        'Shear Adhesion Strength': '900 kPa',
+        'Color': 'Dark Gray'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/hyperjoint_h9008.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/foam_tape/hyperjoint/'
+    },
+    {
+      name: 'Nitto SPV-224 Stainless Steel Surface Protection Film',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Metal Processing & Architectural Cladding',
+      application: 'Surface Scratch Protection during Stainless Steel Deep Drawing & Laser Cutting',
+      specs: {
+        'Backing material': 'Plasticized Polyvinyl Chloride (PVC) Film',
+        'Adhesive type': 'Natural Rubber Base (Residue Free)',
+        'Total thickness': '0.075 mm (75 micron)',
+        'Adhesion to 2B Stainless Steel': '1.2 N/20mm',
+        'Elongation at break': '200%',
+        'Color': 'Light Blue Transparent'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/spv224.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/surface_protection/spv224/'
+    },
+    {
+      name: 'Nitto E-MASK RP301 Optical Surface Protection Film',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & Optical Displays',
+      application: 'Scratch & Contamination Prevention on LCD/OLED Polarizer Plates & PMMA',
+      specs: {
+        'Backing material': 'Optically Clear Polyethylene (PE) Film',
+        'Adhesive type': 'Pressure Sensitive Ultra-Low Tack Acrylic',
+        'Total thickness': '0.055 mm (55 micron)',
+        'Peel Adhesion': '0.08 N/25mm (Ultra Low Tack)',
+        'Light Transmittance': '>92%',
+        'Color': 'Optically Transparent'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/emask_rp301.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/surface_protection/emask/'
+    },
+    {
+      name: 'Nitto No. 21 Vinyl Electrical Insulation Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electrical & Industrial Utilities',
+      application: 'Primary Wire Joint Insulation up to 600V & Phase Color Identification (JIS C 2336)',
+      specs: {
+        'Backing material': 'Plasticized Soft PVC',
+        'Adhesive type': 'Rubber Pressure Sensitive Adhesive',
+        'Total thickness': '0.20 mm (200 micron)',
+        'Dielectric Breakdown Voltage': '7500 Volts (7.5 kV)',
+        'Temperature resistance': '-10°C to 80°C',
+        'Elongation at break': '180%',
+        'Color': 'Black / Red / Blue / Yellow / Green / White'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/no21_tape.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/electrical/no21/'
+    },
+    {
+      name: 'Nitto No. 360UL High Temperature Polyimide Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & High-Tech',
+      application: 'Gold Finger PCB Wave Soldering Masking & Transformer Class H Coil Insulation',
+      specs: {
+        'Backing material': 'Kapton Polyimide Film (25 micron / 1 mil)',
+        'Adhesive type': 'Thermosetting Silicone Adhesive',
+        'Total thickness': '0.06 mm (60 micron)',
+        'Temperature resistance': '-70°C to 260°C (Short Term 300°C)',
+        'Dielectric Breakdown Voltage': '6500 Volts',
+        'Flame Retardancy': 'UL510 FR Certified (E34833)',
+        'Color': 'Amber'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/no360ul.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/polyimide/360ul/'
+    },
+    {
+      name: 'Nitto EPT-Sealer EE-1010 EPDM Foam Sealing Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Automotive & Industrial Waterproofing',
+      application: 'Automotive Door Weatherstrip Sealing, NVH Cushioning & Water Barrier',
+      specs: {
+        'Backing material': 'Semi-Closed Cell EPDM Rubber Foam',
+        'Adhesive type': 'High Tack Modified Acrylic Adhesive',
+        'Total thickness': '5.0 mm (Custom 3-10mm)',
+        'Temperature resistance': '-20°C to 100°C',
+        'Waterproofing Compression': 'Water leak proof at 50% compression',
+        'Color': 'Black'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/ee1010_ept.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/foam_sealing/ee1010/'
+    },
+    {
+      name: 'Nitto No. 720 Precision Paper Masking Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Surface Processing & Painting',
+      application: 'Automotive Refinishing High Temperature Paint Baking & Solder Masking',
+      specs: {
+        'Backing material': 'Flatback Japanese Washi Paper',
+        'Adhesive type': 'Natural Rubber Adhesive',
+        'Total thickness': '0.10 mm (100 micron)',
+        'Temperature resistance': 'Up to 120°C for 60 min',
+        'Adhesion to Steel': '3.2 N/10mm',
+        'Tensile strength': '38 N/10mm',
+        'Color': 'White / Cream'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/no720_masking.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/masking/720/'
+    },
+    {
+      name: 'Nitto ELEP HOLDER DU-300 UV Dicing Semiconductor Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Semiconductors & Microelectronics',
+      application: 'Silicon Wafer Cutting (Dicing) with UV Radiation Ultra-Clean Die Release',
+      specs: {
+        'Backing material': 'Polyolefin (PO) Film Base',
+        'Adhesive type': 'UV Curable Pressure Sensitive Acrylic',
+        'Total thickness': '0.085 mm (85 micron)',
+        'Adhesion Before UV': '2.5 N/25mm (High Holding During Dicing)',
+        'Adhesion After UV': '0.10 N/25mm (Ultra Low Residue Die Pick-up)',
+        'Color': 'Transparent'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/elep_du300.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/semiconductor/du300/'
     }
   ],
 
