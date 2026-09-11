@@ -427,14 +427,17 @@ export async function harvestCompanyProducts(
     }
   }
 
-  log(`[FINISH] Extraction complete! Discovered ${discoveredProducts.size} unique products with verified specifications across ${marketsDiscovered.size} distinct markets.`);
+  log(`[FINISH] Extraction complete! Discovered ${discoveredProducts.size} raw items. Validating physical products...`);
 
-  const productsList = Array.from(discoveredProducts.values());
+  // Filter out any non-product pages, SEO blogs, redirects, or media tags
+  const productsList = Array.from(discoveredProducts.values()).filter(prod =>
+    isValidProduct(prod.name, prod.productUrl, Object.keys(prod.specs || {}).length)
+  );
 
   // 6. Persist to PostgreSQL Database (ExtractedProduct Table) in High-Speed Bulk Batches
   if (productsList.length > 0) {
     try {
-      log(`[DATABASE] Bulk saving ${productsList.length} items to PostgreSQL ExtractedProduct for ${companyName}...`);
+      log(`[DATABASE] Bulk saving ${productsList.length} verified physical products to PostgreSQL ExtractedProduct for ${companyName}...`);
 
       // Clean up previous entries for this company to prevent duplicates
       try {
@@ -444,6 +447,26 @@ export async function harvestCompanyProducts(
               { companyName: { equals: companyName, mode: 'insensitive' } },
               { companyName: { equals: cleanInput, mode: 'insensitive' } },
               { companyName: { contains: companyName.toLowerCase(), mode: 'insensitive' } }
+            ]
+          }
+        });
+
+        // Also purge any residual legacy non-product junk rows across DB
+        await prisma.extractedProduct.deleteMany({
+          where: {
+            OR: [
+              { name: { contains: 'redirect', mode: 'insensitive' } },
+              { name: { equals: 'Audio', mode: 'insensitive' } },
+              { name: { equals: 'Video', mode: 'insensitive' } },
+              { name: { equals: 'Gallery', mode: 'insensitive' } },
+              { name: { contains: 'procurement guide', mode: 'insensitive' } },
+              { name: { contains: 'manufacturers in', mode: 'insensitive' } },
+              { name: { contains: 'suppliers in', mode: 'insensitive' } },
+              { name: { contains: 'distributors in', mode: 'insensitive' } },
+              { name: { contains: 'wholesale in', mode: 'insensitive' } },
+              { name: { contains: 'dealers in', mode: 'insensitive' } },
+              { name: { contains: 'best 10', mode: 'insensitive' } },
+              { name: { contains: 'top 10', mode: 'insensitive' } }
             ]
           }
         });
@@ -489,6 +512,103 @@ export async function harvestCompanyProducts(
 }
 
 /**
+ * Clean SEO bloat, brand tags, and promotional suffixes from product title
+ */
+export function cleanProductTitle(raw: string): string {
+  let clean = raw
+    .replace(/[\u00ae\u2122\u00a9]/g, '')
+    .replace(/:\s*$/, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // Strip brand / SEO suffixes like "| Top 10 ...", "- SATL", "| Srivasavi ...", "- tesa", "| 3M"
+  clean = clean
+    .replace(/\s*\|\s*(top|best)\s*\d+.*$/i, '')
+    .replace(/\s*\|\s*.*(satl|srivasavi|tesa|3m|havells|polycab|nitto|shurtape|lohmann|scapa|cgapl).*$/i, '')
+    .replace(/\s*-\s*(satl|srivasavi|tesa|3m|havells|polycab|nitto|shurtape|lohmann|scapa|cgapl).*$/i, '')
+    .trim();
+
+  return clean;
+}
+
+/**
+ * Filter out SEO blog articles, procurement guides, location landing pages, redirects, and media tags
+ */
+export function isValidProduct(name: string, urlStr?: string, specsCount: number = 0): boolean {
+  const lowerName = name.toLowerCase().trim();
+  const lowerUrl = (urlStr || '').toLowerCase().trim();
+
+  // 1. Definite garbage / redirect / generic tags
+  if (
+    lowerName === 'redirecting...' || lowerName.startsWith('redirect') ||
+    lowerName === 'audio' || lowerName === 'video' || lowerName === 'gallery' ||
+    lowerName === 'home' || lowerName === 'about us' || lowerName === 'contact us' ||
+    lowerName === 'enquiry' || lowerName === 'products' || lowerName === 'our products' ||
+    lowerName === 'privacy policy' || lowerName === 'terms and conditions' ||
+    lowerName === 'page not found' || lowerName.includes('404') ||
+    lowerName === 'sitemap' || lowerName === 'search' || lowerName === 'cart'
+  ) {
+    return false;
+  }
+
+  // 2. SEO Blog Posts, Location Landing Pages & Procurement Guides
+  const isSeoArticle =
+    lowerName.includes('procurement guide') ||
+    lowerName.includes('complete guide') ||
+    lowerName.includes('buying guide') ||
+    lowerName.includes('ultimate guide') ||
+    lowerName.includes('selection guide') ||
+    lowerName.includes('manufacturers in ') ||
+    lowerName.includes('suppliers in ') ||
+    lowerName.includes('distributors in ') ||
+    lowerName.includes('wholesale in ') ||
+    lowerName.includes('dealers in ') ||
+    lowerName.includes('exporters in ') ||
+    lowerName.includes('traders in ') ||
+    lowerName.includes('best 10 ') ||
+    lowerName.includes('top 10 ') ||
+    lowerName.includes('best 5 ') ||
+    lowerName.includes('top 5 ') ||
+    lowerName.includes('best 20 ') ||
+    lowerName.includes('top 20 ') ||
+    lowerName.includes('how to ') ||
+    lowerName.includes('what is ') ||
+    lowerName.includes('benefits of ') ||
+    lowerName.includes('tips for ') ||
+    lowerName.includes('why choose ') ||
+    lowerUrl.includes('manufacturers-in-') ||
+    lowerUrl.includes('suppliers-in-') ||
+    lowerUrl.includes('wholesale-in-') ||
+    lowerUrl.includes('procurement-guide') ||
+    lowerUrl.includes('/blog/') ||
+    lowerUrl.includes('/news/') ||
+    lowerUrl.includes('/article/');
+
+  if (isSeoArticle) {
+    return false;
+  }
+
+  // 3. Length check
+  if (name.length < 3 || name.length > 90) {
+    return false;
+  }
+
+  // 4. Must have either verified specs, a model code, or a clean concise tape product name
+  const hasModelCode = 
+    /\b[a-z]{2,5}-?\d{2,6}[a-z0-9]*\b/i.test(name) ||
+    /\b\d{4,5}\b/.test(name) ||
+    /acxplus|vhb|kapton|bopp|crepe|polyester|tissue|mylar|duplo|filament|masking/i.test(name);
+
+  if (specsCount === 0 && !hasModelCode) {
+    if (name.split(' ').length > 6 || name.includes(',') || name.includes(':')) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
  * Deep extraction on a single dedicated product specification page
  */
 function extractSingleProductPage(
@@ -502,16 +622,12 @@ function extractSingleProductPage(
 ) {
   const origin = new URL(currentUrl).origin;
 
-  // 1. Extract Product Name
+  // 1. Extract and Clean Product Name
   let rawName = $('h1').first().text().trim() ||
                 $('meta[property="og:title"]').attr('content') ||
                 $('title').text().split('-')[0].split('|')[0].trim();
 
-  const cleanName = rawName
-    .replace(/[\u00ae\u2122\u00a9]/g, '')
-    .replace(/:\s*$/, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const cleanName = cleanProductTitle(rawName);
 
   if (cleanName.length < 3 || cleanName.toLowerCase().includes('page not found') || cleanName.toLowerCase().includes('404')) {
     return;
@@ -550,6 +666,12 @@ function extractSingleProductPage(
       }
     });
   });
+
+  // Check validity: must be a genuine product, not an SEO blog post or redirect
+  const specsCount = Object.keys(specs).length;
+  if (!isValidProduct(cleanName, currentUrl, specsCount)) {
+    return;
+  }
 
   // 3. Image URL Resolution
   let rawImg: string | undefined = $('meta[property="og:image"]').attr('content') ||
@@ -614,7 +736,7 @@ function extractSingleProductPage(
       if (firstRowName.includes('product') || firstRowName.includes('name')) {
         const productNames = matrixRows[0];
         for (let colIdx = 0; colIdx < productNames.length; colIdx++) {
-          const rawColName = productNames[colIdx]?.replace(/[\u00ae\u2122\u00a9]/g, '').trim();
+          const rawColName = cleanProductTitle(productNames[colIdx] || '');
           if (rawColName && rawColName.length > 3) {
             const colSpecs: Record<string, string> = {};
             for (let r = 1; r < rowHeaders.length; r++) {
@@ -624,6 +746,8 @@ function extractSingleProductPage(
                 colSpecs[specLabel] = specVal;
               }
             }
+
+            if (!isValidProduct(rawColName, currentUrl, Object.keys(colSpecs).length)) continue;
 
             if (!productsMap.has(rawColName)) {
               productsMap.set(rawColName, {
@@ -676,7 +800,7 @@ function extractProductsFromCheerio(
           const rawName = item.name || item.title || item.model || item.sortTitle;
           if (!rawName || typeof rawName !== 'string') continue;
 
-          const cleanName = rawName.replace(/[\u00ae\u2122\u00a9]/g, '').trim();
+          const cleanName = cleanProductTitle(rawName);
           if (cleanName.length < 3) continue;
 
           // Parse specs from item properties
@@ -694,6 +818,8 @@ function extractProductsFromCheerio(
               }
             }
           }
+
+          if (!isValidProduct(cleanName, item.url, Object.keys(specs).length)) continue;
 
           // Image URL
           let imageUrl: string | undefined;
@@ -760,7 +886,7 @@ function extractProductsFromCheerio(
         });
 
         if (cells.length >= 2 && cells[0].length > 2) {
-          const rawName = cells[0].replace(/[\u00ae\u2122\u00a9]/g, '').trim();
+          const rawName = cleanProductTitle(cells[0]);
           if (rawName.length > 2 && !rawName.toLowerCase().includes('product') && !rawName.toLowerCase().includes('model') && !rawName.toLowerCase().includes('item')) {
             const specs: Record<string, string> = {};
             for (let i = 1; i < cells.length; i++) {
@@ -769,6 +895,8 @@ function extractProductsFromCheerio(
                 specs[formatSpecKey(header)] = cells[i];
               }
             }
+
+            if (!isValidProduct(rawName, rowLink, Object.keys(specs).length)) return;
 
             if (targetMarket) marketsSet.add(targetMarket);
             if (targetApp) applicationsSet.add(targetApp);
@@ -793,11 +921,11 @@ function extractProductsFromCheerio(
   // C. Extract from Product Listing Cards (.product-card, .product-item, .item)
   $('[class*="product-card"], [class*="product-item"], [class*="product-box"], .woocommerce-loop-product__title, .product-title').each((_, el) => {
     const title = $(el).find('h2, h3, h4, .title, a').first().text().trim() || $(el).text().trim();
-    const cleanTitle = title.replace(/\s+/g, ' ').replace(/[\u00ae\u2122\u00a9]/g, '').trim();
+    const cleanTitle = cleanProductTitle(title);
     const href = $(el).find('a').attr('href') || $(el).attr('href');
     const img = $(el).find('img').attr('src');
 
-    if (cleanTitle.length > 3 && cleanTitle.length < 80 && !cleanTitle.toLowerCase().includes('privacy') && !cleanTitle.toLowerCase().includes('contact')) {
+    if (isValidProduct(cleanTitle, href, 0)) {
       if (!productsMap.has(cleanTitle)) {
         if (targetMarket) marketsSet.add(targetMarket);
         if (targetApp) applicationsSet.add(targetApp);
@@ -818,12 +946,12 @@ function extractProductsFromCheerio(
   $('a[href]').each((_, a) => {
     const href = $(a).attr('href');
     if (!href) return;
-    const text = $(a).text().trim().replace(/\s+/g, ' ').replace(/[\u00ae\u2122\u00a9]/g, '').replace(/:\s*$/, '');
+    const text = cleanProductTitle($(a).text());
     const lowerText = text.toLowerCase();
     const lowerHref = href.toLowerCase();
 
     const isProductMatch = 
-      (text.length > 5 && text.length < 80) &&
+      (text.length > 3 && text.length < 80) &&
       (
         /d[a-z]{2,4}-\d+/i.test(text) ||
         /tesa-\d+/i.test(lowerHref) ||
@@ -832,10 +960,8 @@ function extractProductsFromCheerio(
         lowerText.includes('foil') || lowerText.includes('tissue') || lowerText.includes('polyimide') ||
         lowerText.includes('die-cut') || lowerText.includes('harness')
       ) &&
-      !lowerText.includes('privacy') && !lowerText.includes('contact') && !lowerText.includes('about') &&
-      !lowerText.includes('terms') && !lowerText.includes('policy') && !lowerText.includes('view all') &&
-      !lowerText.includes('learn more') && !lowerText.includes('read more') && !lowerText.includes('enquiry') &&
-      !lowerHref.includes('#') && !lowerHref.endsWith('.pdf');
+      !lowerHref.includes('#') && !lowerHref.endsWith('.pdf') &&
+      isValidProduct(text, href, 0);
 
     if (isProductMatch && !productsMap.has(text)) {
       if (targetMarket) marketsSet.add(targetMarket);

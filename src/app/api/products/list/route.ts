@@ -18,7 +18,23 @@ export async function GET(req: Request) {
     const limit = Math.min(parseInt(searchParams.get('limit') || '1000', 10), 2000);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
 
-    const where: any = {};
+    const where: any = {
+      NOT: [
+        { name: { contains: 'redirect', mode: 'insensitive' } },
+        { name: { equals: 'Audio', mode: 'insensitive' } },
+        { name: { equals: 'Video', mode: 'insensitive' } },
+        { name: { equals: 'Gallery', mode: 'insensitive' } },
+        { name: { contains: 'procurement guide', mode: 'insensitive' } },
+        { name: { contains: 'manufacturers in', mode: 'insensitive' } },
+        { name: { contains: 'suppliers in', mode: 'insensitive' } },
+        { name: { contains: 'distributors in', mode: 'insensitive' } },
+        { name: { contains: 'wholesale in', mode: 'insensitive' } },
+        { name: { contains: 'dealers in', mode: 'insensitive' } },
+        { name: { contains: 'best 10', mode: 'insensitive' } },
+        { name: { contains: 'top 10', mode: 'insensitive' } }
+      ]
+    };
+
     if (company && company !== 'ALL') {
       where.companyName = { contains: company, mode: 'insensitive' };
     }
