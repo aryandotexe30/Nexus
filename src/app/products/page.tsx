@@ -264,8 +264,23 @@ export default function ProductsPage() {
 
           {/* Quick Preset Pills */}
           <div className="flex flex-wrap items-center gap-2 mt-3">
-            <span className="text-xs font-semibold text-slate-400">Quick Test:</span>
-            {["tesa tapes", "https://www.tesa.com/en-in/industry", "Sri Vasavi Tapes", "Havells India"].map((sample) => (
+            <span className="text-xs font-semibold text-slate-400">Quick Test Brands:</span>
+            {[
+              "tesa tapes", 
+              "Sri Vasavi Tapes", 
+              "3M India", 
+              "Nitto Denko", 
+              "Saint-Gobain", 
+              "Shurtape", 
+              "Lohmann Tapes", 
+              "Avery Dennison", 
+              "Scapa Industrial",
+              "CG Adhesive Products",
+              "Ajit Industries",
+              "Advance Tapes",
+              "Havells India",
+              "Polycab India"
+            ].map((sample) => (
               <button
                 key={sample}
                 type="button"

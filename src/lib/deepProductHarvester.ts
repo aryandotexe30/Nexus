@@ -1,6 +1,11 @@
 import axios from 'axios';
+import https from 'https';
 import * as cheerio from 'cheerio';
 import prisma from '@/lib/prisma';
+
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false
+});
 
 export interface ExtractedProductItem {
   name: string;
@@ -24,11 +29,14 @@ export interface HarvestResult {
   error?: string;
 }
 
-const AXIOS_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-  'Accept-Language': 'en-US,en;q=0.9',
-  'Accept-Encoding': 'gzip, deflate, br'
+const AXIOS_CONFIG = {
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br'
+  },
+  httpsAgent
 };
 
 /**
@@ -39,7 +47,7 @@ export function canonicalizeCompanyName(raw: string): string {
     .toLowerCase()
     .replace(/^https?:\/\//, '')
     .replace(/^www\./, '')
-    .replace(/\.(com|co\.in|in|org|net|de|eu).*$/, '')
+    .replace(/\.(com|co\.in|in|org|net|de|eu|co).*$/, '')
     .replace(/[^a-z0-9\s]/g, ' ')
     .trim();
 
@@ -50,8 +58,17 @@ export function canonicalizeCompanyName(raw: string): string {
   if (clean.includes('cgapl') || clean.includes('cg adhesive')) return 'CG Adhesive Products Ltd';
   if (clean.includes('3m')) return '3M';
   if (clean.includes('nitto')) return 'Nitto Denko';
-  if (clean.includes('saint gobain')) return 'Saint-Gobain';
+  if (clean.includes('saint gobain') || clean.includes('saintgobain')) return 'Saint-Gobain';
   if (clean.includes('pidilite')) return 'Pidilite';
+  if (clean.includes('shurtape')) return 'Shurtape';
+  if (clean.includes('avery')) return 'Avery Dennison';
+  if (clean.includes('lohmann')) return 'Lohmann Tapes';
+  if (clean.includes('intertape') || clean.includes('ipg')) return 'Intertape Polymer Group (IPG)';
+  if (clean.includes('scapa')) return 'Scapa Industrial';
+  if (clean.includes('ajit') || clean.includes('aipl')) return 'Ajit Industries (AIPL)';
+  if (clean.includes('bagla')) return 'Bagla Group';
+  if (clean.includes('advance tape') || clean.includes('advancetapes')) return 'Advance Tapes';
+  if (clean.includes('cosmos')) return 'Cosmos Tapes';
 
   return clean
     .split(/\s+/)
@@ -137,7 +154,7 @@ export async function harvestCompanyProducts(
 
   log(`[RESOLVER] Initializing autonomous crawler for: "${cleanInput}" (Canonical: ${companyName})`);
 
-  // 1. Resolve Target Root URL
+  // 1. Resolve Target Root URL across known manufacturer domains
   if (!cleanInput.startsWith('http://') && !cleanInput.startsWith('https://')) {
     if (cleanInput.includes('.')) {
       targetUrl = `https://${cleanInput.replace(/^www\./, '')}`;
@@ -148,6 +165,17 @@ export async function harvestCompanyProducts(
       else if (lower.includes('havells')) targetUrl = 'https://www.havells.com';
       else if (lower.includes('polycab')) targetUrl = 'https://polycab.com';
       else if (lower.includes('3m')) targetUrl = 'https://www.3mindia.in';
+      else if (lower.includes('nitto')) targetUrl = 'https://www.nitto.com/in/en/';
+      else if (lower.includes('saint gobain') || lower.includes('saintgobain')) targetUrl = 'https://tapesolutions.saint-gobain.com';
+      else if (lower.includes('pidilite')) targetUrl = 'https://www.pidilite.com';
+      else if (lower.includes('shurtape')) targetUrl = 'https://www.shurtape.com';
+      else if (lower.includes('avery')) targetUrl = 'https://tapes.averydennison.com';
+      else if (lower.includes('lohmann')) targetUrl = 'https://www.lohmann-tapes.com';
+      else if (lower.includes('intertape') || lower.includes('ipg')) targetUrl = 'https://www.itape.com';
+      else if (lower.includes('scapa')) targetUrl = 'https://scapaindustrial.com';
+      else if (lower.includes('ajit') || lower.includes('aipl')) targetUrl = 'https://aiplmarketing.com';
+      else if (lower.includes('bagla')) targetUrl = 'https://bagla-group.com';
+      else if (lower.includes('advance tape') || lower.includes('advancetapes')) targetUrl = 'https://advancetapes.com';
       else if (lower.includes('cgapl') || lower.includes('cg adhesive')) targetUrl = 'https://cgapl.co.in';
       else {
         const brand = lower.replace(/[^a-z0-9]/g, '');
@@ -167,13 +195,15 @@ export async function harvestCompanyProducts(
 
   const baseOrigin = new URL(targetUrl).origin;
 
-  // 2. Discover Sitemap (e.g. /sitemap.xml, /en-in/sitemap.xml)
+  // 2. Discover Sitemap (e.g. /sitemap.xml, /en-in/sitemap.xml, with child sitemap recursion)
   const sitemapCandidates = [
     `${baseOrigin}/en-in/sitemap.xml`,
     `${baseOrigin}/sitemap.xml`,
     `${baseOrigin}/sitemap_index.xml`,
     `${baseOrigin}/products-sitemap.xml`,
-    `${baseOrigin}/wp-sitemap.xml`
+    `${baseOrigin}/product-sitemap.xml`,
+    `${baseOrigin}/wp-sitemap.xml`,
+    `${baseOrigin}/sitemap/sitemap.xml`
   ];
 
   let sitemapFound = false;
@@ -181,16 +211,36 @@ export async function harvestCompanyProducts(
     if (sitemapFound) break;
     try {
       log(`[SITEMAP] Checking sitemap index: ${sitemapUrl}...`);
-      const sitemapRes = await axios.get(sitemapUrl, { headers: AXIOS_HEADERS, timeout: 6000 });
-      if (sitemapRes.status === 200 && typeof sitemapRes.data === 'string' && sitemapRes.data.includes('<loc>')) {
+      const sitemapRes = await axios.get(sitemapUrl, { ...AXIOS_CONFIG, timeout: 6000 });
+      if (sitemapRes.status === 200 && typeof sitemapRes.data === 'string' && (sitemapRes.data.includes('<loc>') || sitemapRes.data.includes('<sitemap>'))) {
         sitemapFound = true;
         log(`[SITEMAP] Successfully located official XML Sitemap (${sitemapRes.data.length} bytes)!`);
+
+        // Check if this is a sitemap index containing child sitemaps
+        const childSitemaps: string[] = [];
+        const sitemapIndexRegex = /<sitemap>[\s\S]*?<loc>(https?:\/\/[^<]+)<\/loc>[\s\S]*?<\/sitemap>/g;
+        let smMatch;
+        while ((smMatch = sitemapIndexRegex.exec(sitemapRes.data)) !== null) {
+          childSitemaps.push(smMatch[1].trim());
+        }
+
+        // Fetch up to 4 child sitemaps (e.g. product-sitemap.xml, page-sitemap.xml)
+        let allXmlData = sitemapRes.data;
+        if (childSitemaps.length > 0) {
+          log(`[SITEMAP] Sitemap index links to ${childSitemaps.length} sub-sitemaps. Ingesting sub-sitemaps...`);
+          for (const childUrl of childSitemaps.slice(0, 4)) {
+            try {
+              const childRes = await axios.get(childUrl, { ...AXIOS_CONFIG, timeout: 5000 });
+              if (childRes.data) allXmlData += '\n' + childRes.data;
+            } catch {}
+          }
+        }
 
         const locRegex = /<loc>(https?:\/\/[^<]+)<\/loc>/g;
         let match;
         let totalLocs = 0;
 
-        while ((match = locRegex.exec(sitemapRes.data)) !== null) {
+        while ((match = locRegex.exec(allXmlData)) !== null) {
           const loc = match[1].trim();
           totalLocs++;
 
@@ -248,7 +298,7 @@ export async function harvestCompanyProducts(
   // 3. Root Page & Navigation Hierarchy Discovery (Crucial for WordPress / Elementor / Custom Sites)
   try {
     log(`[HIERARCHY] Inspecting navigation architecture from root ${targetUrl}...`);
-    const rootRes = await axios.get(targetUrl, { headers: AXIOS_HEADERS, timeout: 8000 });
+    const rootRes = await axios.get(targetUrl, { ...AXIOS_CONFIG, timeout: 8000 });
     visitedUrls.add(targetUrl);
     const $root = cheerio.load(rootRes.data);
 
@@ -332,7 +382,7 @@ export async function harvestCompanyProducts(
         visitedUrls.add(hub.url);
 
         try {
-          const res = await axios.get(hub.url, { headers: AXIOS_HEADERS, timeout: 6000 });
+          const res = await axios.get(hub.url, { ...AXIOS_CONFIG, timeout: 6000 });
           const $ = cheerio.load(res.data);
           const initial = discoveredProducts.size;
           extractProductsFromCheerio($, hub.url, discoveredProducts, marketsDiscovered, applicationsDiscovered, log, hub.market, hub.application);
@@ -368,7 +418,7 @@ export async function harvestCompanyProducts(
           visitedUrls.add(prodPage.url);
 
           try {
-            const res = await axios.get(prodPage.url, { headers: AXIOS_HEADERS, timeout: 5500 });
+            const res = await axios.get(prodPage.url, { ...AXIOS_CONFIG, timeout: 5500 });
             const $ = cheerio.load(res.data);
             extractSingleProductPage($, prodPage.url, discoveredProducts, marketsDiscovered, applicationsDiscovered, prodPage.market, prodPage.application);
           } catch {}
@@ -764,23 +814,44 @@ function extractProductsFromCheerio(
     }
   });
 
-  // D. Extract from direct <a> links matching product naming patterns (e.g. /industry/tesa-*.html)
-  $('a[href*="/industry/tesa-"], a[href*="/product/"]').each((_, a) => {
+  // D. Extract from direct product links and menu items matching product naming patterns
+  $('a[href]').each((_, a) => {
     const href = $(a).attr('href');
-    const text = $(a).text().trim().replace(/\s+/g, ' ').replace(/[\u00ae\u2122\u00a9]/g, '');
-    if (text && text.length > 4 && text.length < 60 && !text.toLowerCase().includes('learn more')) {
-      if (!productsMap.has(text)) {
-        if (targetMarket) marketsSet.add(targetMarket);
-        if (targetApp) applicationsSet.add(targetApp);
+    if (!href) return;
+    const text = $(a).text().trim().replace(/\s+/g, ' ').replace(/[\u00ae\u2122\u00a9]/g, '').replace(/:\s*$/, '');
+    const lowerText = text.toLowerCase();
+    const lowerHref = href.toLowerCase();
 
-        productsMap.set(text, {
-          name: text,
-          industry: 'Specialty Adhesive Tapes & Industrial Solutions',
-          market: targetMarket,
-          application: targetApp,
-          productUrl: href ? (href.startsWith('http') ? href : `${origin}${href}`) : undefined
-        });
-      }
+    const isProductMatch = 
+      (text.length > 5 && text.length < 80) &&
+      (
+        /d[a-z]{2,4}-\d+/i.test(text) ||
+        /tesa-\d+/i.test(lowerHref) ||
+        lowerText.includes('tape') || lowerText.includes('film') || lowerText.includes('foam') ||
+        lowerText.includes('masking') || lowerText.includes('filament') || lowerText.includes('kapton') ||
+        lowerText.includes('foil') || lowerText.includes('tissue') || lowerText.includes('polyimide') ||
+        lowerText.includes('die-cut') || lowerText.includes('harness')
+      ) &&
+      !lowerText.includes('privacy') && !lowerText.includes('contact') && !lowerText.includes('about') &&
+      !lowerText.includes('terms') && !lowerText.includes('policy') && !lowerText.includes('view all') &&
+      !lowerText.includes('learn more') && !lowerText.includes('read more') && !lowerText.includes('enquiry') &&
+      !lowerHref.includes('#') && !lowerHref.endsWith('.pdf');
+
+    if (isProductMatch && !productsMap.has(text)) {
+      if (targetMarket) marketsSet.add(targetMarket);
+      if (targetApp) applicationsSet.add(targetApp);
+
+      let fullHref = href;
+      if (href.startsWith('/')) fullHref = `${origin}${href}`;
+      else if (href.startsWith('./')) fullHref = `${origin}/${href.slice(2)}`;
+
+      productsMap.set(text, {
+        name: text,
+        industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+        market: targetMarket,
+        application: targetApp,
+        productUrl: fullHref.startsWith('http') ? fullHref : undefined
+      });
     }
   });
 }
