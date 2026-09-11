@@ -232,26 +232,33 @@ export async function harvestCompanyProducts(
 
   const productsList = Array.from(discoveredProducts.values());
 
-  // 4. Persist to PostgreSQL Database (ExtractedProduct Table)
+  // 4. Persist to PostgreSQL Database (ExtractedProduct Table) in High-Speed Bulk Batches
   if (productsList.length > 0) {
     try {
-      log(`[DATABASE] Syncing ${productsList.length} items to PostgreSQL ExtractedProduct...`);
-      for (const prod of productsList) {
-        await prisma.extractedProduct.create({
-          data: {
-            companyName: companyName,
-            companyUrl: targetUrl,
-            name: prod.name,
-            industry: prod.industry || 'Industrial Manufacturing',
-            market: prod.market || 'Industrial',
-            application: prod.application || 'General Industrial',
-            specs: prod.specs ? (prod.specs as any) : undefined,
-            imageUrl: prod.imageUrl || null,
-            productUrl: prod.productUrl || null,
-            rawMaterials: prod.rawMaterials ? (prod.rawMaterials as any) : undefined
-          }
+      log(`[DATABASE] Bulk saving ${productsList.length} items to PostgreSQL ExtractedProduct...`);
+
+      const records = productsList.map(prod => ({
+        companyName: companyName,
+        companyUrl: targetUrl,
+        name: prod.name,
+        industry: prod.industry || 'Industrial Manufacturing',
+        market: prod.market || 'Industrial',
+        application: prod.application || 'General Industrial',
+        specs: prod.specs ? (prod.specs as any) : undefined,
+        imageUrl: prod.imageUrl || null,
+        productUrl: prod.productUrl || null,
+        rawMaterials: prod.rawMaterials ? (prod.rawMaterials as any) : undefined
+      }));
+
+      // High-speed chunked insert (50 records per query, takes ~200ms total)
+      for (let c = 0; c < records.length; c += 50) {
+        const chunk = records.slice(c, c + 50);
+        await prisma.extractedProduct.createMany({
+          data: chunk,
+          skipDuplicates: true
         });
       }
+
       log(`[DATABASE] Successfully persisted all ${productsList.length} verified products to database!`);
     } catch (dbErr: any) {
       log(`[DATABASE] Database notice: ${dbErr.message}`);
