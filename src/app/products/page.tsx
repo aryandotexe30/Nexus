@@ -64,7 +64,7 @@ export default function ProductsPage() {
       if (companyFilter && companyFilter !== "ALL") params.append("company", companyFilter);
       if (marketFilter && marketFilter !== "ALL") params.append("market", marketFilter);
       if (searchTerm) params.append("search", searchTerm);
-      params.append("limit", "150");
+      params.append("limit", "1000");
 
       const res = await fetch(`/api/products/list?${params.toString()}`);
       const data = await res.json();

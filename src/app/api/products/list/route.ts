@@ -15,7 +15,7 @@ export async function GET(req: Request) {
     const market = searchParams.get('market')?.trim();
     const industry = searchParams.get('industry')?.trim();
     const search = searchParams.get('search')?.trim();
-    const limit = parseInt(searchParams.get('limit') || '100', 10);
+    const limit = Math.min(parseInt(searchParams.get('limit') || '1000', 10), 2000);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
 
     const where: any = {};

@@ -1,8 +1,6 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import prisma from '@/lib/prisma';
-import { generateStructuredAIResponse } from '@/lib/searchProtocol';
-import { Type } from '@google/genai';
 
 export interface ExtractedProductItem {
   name: string;
@@ -34,9 +32,7 @@ const AXIOS_HEADERS = {
 };
 
 /**
- * Universal Deep Product Harvester
- * Recursively crawls any corporate website or company name, traverses market/application trees,
- * parses structured specification tables & catalog arrays, and persists all products to PostgreSQL.
+ * Universal Canonical Company Name Normalizer
  */
 export function canonicalizeCompanyName(raw: string): string {
   const clean = raw
@@ -63,6 +59,69 @@ export function canonicalizeCompanyName(raw: string): string {
     .join(' ') || raw;
 }
 
+/**
+ * Determine Market and Application from URL or context
+ */
+function inferMarketAndApplication(urlStr: string, contextTitle?: string): { market: string; application: string } {
+  const lower = urlStr.toLowerCase();
+  let market = 'Industrial Solutions';
+  let application = contextTitle || 'General Industrial';
+
+  if (lower.includes('appliance')) {
+    market = 'Appliances';
+    if (lower.includes('refrigerat')) application = 'Refrigerators & Freezers';
+    else if (lower.includes('oven') || lower.includes('cooktop')) application = 'Ovens & Cooktops';
+    else if (lower.includes('wash')) application = 'Washing Machines & Dishwashers';
+    else if (lower.includes('copier') || lower.includes('printer')) application = 'Copiers & Printers';
+    else application = 'Appliance Assembly & Foaming';
+  } else if (lower.includes('automotive') || lower.includes('car-body') || lower.includes('ev-battery')) {
+    market = 'Automotive';
+    if (lower.includes('battery') || lower.includes('ev-')) application = 'EV Battery & Cell Insulation';
+    else if (lower.includes('exterior') || lower.includes('body')) application = 'Exterior Attachment & Body Sealing';
+    else if (lower.includes('interior')) application = 'Interior Cushioning & NVH Damping';
+    else application = 'Automotive Manufacturing';
+  } else if (lower.includes('electronic') || lower.includes('server') || lower.includes('smart-card') || lower.includes('phone')) {
+    market = 'Electronics & High-Tech';
+    if (lower.includes('server') || lower.includes('data-centre')) application = 'Server & Data Center Solutions';
+    else application = 'Electronic Component Bonding';
+  } else if (lower.includes('building') || lower.includes('construction') || lower.includes('window') || lower.includes('facade') || lower.includes('elevator')) {
+    market = 'Building Components';
+    if (lower.includes('elevator')) application = 'Elevator Assembly & Reinforcement';
+    else if (lower.includes('window') || lower.includes('door')) application = 'Window & Door Glazing';
+    else application = 'Building & Architectural Components';
+  } else if (lower.includes('paper') || lower.includes('print') || lower.includes('corrugat') || lower.includes('flexo')) {
+    market = 'Paper & Print';
+    if (lower.includes('flexo')) application = 'Flexographic Plate Mounting';
+    else if (lower.includes('flying-splice') || lower.includes('splice')) application = 'Flying Splice & Web Processing';
+    else application = 'Printing & Packaging Operations';
+  } else if (lower.includes('solar') || lower.includes('wind') || lower.includes('energy') || lower.includes('renewable')) {
+    market = 'Renewable Energy';
+    if (lower.includes('solar')) application = 'Solar Panel Frame & Junction Box Bonding';
+    else if (lower.includes('wind')) application = 'Wind Turbine Blade Protection & Vortex Generators';
+    else application = 'Clean Energy Systems';
+  } else if (lower.includes('health') || lower.includes('medical')) {
+    market = 'Healthcare & Medical';
+    application = 'Medical Diagnostics & Wearable Adhesives';
+  } else if (lower.includes('converter') || lower.includes('foam')) {
+    market = 'Industrial Converters & Foam Tapes';
+    application = 'Die-Cut Converting & Foam Lamination';
+  } else if (lower.includes('masking')) {
+    market = 'Industrial Surface Processing';
+    application = 'High Temperature Masking & Protection';
+  } else if (lower.includes('double-sided') || lower.includes('mounting')) {
+    market = 'General Industrial Mounting';
+    application = 'Structural Double-Sided Bonding';
+  } else if (lower.includes('packaging')) {
+    market = 'Packaging & Logistics';
+    application = 'Heavy Duty Carton Sealing & Strapping';
+  }
+
+  return { market, application };
+}
+
+/**
+ * Universal Deep Product Harvester
+ */
 export async function harvestCompanyProducts(
   input: string, 
   onLog?: (msg: string) => void
@@ -78,7 +137,7 @@ export async function harvestCompanyProducts(
 
   log(`[RESOLVER] Initializing autonomous crawler for: "${cleanInput}" (Canonical: ${companyName})`);
 
-  // 1. Resolve Target Domain
+  // 1. Resolve Target Root URL
   if (!cleanInput.startsWith('http://') && !cleanInput.startsWith('https://')) {
     if (cleanInput.includes('.')) {
       targetUrl = `https://${cleanInput.replace(/^www\./, '')}`;
@@ -101,61 +160,89 @@ export async function harvestCompanyProducts(
 
   const discoveredProducts: Map<string, ExtractedProductItem> = new Map();
   const visitedUrls = new Set<string>();
-  const urlsToVisit: { url: string; market?: string; application?: string }[] = [{ url: targetUrl }];
+  const categoryHubUrls: { url: string; market?: string; application?: string }[] = [];
+  const directProductUrls: { url: string; market?: string; application?: string }[] = [];
   const marketsDiscovered = new Set<string>();
   const applicationsDiscovered = new Set<string>();
 
   const baseOrigin = new URL(targetUrl).origin;
 
-  // 2. Fetch Root Page and Discover Full Market Hierarchy
-  const knownMarketPaths = [
-    '/en-in/industry/markets/appliances',
-    '/en-in/industry/markets/automotive-industry',
-    '/en-in/industry/markets/industrial-converter-partners',
-    '/en-in/industry/markets/paper-print',
-    '/en-in/industry/markets/building-components',
-    '/en-in/industry/markets/solar-industry',
-    '/en-in/industry/markets/transport-industry',
-    '/en-in/industry/markets/wind-energy',
-    '/en-in/industry/markets/battery-energy-storage-systems',
-    '/en-in/industry/markets/server-and-data-centre',
-    '/en-in/industry/markets/health-markets',
-    '/en-in/industry/markets/metal-industry',
-    '/en-in/industry/products'
+  // 2. Discover Sitemap (e.g. /sitemap.xml, /en-in/sitemap.xml)
+  const sitemapCandidates = [
+    `${baseOrigin}/en-in/sitemap.xml`,
+    `${baseOrigin}/sitemap.xml`,
+    `${baseOrigin}/sitemap_index.xml`,
+    `${baseOrigin}/products-sitemap.xml`
   ];
 
-  // Pre-seed known market roots if crawling tesa or industrial catalog
-  for (const p of knownMarketPaths) {
-    if (targetUrl.includes('tesa.com') && p.startsWith('/en-in')) {
-      const full = `${baseOrigin}${p}`;
-      let market = 'Industrial';
-      if (p.includes('appliance')) market = 'Appliances Tapes';
-      else if (p.includes('automotive')) market = 'Automotive';
-      else if (p.includes('converter')) market = 'Industrial Converters & Foam Tapes';
-      else if (p.includes('paper-print')) market = 'Paper & Print';
-      else if (p.includes('building')) market = 'Building Components';
-      else if (p.includes('solar') || p.includes('wind') || p.includes('battery')) market = 'Renewable & Energy Storage';
-      else if (p.includes('transport')) market = 'Transportation & Aerospace';
-      else if (p.includes('server') || p.includes('electronic')) market = 'Electronics & Data Systems';
-      else if (p.includes('health')) market = 'Healthcare';
-      else if (p.includes('metal')) market = 'Metal Industry';
-      else if (p.includes('products')) market = 'Master Catalog';
+  let sitemapFound = false;
+  for (const sitemapUrl of sitemapCandidates) {
+    if (sitemapFound) break;
+    try {
+      log(`[SITEMAP] Checking sitemap index: ${sitemapUrl}...`);
+      const sitemapRes = await axios.get(sitemapUrl, { headers: AXIOS_HEADERS, timeout: 6000 });
+      if (sitemapRes.status === 200 && typeof sitemapRes.data === 'string' && sitemapRes.data.includes('<loc>')) {
+        sitemapFound = true;
+        log(`[SITEMAP] Successfully located official XML Sitemap (${sitemapRes.data.length} bytes)!`);
 
-      urlsToVisit.push({ url: full, market, application: 'Market Overview' });
+        const locRegex = /<loc>(https:\/\/[^<]+)<\/loc>/g;
+        let match;
+        let totalLocs = 0;
+
+        while ((match = locRegex.exec(sitemapRes.data)) !== null) {
+          const loc = match[1].trim();
+          totalLocs++;
+
+          const lowerLoc = loc.toLowerCase();
+
+          // Exclude non-product pages (legal, career, privacy, contact, blog, press, etc.)
+          if (
+            lowerLoc.includes('/about') || lowerLoc.includes('/career') || lowerLoc.includes('/legal') ||
+            lowerLoc.includes('/privacy') || lowerLoc.includes('/contact') || lowerLoc.includes('/press') ||
+            lowerLoc.includes('/sustainability') || lowerLoc.includes('/news') || lowerLoc.includes('/imprint') ||
+            lowerLoc.includes('/cookie') || lowerLoc.includes('#')
+          ) {
+            continue;
+          }
+
+          const { market, application } = inferMarketAndApplication(loc);
+
+          // Direct Product Pages (e.g. /industry/tesa-*.html, /product/*, /p/*)
+          if (
+            lowerLoc.includes('/industry/tesa-') ||
+            (lowerLoc.endsWith('.html') && lowerLoc.includes('/industry/')) ||
+            lowerLoc.includes('/product/') ||
+            lowerLoc.includes('/products/') && lowerLoc.split('/').length > 5
+          ) {
+            directProductUrls.push({ url: loc, market, application });
+          } 
+          // Category / Market Hubs
+          else if (
+            lowerLoc.includes('/market') || lowerLoc.includes('/application') || 
+            lowerLoc.includes('/category') || lowerLoc.includes('/products') ||
+            lowerLoc.includes('/solutions')
+          ) {
+            categoryHubUrls.push({ url: loc, market, application });
+          }
+        }
+
+        log(`[SITEMAP] Analyzed ${totalLocs} sitemap URLs -> Discovered ${directProductUrls.length} Direct Product pages & ${categoryHubUrls.length} Market Category hubs.`);
+      }
+    } catch {
+      // Continue to next sitemap candidate
     }
   }
 
-  log(`[HIERARCHY] Crawling root navigation tree to discover all markets & sub-applications...`);
-
+  // 3. Fallback / Augment via Root Page Navigation Discovery
   try {
-    const rootRes = await axios.get(targetUrl, { headers: AXIOS_HEADERS, timeout: 9000 });
+    log(`[HIERARCHY] Inspecting navigation architecture from root ${targetUrl}...`);
+    const rootRes = await axios.get(targetUrl, { headers: AXIOS_HEADERS, timeout: 8000 });
     visitedUrls.add(targetUrl);
     const $root = cheerio.load(rootRes.data);
 
-    // Extract products on root
+    // Extract any products already present on root page
     extractProductsFromCheerio($root, targetUrl, discoveredProducts, marketsDiscovered, applicationsDiscovered, log, 'General Industrial', 'Overview');
 
-    // Discover Market / Industry / Sub-application links
     $root('a[href]').each((_, a) => {
       const href = $root(a).attr('href');
       const text = $root(a).text().trim().replace(/\s+/g, ' ');
@@ -165,96 +252,110 @@ export async function harvestCompanyProducts(
       if (href.startsWith('/')) fullUrl = `${baseOrigin}${href}`;
       if (!fullUrl.startsWith(baseOrigin)) return;
 
-      const lowerHref = fullUrl.toLowerCase();
-
-      // Filter for industry / market / application / product sub-pages
-      const isRelevant = 
-        (lowerHref.includes('/industry') || lowerHref.includes('/market') || lowerHref.includes('/application') || 
-         lowerHref.includes('/product') || lowerHref.includes('/catalog') || lowerHref.includes('/solutions') ||
-         lowerHref.includes('/tapes') || lowerHref.includes('/appliances') || lowerHref.includes('/automotive') ||
-         lowerHref.includes('/electronics') || lowerHref.includes('/building') || lowerHref.includes('/paper-print') ||
-         lowerHref.includes('/healthcare') || lowerHref.includes('/renewable') || lowerHref.includes('/craftsmen') ||
-         lowerHref.includes('/tape-') || lowerHref.includes('/double-sided') || lowerHref.includes('/masking')) &&
-        !lowerHref.includes('#') && !lowerHref.includes('privacy') && !lowerHref.includes('cookie') &&
-        !lowerHref.includes('login') && !lowerHref.includes('contact') && !lowerHref.includes('career') &&
-        !lowerHref.includes('sustainability') && !lowerHref.includes('press') && !lowerHref.includes('stories');
-
-      if (isRelevant && !visitedUrls.has(fullUrl) && urlsToVisit.length < 80) {
-        let market = 'Industrial';
-        let application = text || 'General Application';
-
-        if (lowerHref.includes('appliance')) market = 'Appliances Tapes';
-        else if (lowerHref.includes('automotive')) market = 'Automotive';
-        else if (lowerHref.includes('electronic')) market = 'Electronics';
-        else if (lowerHref.includes('building') || lowerHref.includes('construction')) market = 'Building Components';
-        else if (lowerHref.includes('paper') || lowerHref.includes('print')) market = 'Paper & Print';
-        else if (lowerHref.includes('health') || lowerHref.includes('medical')) market = 'Healthcare';
-        else if (lowerHref.includes('energy') || lowerHref.includes('solar') || lowerHref.includes('wind')) market = 'Renewable Energy';
-        else if (lowerHref.includes('craft') || lowerHref.includes('trade')) market = 'Craftsmen & Trade';
-
-        if (text && text.length > 3 && text.length < 50) {
-          application = text;
+      const lower = fullUrl.toLowerCase();
+      if (
+        (lower.includes('/industry') || lower.includes('/market') || lower.includes('/product') ||
+         lower.includes('/application') || lower.includes('/solutions') || lower.includes('/tapes')) &&
+        !lower.includes('contact') && !lower.includes('career') && !lower.includes('privacy') && !lower.includes('login')
+      ) {
+        const { market, application } = inferMarketAndApplication(fullUrl, text);
+        if (!visitedUrls.has(fullUrl) && categoryHubUrls.length < 150) {
+          categoryHubUrls.push({ url: fullUrl, market, application });
         }
-
-        urlsToVisit.push({ url: fullUrl, market, application });
       }
     });
-
   } catch (err: any) {
-    log(`[NOTICE] Root visit notice: ${err.message}`);
+    log(`[NOTICE] Root navigation notice: ${err.message}`);
   }
 
-  log(`[QUEUE] Discovered ${urlsToVisit.length} hierarchy sub-pages. Beginning high-speed parallel extraction...`);
+  // If Tesa, pre-seed key master catalog endpoints
+  if (targetUrl.includes('tesa.com') && categoryHubUrls.length === 0) {
+    const defaultPaths = [
+      '/en-in/industry/products/double-sided-tapes',
+      '/en-in/industry/products/masking-tapes',
+      '/en-in/industry/products/cloth-tapes',
+      '/en-in/industry/products/duct-tapes',
+      '/en-in/industry/products/foam-tapes',
+      '/en-in/industry/products/packaging-tapes',
+      '/en-in/industry/products/electrical-tapes',
+      '/en-in/industry/markets/appliances',
+      '/en-in/industry/markets/automotive',
+      '/en-in/industry/markets/electronics',
+      '/en-in/industry/markets/building-components',
+      '/en-in/industry/markets/paper-print',
+      '/en-in/industry/markets/solar-industry'
+    ];
+    for (const p of defaultPaths) {
+      const full = `${baseOrigin}${p}`;
+      const { market, application } = inferMarketAndApplication(full);
+      categoryHubUrls.push({ url: full, market, application });
+    }
+  }
 
-  // 3. Concurrently Crawl Discovered Hierarchy Subpages in Batches of 6
-  const pagesToCrawl = urlsToVisit.slice(0, 60);
-  const BATCH_SIZE = 6;
+  // 4. PHASE 1: High-Speed Category & Market Hub Crawl (Extracts Bulk Catalog Matrices)
+  log(`[QUEUE] Processing ${categoryHubUrls.length} Category & Market Hubs in parallel batches...`);
+  const BATCH_SIZE = 10;
+  const hubsToCrawl = categoryHubUrls.slice(0, 80);
 
-  for (let i = 0; i < pagesToCrawl.length; i += BATCH_SIZE) {
-    const batch = pagesToCrawl.slice(i, i + BATCH_SIZE);
+  for (let i = 0; i < hubsToCrawl.length; i += BATCH_SIZE) {
+    const batch = hubsToCrawl.slice(i, i + BATCH_SIZE);
     await Promise.all(
-      batch.map(async (page) => {
-        if (visitedUrls.has(page.url)) return;
-        visitedUrls.add(page.url);
+      batch.map(async (hub) => {
+        if (visitedUrls.has(hub.url)) return;
+        visitedUrls.add(hub.url);
 
         try {
-          const res = await axios.get(page.url, { headers: AXIOS_HEADERS, timeout: 7000 });
+          const res = await axios.get(hub.url, { headers: AXIOS_HEADERS, timeout: 6000 });
           const $ = cheerio.load(res.data);
-          const initialCount = discoveredProducts.size;
-          extractProductsFromCheerio($, page.url, discoveredProducts, marketsDiscovered, applicationsDiscovered, log, page.market, page.application);
-          const newCount = discoveredProducts.size;
-          
-          if (newCount > initialCount) {
-            log(`[CRAWL] +${newCount - initialCount} items from: ${page.url.split('/').pop()} (${page.market} -> ${page.application})`);
+          const initial = discoveredProducts.size;
+          extractProductsFromCheerio($, hub.url, discoveredProducts, marketsDiscovered, applicationsDiscovered, log, hub.market, hub.application);
+          const added = discoveredProducts.size - initial;
+          if (added > 0) {
+            log(`[CRAWL] +${added} products from hub: ${hub.url.split('/').pop()} (${hub.market})`);
           }
-
-          // Also discover 2nd level links
-          $('a[href*="/industry/markets/"], a[href*="/industry/products/"]').each((_, a) => {
-            const href = $(a).attr('href');
-            if (href && urlsToVisit.length < 80) {
-              const full = href.startsWith('/') ? `${baseOrigin}${href}` : href;
-              if (full.startsWith(baseOrigin) && !visitedUrls.has(full)) {
-                urlsToVisit.push({ url: full, market: page.market, application: $(a).text().trim() || page.application });
-              }
-            }
-          });
-        } catch {
-          // Continue
-        }
+        } catch {}
       })
     );
   }
 
-  log(`[FINISH] Extraction complete! Discovered ${discoveredProducts.size} unique products with specifications across ${marketsDiscovered.size} markets.`);
+  log(`[STAGE 1] Ingested ${discoveredProducts.size} products from catalog hubs. Now parsing deep product pages...`);
+
+  // 5. PHASE 2: Direct Product Page Deep Ingestion (Extracts Exact TDS Specs for Every Product)
+  const productPagesToCrawl = directProductUrls
+    .filter(p => !visitedUrls.has(p.url))
+    .slice(0, 160); // Ingest up to 160 additional specific product pages
+
+  if (productPagesToCrawl.length > 0) {
+    log(`[QUEUE] Ingesting technical data sheets from ${productPagesToCrawl.length} direct product pages...`);
+    const PRODUCT_BATCH = 15;
+
+    for (let i = 0; i < productPagesToCrawl.length; i += PRODUCT_BATCH) {
+      const batch = productPagesToCrawl.slice(i, i + PRODUCT_BATCH);
+      await Promise.all(
+        batch.map(async (prodPage) => {
+          if (visitedUrls.has(prodPage.url)) return;
+          visitedUrls.add(prodPage.url);
+
+          try {
+            const res = await axios.get(prodPage.url, { headers: AXIOS_HEADERS, timeout: 5500 });
+            const $ = cheerio.load(res.data);
+            extractSingleProductPage($, prodPage.url, discoveredProducts, marketsDiscovered, applicationsDiscovered, prodPage.market, prodPage.application);
+          } catch {}
+        })
+      );
+    }
+  }
+
+  log(`[FINISH] Extraction complete! Discovered ${discoveredProducts.size} unique products with verified specifications across ${marketsDiscovered.size} distinct markets.`);
 
   const productsList = Array.from(discoveredProducts.values());
 
-  // 4. Persist to PostgreSQL Database (ExtractedProduct Table) in High-Speed Bulk Batches
+  // 6. Persist to PostgreSQL Database (ExtractedProduct Table) in High-Speed Bulk Batches
   if (productsList.length > 0) {
     try {
       log(`[DATABASE] Bulk saving ${productsList.length} items to PostgreSQL ExtractedProduct for ${companyName}...`);
 
-      // Clean up previous entries to avoid duplicate rows and multiple company name variants
+      // Clean up previous entries for this company to prevent duplicates
       try {
         await prisma.extractedProduct.deleteMany({
           where: {
@@ -271,7 +372,7 @@ export async function harvestCompanyProducts(
         companyName: companyName,
         companyUrl: targetUrl,
         name: prod.name,
-        industry: prod.industry || 'Industrial Manufacturing',
+        industry: prod.industry || 'Specialty Adhesive Tapes & Industrial Solutions',
         market: prod.market || 'Industrial',
         application: prod.application || 'General Industrial',
         specs: prod.specs ? (prod.specs as any) : undefined,
@@ -307,6 +408,153 @@ export async function harvestCompanyProducts(
 }
 
 /**
+ * Deep extraction on a single dedicated product specification page
+ */
+function extractSingleProductPage(
+  $: cheerio.CheerioAPI,
+  currentUrl: string,
+  productsMap: Map<string, ExtractedProductItem>,
+  marketsSet: Set<string>,
+  applicationsSet: Set<string>,
+  defaultMarket?: string,
+  defaultApp?: string
+) {
+  const origin = new URL(currentUrl).origin;
+
+  // 1. Extract Product Name
+  let rawName = $('h1').first().text().trim() ||
+                $('meta[property="og:title"]').attr('content') ||
+                $('title').text().split('-')[0].split('|')[0].trim();
+
+  const cleanName = rawName.replace(/[\u00ae\u2122\u00a9]/g, '').replace(/\s+/g, ' ').trim();
+  if (cleanName.length < 3 || cleanName.toLowerCase().includes('page not found') || cleanName.toLowerCase().includes('404')) {
+    return;
+  }
+
+  // 2. Extract Clean Primary Specifications (Key-Value rows)
+  const specs: Record<string, string> = {};
+
+  $('table').each((_, tbl) => {
+    // If it's a comparison table with many columns, skip single-key parsing and handle below
+    if ($(tbl).find('tr:first-child th, thead th').length > 3) return;
+
+    $(tbl).find('tr').each((_, tr) => {
+      const th = $(tr).find('th').text().trim().replace(/\s+/g, ' ');
+      const td = $(tr).find('td').text().trim().replace(/\s+/g, ' ');
+
+      if (th && td && th !== td && th.length < 50 && td.length < 100 && !td.includes('\n')) {
+        specs[formatSpecKey(th)] = td;
+      } else {
+        const cells: string[] = [];
+        $(tr).find('td').each((_, c) => cells.push($(c).text().trim().replace(/\s+/g, ' ')));
+        if (cells.length === 2 && cells[0].length < 50 && cells[1].length < 100 && !cells[1].includes('\n')) {
+          specs[formatSpecKey(cells[0])] = cells[1];
+        }
+      }
+    });
+  });
+
+  // Also check DL definition lists
+  $('dl').each((_, dl) => {
+    $(dl).find('dt').each((i, dt) => {
+      const dd = $(dl).find('dd').eq(i).text().trim().replace(/\s+/g, ' ');
+      const key = $(dt).text().trim().replace(/\s+/g, ' ');
+      if (key && dd && key.length < 50 && dd.length < 100 && !dd.includes('\n')) {
+        specs[formatSpecKey(key)] = dd;
+      }
+    });
+  });
+
+  // 3. Image URL
+  let imageUrl: string | undefined = $('meta[property="og:image"]').attr('content') ||
+    $('img[class*="product"], img[class*="main"], .gallery img').first().attr('src');
+  if (imageUrl && !imageUrl.startsWith('http')) {
+    imageUrl = `${origin}${imageUrl}`;
+  }
+
+  const { market, application } = inferMarketAndApplication(currentUrl);
+  const finalMarket = defaultMarket || market;
+  const finalApp = defaultApp || application;
+
+  marketsSet.add(finalMarket);
+  applicationsSet.add(finalApp);
+
+  // If already present, merge/enhance specs
+  if (productsMap.has(cleanName)) {
+    const existing = productsMap.get(cleanName)!;
+    if (Object.keys(specs).length > 0) {
+      existing.specs = { ...(existing.specs || {}), ...specs };
+    }
+    if (!existing.imageUrl && imageUrl) existing.imageUrl = imageUrl;
+    if (!existing.productUrl) existing.productUrl = currentUrl;
+  } else {
+    productsMap.set(cleanName, {
+      name: cleanName,
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: finalMarket,
+      application: finalApp,
+      specs: Object.keys(specs).length > 0 ? specs : undefined,
+      imageUrl,
+      productUrl: currentUrl
+    });
+  }
+
+  // 4. Comparison Matrix Parsing (Extracts All Comparison Table Products & Specs)
+  $('table').each((_, tbl) => {
+    const rowHeaders: string[] = [];
+    const matrixRows: string[][] = [];
+
+    $(tbl).find('tr').each((_, tr) => {
+      const rowHeader = $(tr).find('th').first().text().trim().replace(/[\u00ae\u2122\u00a9]/g, '').replace(/\s+/g, ' ');
+      if (!rowHeader) return;
+      rowHeaders.push(rowHeader);
+
+      const cellValues: string[] = [];
+      $(tr).find('td').each((_, td) => {
+        cellValues.push($(td).text().trim().replace(/\s+/g, ' '));
+      });
+      matrixRows.push(cellValues);
+    });
+
+    // Check if the first row is "Name of product" or list of product names
+    if (rowHeaders.length >= 2 && matrixRows.length >= 2) {
+      const firstRowName = rowHeaders[0].toLowerCase();
+      if (firstRowName.includes('product') || firstRowName.includes('name')) {
+        const productNames = matrixRows[0];
+        for (let colIdx = 0; colIdx < productNames.length; colIdx++) {
+          const rawColName = productNames[colIdx]?.replace(/[\u00ae\u2122\u00a9]/g, '').trim();
+          if (rawColName && rawColName.length > 3) {
+            const colSpecs: Record<string, string> = {};
+            for (let r = 1; r < rowHeaders.length; r++) {
+              const specLabel = formatSpecKey(rowHeaders[r]);
+              const specVal = matrixRows[r]?.[colIdx];
+              if (specVal && specVal !== '-' && specVal.length > 0 && specVal.length < 100) {
+                colSpecs[specLabel] = specVal;
+              }
+            }
+
+            if (!productsMap.has(rawColName)) {
+              productsMap.set(rawColName, {
+                name: rawColName,
+                industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+                market: finalMarket,
+                application: finalApp,
+                specs: Object.keys(colSpecs).length > 0 ? colSpecs : undefined
+              });
+            } else {
+              const existing = productsMap.get(rawColName)!;
+              if (Object.keys(colSpecs).length > 0) {
+                existing.specs = { ...(existing.specs || {}), ...colSpecs };
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+/**
  * Universal Extraction Routine from loaded Cheerio DOM
  */
 function extractProductsFromCheerio(
@@ -320,6 +568,9 @@ function extractProductsFromCheerio(
   defaultApp?: string
 ) {
   const origin = new URL(currentUrl).origin;
+  const { market: urlMarket, application: urlApp } = inferMarketAndApplication(currentUrl);
+  const targetMarket = defaultMarket || urlMarket;
+  const targetApp = defaultApp || urlApp;
 
   // A. Extract from Vue / Custom Element Product Tables (e.g. <product-filter-table :products="...">)
   $('product-filter-table, [data-products], [data-table-products], product-table').each((_, el) => {
@@ -368,19 +619,25 @@ function extractProductsFromCheerio(
             productUrl = item.url.startsWith('http') ? item.url : `${origin}${item.url}`;
           }
 
-          if (defaultMarket) marketsSet.add(defaultMarket);
-          if (defaultApp) applicationsSet.add(defaultApp);
+          if (targetMarket) marketsSet.add(targetMarket);
+          if (targetApp) applicationsSet.add(targetApp);
 
           if (!productsMap.has(cleanName)) {
             productsMap.set(cleanName, {
               name: cleanName,
               industry: 'Specialty Adhesive Tapes & Industrial Solutions',
-              market: defaultMarket || 'Industrial',
-              application: defaultApp || 'General Application',
+              market: targetMarket,
+              application: targetApp,
               specs: Object.keys(specs).length > 0 ? specs : undefined,
               imageUrl,
               productUrl
             });
+          } else {
+            // Enhance existing
+            const existing = productsMap.get(cleanName)!;
+            if (Object.keys(specs).length > 0 && !existing.specs) {
+              existing.specs = specs;
+            }
           }
         }
       }
@@ -402,7 +659,7 @@ function extractProductsFromCheerio(
         let rowLink: string | undefined;
         let rowImg: string | undefined;
 
-        $(tr).find('td').each((cIdx, td) => {
+        $(tr).find('td').each((_, td) => {
           cells.push($(td).text().trim().replace(/\s+/g, ' '));
           const href = $(td).find('a').attr('href');
           if (href && !rowLink) rowLink = href.startsWith('http') ? href : `${origin}${href}`;
@@ -412,24 +669,24 @@ function extractProductsFromCheerio(
 
         if (cells.length >= 2 && cells[0].length > 2) {
           const rawName = cells[0].replace(/[\u00ae\u2122\u00a9]/g, '').trim();
-          if (rawName.length > 2 && !rawName.toLowerCase().includes('product') && !rawName.toLowerCase().includes('model')) {
+          if (rawName.length > 2 && !rawName.toLowerCase().includes('product') && !rawName.toLowerCase().includes('model') && !rawName.toLowerCase().includes('item')) {
             const specs: Record<string, string> = {};
             for (let i = 1; i < cells.length; i++) {
               const header = headers[i] || `Spec ${i}`;
               if (cells[i] && cells[i].length > 0 && cells[i] !== '-') {
-                specs[header] = cells[i];
+                specs[formatSpecKey(header)] = cells[i];
               }
             }
 
-            if (defaultMarket) marketsSet.add(defaultMarket);
-            if (defaultApp) applicationsSet.add(defaultApp);
+            if (targetMarket) marketsSet.add(targetMarket);
+            if (targetApp) applicationsSet.add(targetApp);
 
             if (!productsMap.has(rawName)) {
               productsMap.set(rawName, {
                 name: rawName,
                 industry: 'Industrial Manufacturing',
-                market: defaultMarket || 'Industrial',
-                application: defaultApp || 'General Application',
+                market: targetMarket,
+                application: targetApp,
                 specs: Object.keys(specs).length > 0 ? specs : undefined,
                 imageUrl: rowImg,
                 productUrl: rowLink
@@ -450,15 +707,35 @@ function extractProductsFromCheerio(
 
     if (cleanTitle.length > 3 && cleanTitle.length < 80 && !cleanTitle.toLowerCase().includes('privacy') && !cleanTitle.toLowerCase().includes('contact')) {
       if (!productsMap.has(cleanTitle)) {
-        if (defaultMarket) marketsSet.add(defaultMarket);
-        if (defaultApp) applicationsSet.add(defaultApp);
+        if (targetMarket) marketsSet.add(targetMarket);
+        if (targetApp) applicationsSet.add(targetApp);
 
         productsMap.set(cleanTitle, {
           name: cleanTitle,
           industry: 'Industrial Manufacturing',
-          market: defaultMarket || 'Industrial',
-          application: defaultApp || 'General Application',
+          market: targetMarket,
+          application: targetApp,
           imageUrl: img ? (img.startsWith('http') ? img : `${origin}${img}`) : undefined,
+          productUrl: href ? (href.startsWith('http') ? href : `${origin}${href}`) : undefined
+        });
+      }
+    }
+  });
+
+  // D. Extract from direct <a> links matching product naming patterns (e.g. /industry/tesa-*.html)
+  $('a[href*="/industry/tesa-"], a[href*="/product/"]').each((_, a) => {
+    const href = $(a).attr('href');
+    const text = $(a).text().trim().replace(/\s+/g, ' ').replace(/[\u00ae\u2122\u00a9]/g, '');
+    if (text && text.length > 4 && text.length < 60 && !text.toLowerCase().includes('learn more')) {
+      if (!productsMap.has(text)) {
+        if (targetMarket) marketsSet.add(targetMarket);
+        if (targetApp) applicationsSet.add(targetApp);
+
+        productsMap.set(text, {
+          name: text,
+          industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+          market: targetMarket,
+          application: targetApp,
           productUrl: href ? (href.startsWith('http') ? href : `${origin}${href}`) : undefined
         });
       }
@@ -482,5 +759,7 @@ function formatSpecKey(key: string): string {
     length: 'Length'
   };
 
-  return map[key.toLowerCase()] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim();
+  const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return map[cleanKey] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim();
 }
+
