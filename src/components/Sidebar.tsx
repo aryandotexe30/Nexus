@@ -43,21 +43,16 @@ export default function Sidebar() {
 
   const routes = [
     { name: "Hub", path: "/dashboard", icon: LayoutDashboard },
-    { name: "Marketplace", path: "/dashboard/marketplace", icon: Store },
-    { name: "Messages", path: "/dashboard/messages", icon: MessageSquare },
     { name: "Finder", path: "/agent", icon: Search },
-    { name: "Network Mapper", path: "/network", icon: Network, requiredPlan: ["PRO", "ENTERPRISE"] },
+    { name: "Marketplace", path: "/dashboard/marketplace", icon: Store },
     { name: "Products Master", path: "/products", icon: Database },
-    { name: "Data Enrichment", path: "/enrich", icon: UploadCloud },
     { name: "Business Plan", path: "/dashboard/business-plan", icon: TrendingUp, requiredPlan: ["ENTERPRISE"] },
     { name: "Equity & IPO", path: "/dashboard/equity-funding", icon: Landmark, requiredPlan: ["ENTERPRISE"] },
-    { name: "Billing & Plans", path: "/pricing", icon: CreditCard },
     { name: "Settings", path: "/dashboard/settings", icon: Settings },
   ];
 
   if (isAdmin) {
     routes.push({ name: "Admin Console", path: "/admin", icon: ShieldCheck });
-    routes.push({ name: "Databook", path: "/admin/databook", icon: Database });
     routes.push({ name: "Customer Care", path: "/admin/support", icon: Headset });
   }
 

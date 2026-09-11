@@ -204,32 +204,32 @@ export default function HubDashboard() {
               whileTap={{ scale: 0.98 }}
               className="group relative overflow-hidden rounded-3xl p-8 bg-slate-900 border border-slate-800 shadow-xl mb-6"
             >
-              <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full  -translate-y-1/2 translate-x-1/2 group-hover:bg-purple-500/20 transition-colors"></div>
-              <MessageSquare className="w-10 h-10 mb-6 text-purple-400 group-hover:text-white transition-colors" />
-              <h2 className="text-xl font-bold mb-2 text-white">AI Agent</h2>
+              <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full  -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-500/20 transition-colors"></div>
+              <Search className="w-10 h-10 mb-6 text-blue-400 group-hover:text-white transition-colors" />
+              <h2 className="text-xl font-bold mb-2 text-white">Product & Lead Finder</h2>
               <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                Chat with an AI procurement expert to find exactly what you need.
+                Search verified industrial product models, TDS matrices, and manufacturers worldwide.
               </p>
-              <div className="flex items-center gap-2 font-bold text-sm text-purple-400 group-hover:text-purple-300">
-                Start Chat <ArrowUpRight className="w-4 h-4" />
+              <div className="flex items-center gap-2 font-bold text-sm text-blue-400 group-hover:text-blue-300">
+                Open Finder <ArrowUpRight className="w-4 h-4" />
               </div>
             </motion.div>
           </Link>
 
-          <Link href="/enrich" className="block">
+          <Link href="/products" className="block">
             <motion.div 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="group relative overflow-hidden rounded-3xl p-8 bg-white dark:bg-slate-800/80  border border-slate-200 dark:border-slate-700 shadow-xl shadow-slate-200/50 dark:shadow-none"
             >
               <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/5 rounded-full  -translate-y-1/2 translate-x-1/2 group-hover:bg-indigo-500/10 transition-colors"></div>
-              <UploadCloud className="w-10 h-10 mb-6 text-indigo-500 group-hover:text-indigo-600 transition-colors" />
-              <h2 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Data Enrichment</h2>
+              <Database className="w-10 h-10 mb-6 text-indigo-500 group-hover:text-indigo-600 transition-colors" />
+              <h2 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Products Master</h2>
               <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">
-                Upload lists and watch AI gather insights instantly.
+                Harvest new manufacturers, crawl product matrices, and manage the master database.
               </p>
               <div className="flex items-center gap-2 font-bold text-sm text-indigo-500 group-hover:text-indigo-600">
-                Start <ArrowUpRight className="w-4 h-4" />
+                View Master Database <ArrowUpRight className="w-4 h-4" />
               </div>
             </motion.div>
           </Link>

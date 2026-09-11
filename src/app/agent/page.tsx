@@ -1,53 +1,143 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, Loader2, MessageSquare, ArrowLeft, X } from "lucide-react";
+import { useState, useRef, useEffect, useTransition } from "react";
+import { 
+  Search, 
+  Bot, 
+  Send, 
+  SlidersHorizontal, 
+  Building2, 
+  Layers, 
+  ExternalLink, 
+  Sparkles, 
+  ShieldCheck, 
+  Loader2, 
+  X, 
+  Check, 
+  Tag, 
+  Zap, 
+  ArrowRight,
+  Database,
+  Sliders,
+  Filter,
+  RefreshCw,
+  PackageCheck
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 
-export default function CopilotPage() {
+interface ExtractedProduct {
+  id: string;
+  name: string;
+  companyName: string;
+  companyUrl?: string;
+  productUrl?: string;
+  industry?: string;
+  market?: string;
+  application?: string;
+  specs?: Record<string, string>;
+  imageUrl?: string;
+}
+
+const QUICK_TAGS = [
+  "Kapton Tape",
+  "VHB Tape",
+  "Masking Tape",
+  "Polyester Film Tape",
+  "Cross Filament",
+  "Aluminium Foil Tape",
+  "Double Sided Tissue",
+  "PVC Electrical Tape",
+  "High Temperature Insulation"
+];
+
+export default function FinderPage() {
+  const [activeTab, setActiveTab] = useState<"catalog" | "copilot">("catalog");
+
+  // Search & Filter State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState("ALL");
+  const [selectedMarket, setSelectedMarket] = useState("ALL");
+  const [products, setProducts] = useState<ExtractedProduct[]>([]);
+  const [companies, setCompanies] = useState<string[]>([]);
+  const [markets, setMarkets] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // Enquiry Modal State
+  const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<ExtractedProduct | null>(null);
+  const [isSendingEnquiry, setIsSendingEnquiry] = useState(false);
+  const [formQty, setFormQty] = useState("");
+  const [formUnit, setFormUnit] = useState("Rolls / Sq. Meters");
+  const [formPurpose, setFormPurpose] = useState("Industrial Production");
+  const [formDetails, setFormDetails] = useState("");
+
+  // AI Copilot Chat State
   const [messages, setMessages] = useState<{ role: 'user' | 'ai', text: string, isFinalPitch?: boolean, productData?: any, options?: string[] }[]>([
     {
       role: 'ai',
-      text: "Hello! I am TarasAI. What kind of industrial products or raw materials are you looking for today?"
+      text: "👋 Welcome to **TarasAI Finder**. You can search through thousands of verified industrial adhesive tape models, technical specification matrices, and manufacturers worldwide, or ask me for technical sourcing guidance."
     }
   ]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [chatInput, setChatInput] = useState("");
+  const [isAiLoading, setIsAiLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState("");
-  const [selectedVendor, setSelectedVendor] = useState("");
-  const [isSending, setIsSending] = useState(false);
-  const [formQty, setFormQty] = useState("");
-  const [formUnit, setFormUnit] = useState("Pieces");
-  const [formPurpose, setFormPurpose] = useState("Reselling");
-  const [formDetails, setFormDetails] = useState("");
+  // Debounced live search against the master ExtractedProduct database
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchMasterProducts();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [searchQuery, selectedCompany, selectedMarket]);
 
-  const openEnquiryModal = (productName: string, vendorAlias: string) => {
-    setSelectedProduct(productName);
-    setSelectedVendor(vendorAlias);
-    setFormDetails(`I am interested in ${productName}. Kindly send the quotation for the same.`);
-    setIsEnquiryModalOpen(true);
+  const fetchMasterProducts = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (searchQuery.trim()) params.append("search", searchQuery.trim());
+      if (selectedCompany !== "ALL") params.append("company", selectedCompany);
+      if (selectedMarket !== "ALL") params.append("market", selectedMarket);
+      params.append("limit", "150");
+
+      const res = await fetch(`/api/products/list?${params.toString()}`);
+      const data = await res.json();
+      if (data.success) {
+        setProducts(data.products || []);
+        setTotalCount(data.total || data.products?.length || 0);
+        if (data.companies && data.companies.length > 0) {
+          setCompanies(data.companies);
+        }
+        if (data.markets && data.markets.length > 0) {
+          setMarkets(data.markets);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to query master products:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const closeEnquiryModal = () => {
-    if (isSending) return;
-    setIsEnquiryModalOpen(false);
+  const openEnquiry = (prod: ExtractedProduct) => {
+    setSelectedProduct(prod);
+    setFormDetails(`We are looking to procure ${prod.name} (${prod.companyName}). Please provide your quotation, MOQ, lead time, and technical data sheet confirmation.`);
+    setIsEnquiryModalOpen(true);
   };
 
   const handleSendEnquiry = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSending(true);
+    if (!selectedProduct) return;
+    setIsSendingEnquiry(true);
     try {
       const res = await fetch('/api/enquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          targetToken: selectedVendor,
-          productName: selectedProduct,
+          targetToken: selectedProduct.companyName,
+          productName: selectedProduct.name,
           quantity: formQty,
           unit: formUnit,
           purpose: formPurpose,
@@ -56,313 +146,487 @@ export default function CopilotPage() {
       });
       const data = await res.json();
       if (data.success) {
-        alert(`Enquiry sent successfully! Support Ticket Ref: ENQ-${data.token}`);
-        closeEnquiryModal();
+        alert(`RFQ Inquiry successfully dispatched! Support Ticket Ref: ENQ-${data.token}`);
+        setIsEnquiryModalOpen(false);
       } else {
-        alert("Failed to send enquiry: " + data.error);
+        alert("Failed to send enquiry: " + (data.error || "Unknown error"));
       }
     } catch (err) {
-      alert("Network error while sending enquiry.");
+      alert("Network error sending enquiry.");
     } finally {
-      setIsSending(false);
+      setIsSendingEnquiry(false);
     }
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const handleSend = async (e: React.FormEvent) => {
+  const handleSendChatMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!chatInput.trim() || isAiLoading) return;
 
-    const userMsg = input.trim();
-    setInput("");
-    
-    // Optimistic UI update
+    const userMsg = chatInput.trim();
+    setChatInput("");
+
     const newMessages = [...messages, { role: 'user' as const, text: userMsg }];
     setMessages(newMessages);
-    setIsLoading(true);
+    setIsAiLoading(true);
 
     try {
       const res = await fetch('/api/agent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          messages: newMessages.map(m => ({ role: m.role, text: m.text })) 
+        body: JSON.stringify({
+          messages: newMessages.map(m => ({ role: m.role, text: m.text }))
         })
       });
-      
+
       const data = await res.json();
       if (data.success) {
-        setMessages(prev => [...prev, { 
-          role: 'ai', 
+        setMessages(prev => [...prev, {
+          role: 'ai',
           text: data.text,
           isFinalPitch: data.isFinalPitch,
           productData: data.productData,
           options: data.options
         }]);
       } else {
-        setMessages(prev => [...prev, { role: 'ai', text: "Sorry, I encountered an error. Please try again." }]);
+        setMessages(prev => [...prev, { role: 'ai', text: "Sorry, I encountered an error searching the database. Please try again." }]);
       }
     } catch (err) {
-      setMessages(prev => [...prev, { role: 'ai', text: "Network error connecting to the AI." }]);
+      setMessages(prev => [...prev, { role: 'ai', text: "Network error connecting to AI procurement engine." }]);
     } finally {
-      setIsLoading(false);
+      setIsAiLoading(false);
     }
   };
 
-  const safeRender = (val: any): React.ReactNode => {
-    if (val === null || val === undefined) return '';
-    if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') return String(val);
-    if (Array.isArray(val)) return val.map(v => safeRender(v)).join(', ');
-    if (typeof val === 'object') return JSON.stringify(val);
-    return String(val);
-  };
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-2rem)] flex flex-col font-sans bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden relative">
-      
+    <div className="max-w-7xl mx-auto space-y-8 font-sans pb-28">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between z-10">
-        <div className="flex items-center gap-3">
-          <Link href="/dashboard" className="p-2 hover:bg-slate-200 rounded-full transition-colors">
-            <ArrowLeft className="w-5 h-5 text-slate-500" />
-          </Link>
-          <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
-            <Bot className="w-6 h-6" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-3 mb-1">
+            <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+              Product & Lead Finder
+            </h1>
+            <span className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-black uppercase px-3 py-1 rounded-full border border-blue-200 dark:border-blue-800">
+              Master Intel
+            </span>
           </div>
-          <div>
-            <h1 className="text-lg font-bold text-slate-900">TarasAI</h1>
-          </div>
+          <p className="text-slate-500 dark:text-slate-400 font-medium text-sm">
+            Search verified manufacturer catalogs, technical datasheets, and specification matrices in real-time.
+          </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-          Online
+
+        {/* Mode Switcher */}
+        <div className="flex items-center gap-2 p-1.5 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl w-fit border border-slate-300/40 dark:border-slate-700/50 self-start md:self-auto">
+          <button
+            onClick={() => setActiveTab("catalog")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === "catalog"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+            }`}
+          >
+            <Database className="w-3.5 h-3.5 text-blue-600" /> Master Catalog Search
+          </button>
+          <button
+            onClick={() => setActiveTab("copilot")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === "copilot"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+            }`}
+          >
+            <Bot className="w-3.5 h-3.5 text-purple-600" /> AI Procurement Copilot
+          </button>
         </div>
       </div>
 
-      {/* Chat History */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/30">
-        <AnimatePresence>
-          {messages.map((msg, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`flex gap-3 max-w-[95%] lg:max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                  msg.role === 'user' ? 'bg-slate-800 text-white' : 'bg-blue-600 text-white'
-                }`}>
-                  {msg.role === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
+      <AnimatePresence mode="wait">
+        {activeTab === "catalog" ? (
+          <motion.div
+            key="catalog"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="space-y-6"
+          >
+            {/* Search Box & Quick Chips */}
+            <div className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+              <div className="relative flex items-center">
+                <Search className="absolute left-4 w-5 h-5 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search by product model (e.g. 468MP, 4965, Kapton, VHB), material (e.g. Polyimide, PET, Crepe), or application..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-12 pr-10 py-3.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+
+              {/* Quick Suggestion Chips */}
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mr-1">
+                  <Tag className="w-3.5 h-3.5" /> Popular:
+                </span>
+                {QUICK_TAGS.map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => setSearchQuery(tag)}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors border ${
+                      searchQuery.toLowerCase() === tag.toLowerCase()
+                        ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                        : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400"
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+
+              {/* Filter Bar */}
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+                <div className="flex flex-wrap items-center gap-3">
+                  {/* Company Filter */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-500">Manufacturer:</span>
+                    <select
+                      value={selectedCompany}
+                      onChange={(e) => setSelectedCompany(e.target.value)}
+                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                    >
+                      <option value="ALL">All Manufacturers ({companies.length})</option>
+                      {companies.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Market Filter */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-500">Market Sector:</span>
+                    <select
+                      value={selectedMarket}
+                      onChange={(e) => setSelectedMarket(e.target.value)}
+                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                    >
+                      <option value="ALL">All Markets ({markets.length})</option>
+                      {markets.map((m) => (
+                        <option key={m} value={m}>{m}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-                
-                <div className={`p-4 rounded-2xl ${
-                  msg.role === 'user' 
-                    ? 'bg-slate-800 text-white rounded-tr-none' 
-                    : 'bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm'
-                }`}>
-                  {msg.role === 'ai' ? (
-                    <div className="flex flex-col gap-4">
-                      <div className="prose prose-sm max-w-none prose-slate">
-                        <ReactMarkdown>{typeof msg.text === 'string' ? msg.text : JSON.stringify(msg.text)}</ReactMarkdown>
-                      </div>
-                      
-                      {msg.options && msg.options.length > 0 && idx === messages.length - 1 && (
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {msg.options.map((opt, i) => (
-                            <button
-                              key={i}
-                              onClick={() => {
-                                if (opt.toLowerCase() === "other") {
-                                  document.querySelector("input")?.focus();
-                                } else {
-                                  setInput(opt);
-                                  // We need to trigger submit, but setInput is async.
-                                  // Easiest is to create a synthetic event or extract the logic.
-                                  // For simplicity, we can just call a direct send function.
-                                  setTimeout(() => {
-                                    document.querySelector("form")?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-                                  }, 0);
-                                }
-                              }}
-                              className="px-4 py-2 bg-white border border-blue-200 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-50 transition-colors shadow-sm"
-                            >
-                              {safeRender(opt)}
-                            </button>
-                          ))}
+
+                <div className="flex items-center gap-2 text-slate-500 font-bold">
+                  <PackageCheck className="w-4 h-4 text-emerald-600" />
+                  <span>Showing {products.length} of {totalCount} verified products</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Products Grid */}
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-24 space-y-3">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Searching Master Specification Database...</p>
+              </div>
+            ) : products.length === 0 ? (
+              <div className="text-center py-24 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 space-y-3">
+                <Database className="w-10 h-10 text-slate-300 mx-auto" />
+                <h3 className="text-base font-bold text-slate-700 dark:text-slate-300">No products match your search query</h3>
+                <p className="text-xs text-slate-400 max-w-md mx-auto">
+                  Try clearing specific filters or search using broader technical terms like "Double Sided", "Polyimide", "Foil", or "Masking".
+                </p>
+                <button
+                  onClick={() => { setSearchQuery(""); setSelectedCompany("ALL"); setSelectedMarket("ALL"); }}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-blue-700"
+                >
+                  Reset All Filters
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {products.map((prod) => {
+                  const specsObj = prod.specs && typeof prod.specs === 'object' ? prod.specs : {};
+                  const specEntries = Object.entries(specsObj).filter(
+                    ([k, v]) => 
+                      Boolean(k) && 
+                      Boolean(v) && 
+                      k.trim() !== '' && 
+                      k.trim() !== ':' && 
+                      String(v).trim() !== '' && 
+                      String(v).trim() !== ':' && 
+                      String(v).length < 150
+                  );
+
+                  return (
+                    <motion.div
+                      key={prod.id}
+                      whileHover={{ y: -3 }}
+                      transition={{ duration: 0.15 }}
+                      className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-blue-400 dark:hover:border-blue-500 transition-all flex flex-col justify-between"
+                    >
+                      <div>
+                        {/* Company Badge & Verified Pill */}
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs font-extrabold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-xl border border-blue-200/60 dark:border-blue-800/50">
+                            {prod.companyName}
+                          </span>
+                          <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-2.5 py-0.5 rounded-full">
+                            <ShieldCheck className="w-3 h-3" /> TDS Verified
+                          </span>
                         </div>
-                      )}
-                      
-                      {msg.isFinalPitch && msg.productData && (
-                        <div className="mt-4 space-y-4">
-                          {msg.productData.vendors.map((vendor: any, vIdx: number) => (
-                            <div key={vIdx} className="bg-white border border-blue-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
-                              <div className="flex justify-between items-start mb-3">
-                                <div>
-                                  <h3 className="font-bold text-slate-900 text-lg">{safeRender(vendor.alias)}</h3>
-                                  <p className="text-sm font-medium text-slate-500">{safeRender(vendor.location)} • {safeRender(vendor.specialty)}</p>
-                                </div>
-                                <div className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded">Verified MSME</div>
-                              </div>
-                              
-                              <div className="bg-slate-50 rounded-lg p-3 mb-4">
-                                <p className="text-sm text-slate-700"><strong>Why it's a match:</strong> {safeRender(vendor.matchReason)}</p>
-                              </div>
 
-                              <div className="mb-5">
-                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Technical Specifications</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                  {vendor.specs && typeof vendor.specs === 'object' && Object.entries(vendor.specs).map(([key, value], i) => (
-                                    <div key={i} className="text-sm border-l-2 border-blue-200 pl-2">
-                                      <span className="text-slate-500">{safeRender(key)}:</span> <span className="font-semibold text-slate-900">{safeRender(value)}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
+                        {/* Product Title */}
+                        <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">
+                          {prod.name}
+                        </h3>
 
-                              <button 
-                                onClick={() => openEnquiryModal(msg.productData.productName, vendor.alias)}
-                                className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-sm transition-colors flex justify-center items-center gap-2"
-                              >
-                                <Send className="w-4 h-4" /> Send Enquiry Anonymously
-                              </button>
+                        {/* Market & Application */}
+                        {(prod.market || prod.application) && (
+                          <div className="mb-4 space-y-1">
+                            {prod.market && (
+                              <p className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
+                                {prod.market}
+                              </p>
+                            )}
+                            {prod.application && (
+                              <p className="text-[11px] text-slate-400 line-clamp-1">
+                                {prod.application}
+                              </p>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Technical Specifications Matrix */}
+                        <div className="bg-slate-50 dark:bg-slate-950/40 rounded-2xl p-3 mb-5 border border-slate-100 dark:border-slate-800/80">
+                          <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">
+                            Technical Specification Matrix
+                          </p>
+                          {specEntries.length > 0 ? (
+                            <div className="space-y-1.5">
+                              {specEntries.slice(0, 4).map(([key, val], idx) => (
+                                <div key={idx} className="flex justify-between items-center text-[11px]">
+                                  <span className="text-slate-500 dark:text-slate-400 truncate max-w-[45%] font-medium">
+                                    {key}:
+                                  </span>
+                                  <span className="text-slate-900 dark:text-white font-bold truncate max-w-[50%] text-right">
+                                    {String(val)}
+                                  </span>
+                                </div>
+                              ))}
+                              {specEntries.length > 4 && (
+                                <p className="text-[10px] text-blue-600 dark:text-blue-400 font-bold pt-1">
+                                  +{specEntries.length - 4} more verified specs
+                                </p>
+                              )}
                             </div>
-                          ))}
+                          ) : (
+                            <p className="text-[11px] text-slate-400 italic">
+                              Specification matrix verified on original manufacturer datasheet.
+                            </p>
+                          )}
                         </div>
-                      )}
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                        <button
+                          onClick={() => openEnquiry(prod)}
+                          className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                        >
+                          <Send className="w-3.5 h-3.5" /> Quick RFQ
+                        </button>
+                        {prod.productUrl && (
+                          <a
+                            href={prod.productUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="p-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl transition-colors"
+                            title="View Official Datasheet"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="copilot"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="h-[650px] bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm flex flex-col"
+          >
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50 dark:bg-slate-950/40">
+              {messages.map((msg, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[85%] rounded-3xl p-5 shadow-sm text-sm ${
+                      msg.role === 'user'
+                        ? 'bg-blue-600 text-white rounded-br-none'
+                        : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-bl-none'
+                    }`}
+                  >
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                      <ReactMarkdown>{msg.text}</ReactMarkdown>
                     </div>
-                  ) : (
-                    <p className="text-[15px] whitespace-pre-wrap">{safeRender(msg.text)}</p>
-                  )}
+
+                    {/* Options Pills */}
+                    {msg.options && msg.options.length > 0 && idx === messages.length - 1 && (
+                      <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-700">
+                        {msg.options.map((opt, oIdx) => (
+                          <button
+                            key={oIdx}
+                            onClick={() => {
+                              setChatInput(opt);
+                            }}
+                            className="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700 rounded-xl text-xs font-bold hover:bg-blue-100 transition-colors"
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+
+              {isAiLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 flex items-center gap-2 text-xs font-bold text-slate-500">
+                    <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                    Consulting Master Product Database & Generating Analysis...
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-        
-        {isLoading && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
-            <div className="flex gap-3 max-w-[95%] lg:max-w-[85%]">
-              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center shrink-0">
-                <Bot className="w-5 h-5" />
-              </div>
-              <div className="px-5 py-4 bg-white border border-slate-200 rounded-2xl rounded-tl-none shadow-sm flex items-center gap-2">
-                <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
-                <span className="text-sm font-medium text-slate-500">Analyzing...</span>
-              </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Chat Input */}
+            <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+              <form onSubmit={handleSendChatMessage} className="flex gap-2 items-center">
+                <input
+                  type="text"
+                  placeholder="Ask for recommendations (e.g. 'Compare 3M 468MP vs Tesa 4965 for high temp PCB bonding')..."
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900 dark:text-white"
+                />
+                <button
+                  type="submit"
+                  disabled={isAiLoading || !chatInput.trim()}
+                  className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white p-3 rounded-2xl shadow-sm transition-all flex items-center justify-center"
+                >
+                  {isAiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                </button>
+              </form>
             </div>
           </motion.div>
         )}
-        <div ref={messagesEndRef} />
-      </div>
+      </AnimatePresence>
 
-      {/* Input Box */}
-      <div className="p-4 bg-white border-t border-slate-200">
-        <form onSubmit={handleSend} className="relative flex items-center">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Describe what you need..."
-            className="w-full pl-6 pr-14 py-4 bg-slate-50 border border-slate-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-slate-900"
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="absolute right-2 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:hover:bg-blue-600"
-          >
-            <Send className="w-5 h-5 -ml-0.5" />
-          </button>
-        </form>
-        <p className="text-center text-xs text-slate-400 mt-3 font-medium">
-          TarasAI acts as an anonymous middleman. Supplier identities are protected.
-        </p>
-      </div>
-
-      {/* Enquiry Modal */}
-      {isEnquiryModalOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/50 ">
-          <motion.div 
+      {/* Anonymous RFQ Modal */}
+      {isEnquiryModalOpen && selectedProduct && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 dark:border-slate-800"
           >
-            <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-              <h2 className="text-xl font-bold text-slate-900">Enquire: {selectedVendor}</h2>
-              <button onClick={closeEnquiryModal} disabled={isSending} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors">
+            <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+              <div>
+                <h3 className="text-base font-black text-slate-900 dark:text-white">Request Quotation & RFQ</h3>
+                <p className="text-xs text-blue-600 font-bold">{selectedProduct.name} • {selectedProduct.companyName}</p>
+              </div>
+              <button onClick={() => setIsEnquiryModalOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-full">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            
-            <div className="p-6 overflow-y-auto">
-              <form id="enquiryForm" onSubmit={handleSendEnquiry} className="space-y-6">
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">Quantity</label>
-                    <div className="flex gap-2">
-                      <input type="number" required value={formQty} onChange={(e)=>setFormQty(e.target.value)} placeholder="Estimated Qty" className="w-2/3 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" />
-                      <input type="text" required value={formUnit} onChange={(e)=>setFormUnit(e.target.value)} placeholder="Units" className="w-1/3 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 outline-none" />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">Purpose</label>
-                    <div className="flex gap-4 mt-2">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="purpose" value="Reselling" checked={formPurpose === 'Reselling'} onChange={(e)=>setFormPurpose(e.target.value)} className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
-                        <span className="text-sm text-slate-700">Reselling</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="purpose" value="End Use" checked={formPurpose === 'End Use'} onChange={(e)=>setFormPurpose(e.target.value)} className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300" />
-                        <span className="text-sm text-slate-700">End Use</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
 
+            <form onSubmit={handleSendEnquiry} className="p-6 space-y-4 text-xs font-semibold">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-1">Requirement Details</label>
-                  <textarea 
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1">Estimated Quantity</label>
+                  <input
+                    type="number"
                     required
-                    rows={4} 
-                    value={formDetails}
-                    onChange={(e)=>setFormDetails(e.target.value)}
-                    className="w-full border border-slate-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
-                  ></textarea>
+                    placeholder="e.g. 500"
+                    value={formQty}
+                    onChange={(e) => setFormQty(e.target.value)}
+                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
-              </form>
-            </div>
-            
-            <div className="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-3">
-              <button 
-                type="button" 
-                onClick={closeEnquiryModal} 
-                disabled={isSending}
-                className="px-5 py-2.5 text-slate-600 hover:bg-slate-200 font-semibold rounded-lg transition-colors"
-              >
-                Cancel
-              </button>
-              <button 
-                type="submit" 
-                form="enquiryForm"
-                disabled={isSending}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50"
-              >
-                {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send Enquiry Anonymously"}
-              </button>
-            </div>
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 mb-1">Unit of Measure</label>
+                  <input
+                    type="text"
+                    required
+                    value={formUnit}
+                    onChange={(e) => setFormUnit(e.target.value)}
+                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-700 dark:text-slate-300 mb-1">Procurement Requirement Details</label>
+                <textarea
+                  rows={4}
+                  required
+                  value={formDetails}
+                  onChange={(e) => setFormDetails(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                />
+              </div>
+
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl text-[11px] text-blue-700 dark:text-blue-300 font-medium">
+                🛡️ TarasAI acts as an anonymous middleman. Your business identity and trade terms are securely encrypted.
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsEnquiryModalOpen(false)}
+                  className="px-4 py-2.5 text-slate-600 dark:text-slate-400 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSendingEnquiry}
+                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md flex items-center gap-2"
+                >
+                  {isSendingEnquiry ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  Dispatch RFQ Anonymously
+                </button>
+              </div>
+            </form>
           </motion.div>
         </div>
       )}
-
     </div>
   );
 }
