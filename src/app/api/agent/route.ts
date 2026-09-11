@@ -4,55 +4,54 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
 import { fetchVerifiedInternetData, generateStructuredAIResponse } from "@/lib/searchProtocol";
-
-
+import { isValidProduct } from "@/lib/deepProductHarvester";
 
 const SYSTEM_PROMPT = `
-You are "TarasAI", an elite B2B procurement and lead generation consultant focused EXCLUSIVELY on the Indian MSME (Micro, Small, and Medium Enterprises) market.
+You are "TarasAI Copilot", an elite B2B Industrial Materials & Adhesive Tape Procurement Intelligence Engineer.
+You have FULL, DIRECT ACCESS to our Master Industrial Product Database containing verified physical products, manufacturer datasheets, and technical specifications (Tesa, 3M, Ajit Industries / AIPL, Sri Vasavi Tapes, Polycab, Havells, Nitto Denko, Saint-Gobain, Shurtape, etc.).
 
-YOUR CORE DIRECTIVE:
-1. INTENT PARSING & INITIAL SPECIFICATION GATHERING (STEP 1):
-   When the user enters a product (e.g. "I want to buy rayon tape"), you MUST NOT immediately search for companies or give a final pitch unless they already provided exact technical specifications (thickness, grade, size, etc.).
-   Instead, you MUST use the provided Market Intelligence to find out all the standard technical specifications for that product.
-   You must display these technical specifications to the user and ask them EXACTLY which specification they want. 
-   You MUST provide these specific technical specifications as choices in the 'options' array.
-   You MUST ALWAYS include "Other" as the final option.
-   DO NOT provide a final pitch on the first message. ALWAYS clarify technical specs first if they are missing.
+YOUR CORE CAPABILITIES & WORKFLOW:
 
-2. A-TO-Z PRODUCT PITCH & VERIFIED LEADS (STEP 2):
-   ONLY once the user has chosen a specific specification (or provided one initially), you must look for companies on the internet that sell that EXACT same product with that EXACT specification.
-   This information has to be extremely accurate. NO false information or hallucinations. Only use accurate data from the provided MARKET INTELLIGENCE.
-   You must output a highly detailed, A-to-Z technical description of the exact product. 
-   You must extract ALL comprehensive technical specifications.
-   You must list AS MANY VERIFIED COMPANIES as possible (aim for 5-10 or more). You MUST provide a highly precise and detailed comparison between these companies.
-   STRICT PRODUCT VERIFICATION: You MUST ensure that the manufacturers you recommend actually produce the EXACT product requested. Do not match a generic manufacturer unless their catalog explicitly lists the exact product or specification requested by the user.
-   CRITICAL ANONYMITY RULE: You must NEVER reveal the company's real name in the 'matchReason', 'description', or 'specialty' fields. ALWAYS refer to them as "This company" or "The supplier". The real name goes ONLY in the 'realName' field.
+1. MASTER DATABASE CONTEXT AWARENESS:
+   - You MUST utilize the provided MASTER DATABASE PRODUCTS in your prompt context.
+   - Ground your recommendations in real, physical models (e.g., "tesa 4965", "3M 468MP", "3M VHB 4910", "AIPL ABRO Masking Tape", "AIPL Polyimide Kapton", "Sri Vasavi High Temp Tape", "Polycab FRLS", etc.).
+   - NEVER hallucinate fake model numbers or corporate profile generic entries.
 
-JSON OUTPUT ENFORCEMENT:
-You MUST ALWAYS output your response as a valid JSON object enclosed in \`\`\`json blocks.
+2. INTERACTIVE TECHNICAL GUIDANCE & OPTIONS (STEP 1):
+   - When the user query is broad (e.g., "I need tape for powder coating", "Double sided tape for automotive trim", "Heat resistant tape"), ask 1-2 focused engineering questions (temperature requirements, surface substrate like aluminum/plastic/glass, thickness, indoor/outdoor).
+   - You MUST always provide 3-5 concise, clickable multiple-choice options in the "options" array (e.g., ["Up to 150°C (Short term)", "High Shear on Metals", "Removable Clean Peel", "Thick Gap Filling (>1mm)", "Other"]).
 
-If you are asking a clarifying question, use this structure:
+3. DEEP PRODUCT INTELLIGENCE WITH PROS & CONS (STEP 2):
+   - When presenting product recommendations or comparing models, structure them into the "recommendations" array.
+   - For EACH recommended product, you MUST provide:
+     * "name": Exact product name and model number
+     * "companyName": Real manufacturer name
+     * "application": Primary verified industrial application
+     * "specs": Key technical specification key-values (Backing material, Adhesive type, Total thickness, Temperature resistance, Adhesion to Steel, Tensile strength)
+     * "pros": 2-3 specific technical advantages / strengths (e.g. "Outstanding resistance to plasticizers", "Instant tack on low surface energy plastics")
+     * "cons": 1-2 practical limitations or application trade-offs (e.g. "Higher initial unit price", "Requires surface primer on unpainted polypropylene")
+     * "verdict": 1-sentence engineering summary of why this product fits the requirement
+     * "productUrl": Official link if present in DB
+   - Include a detailed markdown synthesis in "text" explaining the engineering trade-offs and comparison.
+
+JSON OUTPUT STRUCTURE ENFORCEMENT:
+Output your entire response as a structured JSON object with:
 {
-  "type": "clarification",
-  "text": "A detailed, markdown-formatted response. You MUST include a bulleted list of the critical technical parameters (e.g., Backing material, Adhesive type, Temperature resistance, Dimensions) required to find the exact manufacturer, similar to a datasheet specification breakdown. End by asking the user to clarify their requirements for these parameters.",
-  "options": ["Option 1", "Option 2", "Option 3", "Other"]
-}
-
-If you are providing the FINAL PITCH AND VERIFIED LEADS, use this exact structure:
-{
-  "type": "final_pitch",
-  "productName": "Generic name of the product",
-  "description": "Your complete A-to-Z highly detailed description. You MUST include a highly detailed Markdown comparison table (rows: technical specifications/metrics, columns: Vendor 1, Vendor 2, etc.) doing a side-by-side comparison of every technical specification, dimension, and performance metric between the matched vendors.",
-  "vendors": [
+  "type": "clarification" | "recommendation" | "comparison",
+  "text": "Comprehensive, technical markdown response explaining the materials science, engineering parameters, and substrate adhesion mechanisms.",
+  "options": ["Clickable Option 1", "Clickable Option 2", "Clickable Option 3", "Other"],
+  "recommendations": [
     {
-      "realName": "The REAL Company Name (or 'Buyer/Supplier X' if unknown)",
-      "location": "State/City",
-      "specialty": "Their core business",
-      "specs": { "Key 1": "Value", "Key 2": "Value" },
-      "matchReason": "A 2-3 sentence explanation of exactly why they match the user's intent."
+      "name": "Product Model Name",
+      "companyName": "Manufacturer Name",
+      "application": "Application description",
+      "specs": { "Backing material": "...", "Adhesive type": "...", "Total thickness": "...", "Temperature resistance": "..." },
+      "pros": ["Pro 1", "Pro 2"],
+      "cons": ["Con 1"],
+      "verdict": "Clear engineering verdict",
+      "productUrl": "https://..."
     }
-  ],
-  "messageToUser": "A friendly concluding message."
+  ]
 }
 `;
 
@@ -64,27 +63,79 @@ export async function POST(req: Request) {
     }
 
     const { messages } = await req.json();
-
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json({ error: 'Invalid messages array' }, { status: 400 });
     }
 
-    const latestUserMessage = messages[messages.length - 1].text;
+    const latestUserMessage = messages[messages.length - 1]?.text || "";
 
-
-
-    // Search Tavily for real-time market data fallback
-    let searchContext = "";
+    // 1. Query Master ExtractedProduct Database in PostgreSQL for live grounding
+    let dbProducts: any[] = [];
     try {
-      const tavilyRes = await fetchVerifiedInternetData(`"${latestUserMessage}" India (manufacturer OR supplier OR buyer). Official website, product catalog, specifications, industrial`, 3, false);
-      searchContext = tavilyRes.contextString;
-    } catch (e) {
-      console.log("Tavily search skipped or failed in Copilot.");
+      // Extract keywords from user query
+      const searchTerms = latestUserMessage
+        .replace(/[^\w\s]/g, '')
+        .split(/\s+/)
+        .filter((w: string) => w.length > 2 && !['the', 'and', 'for', 'with', 'need', 'want', 'buy', 'how', 'what', 'which', 'can', 'you', 'give'].includes(w.toLowerCase()));
+
+      const orConditions: any[] = [
+        { name: { contains: latestUserMessage.slice(0, 30), mode: 'insensitive' } },
+        { application: { contains: latestUserMessage.slice(0, 30), mode: 'insensitive' } }
+      ];
+
+      for (const term of searchTerms.slice(0, 4)) {
+        orConditions.push({ name: { contains: term, mode: 'insensitive' } });
+        orConditions.push({ application: { contains: term, mode: 'insensitive' } });
+        orConditions.push({ companyName: { contains: term, mode: 'insensitive' } });
+      }
+
+      const fetched = await prisma.extractedProduct.findMany({
+        where: {
+          OR: orConditions
+        },
+        take: 25,
+        orderBy: { updatedAt: 'desc' }
+      });
+
+      dbProducts = fetched.filter((p: any) => isValidProduct(p.name, p.productUrl, Object.keys(p.specs || {}).length));
+
+      // If specific search yields few, fetch high-quality sample models from each top brand
+      if (dbProducts.length < 8) {
+        const topBrands = ['Tesa', '3M', 'Ajit Industries (AIPL)', 'Sri Vasavi Tapes', 'Polycab', 'Havells'];
+        const sampleProducts = await prisma.extractedProduct.findMany({
+          where: {
+            companyName: { in: topBrands }
+          },
+          take: 20,
+          orderBy: { createdAt: 'desc' }
+        });
+        const validSamples = sampleProducts.filter((p: any) => isValidProduct(p.name, p.productUrl, Object.keys(p.specs || {}).length));
+        dbProducts = Array.from(new Map([...dbProducts, ...validSamples].map(p => [p.name, p])).values()).slice(0, 30);
+      }
+    } catch (dbErr) {
+      console.warn("Database search in Copilot noticed:", dbErr);
     }
 
-    // Filter out the initial greeting
+    // Format DB context
+    const dbContextString = dbProducts.map((p: any, i: number) => {
+      const specsStr = Object.entries(p.specs || {})
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(', ');
+      return `[Product #${i+1}] Name: ${p.name} | Manufacturer: ${p.companyName} | Market: ${p.market || 'Industrial'} | Application: ${p.application || 'General'} | Specs: { ${specsStr} } | URL: ${p.productUrl || ''}`;
+    }).join('\n');
+
+    // 2. Search live internet if database context is minimal
+    let searchContext = "";
+    if (dbProducts.length < 3) {
+      try {
+        const tavilyRes = await fetchVerifiedInternetData(`"${latestUserMessage}" technical specifications datasheet TDS manufacturer`, 3, false);
+        searchContext = tavilyRes.contextString;
+      } catch (e) {}
+    }
+
+    // 3. Format Conversation History
     let filteredMessages = messages;
-    if (messages.length > 0 && messages[0].role === 'ai' && messages[0].text.includes("Hello! I am TarasAI")) {
+    if (messages.length > 0 && messages[0].role === 'ai' && messages[0].text.includes("Welcome to")) {
       filteredMessages = messages.slice(1);
     }
 
@@ -93,156 +144,74 @@ export async function POST(req: Request) {
       parts: [{ text: msg.text }]
     }));
 
-    if (formattedMessages.length === 0) {
-      return NextResponse.json({ error: 'No user messages found' }, { status: 400 });
-    }
-
     const historyPrompt = formattedMessages.map((m: any) => `${m.role}: ${m.parts[0].text}`).join("\n");
-    const fullPrompt = `${SYSTEM_PROMPT}\n\nMARKET INTELLIGENCE (INTERNET SEARCH DATA):\n${searchContext || "No real-time data."}\n\nCHAT HISTORY:\n${historyPrompt}`;
+    
+    const fullPrompt = `${SYSTEM_PROMPT}
+
+MASTER DATABASE PRODUCTS IN SYSTEM (GROUND TRUTH):
+${dbContextString || "Master database connected."}
+
+ADDITIONAL MARKET INTELLIGENCE:
+${searchContext || "No external search required; use master database."}
+
+CHAT HISTORY:
+${historyPrompt}`;
+
+    const schemaProps = {
+      type: { type: Type.STRING, description: "clarification, recommendation, or comparison" },
+      text: { type: Type.STRING, description: "Comprehensive markdown response with technical analysis and comparison tables." },
+      options: { type: Type.ARRAY, items: { type: Type.STRING }, description: "3-5 clickable options for next user steps." },
+      recommendations: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            name: { type: Type.STRING },
+            companyName: { type: Type.STRING },
+            application: { type: Type.STRING },
+            specs: { type: Type.OBJECT },
+            pros: { type: Type.ARRAY, items: { type: Type.STRING } },
+            cons: { type: Type.ARRAY, items: { type: Type.STRING } },
+            verdict: { type: Type.STRING },
+            productUrl: { type: Type.STRING }
+          },
+          required: ["name", "companyName", "application", "specs", "pros", "cons", "verdict"]
+        }
+      }
+    };
 
     let data;
     try {
-      const schemaProps = {
-        type: { type: Type.STRING, description: "clarification OR final_pitch" },
-        text: { type: Type.STRING, description: "Message for the user." },
-        options: { type: Type.ARRAY, items: { type: Type.STRING }, description: "Options if asking clarification" },
-        productName: { type: Type.STRING },
-        description: { type: Type.STRING, description: "DO NOT REVEAL COMPANY REAL NAMES IN THIS FIELD." },
-        vendors: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              realName: { type: Type.STRING },
-              location: { type: Type.STRING },
-              specialty: { type: Type.STRING, description: "DO NOT REVEAL COMPANY REAL NAMES IN THIS FIELD." },
-              specs: { type: Type.OBJECT, description: "JSON object of 3-4 key-value technical specs, e.g. { 'Thickness': '0.5mm', 'Color': 'Transparent' }" },
-              matchReason: { type: Type.STRING, description: "DO NOT REVEAL COMPANY REAL NAMES IN THIS FIELD." }
-            },
-            required: ["realName", "location", "specialty", "specs", "matchReason"]
-          }
-        },
-        messageToUser: { type: Type.STRING }
-      };
-
-      data = await generateStructuredAIResponse(fullPrompt, schemaProps, ["type", "text"]);
-    } catch (e) {
-      console.error("Agent generation failed:", e);
-      return NextResponse.json({ error: "Agent generation failed" }, { status: 500 });
+      data = await generateStructuredAIResponse(fullPrompt, schemaProps, ["type", "text", "options"]);
+    } catch (aiErr: any) {
+      console.error("AI Generation failed:", aiErr);
+      return NextResponse.json({
+        success: true,
+        text: `I found ${dbProducts.length} verified products in our master catalog matching "${latestUserMessage}". Here are the top options:`,
+        options: ["View Technical Datasheets", "Request Anonymous RFQ", "Compare Specifications", "Other"],
+        recommendations: dbProducts.slice(0, 3).map(p => ({
+          name: p.name,
+          companyName: p.companyName,
+          application: p.application || "General Industrial",
+          specs: p.specs || {},
+          pros: ["Verified physical model in master database", "Industrial grade performance"],
+          cons: ["Confirm substrate compatibility prior to bulk order"],
+          verdict: `Recommended model from ${p.companyName}`,
+          productUrl: p.productUrl
+        }))
+      });
     }
 
-    let text = "";
-
-    let isFinalPitch = false;
-    let productData = null;
-    let options: string[] = [];
-
-    // Parse logic
-    try {
-
-        if (data.type === "clarification") {
-          text = data.text || "Could you provide some more details about your requirement?";
-          options = data.options || [];
-        } else if (data.type === "final_pitch") {
-          // Extract a generic specs object to save to the DB by looking at the first vendor's specs
-          const firstVendorSpecs = data.vendors?.[0]?.specs || {};
-          
-          // Save to Database! The Brain gets smarter.
-          await prisma.productKnowledge.create({
-            data: {
-              query: latestUserMessage,
-              productName: data.productName || "Unknown Product",
-              description: data.description || "No description provided.",
-              specs: firstVendorSpecs,
-            }
-          });
-
-          // Save newly discovered vendors to the Company database AND ANONYMIZE
-          if (data.vendors && Array.isArray(data.vendors)) {
-            for (let i = 0; i < data.vendors.length; i++) {
-              const v = data.vendors[i];
-              const realName = v.realName || v.alias;
-              
-              if (realName && realName !== "Supplier X" && realName !== "Buyer X" && !realName.startsWith("Company ")) {
-                try {
-                  const existing = await prisma.company.findUnique({ where: { name: realName } });
-                  const newData = {
-                    description: v.matchReason || v.specialty,
-                    products: [data.productName],
-                    location: v.location,
-                    specs: v.specs,
-                    source: "Agent Chat Hybrid Search",
-                  };
-        
-                  if (existing) {
-                    const mergedData = { ...newData, ...(existing.data as object || {}) };
-                    await prisma.company.update({
-                      where: { name: realName },
-                      data: { data: mergedData }
-                    });
-                  } else {
-                    await prisma.company.create({
-                      data: {
-                        name: realName,
-                        data: newData
-                      }
-                    });
-                  }
-                } catch (dbErr) {
-                  console.error("Failed to store discovered company from Agent in DB", dbErr);
-                }
-
-                // SECURE ANONYMIZATION
-                const secureAlias = `Company ${String.fromCharCode(65 + i)}`;
-                
-                const maskString = (str: string) => {
-                  if (!str) return str;
-                  return str.replace(new RegExp(realName, 'gi'), secureAlias);
-                };
-
-                v.alias = secureAlias;
-                v.matchReason = maskString(v.matchReason);
-                v.specialty = maskString(v.specialty);
-                if (data.description) {
-                  data.description = maskString(data.description);
-                }
-                delete v.realName;
-              } else if (realName) {
-                // If it's already an alias or unknown, just move it to alias property
-                v.alias = realName;
-                delete v.realName;
-              }
-            }
-          }
-
-          isFinalPitch = true;
-          productData = data;
-          
-          text = `${data.description}\n\n*Scroll down to view detailed vendor cards and technical specifications.*`;
-        } else {
-          text = data.text || "I found some information, but there was an issue formatting the output.";
-        }
-
-      } catch (e) {
-        console.error("Failed to parse Copilot JSON or DB save:", e);
-        if (!text) {
-          text = data?.text || "I encountered an error while processing the data. Please try again.";
-        }
-      }
-
-    return NextResponse.json({ 
-      success: true, 
-      text: text,
-      isFinalPitch,
-      productData,
-      options
+    return NextResponse.json({
+      success: true,
+      text: data.text || "Here are the matching verified specifications from our master database:",
+      options: data.options || ["Request RFQ", "Compare Models", "Check Temperature Rating", "Other"],
+      recommendations: data.recommendations || []
     });
 
   } catch (error: any) {
-    console.error("Copilot error:", error);
-    return NextResponse.json({ 
-      error: error.message || 'An error occurred. Please try again.' 
-    }, { status: 500 });
+    console.error("Copilot Error:", error);
+    return NextResponse.json({ error: error.message || 'Failed to process AI Copilot request' }, { status: 500 });
   }
 }
 

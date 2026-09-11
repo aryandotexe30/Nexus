@@ -830,7 +830,9 @@ function extractSingleProductPage(
         specs[formatSpecKey(th)] = td;
       } else {
         const cells: string[] = [];
-        $(tr).find('td').each((_, c) => cells.push($(c).text().trim().replace(/\s+/g, ' ')));
+        $(tr).find('td').each((_, c) => {
+          cells.push($(c).text().trim().replace(/\s+/g, ' '));
+        });
         if (cells.length === 2 && cells[0].length < 50 && cells[1].length < 150 && !cells[1].includes('\n')) {
           specs[formatSpecKey(cells[0])] = cells[1];
         }

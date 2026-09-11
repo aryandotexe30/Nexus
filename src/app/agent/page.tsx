@@ -40,16 +40,33 @@ interface ExtractedProduct {
   imageUrl?: string;
 }
 
+interface CopilotRecommendation {
+  name: string;
+  companyName: string;
+  application?: string;
+  specs?: Record<string, string>;
+  pros?: string[];
+  cons?: string[];
+  verdict?: string;
+  productUrl?: string;
+}
+
+interface ChatMessage {
+  role: 'user' | 'ai';
+  text: string;
+  options?: string[];
+  recommendations?: CopilotRecommendation[];
+}
+
 const QUICK_TAGS = [
-  "Kapton Tape",
-  "VHB Tape",
+  "Double Sided Tape",
+  "High Temperature",
+  "Automotive",
   "Masking Tape",
-  "Polyester Film Tape",
-  "Cross Filament",
-  "Aluminium Foil Tape",
-  "Double Sided Tissue",
-  "PVC Electrical Tape",
-  "High Temperature Insulation"
+  "Electrical Insulation",
+  "Kapton Polyimide",
+  "Foam Tape",
+  "Surface Protection"
 ];
 
 export default function FinderPage() {
@@ -75,10 +92,10 @@ export default function FinderPage() {
   const [formDetails, setFormDetails] = useState("");
 
   // AI Copilot Chat State
-  const [messages, setMessages] = useState<{ role: 'user' | 'ai', text: string, isFinalPitch?: boolean, productData?: any, options?: string[] }[]>([
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'ai',
-      text: "👋 Welcome to **TarasAI Finder**. You can search through thousands of verified industrial adhesive tape models, technical specification matrices, and manufacturers worldwide, or ask me for technical sourcing guidance."
+      text: "👋 Welcome to **TarasAI Intelligent Finder**. I have direct access to our **Master Industrial Product Database**.\n\nTell me what application, substrate, or specification you are sourcing (e.g., *'High temperature masking tape for powder coating up to 200°C'* or *'Double sided acrylic foam tape for automotive exterior trim'*), and I will analyze the database and compare matching models with pros and cons."
     }
   ]);
   const [chatInput, setChatInput] = useState("");
@@ -183,9 +200,8 @@ export default function FinderPage() {
         setMessages(prev => [...prev, {
           role: 'ai',
           text: data.text,
-          isFinalPitch: data.isFinalPitch,
-          productData: data.productData,
-          options: data.options
+          options: data.options,
+          recommendations: data.recommendations
         }]);
       } else {
         setMessages(prev => [...prev, { role: 'ai', text: "Sorry, I encountered an error searching the database. Please try again." }]);
@@ -490,9 +506,105 @@ export default function FinderPage() {
                         : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-bl-none'
                     }`}
                   >
-                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed">
                       <ReactMarkdown>{msg.text}</ReactMarkdown>
                     </div>
+
+                    {/* Pros & Cons Recommendations Cards */}
+                    {msg.recommendations && msg.recommendations.length > 0 && (
+                      <div className="mt-5 space-y-4 pt-4 border-t border-slate-100 dark:border-slate-700/80">
+                        <p className="text-xs font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+                          <Sparkles className="w-4 h-4" /> Master Database Verified Matches ({msg.recommendations.length})
+                        </p>
+                        <div className="grid grid-cols-1 gap-4">
+                          {msg.recommendations.map((rec, rIdx) => (
+                            <div key={rIdx} className="bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm space-y-3">
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-md">
+                                    {rec.companyName}
+                                  </span>
+                                  <h4 className="text-sm font-extrabold text-slate-900 dark:text-white mt-1">{rec.name}</h4>
+                                  <p className="text-xs text-slate-500 dark:text-slate-400">{rec.application}</p>
+                                </div>
+                                {rec.productUrl && (
+                                  <a href={rec.productUrl} target="_blank" rel="noreferrer" className="p-1.5 bg-white dark:bg-slate-800 text-slate-500 rounded-lg hover:text-blue-600" title="View Datasheet">
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                  </a>
+                                )}
+                              </div>
+
+                              {/* Specs */}
+                              {rec.specs && Object.keys(rec.specs).length > 0 && (
+                                <div className="grid grid-cols-2 gap-2 bg-white dark:bg-slate-800/60 p-2.5 rounded-xl text-[11px] border border-slate-100 dark:border-slate-700/60">
+                                  {Object.entries(rec.specs).slice(0, 4).map(([k, v], sIdx) => (
+                                    <div key={sIdx} className="truncate">
+                                      <span className="text-slate-400 font-medium">{k}:</span> <span className="font-bold text-slate-800 dark:text-slate-200">{String(v)}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              {/* Pros & Cons */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
+                                {rec.pros && rec.pros.length > 0 && (
+                                  <div className="space-y-1">
+                                    <p className="text-[10px] font-extrabold uppercase text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                      <Check className="w-3 h-3" /> Advantages (Pros)
+                                    </p>
+                                    <ul className="space-y-1">
+                                      {rec.pros.map((p, pIdx) => (
+                                        <li key={pIdx} className="text-[11px] text-slate-700 dark:text-slate-300 flex items-start gap-1">
+                                          <span className="text-emerald-500 font-bold">•</span>
+                                          <span>{p}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+
+                                {rec.cons && rec.cons.length > 0 && (
+                                  <div className="space-y-1">
+                                    <p className="text-[10px] font-extrabold uppercase text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                                      <ShieldCheck className="w-3 h-3" /> Limitations (Cons)
+                                    </p>
+                                    <ul className="space-y-1">
+                                      {rec.cons.map((c, cIdx) => (
+                                        <li key={cIdx} className="text-[11px] text-slate-600 dark:text-slate-400 flex items-start gap-1">
+                                          <span className="text-amber-500 font-bold">•</span>
+                                          <span>{c}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Verdict & RFQ Action */}
+                              {rec.verdict && (
+                                <div className="p-2.5 bg-blue-50/70 dark:bg-blue-950/40 rounded-xl border border-blue-100 dark:border-blue-900/40 text-[11px] text-blue-900 dark:text-blue-200 font-medium">
+                                  💡 <strong>Engineering Verdict:</strong> {rec.verdict}
+                                </div>
+                              )}
+
+                              <button
+                                onClick={() => openEnquiry({
+                                  id: rec.name,
+                                  name: rec.name,
+                                  companyName: rec.companyName,
+                                  application: rec.application,
+                                  specs: rec.specs,
+                                  productUrl: rec.productUrl
+                                })}
+                                className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95"
+                              >
+                                <Send className="w-3.5 h-3.5" /> Request Quotation for {rec.name}
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Options Pills */}
                     {msg.options && msg.options.length > 0 && idx === messages.length - 1 && (
