@@ -185,11 +185,9 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="w-full space-y-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="w-full space-y-8 pb-20">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="px-3 py-1 bg-blue-500/10 dark:bg-blue-400/10 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-full uppercase tracking-wider flex items-center gap-1.5 border border-blue-500/20">
@@ -518,8 +516,6 @@ export default function ProductsPage() {
             </div>
           )}
         </div>
-
       </div>
-    </div>
   );
 }
