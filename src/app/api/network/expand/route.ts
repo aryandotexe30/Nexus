@@ -27,44 +27,65 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Insufficient credits. Please upgrade your account.' }, { status: 403 });
     }
 
-    const queryKey = `v16-${action}-${nodeLabel}-${context || ''}`.toLowerCase().trim();
-
-    // Determine target node type based on action
-    let targetType = "Company";
-    let searchQuery = "";
+    // Execute intelligent expansion via TarasAI Brain Engine
+    console.log(`[TarasAI Brain] Expanding node "${nodeLabel}" [${nodeType}] -> Action: ${action}`);
     
-    const contextStr = context ? ` (in the context of the company ${context})` : "";
+    let items: string[] = [];
+    let targetType = "Company";
 
     switch (action) {
       case "Find Products":
         targetType = "Product";
-        searchQuery = `"${nodeLabel}" specific product models, technical specifications, detailed catalog list`;
         break;
       case "Find Raw Materials":
         targetType = "Raw Material";
-        searchQuery = `What industrial raw materials and components are required to manufacture ${nodeLabel}?${contextStr}`;
         break;
       case "Find Other Applications":
       case "Find Alternative Uses":
         targetType = "Application";
-        searchQuery = `What are the industrial or commercial applications and use cases for ${nodeLabel}?${contextStr}`;
         break;
       case "Find Suppliers":
       case "Find Manufacturers":
         targetType = "Supplier";
-        searchQuery = `Top global suppliers, manufacturers, and companies that produce ${nodeLabel}${contextStr}`;
         break;
       case "Find Competitors":
         targetType = "Company";
-        searchQuery = `Top competitors and alternative companies to ${nodeLabel}`;
         break;
     }
 
-    // Execute intelligent expansion via TarasAI Brain Engine
-    console.log(`[TarasAI Brain] Expanding node "${nodeLabel}" [${nodeType}] -> Action: ${action}`);
-    
-    const brainResult = await BrainEngine.query(nodeLabel, nodeType, action, context);
-    let items = brainResult.items || [];
+    // Check if we have extracted products in our database for this company
+    if (action === "Find Products") {
+      try {
+        const storedProducts = await prisma.extractedProduct.findMany({
+          where: {
+            companyName: { contains: nodeLabel.trim(), mode: 'insensitive' }
+          },
+          take: 30
+        });
+
+        if (storedProducts.length > 0) {
+          console.log(`[TarasAI Brain] Found ${storedProducts.length} verified products in ExtractedProduct database for "${nodeLabel}"`);
+          items = storedProducts.map(p => {
+            const specStr = p.specs && typeof p.specs === 'object' 
+              ? Object.entries(p.specs).map(([k, v]) => `${k}: ${v}`).join(', ') 
+              : 'Specs: Industrial Grade';
+            return `${p.name} | Category: ${p.market || 'Industrial'} | Description: ${p.application || 'Industrial application'} | Specs: ${specStr}`;
+          });
+        }
+      } catch (dbFindErr) {
+        console.warn("[Network Expand] Notice checking extracted products:", dbFindErr);
+      }
+    }
+
+    // If not in database or other actions (Raw Materials, Suppliers, etc.), run Brain Engine
+    if (items.length === 0) {
+      try {
+        const brainResult = await BrainEngine.query(nodeLabel, nodeType, action, context);
+        items = brainResult.items || [];
+      } catch (brainErr: any) {
+        console.error("[Network Expand] BrainEngine query error:", brainErr);
+      }
+    }
 
 
     // STEALTH AUTO-ENRICHMENT: Automatically store ALL extracted entities to Databook

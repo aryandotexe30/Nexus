@@ -241,3 +241,25 @@ model BrainRelation {
   @@index([targetId])
 }
 
+model ExtractedProduct {
+  id            String   @id @default(cuid())
+  companyName   String
+  companyUrl    String?
+  name          String
+  industry      String?
+  market        String?
+  application   String?
+  specs         Json?    // { "Backing material": "aluminium foil", "Adhesive Type": "acrylic", "Total thickness": "125 µm", ... }
+  imageUrl      String?
+  productUrl    String?
+  rawMaterials  Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([companyName])
+  @@index([industry])
+  @@index([market])
+  @@index([name])
+}
+
+

@@ -47,6 +47,7 @@ export default function Sidebar() {
     { name: "Messages", path: "/dashboard/messages", icon: MessageSquare },
     { name: "Finder", path: "/agent", icon: Search },
     { name: "Network Mapper", path: "/network", icon: Network, requiredPlan: ["PRO", "ENTERPRISE"] },
+    { name: "Products Master", path: "/products", icon: Database },
     { name: "Data Enrichment", path: "/enrich", icon: UploadCloud },
     { name: "Business Plan", path: "/dashboard/business-plan", icon: TrendingUp, requiredPlan: ["ENTERPRISE"] },
     { name: "Equity & IPO", path: "/dashboard/equity-funding", icon: Landmark, requiredPlan: ["ENTERPRISE"] },
