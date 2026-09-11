@@ -295,19 +295,22 @@ export default function FinderPage() {
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mr-1">
                   <Tag className="w-3.5 h-3.5" /> Popular:
                 </span>
-                {QUICK_TAGS.map((tag) => (
-                  <button
-                    key={tag}
-                    onClick={() => setSearchQuery(tag)}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors border ${
-                      searchQuery.toLowerCase() === tag.toLowerCase()
-                        ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                        : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400"
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
+                {QUICK_TAGS.map((tag) => {
+                  const isActive = searchQuery.toLowerCase() === tag.toLowerCase();
+                  return (
+                    <button
+                      key={tag}
+                      onClick={() => setSearchQuery(isActive ? "" : tag)}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors border ${
+                        isActive
+                          ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                          : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400"
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Filter Bar */}

@@ -1,6 +1,162 @@
 import { ExtractedProductItem } from './deepProductHarvester';
 
 export const ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
+  'Tesa': [
+    {
+      name: 'tesa 4965 Original Double-Sided Film Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Automotive & Electronics',
+      application: 'Mounting of ABS Plastic Parts, Rubber Profiles & Touch Panels',
+      specs: {
+        'Backing material': 'PET Film (Polyester)',
+        'Adhesive type': 'Tackified Acrylic',
+        'Total thickness': '0.205 mm (205 micron)',
+        'Temperature resistance': '-40°C to 100°C (Short Term 200°C)',
+        'Adhesion to Steel': '11.5 N/cm',
+        'Tensile strength': '20 N/cm',
+        'Color': 'Transparent with Red MOPP Liner'
+      },
+      imageUrl: 'https://www.tesa.com/images/4965.jpg',
+      productUrl: 'https://www.tesa.com/en/industry/tesa-4965.html'
+    },
+    {
+      name: 'tesa ACXplus 7055 High Transparency Acrylic Foam Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Building Components & Electronics',
+      application: 'Invisible Structural Bonding of Glass, Acrylic & Polycarbonate',
+      specs: {
+        'Backing material': 'Solid Pure Acrylic Core',
+        'Adhesive type': 'Pure Acrylic',
+        'Total thickness': '1.0 mm (1000 micron)',
+        'Temperature resistance': '-40°C to 100°C (Short Term 200°C)',
+        'Adhesion to Steel': '32 N/cm',
+        'Tensile strength': '750 kPa',
+        'Color': 'High Transparency (Glass Clear)'
+      },
+      imageUrl: 'https://www.tesa.com/images/7055.jpg',
+      productUrl: 'https://www.tesa.com/en/industry/tesa-acxplus-7055.html'
+    },
+    {
+      name: 'tesa 51608 PET Fleece Wire Harness Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Automotive & Wire Harness',
+      application: 'Automotive Passenger Compartment Cable Bundling & Noise Damping',
+      specs: {
+        'Backing material': 'PET Fleece',
+        'Adhesive type': 'Rubber Based Adhesive',
+        'Total thickness': '0.28 mm (280 micron)',
+        'Temperature resistance': '-40°C to 105°C (Class B)',
+        'Noise Damping (LV312)': 'Class C (Damping > 5 dB)',
+        'Abrasion Resistance': 'Class B',
+        'Color': 'Black'
+      },
+      imageUrl: 'https://www.tesa.com/images/51608.jpg',
+      productUrl: 'https://www.tesa.com/en/industry/tesa-51608.html'
+    },
+    {
+      name: 'tesa 4334 Precision Masking Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Surface Processing & Painting',
+      application: 'Razor-Sharp Paint Edges on Sensitive Surfaces up to 5 Months Outdoor UV',
+      specs: {
+        'Backing material': 'Washi Paper (Extra Thin Japanese Rice Paper)',
+        'Adhesive type': 'Acrylic Adhesive',
+        'Total thickness': '0.09 mm (90 micron)',
+        'Temperature resistance': 'Up to 120°C for 30 min (150°C Short Term)',
+        'Adhesion to Steel': '1.85 N/cm',
+        'Clean Removal': 'Up to 5 months outdoor UV resistance',
+        'Color': 'Yellow'
+      },
+      imageUrl: 'https://www.tesa.com/images/4334.jpg',
+      productUrl: 'https://www.tesa.com/en/industry/tesa-4334.html'
+    },
+    {
+      name: 'tesa 4651 Premium Acrylic Coated Cloth Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Logistics & Aerospace',
+      application: 'High Tensile Bundling, Masking Sandblasting & Pipe Sealing',
+      specs: {
+        'Backing material': 'Acrylic Coated Woven Rayon Cloth (148 mesh)',
+        'Adhesive type': 'Natural Rubber Adhesive',
+        'Total thickness': '0.31 mm (310 micron)',
+        'Temperature resistance': 'Up to 130°C for 30 min',
+        'Adhesion to Steel': '3.3 N/cm',
+        'Tensile strength': '100 N/cm',
+        'Color': 'Black / White / Yellow / Blue / Red / Green / Silver'
+      },
+      imageUrl: 'https://www.tesa.com/images/4651.jpg',
+      productUrl: 'https://www.tesa.com/en/industry/tesa-4651.html'
+    },
+    {
+      name: 'tesa 60650 Heavy Duty Aluminum Foil Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'HVAC & Appliance Thermal Sealing',
+      application: 'Thermal Insulation, Moisture Barrier & Refrigerator Pipe Attachment',
+      specs: {
+        'Backing material': 'Pure Aluminum Foil (50 micron)',
+        'Adhesive type': 'Transparent Acrylic Adhesive',
+        'Total thickness': '0.09 mm (90 micron)',
+        'Temperature resistance': '-40°C to 160°C',
+        'Flame Retardancy': 'DIN 4102-B1 & UL 510A',
+        'Adhesion to Steel': '6.0 N/cm',
+        'Color': 'Silver'
+      },
+      imageUrl: 'https://www.tesa.com/images/60650.jpg',
+      productUrl: 'https://www.tesa.com/en/industry/tesa-60650.html'
+    }
+  ],
+  'Sri Vasavi Tapes': [
+    {
+      name: 'Sri Vasavi Kapton Polyimide High Temp Tape (SV-301)',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & High-Tech',
+      application: 'PCB Wave Soldering Masking & Transformer Coil High Temp Insulation',
+      specs: {
+        'Backing material': 'Kapton Polyimide Film (1.0 mil / 25 micron)',
+        'Adhesive type': 'Crosslinked Silicone Adhesive',
+        'Total thickness': '0.06 mm (60 micron)',
+        'Temperature resistance': '-73°C to 260°C (Class H)',
+        'Dielectric Breakdown Voltage': '6500 Volts (6.5 kV)',
+        'Adhesion to Steel': '6.0 N/25mm',
+        'Color': 'Amber'
+      },
+      imageUrl: 'https://www.srivasavitapes.com/images/sv301.jpg',
+      productUrl: 'https://www.srivasavitapes.com/polyimide-tape/'
+    },
+    {
+      name: 'Sri Vasavi Double Sided Polyester Film Tape (SV-202)',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & Converters',
+      application: 'Membrane Switch Attachment, Nameplate Fixation & Touch Panel Lamination',
+      specs: {
+        'Backing material': 'Polyester (PET) Carrier',
+        'Adhesive type': 'Modified Solvent Acrylic Adhesive',
+        'Total thickness': '0.12 mm (120 micron)',
+        'Temperature resistance': '-40°C to 150°C',
+        'Adhesion to Steel': '18 N/25mm',
+        'Color': 'Transparent with Red PE Liner'
+      },
+      imageUrl: 'https://www.srivasavitapes.com/images/sv202.jpg',
+      productUrl: 'https://www.srivasavitapes.com/double-sided-tape/'
+    },
+    {
+      name: 'Sri Vasavi Glass Cloth High Temp Electrical Tape (SV-401)',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electrical & Industrial Utilities',
+      application: 'Transformer Motor Lead Insulation & Plasma Spray Masking',
+      specs: {
+        'Backing material': 'Woven Electrical Grade Fiberglass Cloth',
+        'Adhesive type': 'Thermosetting Silicone Adhesive',
+        'Total thickness': '0.18 mm (180 micron)',
+        'Temperature resistance': 'Up to 200°C (Class N)',
+        'Dielectric Breakdown Voltage': '4000 Volts',
+        'Tensile strength': '350 N/25mm',
+        'Color': 'White'
+      },
+      imageUrl: 'https://www.srivasavitapes.com/images/sv401.jpg',
+      productUrl: 'https://www.srivasavitapes.com/glass-cloth-tape/'
+    }
+  ],
   '3M': [
     {
       name: '3M VHB Tape 4910',

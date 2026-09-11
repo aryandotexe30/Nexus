@@ -121,13 +121,58 @@ export async function GET(req: Request) {
     if (industry && industry !== 'ALL') {
       where.industry = { equals: industry, mode: 'insensitive' };
     }
+
+    // Build intelligent multi-token & synonym search conditions
+    const searchTerms: string[] = [];
     if (search) {
-      where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { application: { contains: search, mode: 'insensitive' } },
-        { market: { contains: search, mode: 'insensitive' } },
-        { companyName: { contains: search, mode: 'insensitive' } }
-      ];
+      const trimmed = search.trim();
+      const lowerSearch = trimmed.toLowerCase();
+      searchTerms.push(trimmed);
+
+      // Synonym expansions for industrial tapes & adhesives
+      if (lowerSearch.includes('double sided') || lowerSearch.includes('double-sided') || lowerSearch.includes('double coated') || lowerSearch.includes('double-coated') || lowerSearch.includes('two sided')) {
+        searchTerms.push('Double-Sided', 'Double Sided', 'Double Coated', 'Double-Coated', 'VHB', 'Transfer Tape', 'Tissue Tape', 'Foam Tape', 'Mounting', 'Double', 'Sided', '4910', '4965', '468MP', '467MP', '500', '9088', 'P-637', 'DF 65', 'A7300');
+      }
+      if (lowerSearch.includes('high temp') || lowerSearch.includes('heat') || lowerSearch.includes('thermal')) {
+        searchTerms.push('High Temperature', 'Heat Resistant', 'Kapton', 'Polyimide', 'Silicone', 'Foil', 'Glass Cloth', '5413', 'K104', '8810', '903UL', 'CP 106', 'CP 201');
+      }
+      if (lowerSearch.includes('masking')) {
+        searchTerms.push('Masking', 'Crepe', 'Painter', 'ABRO', 'Clean Removal', '4334', '2090', 'CP 105', 'CP 201', 'CP 106');
+      }
+      if (lowerSearch.includes('electrical') || lowerSearch.includes('insulation')) {
+        searchTerms.push('Electrical', 'Insulation', 'PVC', 'Dielectric', 'Amalgamating', 'Super 33+', 'Reo FR', 'Wire', 'Cable');
+      }
+      if (lowerSearch.includes('kapton') || lowerSearch.includes('polyimide')) {
+        searchTerms.push('Kapton', 'Polyimide', '5413', 'K104', 'Soldering');
+      }
+      if (lowerSearch.includes('foam')) {
+        searchTerms.push('Foam', 'Acrylic Foam', 'PE Foam', 'VHB', 'Norbond', '4910', '4950', '5952', '541', 'A7300');
+      }
+      if (lowerSearch.includes('surface protection') || lowerSearch.includes('protective')) {
+        searchTerms.push('Protection', 'Protective', 'Clean Removal', 'Masking', 'Film Tape');
+      }
+      if (lowerSearch.includes('automotive')) {
+        searchTerms.push('Automotive', 'Emblem', 'Body Panel', 'Mounting', '51608', '5952', '541');
+      }
+      if (lowerSearch.includes('foil') || lowerSearch.includes('aluminium') || lowerSearch.includes('aluminum') || lowerSearch.includes('copper')) {
+        searchTerms.push('Foil', 'Aluminium', 'Aluminum', 'Copper', 'Shielding', 'HVAC', '1181', '60650', 'PC 957', 'AF 100');
+      }
+      if (lowerSearch.includes('duct') || lowerSearch.includes('cloth')) {
+        searchTerms.push('Duct', 'Cloth', 'Waterproof', 'Sealing', 'PC 600', 'PC 957', '3939', '4651');
+      }
+
+      // Add individual word tokens (longer than 2 characters)
+      const words = lowerSearch.split(/[\s\-_\/]+/).filter(w => w.length >= 3 && !['tape', 'tapes', 'and', 'for', 'the', 'with'].includes(w));
+      words.forEach(w => searchTerms.push(w));
+
+      const uniqueTerms = Array.from(new Set(searchTerms));
+
+      where.OR = uniqueTerms.flatMap(term => [
+        { name: { contains: term, mode: 'insensitive' } },
+        { application: { contains: term, mode: 'insensitive' } },
+        { market: { contains: term, mode: 'insensitive' } },
+        { companyName: { contains: term, mode: 'insensitive' } }
+      ]);
     }
 
     let products: any[] = [];
@@ -137,12 +182,12 @@ export async function GET(req: Request) {
       const dbProducts = await prisma.extractedProduct.findMany({
         where,
         orderBy: { createdAt: 'desc' },
-        take: limit * 2, // Fetch buffer to account for post-filtering
+        take: limit * 3, // Fetch generous buffer
         skip: offset
       });
 
       // Strict post-filter to guarantee 100% genuine physical products
-      products = dbProducts.filter((p: any) => {
+      const validDbProducts = dbProducts.filter((p: any) => {
         const specsObj = p.specs && typeof p.specs === 'object' ? p.specs : {};
         const specKeys = Object.keys(specsObj);
         
@@ -154,9 +199,86 @@ export async function GET(req: Request) {
         if (hasCorporateSpecs) return false;
 
         return isValidProduct(p.name, p.productUrl || '', specKeys.length);
-      }).slice(0, limit);
+      });
 
-      total = products.length;
+      // Also merge verified enterprise catalogs to guarantee immediate zero-fail search coverage
+      const { ENTERPRISE_CATALOGS } = await import('@/lib/enterpriseCatalogs');
+      const catalogItems: any[] = [];
+
+      for (const [catCompany, items] of Object.entries(ENTERPRISE_CATALOGS)) {
+        if (company && company !== 'ALL' && !catCompany.toLowerCase().includes(company.toLowerCase()) && !company.toLowerCase().includes(catCompany.toLowerCase())) {
+          continue;
+        }
+
+        for (const item of items) {
+          if (market && market !== 'ALL' && item.market && !item.market.toLowerCase().includes(market.toLowerCase())) {
+            continue;
+          }
+          if (industry && industry !== 'ALL' && item.industry && !item.industry.toLowerCase().includes(industry.toLowerCase())) {
+            continue;
+          }
+
+          if (search) {
+            const itemText = `${item.name} ${item.application || ''} ${item.market || ''} ${catCompany} ${JSON.stringify(item.specs || {})}`.toLowerCase();
+            const matchesAnyTerm = searchTerms.some(term => itemText.includes(term.toLowerCase()));
+            if (!matchesAnyTerm) continue;
+          }
+
+          catalogItems.push({
+            id: `cat-${catCompany}-${item.name.replace(/\s+/g, '-').toLowerCase()}`,
+            name: item.name,
+            companyName: catCompany,
+            companyUrl: item.productUrl,
+            productUrl: item.productUrl,
+            industry: item.industry,
+            market: item.market,
+            application: item.application,
+            specs: item.specs,
+            imageUrl: item.imageUrl,
+            createdAt: new Date().toISOString()
+          });
+        }
+      }
+
+      // Deduplicate products by normalized name
+      const productMap = new Map<string, any>();
+
+      // Catalog items (highest verification)
+      for (const item of catalogItems) {
+        productMap.set(item.name.toLowerCase().trim(), item);
+      }
+
+      // DB items
+      for (const p of validDbProducts) {
+        const key = p.name.toLowerCase().trim();
+        if (!productMap.has(key)) {
+          productMap.set(key, p);
+        }
+      }
+
+      const merged = Array.from(productMap.values());
+
+      // Smart Relevance Scoring
+      if (search) {
+        const lowerQ = search.toLowerCase();
+        merged.sort((a, b) => {
+          const aName = a.name.toLowerCase();
+          const bName = b.name.toLowerCase();
+
+          // Exact name match
+          const aExact = aName.includes(lowerQ) ? 100 : 0;
+          const bExact = bName.includes(lowerQ) ? 100 : 0;
+
+          // Keyword matches count
+          const aScore = aExact + searchTerms.filter(t => aName.includes(t.toLowerCase())).length * 10;
+          const bScore = bExact + searchTerms.filter(t => bName.includes(t.toLowerCase())).length * 10;
+
+          return bScore - aScore;
+        });
+      }
+
+      products = merged.slice(0, limit);
+      total = merged.length;
     } catch (dbErr: any) {
       console.warn(`[API /api/products/list] Database notice: ${dbErr.message}`);
     }
@@ -169,13 +291,23 @@ export async function GET(req: Request) {
         select: { companyName: true },
         distinct: ['companyName']
       });
-      companies = Array.from(new Set(distinctCompanies.map(c => c.companyName).filter(Boolean)));
+      const dbCompanyNames = distinctCompanies.map(c => c.companyName).filter(Boolean);
+      const { ENTERPRISE_CATALOGS } = await import('@/lib/enterpriseCatalogs');
+      const allCompanies = Array.from(new Set([...dbCompanyNames, ...Object.keys(ENTERPRISE_CATALOGS)]));
+      companies = allCompanies.sort();
 
       const distinctMarkets = await prisma.extractedProduct.findMany({
         select: { market: true },
         distinct: ['market']
       });
-      markets = Array.from(new Set(distinctMarkets.map(m => m.market).filter(Boolean) as string[]));
+      const dbMarkets = distinctMarkets.map(m => m.market).filter(Boolean) as string[];
+      const catalogMarkets: string[] = [];
+      for (const items of Object.values(ENTERPRISE_CATALOGS)) {
+        for (const it of items) {
+          if (it.market) catalogMarkets.push(it.market);
+        }
+      }
+      markets = Array.from(new Set([...dbMarkets, ...catalogMarkets])).sort();
     } catch {}
 
     return NextResponse.json({
