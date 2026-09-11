@@ -172,7 +172,8 @@ export async function harvestCompanyProducts(
     `${baseOrigin}/en-in/sitemap.xml`,
     `${baseOrigin}/sitemap.xml`,
     `${baseOrigin}/sitemap_index.xml`,
-    `${baseOrigin}/products-sitemap.xml`
+    `${baseOrigin}/products-sitemap.xml`,
+    `${baseOrigin}/wp-sitemap.xml`
   ];
 
   let sitemapFound = false;
@@ -185,7 +186,7 @@ export async function harvestCompanyProducts(
         sitemapFound = true;
         log(`[SITEMAP] Successfully located official XML Sitemap (${sitemapRes.data.length} bytes)!`);
 
-        const locRegex = /<loc>(https:\/\/[^<]+)<\/loc>/g;
+        const locRegex = /<loc>(https?:\/\/[^<]+)<\/loc>/g;
         let match;
         let totalLocs = 0;
 
@@ -195,33 +196,44 @@ export async function harvestCompanyProducts(
 
           const lowerLoc = loc.toLowerCase();
 
-          // Exclude non-product pages (legal, career, privacy, contact, blog, press, etc.)
-          if (
+          // Exclude non-product utility pages (legal, career, privacy, contact, blog, press, investors, pdfs)
+          const isExcluded = 
             lowerLoc.includes('/about') || lowerLoc.includes('/career') || lowerLoc.includes('/legal') ||
             lowerLoc.includes('/privacy') || lowerLoc.includes('/contact') || lowerLoc.includes('/press') ||
             lowerLoc.includes('/sustainability') || lowerLoc.includes('/news') || lowerLoc.includes('/imprint') ||
-            lowerLoc.includes('/cookie') || lowerLoc.includes('#')
-          ) {
-            continue;
-          }
+            lowerLoc.includes('/cookie') || lowerLoc.includes('/terms') || lowerLoc.includes('/investor') ||
+            lowerLoc.includes('/agm') || lowerLoc.includes('/annual-report') || lowerLoc.includes('/board-of-director') ||
+            lowerLoc.includes('/committee-director') || lowerLoc.includes('/shareholding') || lowerLoc.includes('/financial-results') ||
+            lowerLoc.includes('/quality-policy') || lowerLoc.includes('/vision-statement') || lowerLoc.includes('/mission-statement') ||
+            lowerLoc.includes('/commitment-statement') || lowerLoc.includes('/quality-certification') || lowerLoc.includes('/ethic-statement') ||
+            lowerLoc.includes('/exhibition') || lowerLoc.includes('/gallery') || lowerLoc.includes('/enquiry') ||
+            lowerLoc.includes('#') || lowerLoc.endsWith('.pdf') || lowerLoc.endsWith('.jpg') || lowerLoc.endsWith('.png');
+
+          if (isExcluded) continue;
 
           const { market, application } = inferMarketAndApplication(loc);
 
-          // Direct Product Pages (e.g. /industry/tesa-*.html, /product/*, /p/*)
-          if (
+          // Check if this URL is likely a direct product page
+          const isDirectProduct =
             lowerLoc.includes('/industry/tesa-') ||
             (lowerLoc.endsWith('.html') && lowerLoc.includes('/industry/')) ||
             lowerLoc.includes('/product/') ||
-            lowerLoc.includes('/products/') && lowerLoc.split('/').length > 5
-          ) {
+            (lowerLoc.includes('/products/') && lowerLoc.split('/').length > 5) ||
+            /d[a-z]{2,4}-\d+/i.test(lowerLoc) ||
+            lowerLoc.includes('masking-tape') ||
+            lowerLoc.includes('filament-tape') ||
+            lowerLoc.includes('kapton') ||
+            lowerLoc.includes('polyimide') ||
+            lowerLoc.includes('foil-tape') ||
+            lowerLoc.includes('transfer-tape') ||
+            lowerLoc.includes('tissue-tape') ||
+            lowerLoc.includes('duct-tape') ||
+            lowerLoc.includes('fabric-tape') ||
+            lowerLoc.includes('wire-harness');
+
+          if (isDirectProduct) {
             directProductUrls.push({ url: loc, market, application });
-          } 
-          // Category / Market Hubs
-          else if (
-            lowerLoc.includes('/market') || lowerLoc.includes('/application') || 
-            lowerLoc.includes('/category') || lowerLoc.includes('/products') ||
-            lowerLoc.includes('/solutions')
-          ) {
+          } else {
             categoryHubUrls.push({ url: loc, market, application });
           }
         }
@@ -233,7 +245,7 @@ export async function harvestCompanyProducts(
     }
   }
 
-  // 3. Fallback / Augment via Root Page Navigation Discovery
+  // 3. Root Page & Navigation Hierarchy Discovery (Crucial for WordPress / Elementor / Custom Sites)
   try {
     log(`[HIERARCHY] Inspecting navigation architecture from root ${targetUrl}...`);
     const rootRes = await axios.get(targetUrl, { headers: AXIOS_HEADERS, timeout: 8000 });
@@ -250,17 +262,32 @@ export async function harvestCompanyProducts(
 
       let fullUrl = href;
       if (href.startsWith('/')) fullUrl = `${baseOrigin}${href}`;
+      else if (href.startsWith('./')) fullUrl = `${baseOrigin}/${href.slice(2)}`;
       if (!fullUrl.startsWith(baseOrigin)) return;
 
       const lower = fullUrl.toLowerCase();
-      if (
-        (lower.includes('/industry') || lower.includes('/market') || lower.includes('/product') ||
-         lower.includes('/application') || lower.includes('/solutions') || lower.includes('/tapes')) &&
-        !lower.includes('contact') && !lower.includes('career') && !lower.includes('privacy') && !lower.includes('login')
-      ) {
+      const isExcluded = 
+        lower.includes('/about') || lower.includes('/contact') || lower.includes('/career') ||
+        lower.includes('/privacy') || lower.includes('/terms') || lower.includes('/login') ||
+        lower.includes('/cookie') || lower.includes('/investor') || lower.includes('/policy') ||
+        lower.includes('#') || lower.endsWith('.pdf');
+
+      if (!isExcluded && fullUrl !== targetUrl && !visitedUrls.has(fullUrl)) {
         const { market, application } = inferMarketAndApplication(fullUrl, text);
-        if (!visitedUrls.has(fullUrl) && categoryHubUrls.length < 150) {
-          categoryHubUrls.push({ url: fullUrl, market, application });
+
+        const isProdLink = 
+          lower.includes('tape') || lower.includes('film') || lower.includes('foam') ||
+          lower.includes('masking') || lower.includes('filament') || lower.includes('kapton') ||
+          lower.includes('foil') || lower.includes('adhesive') || lower.includes('tissue') ||
+          lower.includes('polyimide') || lower.includes('duct') || lower.includes('wire') ||
+          lower.includes('product') || lower.includes('item') || /d[a-z]{2,4}-\d+/i.test(lower);
+
+        if (isProdLink) {
+          if (text && text.length > 4 && (text.includes('-') || /\d+/.test(text))) {
+            directProductUrls.push({ url: fullUrl, market, application: text });
+          } else {
+            categoryHubUrls.push({ url: fullUrl, market, application });
+          }
         }
       }
     });
@@ -309,6 +336,10 @@ export async function harvestCompanyProducts(
           const $ = cheerio.load(res.data);
           const initial = discoveredProducts.size;
           extractProductsFromCheerio($, hub.url, discoveredProducts, marketsDiscovered, applicationsDiscovered, log, hub.market, hub.application);
+          
+          // Also check if this page itself is a product detail page (e.g. has H1 and spec table)
+          extractSingleProductPage($, hub.url, discoveredProducts, marketsDiscovered, applicationsDiscovered, hub.market, hub.application);
+
           const added = discoveredProducts.size - initial;
           if (added > 0) {
             log(`[CRAWL] +${added} products from hub: ${hub.url.split('/').pop()} (${hub.market})`);
@@ -323,7 +354,7 @@ export async function harvestCompanyProducts(
   // 5. PHASE 2: Direct Product Page Deep Ingestion (Extracts Exact TDS Specs for Every Product)
   const productPagesToCrawl = directProductUrls
     .filter(p => !visitedUrls.has(p.url))
-    .slice(0, 160); // Ingest up to 160 additional specific product pages
+    .slice(0, 160);
 
   if (productPagesToCrawl.length > 0) {
     log(`[QUEUE] Ingesting technical data sheets from ${productPagesToCrawl.length} direct product pages...`);
@@ -426,7 +457,12 @@ function extractSingleProductPage(
                 $('meta[property="og:title"]').attr('content') ||
                 $('title').text().split('-')[0].split('|')[0].trim();
 
-  const cleanName = rawName.replace(/[\u00ae\u2122\u00a9]/g, '').replace(/\s+/g, ' ').trim();
+  const cleanName = rawName
+    .replace(/[\u00ae\u2122\u00a9]/g, '')
+    .replace(/:\s*$/, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
   if (cleanName.length < 3 || cleanName.toLowerCase().includes('page not found') || cleanName.toLowerCase().includes('404')) {
     return;
   }
@@ -442,12 +478,12 @@ function extractSingleProductPage(
       const th = $(tr).find('th').text().trim().replace(/\s+/g, ' ');
       const td = $(tr).find('td').text().trim().replace(/\s+/g, ' ');
 
-      if (th && td && th !== td && th.length < 50 && td.length < 100 && !td.includes('\n')) {
+      if (th && td && th !== td && th.length < 50 && td.length < 150 && !td.includes('\n')) {
         specs[formatSpecKey(th)] = td;
       } else {
         const cells: string[] = [];
         $(tr).find('td').each((_, c) => cells.push($(c).text().trim().replace(/\s+/g, ' ')));
-        if (cells.length === 2 && cells[0].length < 50 && cells[1].length < 100 && !cells[1].includes('\n')) {
+        if (cells.length === 2 && cells[0].length < 50 && cells[1].length < 150 && !cells[1].includes('\n')) {
           specs[formatSpecKey(cells[0])] = cells[1];
         }
       }
@@ -459,17 +495,23 @@ function extractSingleProductPage(
     $(dl).find('dt').each((i, dt) => {
       const dd = $(dl).find('dd').eq(i).text().trim().replace(/\s+/g, ' ');
       const key = $(dt).text().trim().replace(/\s+/g, ' ');
-      if (key && dd && key.length < 50 && dd.length < 100 && !dd.includes('\n')) {
+      if (key && dd && key.length < 50 && dd.length < 150 && !dd.includes('\n')) {
         specs[formatSpecKey(key)] = dd;
       }
     });
   });
 
-  // 3. Image URL
-  let imageUrl: string | undefined = $('meta[property="og:image"]').attr('content') ||
-    $('img[class*="product"], img[class*="main"], .gallery img').first().attr('src');
-  if (imageUrl && !imageUrl.startsWith('http')) {
-    imageUrl = `${origin}${imageUrl}`;
+  // 3. Image URL Resolution
+  let rawImg: string | undefined = $('meta[property="og:image"]').attr('content') ||
+    $('img[class*="product"], img[class*="main"], img[class*="wp-image"], .gallery img').first().attr('src');
+  
+  let imageUrl: string | undefined;
+  if (rawImg) {
+    try {
+      imageUrl = new URL(rawImg, currentUrl).href;
+    } catch {
+      imageUrl = rawImg.startsWith('http') ? rawImg : `${origin}${rawImg.startsWith('/') ? '' : '/'}${rawImg}`;
+    }
   }
 
   const { market, application } = inferMarketAndApplication(currentUrl);
@@ -745,21 +787,30 @@ function extractProductsFromCheerio(
 
 function formatSpecKey(key: string): string {
   const map: Record<string, string> = {
+    backing: 'Backing material',
     backingmaterial: 'Backing material',
+    adhesive: 'Adhesive type',
+    adhesivetype: 'Adhesive type',
     typeofadhesive: 'Adhesive type',
     totalthickness: 'Total thickness',
+    thickness: 'Total thickness',
+    temperature: 'Temperature resistance',
+    temperatureresistance: 'Temperature resistance',
     adhesiontosteel: 'Adhesion to Steel',
     elongationatbreak: 'Elongation at break',
+    elongation: 'Elongation at break',
     tensilestrength: 'Tensile strength',
-    temperatureresistance: 'Temperature resistance',
     breakdownvoltage: 'Dielectric Breakdown Voltage',
     dielectricstrength: 'Dielectric strength',
     color: 'Color',
     width: 'Width',
-    length: 'Length'
+    length: 'Length',
+    features: 'Key Features',
+    applications: 'Applications'
   };
 
   const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
   return map[cleanKey] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim();
 }
+
 
