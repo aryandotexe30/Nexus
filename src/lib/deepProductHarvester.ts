@@ -666,7 +666,18 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     lowerName.includes('board of director') || lowerName.includes('quality policy') ||
     lowerName.includes('quality certification') || lowerName.includes('group companies') ||
     lowerName.includes('initial public offer') || lowerName === 'strength' ||
-    lowerName.includes('leadership team') || lowerName.includes('annual report')
+    lowerName.includes('leadership team') || lowerName.includes('annual report') ||
+    lowerName.includes('import market') || lowerName.includes('year of establishment') ||
+    lowerName.includes('business type') || lowerName.includes('nature of business') ||
+    lowerName.includes('annual turnover') || lowerName.includes('gst no') ||
+    lowerName.includes('cin no') || lowerName.includes('tan no') ||
+    lowerName.includes('number of employees') || lowerName.includes('no of staff') ||
+    lowerName.includes('legal status') || lowerName.includes('registered address') ||
+    lowerName.includes('banker') || lowerName.includes('competitive advantage') ||
+    lowerName.includes('packaging details') || lowerName.includes('payment terms') ||
+    lowerName.includes('shipment mode') || lowerName.includes('trade leads') ||
+    lowerName.includes('sample policy') || lowerName.includes('supply ability') ||
+    lowerName.includes('main domestic market') || lowerName.includes('offered by')
   ) {
     return false;
   }
@@ -991,12 +1002,27 @@ function extractProductsFromCheerio(
 
   // B. Extract from Standard HTML Tables (<table> with <th> and <td>)
   $('table').each((_, tbl) => {
+    const tblText = $(tbl).text().toLowerCase();
+    if (
+      tblText.includes('year of establishment') ||
+      tblText.includes('import markets') ||
+      tblText.includes('business type') ||
+      tblText.includes('nature of business') ||
+      tblText.includes('competitive advantage') ||
+      tblText.includes('registered address') ||
+      tblText.includes('banker') ||
+      tblText.includes('no of staff') ||
+      tblText.includes('gst no')
+    ) {
+      return; // Skip corporate metadata tables
+    }
+
     const headers: string[] = [];
     $(tbl).find('thead th, tr:first-child th, tr:first-child td').each((_, th) => {
       headers.push($(th).text().trim().replace(/\s+/g, ' '));
     });
 
-    if (headers.length >= 2) {
+    if (headers.length >= 3) {
       $(tbl).find('tbody tr, tr').each((rIdx, tr) => {
         if (rIdx === 0 && $(tr).find('th').length > 0) return; // skip header row
 
@@ -1012,14 +1038,15 @@ function extractProductsFromCheerio(
           if (img && !rowImg) rowImg = img.startsWith('http') ? img : `${origin}${img}`;
         });
 
-        if (cells.length >= 2 && cells[0].length > 2) {
+        if (cells.length >= 3 && cells[0].length > 2) {
           const rawName = cleanProductTitle(cells[0]);
           if (rawName.length > 2 && !rawName.toLowerCase().includes('product') && !rawName.toLowerCase().includes('model') && !rawName.toLowerCase().includes('item')) {
             const specs: Record<string, string> = {};
             for (let i = 1; i < cells.length; i++) {
               const header = headers[i] || `Spec ${i}`;
-              if (cells[i] && cells[i].length > 0 && cells[i] !== '-') {
-                specs[formatSpecKey(header)] = cells[i];
+              const formattedHeader = formatSpecKey(header);
+              if (formattedHeader && cells[i] && cells[i].length > 0 && cells[i].length < 100 && cells[i] !== '-') {
+                specs[formattedHeader] = cells[i];
               }
             }
 
@@ -1082,11 +1109,11 @@ function extractProductsFromCheerio(
       (
         /d[a-z]{2,4}-\d+/i.test(text) ||
         /tesa-\d+/i.test(lowerHref) ||
-        lowerText.includes('tape') || lowerText.includes('film') || lowerText.includes('foam') ||
-        lowerText.includes('masking') || lowerText.includes('filament') || lowerText.includes('kapton') ||
-        lowerText.includes('foil') || lowerText.includes('tissue') || lowerText.includes('polyimide') ||
-        lowerText.includes('die-cut') || lowerText.includes('harness')
+        /\b(tape|film|foil|polyimide|kapton|filament|masking|tissue|mylar|bopp|foam|cloth)\b/i.test(lowerText)
       ) &&
+      !lowerText.includes('privacy') && !lowerText.includes('contact') && !lowerText.includes('about') &&
+      !lowerText.includes('terms') && !lowerText.includes('policy') && !lowerText.includes('view all') &&
+      !lowerText.includes('covid') && !lowerText.includes('showroom') && !lowerText.includes('hardware') &&
       !lowerHref.includes('#') && !lowerHref.endsWith('.pdf') &&
       isValidProduct(text, href, 0);
 
@@ -1190,6 +1217,10 @@ function extractProductsFromCheerio(
 }
 
 function formatSpecKey(key: string): string {
+  if (!key) return '';
+  const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (!cleanKey || cleanKey.length < 2) return '';
+
   const map: Record<string, string> = {
     backing: 'Backing material',
     backingmaterial: 'Backing material',
@@ -1201,6 +1232,7 @@ function formatSpecKey(key: string): string {
     temperature: 'Temperature resistance',
     temperatureresistance: 'Temperature resistance',
     adhesiontosteel: 'Adhesion to Steel',
+    adhesion: 'Adhesion to Steel',
     elongationatbreak: 'Elongation at break',
     elongation: 'Elongation at break',
     tensilestrength: 'Tensile strength',
@@ -1210,10 +1242,12 @@ function formatSpecKey(key: string): string {
     width: 'Width',
     length: 'Length',
     features: 'Key Features',
-    applications: 'Applications'
+    applications: 'Applications',
+    conductormaterial: 'Conductor Material',
+    insulationtype: 'Insulation Type',
+    voltagegrade: 'Voltage Grade'
   };
 
-  const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
   return map[cleanKey] || key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim();
 }
 

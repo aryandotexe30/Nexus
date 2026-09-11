@@ -489,5 +489,157 @@ export const ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       imageUrl: 'https://www.havells.com/images/amalgamating-tape.jpg',
       productUrl: 'https://www.havells.com/en/industrial/high-voltage-tape.html'
     }
+  ],
+
+  'Ajit Industries (AIPL)': [
+    {
+      name: 'AIPL ABRO Masking Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Surface Processing & Automotive',
+      application: 'Automotive Paint Masking, Carpentry & Electronic Solder Protection',
+      specs: {
+        'Backing material': 'Crepe Paper',
+        'Adhesive type': 'Natural Rubber Solvent Adhesive',
+        'Total thickness': '0.135 mm (135 micron)',
+        'Temperature resistance': 'Up to 90°C for 60 min',
+        'Adhesion to Steel': '6.5 N/25mm',
+        'Tensile strength': '75 N/25mm',
+        'Color': 'Natural White / Cream'
+      },
+      imageUrl: 'https://aiplmarketing.com/images/masking-tape.jpg',
+      productUrl: 'https://aiplmarketing.com/aipl-abro-cellux-masking-tape-6332464.html'
+    },
+    {
+      name: 'AIPL Double Sided Tissue Tape (P-637)',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Solutions & Converters',
+      application: 'Foam Lamination, Nameplate Attachment & Envelope Splicing',
+      specs: {
+        'Backing material': 'Non-Woven Tissue Matrix',
+        'Adhesive type': 'Modified Acrylic Adhesive',
+        'Total thickness': '0.10 mm (100 micron)',
+        'Temperature resistance': '-20°C to 120°C',
+        'Adhesion to Steel': '14 N/25mm',
+        'Color': 'Translucent'
+      },
+      imageUrl: 'https://aiplmarketing.com/images/ds-tissue.jpg',
+      productUrl: 'https://aiplmarketing.com/ds-tissue-tape-p-637--11024819.html'
+    },
+    {
+      name: 'AIPL Cross Filament Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Packaging & Logistics',
+      application: 'Heavy Duty Metal Pipe Bundling & Pallet Reinforcement',
+      specs: {
+        'Backing material': 'Bi-directional Fiberglass Reinforced BOPP Film',
+        'Adhesive type': 'High Tack Synthetic Rubber',
+        'Total thickness': '0.13 mm (130 micron)',
+        'Tensile strength': '550 N/25mm',
+        'Adhesion to Steel': '20 N/25mm',
+        'Elongation at break': '6%',
+        'Color': 'Transparent with Glass Grid'
+      },
+      imageUrl: 'https://aiplmarketing.com/images/cross-filament.jpg',
+      productUrl: 'https://aiplmarketing.com/cross-filament-tape-11024823.html'
+    },
+    {
+      name: 'AIPL Aluminium Foil Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Building Components & HVAC',
+      application: 'HVAC Air Duct Joint Sealing, Thermal Insulation & Moisture Barrier',
+      specs: {
+        'Backing material': 'Pure Aluminum Foil (30 micron)',
+        'Adhesive type': 'Solvent Acrylic Adhesive with Liner',
+        'Total thickness': '0.065 mm (65 micron)',
+        'Temperature resistance': '-30°C to 120°C',
+        'Adhesion to Steel': '15 N/25mm',
+        'Flame Retardancy': 'Class 1 / Class 0 Fire Rated',
+        'Color': 'Bright Silver'
+      },
+      imageUrl: 'https://aiplmarketing.com/images/alu-foil.jpg',
+      productUrl: 'https://aiplmarketing.com/aluminium-foil-tape-11024827.html'
+    },
+    {
+      name: 'AIPL Polyimide Kapton Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & High-Tech',
+      application: 'PCB Wave Soldering Masking & Transformer Coil High Temp Insulation',
+      specs: {
+        'Backing material': 'Kapton Polyimide Film (25 micron)',
+        'Adhesive type': 'High Grade Silicone Adhesive',
+        'Total thickness': '0.06 mm (60 micron)',
+        'Temperature resistance': '-70°C to 260°C (Short Term 300°C)',
+        'Dielectric Breakdown Voltage': '6500 Volts (6.5 kV)',
+        'Tensile strength': '120 N/25mm',
+        'Color': 'Amber'
+      },
+      imageUrl: 'https://aiplmarketing.com/images/polyimide.jpg',
+      productUrl: 'https://aiplmarketing.com/polyimide-tape-11024813.html'
+    },
+    {
+      name: 'AIPL Floor Marking Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Surface Processing & Safety',
+      application: 'Factory Floor Demarcation, Hazard Warning & Social Distancing',
+      specs: {
+        'Backing material': 'Plasticized Polyvinyl Chloride (PVC)',
+        'Adhesive type': 'High Tack Rubber Resin',
+        'Total thickness': '0.15 mm (150 micron)',
+        'Adhesion to Steel': '4.0 N/25mm',
+        'Elongation at break': '150%',
+        'Color': 'Yellow / Black / Red / White / Green'
+      },
+      imageUrl: 'https://aiplmarketing.com/images/floor-marking.jpg',
+      productUrl: 'https://aiplmarketing.com/floor-marking-tape-11024817.html'
+    },
+    {
+      name: 'AIPL Double Sided PE Foam Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Building Components & Automotive',
+      application: 'Automotive Emblem Mounting & Mirror Plate Fixation',
+      specs: {
+        'Backing material': 'Closed-Cell Polyethylene (PE) Foam',
+        'Adhesive type': 'Pure Acrylic Solvent Adhesive',
+        'Total thickness': '1.0 mm (1000 micron)',
+        'Temperature resistance': '-20°C to 90°C',
+        'Adhesion to Steel': '18 N/25mm',
+        'Color': 'Black / White with Green PE Liner'
+      },
+      imageUrl: 'https://aiplmarketing.com/images/foam-tape.jpg',
+      productUrl: 'https://aiplmarketing.com/ds-foam-tape-11024821.html'
+    },
+    {
+      name: 'AIPL Heavy Duty Duct Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Solutions & Logistics',
+      application: 'Waterproof Sealing, Industrial Pipe Wrapping & Heavy Bundling',
+      specs: {
+        'Backing material': 'Polyethylene Coated Textile Cloth Scrim',
+        'Adhesive type': 'Hot Melt Pressure Sensitive Adhesive',
+        'Total thickness': '0.17 mm (170 micron)',
+        'Temperature resistance': '-10°C to 60°C',
+        'Tensile strength': '85 N/25mm',
+        'Color': 'Silver / Black'
+      },
+      imageUrl: 'https://aiplmarketing.com/images/duct-tape.jpg',
+      productUrl: 'https://aiplmarketing.com/duct-tape-11024818.html'
+    },
+    {
+      name: 'AIPL PVC Electrical Insulation Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electrical & Utilities',
+      application: 'Primary Wire Splicing & Electrical Joint Insulation up to 600V',
+      specs: {
+        'Backing material': 'Flame Retardant Plasticized Soft PVC',
+        'Adhesive type': 'Rubber Pressure Sensitive Adhesive',
+        'Total thickness': '0.125 mm (125 micron)',
+        'Dielectric Breakdown Voltage': '5000 Volts (5 kV)',
+        'Temperature resistance': '0°C to 80°C',
+        'Elongation at break': '160%',
+        'Color': 'Black / Blue / Red / Yellow / Green'
+      },
+      imageUrl: 'https://aiplmarketing.com/images/pvc-electrical.jpg',
+      productUrl: 'https://aiplmarketing.com/pvc-electrical-insulation-tape-2561634.html'
+    }
   ]
 };

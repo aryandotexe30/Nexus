@@ -431,7 +431,20 @@ export default function ProductsPage() {
                 <tbody className="divide-y divide-slate-200/70 dark:divide-slate-800 text-xs">
                   {products.map((p) => {
                     const specsObj = p.specs && typeof p.specs === 'object' ? p.specs : {};
-                    const specEntries = Object.entries(specsObj);
+                    const specEntries = Object.entries(specsObj).filter(
+                      ([k, v]) => 
+                        Boolean(k) && 
+                        Boolean(v) && 
+                        k.trim() !== '' && 
+                        k.trim() !== ':' && 
+                        String(v).trim() !== '' && 
+                        String(v).trim() !== ':' && 
+                        String(v).length < 150 &&
+                        !k.toLowerCase().includes('competitive') &&
+                        !k.toLowerCase().includes('year of establishment') &&
+                        !k.toLowerCase().includes('import market') &&
+                        !k.toLowerCase().includes('business type')
+                    );
 
                     return (
                       <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
