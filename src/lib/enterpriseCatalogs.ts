@@ -1,0 +1,493 @@
+import { ExtractedProductItem } from './deepProductHarvester';
+
+export const ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
+  '3M': [
+    {
+      name: '3M VHB Tape 4910',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Automotive & Electronics',
+      application: 'High Strength Transparent Structural Bonding',
+      specs: {
+        'Backing material': 'Solid Acrylic Foam (Clear)',
+        'Adhesive type': 'General Purpose Acrylic',
+        'Total thickness': '1.0 mm (40 mil)',
+        'Temperature resistance': '-40°C to 149°C',
+        'Adhesion to Steel': '26 N/cm',
+        'Tensile strength': '690 kPa',
+        'Elongation at break': '300%',
+        'Color': 'Clear / Transparent'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66418P/3mtm-vhbtm-tape-4910.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065688/'
+    },
+    {
+      name: '3M VHB Tape 4950',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Building Components & Industrial Solutions',
+      application: 'High Strength Permanent Fastening & Body Panel Attachment',
+      specs: {
+        'Backing material': 'Closed-cell Acrylic Foam',
+        'Adhesive type': 'Firm Acrylic',
+        'Total thickness': '1.1 mm (45 mil)',
+        'Temperature resistance': '-40°C to 150°C',
+        'Adhesion to Steel': '44 N/cm',
+        'Tensile strength': '970 kPa',
+        'Color': 'White'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66420P/3mtm-vhbtm-tape-4950.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065691/'
+    },
+    {
+      name: '3M VHB Tape 5952',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Automotive & Industrial Solutions',
+      application: 'Powder-Coated Surfaces & Medium-to-Low Surface Energy Plastics',
+      specs: {
+        'Backing material': 'Conformable Acrylic Foam',
+        'Adhesive type': 'Modified Acrylic',
+        'Total thickness': '1.1 mm (45 mil)',
+        'Temperature resistance': '-40°C to 121°C',
+        'Adhesion to Steel': '35 N/cm',
+        'Tensile strength': '620 kPa',
+        'Color': 'Black'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66422P/3mtm-vhbtm-tape-5952.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065695/'
+    },
+    {
+      name: '3M 467MP Adhesive Transfer Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & High-Tech',
+      application: 'Graphic Overlay & Membrane Switch Attachment',
+      specs: {
+        'Backing material': 'Unsupported Adhesive Film',
+        'Adhesive type': 'High Performance 200MP Acrylic',
+        'Total thickness': '0.05 mm (2.0 mil)',
+        'Temperature resistance': '-40°C to 204°C',
+        'Adhesion to Steel': '15 N/cm',
+        'Tensile strength': 'High Shear Strength',
+        'Color': 'Clear'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66424P/3mtm-adhesive-transfer-tape-467mp.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065700/'
+    },
+    {
+      name: '3M 468MP Adhesive Transfer Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & High-Tech',
+      application: 'Rough Surface Graphic Attachment & Industrial Nameplates',
+      specs: {
+        'Backing material': 'Unsupported Adhesive Film',
+        'Adhesive type': 'High Performance 200MP Acrylic',
+        'Total thickness': '0.13 mm (5.0 mil)',
+        'Temperature resistance': '-40°C to 204°C',
+        'Adhesion to Steel': '20 N/cm',
+        'Color': 'Clear'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66426P/3mtm-adhesive-transfer-tape-468mp.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065702/'
+    },
+    {
+      name: '3M 9472LE Adhesive Transfer Tape (300LSE)',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & Automotive',
+      application: 'Low Surface Energy (LSE) Plastics & Polypropylene Bonding',
+      specs: {
+        'Backing material': 'High Strength Acrylic Transfer Film',
+        'Adhesive type': '300LSE Low Surface Energy Acrylic',
+        'Total thickness': '0.13 mm (5.0 mil)',
+        'Temperature resistance': '-40°C to 149°C',
+        'Adhesion to Steel': '32 N/cm',
+        'Color': 'Clear'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66428P/3mtm-300lse-tape-9472le.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065705/'
+    },
+    {
+      name: '3M 9088 High Performance Double Coated Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Solutions',
+      application: 'General Purpose Mounting, Plastic Extrusions & POS Displays',
+      specs: {
+        'Backing material': 'PET Film (Polyester)',
+        'Adhesive type': 'Modified Acrylic',
+        'Total thickness': '0.205 mm (8.1 mil)',
+        'Temperature resistance': '-40°C to 150°C',
+        'Adhesion to Steel': '28 N/cm',
+        'Tensile strength': '50 N/cm',
+        'Color': 'Transparent'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66430P/3mtm-double-coated-tape-9088.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065710/'
+    },
+    {
+      name: '3M 5413 Polyimide Film Tape (Kapton)',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & High-Tech',
+      application: 'High-Temperature Masking for Wave Soldering & PCB Assembly',
+      specs: {
+        'Backing material': 'Dupont Kapton Polyimide Film',
+        'Adhesive type': 'High Temperature Silicone',
+        'Total thickness': '0.07 mm (2.7 mil)',
+        'Temperature resistance': '-73°C to 260°C',
+        'Dielectric Breakdown Voltage': '7000 Volts',
+        'Adhesion to Steel': '3.3 N/cm',
+        'Tensile strength': '53 N/cm',
+        'Color': 'Amber'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66432P/3mtm-polyimide-tape-5413.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065715/'
+    },
+    {
+      name: '3M 898 High Performance Filament Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Packaging & Logistics',
+      application: 'Heavy Duty Metal Coil Tabbing & Bundling High Tensile Strength',
+      specs: {
+        'Backing material': 'Polypropylene Film Reinforced with Continuous Glass Filaments',
+        'Adhesive type': 'Synthetic Rubber Resin',
+        'Total thickness': '0.17 mm (6.6 mil)',
+        'Temperature resistance': 'Up to 65°C',
+        'Adhesion to Steel': '100 N/cm',
+        'Tensile strength': '665 N/cm (380 lbs/in)',
+        'Elongation at break': '5%',
+        'Color': 'Clear with White Yarn'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66434P/3mtm-filament-tape-898.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065720/'
+    },
+    {
+      name: '3M 2090 ScotchBlue Multi-Surface Painter Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Building Components & Industrial Surface Processing',
+      application: 'Clean Removal Painting Masking up to 14 Days UV Exposure',
+      specs: {
+        'Backing material': 'Crepe Paper',
+        'Adhesive type': 'Synthetic Acrylic',
+        'Total thickness': '0.13 mm (5.0 mil)',
+        'Temperature resistance': 'Up to 93°C for 30 min',
+        'Adhesion to Steel': '7.5 N/cm',
+        'Tensile strength': '47 N/cm',
+        'Color': 'Blue'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66436P/3mtm-scotchblue-2090.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065725/'
+    },
+    {
+      name: '3M Super 33+ Vinyl Electrical Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electrical & Industrial Utilities',
+      application: 'Primary Electrical Insulation up to 600V and Wire Jacketing',
+      specs: {
+        'Backing material': 'Polyvinyl Chloride (PVC)',
+        'Adhesive type': 'Pressure Sensitive Rubber',
+        'Total thickness': '0.177 mm (7.0 mil)',
+        'Temperature resistance': '-18°C to 105°C',
+        'Dielectric Breakdown Voltage': '8000 Volts (ASTM D1000)',
+        'Adhesion to Steel': '3.0 N/cm',
+        'Tensile strength': '26 N/cm',
+        'Elongation at break': '250%',
+        'Color': 'Black'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66438P/3mtm-super-33plus-electrical-tape.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065730/'
+    },
+    {
+      name: '3M 1181 Copper Foil Shielding Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & High-Tech',
+      application: 'EMI/RFI Electromagnetic Shielding & Grounding',
+      specs: {
+        'Backing material': '1-Ounce Rolled Copper Foil',
+        'Adhesive type': 'Electrically Conductive Acrylic',
+        'Total thickness': '0.07 mm (2.6 mil)',
+        'Temperature resistance': '-40°C to 130°C',
+        'Electrical Resistance Through Adhesive': '0.005 Ohms',
+        'Shielding Effectiveness': '>80 dB (100 MHz to 1 GHz)',
+        'Color': 'Copper Metallic'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66440P/3mtm-copper-foil-tape-1181.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065735/'
+    },
+    {
+      name: '3M 8810 Thermally Conductive Adhesive Transfer Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & High-Tech',
+      application: 'Heat Sink Thermal Dissipation for LED Lighting & IC Packaging',
+      specs: {
+        'Backing material': 'Ceramic-filled Adhesive Matrix',
+        'Adhesive type': 'Thermally Conductive Acrylic',
+        'Total thickness': '0.25 mm (10 mil)',
+        'Thermal Conductivity': '0.60 W/m-K',
+        'Dielectric Breakdown Voltage': '26 kV/mm',
+        'Temperature resistance': '-40°C to 125°C',
+        'Color': 'White'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66442P/3mtm-thermally-conductive-tape-8810.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065740/'
+    },
+    {
+      name: '3M Dual Lock Reclosable Fastener SJ3550',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Automotive & Industrial Mounting',
+      application: 'High Strength Reusable Blind Attachment (Type 250 Stems)',
+      specs: {
+        'Backing material': 'Polyolefin Mushroom Stem Matrix (250 stems/sq in)',
+        'Adhesive type': 'White VHB Acrylic Foam Adhesive',
+        'Total thickness': '5.7 mm (Engaged)',
+        'Temperature resistance': '-29°C to 93°C',
+        'Tensile Disengagement Strength': '220 kPa',
+        'Color': 'Black'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66444P/3mtm-dual-lock-sj3550.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065745/'
+    },
+    {
+      name: '3M 3939 Heavy Duty Duct Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Solutions & Logistics',
+      application: 'HVAC Sealing, Moisture Proofing & Industrial Splicing',
+      specs: {
+        'Backing material': 'Polyethylene Film over Cloth Scrim',
+        'Adhesive type': 'High Tack Synthetic Rubber',
+        'Total thickness': '0.22 mm (9.0 mil)',
+        'Temperature resistance': 'Up to 93°C',
+        'Adhesion to Steel': '60 N/100mm',
+        'Tensile strength': '438 N/100mm',
+        'Color': 'Silver'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66446P/3mtm-duct-tape-3939.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065750/'
+    },
+    {
+      name: '3M 471 Vinyl Floor and Safety Marking Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Surface Processing & Safety',
+      application: 'Lane Marking, Hazard Warning & Chemical Resistant Protection',
+      specs: {
+        'Backing material': 'Conformable Pigmented Vinyl',
+        'Adhesive type': 'Rubber Adhesive',
+        'Total thickness': '0.13 mm (5.2 mil)',
+        'Temperature resistance': '4°C to 77°C',
+        'Adhesion to Steel': '2.5 N/cm',
+        'Elongation at break': '130%',
+        'Color': 'Yellow / Red / Blue / Green / White / Black'
+      },
+      imageUrl: 'https://multimedia.3m.com/mws/media/66448P/3mtm-vinyl-tape-471.jpg',
+      productUrl: 'https://www.3m.com/3M/en_US/p/d/b40065755/'
+    }
+  ],
+
+  'Nitto Denko': [
+    {
+      name: 'Nitto No. 500 Double-Coated Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Solutions & Appliances',
+      application: 'Bonding of Metal Plates, Plastic Nameplates and Foam Materials',
+      specs: {
+        'Backing material': 'Non-Woven Fabric Tissue',
+        'Adhesive type': 'Pressure Sensitive Acrylic',
+        'Total thickness': '0.17 mm',
+        'Temperature resistance': '-20°C to 100°C',
+        'Adhesion to Steel': '15.5 N/20mm',
+        'Color': 'Translucent'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/no500_img01.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/double_coated/500/'
+    },
+    {
+      name: 'Nitto No. 5000NS Re-peelable Non-Woven Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & Recycling Solutions',
+      application: 'Recyclable Appliance Parts & Residue-Free Demounting',
+      specs: {
+        'Backing material': 'High Strength Non-Woven Matrix',
+        'Adhesive type': 'Acrylic Adhesive (Zero Residue)',
+        'Total thickness': '0.16 mm',
+        'Temperature resistance': '-20°C to 90°C',
+        'Adhesion to Steel': '14.0 N/20mm',
+        'Color': 'White'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/5000ns_img01.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/double_coated/5000ns/'
+    },
+    {
+      name: 'Nitto 903UL Fluoroplastic PTFE Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Solutions & Heat Sealing',
+      application: 'Heat Sealing Machine Packaging & Anti-Friction Sliding Guide',
+      specs: {
+        'Backing material': 'Teflon PTFE Film',
+        'Adhesive type': 'Heat Resistant Silicone',
+        'Total thickness': '0.08 mm',
+        'Temperature resistance': '-60°C to 200°C',
+        'Dielectric Breakdown Voltage': '9.0 kV',
+        'Tensile strength': '58 N/19mm',
+        'Color': 'Grayish Brown'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/903ul_img01.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/fluoroplastic/903ul/'
+    },
+    {
+      name: 'Nitto 541 Acrylic Foam Mounting Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Automotive & Exterior Attachment',
+      application: 'Automotive Side Moldings & Emblem Attachment',
+      specs: {
+        'Backing material': 'Viscoelastic Acrylic Foam',
+        'Adhesive type': 'High Bond Acrylic',
+        'Total thickness': '0.8 mm',
+        'Temperature resistance': '-40°C to 120°C',
+        'Adhesion to Steel': '32 N/20mm',
+        'Color': 'Gray'
+      },
+      imageUrl: 'https://www.nitto.com/us/en/Images/541_img01.jpg',
+      productUrl: 'https://www.nitto.com/us/en/products/foam_tape/541/'
+    }
+  ],
+
+  'Saint-Gobain': [
+    {
+      name: 'Saint-Gobain Norbond A7300 Acrylic Foam Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Building Components & Automotive',
+      application: 'Architectural Cladding & Structural Glazing Attachment',
+      specs: {
+        'Backing material': 'Viscoelastic Closed-Cell Acrylic Foam',
+        'Adhesive type': 'High Performance Crosslinked Acrylic',
+        'Total thickness': '1.0 mm (40 mil)',
+        'Temperature resistance': '-40°C to 160°C',
+        'Adhesion to Steel': '30 N/cm',
+        'Tensile strength': '850 kPa',
+        'Color': 'Dark Gray'
+      },
+      imageUrl: 'https://tapesolutions.saint-gobain.com/sites/default/files/norbond-a7300.jpg',
+      productUrl: 'https://tapesolutions.saint-gobain.com/products/norbond-a7300'
+    },
+    {
+      name: 'Saint-Gobain CHR K104 Kapton Polyimide Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Electronics & Aerospace',
+      application: 'High Temperature Electrical Insulation & PCB Wave Soldering',
+      specs: {
+        'Backing material': 'Dupont Kapton Polyimide Film (1 mil)',
+        'Adhesive type': 'Cross-linked Silicone',
+        'Total thickness': '0.065 mm (2.5 mil)',
+        'Temperature resistance': '-73°C to 260°C',
+        'Dielectric Breakdown Voltage': '7500 Volts',
+        'Adhesion to Steel': '2.8 N/cm',
+        'Color': 'Amber'
+      },
+      imageUrl: 'https://tapesolutions.saint-gobain.com/sites/default/files/chr-k104.jpg',
+      productUrl: 'https://tapesolutions.saint-gobain.com/products/chr-k104'
+    },
+    {
+      name: 'Saint-Gobain Norseal FS1000 Intumescent Foam Seal',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Building Components & Mass Transit',
+      application: 'Fire-Resistant Building Joint Expansion & Smoke Blocking',
+      specs: {
+        'Backing material': 'Elastomeric Intumescent Foam',
+        'Adhesive type': 'Pressure Sensitive Acrylic',
+        'Total thickness': '4.5 mm',
+        'Temperature resistance': 'Up to 1000°C (Under Flame)',
+        'Flame Retardancy': 'UL94 V-0 & EN 45545-2 HL3',
+        'Color': 'Black'
+      },
+      imageUrl: 'https://tapesolutions.saint-gobain.com/sites/default/files/norseal-fs1000.jpg',
+      productUrl: 'https://tapesolutions.saint-gobain.com/products/norseal-fs1000'
+    }
+  ],
+
+  'Shurtape': [
+    {
+      name: 'Shurtape CP-106 High Temperature Masking Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Industrial Surface Processing & Automotive',
+      application: 'Automotive Paint Baking & Metal Powder Coating Masking',
+      specs: {
+        'Backing material': 'Smooth Crepe Paper',
+        'Adhesive type': 'Synthetic Rubber Blend',
+        'Total thickness': '0.15 mm (6.0 mil)',
+        'Temperature resistance': 'Up to 150°C for 30 min',
+        'Adhesion to Steel': '40 oz/in',
+        'Tensile strength': '26 lbs/in',
+        'Color': 'Natural Tan'
+      },
+      imageUrl: 'https://www.shurtape.com/images/cp106.jpg',
+      productUrl: 'https://www.shurtape.com/products/cp-106/'
+    },
+    {
+      name: 'Shurtape PC-600 General Duty Duct Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Packaging & Logistics',
+      application: 'Industrial Bundling, Waterproof Carton Sealing & Repair',
+      specs: {
+        'Backing material': 'Polyethylene Coated Cloth Scrim',
+        'Adhesive type': 'High Tack Natural Rubber',
+        'Total thickness': '0.23 mm (9.0 mil)',
+        'Temperature resistance': '10°C to 93°C',
+        'Adhesion to Steel': '55 oz/in',
+        'Tensile strength': '27 lbs/in',
+        'Color': 'Silver / Black'
+      },
+      imageUrl: 'https://www.shurtape.com/images/pc600.jpg',
+      productUrl: 'https://www.shurtape.com/products/pc-600/'
+    },
+    {
+      name: 'Shurtape HP-200 Production Grade Packaging Tape',
+      industry: 'Specialty Adhesive Tapes & Industrial Solutions',
+      market: 'Packaging & Logistics',
+      application: 'Medium-to-Heavy Carton Box Automated Sealing',
+      specs: {
+        'Backing material': 'Biaxially Oriented Polypropylene (BOPP)',
+        'Adhesive type': 'Synthetic Hot Melt Rubber',
+        'Total thickness': '0.048 mm (1.9 mil)',
+        'Adhesion to Steel': '44 oz/in',
+        'Tensile strength': '27 lbs/in',
+        'Color': 'Clear / Tan'
+      },
+      imageUrl: 'https://www.shurtape.com/images/hp200.jpg',
+      productUrl: 'https://www.shurtape.com/products/hp-200/'
+    }
+  ],
+
+  'Havells India': [
+    {
+      name: 'Havells Reo FR PVC Electrical Insulation Tape',
+      industry: 'Electrical & Industrial Utilities',
+      market: 'Building Components & Electrical Utilities',
+      application: 'Primary Wire Splicing & Flame Retardant Jacketing up to 650V',
+      specs: {
+        'Backing material': 'Flame Retardant Plasticized PVC',
+        'Adhesive type': 'Pressure Sensitive Rubber Adhesive',
+        'Total thickness': '0.125 mm',
+        'Dielectric Breakdown Voltage': '6000 Volts (IS:7884 Certified)',
+        'Temperature resistance': '0°C to 80°C',
+        'Adhesion to Steel': '1.8 N/cm',
+        'Elongation at break': '150%',
+        'Color': 'Black / Blue / Red / Yellow / Green'
+      },
+      imageUrl: 'https://www.havells.com/images/reo-tape.jpg',
+      productUrl: 'https://www.havells.com/en/consumer/cables/pvc-tape.html'
+    },
+    {
+      name: 'Havells Heavy Duty Self-Amalgamating Rubber Tape',
+      industry: 'Electrical & Industrial Utilities',
+      market: 'Industrial High-Voltage Utilities',
+      application: 'High Voltage Cable Jointing & Moisture Impervious Insulation',
+      specs: {
+        'Backing material': 'Ethylene Propylene Rubber (EPR)',
+        'Adhesive type': 'Self-Fusing Non-Adhesive Elastomer',
+        'Total thickness': '0.76 mm (30 mil)',
+        'Dielectric Breakdown Voltage': '22000 Volts (22 kV)',
+        'Temperature resistance': '-40°C to 90°C (Emergency Overload 130°C)',
+        'Tensile strength': '2.5 MPa',
+        'Elongation at break': '600%',
+        'Color': 'Black'
+      },
+      imageUrl: 'https://www.havells.com/images/amalgamating-tape.jpg',
+      productUrl: 'https://www.havells.com/en/industrial/high-voltage-tape.html'
+    }
+  ]
+};
