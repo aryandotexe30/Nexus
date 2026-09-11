@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { 
   Database, 
   Search, 
@@ -37,6 +37,13 @@ export default function ProductsPage() {
   const [isHarvesting, setIsHarvesting] = useState(false);
   const [harvestLogs, setHarvestLogs] = useState<string[]>([]);
   const [harvestError, setHarvestError] = useState("");
+  const terminalEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (harvestLogs.length > 0) {
+      terminalEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [harvestLogs]);
 
   const [products, setProducts] = useState<ExtractedProduct[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -86,7 +93,7 @@ export default function ProductsPage() {
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
-  // Trigger autonomous catalog scrape
+  // Trigger autonomous catalog scrape with live SSE streaming
   const handleHarvest = async (e?: React.FormEvent, targetQuery?: string) => {
     if (e) e.preventDefault();
     const q = targetQuery || query;
@@ -94,31 +101,54 @@ export default function ProductsPage() {
 
     setIsHarvesting(true);
     setHarvestError("");
-    setHarvestLogs([
-      `[1/4] Connecting to autonomous harvester for "${q}"...`,
-      `[2/4] Resolving corporate domain and parsing navigation hierarchy...`,
-      `[3/4] Crawling market & application matrix tables...`
-    ]);
+    setHarvestLogs([`[INITIALIZE] Connecting to TarasAI Real-Time Harvester for "${q}"...`]);
 
     try {
-      const res = await fetch("/api/products/harvest", {
+      const response = await fetch("/api/products/harvest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: q })
       });
 
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || "Failed to harvest products");
+      if (!response.ok) {
+        throw new Error(`Server returned status ${response.status}`);
       }
 
-      setHarvestLogs(prev => [
-        ...prev,
-        `[4/4] Ingestion complete! Discovered & stored ${data.totalProducts || 0} products into database.`
-      ]);
+      if (!response.body) {
+        throw new Error("No response stream available");
+      }
 
-      // Refresh table
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith("data: ")) {
+            try {
+              const eventData = JSON.parse(trimmed.slice(6));
+              if (eventData.type === "log") {
+                setHarvestLogs(prev => [...prev, eventData.message]);
+              } else if (eventData.type === "done") {
+                setHarvestLogs(prev => [...prev, `[SUCCESS] Discovered & stored ${eventData.result?.totalProducts || 0} products into database.`]);
+                fetchProducts();
+              } else if (eventData.type === "error") {
+                setHarvestError(eventData.error);
+              }
+            } catch {}
+          }
+        }
+      }
+
+      // Final refresh
       fetchProducts();
     } catch (err: any) {
       setHarvestError(err.message || "An error occurred during catalog harvesting");
@@ -255,22 +285,46 @@ export default function ProductsPage() {
 
           {/* Real-time Harvest Status Log */}
           {harvestLogs.length > 0 && (
-            <div className="mt-4 p-4 bg-slate-950 text-slate-200 rounded-xl font-mono text-xs space-y-1 border border-slate-800">
-              <div className="flex items-center justify-between text-slate-400 pb-1 border-b border-slate-800 text-[11px] uppercase tracking-wider font-bold">
-                <span>Harvester Execution Terminal</span>
-                {isHarvesting ? <span className="text-amber-400 flex items-center gap-1.5"><RefreshCw className="w-3 h-3 animate-spin" /> RUNNING</span> : <span className="text-emerald-400">IDLE / READY</span>}
+            <div className="mt-4 p-4 bg-slate-950 text-slate-200 rounded-xl font-mono text-xs border border-slate-800 shadow-inner">
+              <div className="flex items-center justify-between text-slate-400 pb-2 mb-2 border-b border-slate-800/80 text-[11px] uppercase tracking-wider font-bold">
+                <span className="flex items-center gap-2 text-slate-300">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Harvester Live Execution Terminal
+                </span>
+                {isHarvesting ? (
+                  <span className="text-amber-400 flex items-center gap-1.5 font-bold">
+                    <RefreshCw className="w-3 h-3 animate-spin" /> STREAMING CRAWL
+                  </span>
+                ) : (
+                  <span className="text-emerald-400 font-bold">● INGESTION READY</span>
+                )}
               </div>
-              {harvestLogs.map((log, i) => (
-                <div key={i} className="text-emerald-400 flex items-center gap-2">
-                  <span>{log}</span>
-                </div>
-              ))}
-              {harvestError && (
-                <div className="text-red-400 flex items-center gap-2">
-                  <AlertCircle className="w-3.5 h-3.5" />
-                  <span>Error: {harvestError}</span>
-                </div>
-              )}
+              <div className="max-h-64 overflow-y-auto space-y-1.5 pr-1 scrollbar-thin scrollbar-thumb-slate-700">
+                {harvestLogs.map((log, i) => {
+                  let badgeColor = "text-blue-400";
+                  if (log.startsWith("[DOMAIN]")) badgeColor = "text-cyan-400 font-bold";
+                  else if (log.startsWith("[HIERARCHY]")) badgeColor = "text-purple-400 font-bold";
+                  else if (log.startsWith("[QUEUE]")) badgeColor = "text-amber-400 font-bold";
+                  else if (log.startsWith("[CRAWL]")) badgeColor = "text-emerald-400";
+                  else if (log.startsWith("[DATABASE]")) badgeColor = "text-teal-300 font-bold";
+                  else if (log.startsWith("[FINISH]") || log.startsWith("[SUCCESS]")) badgeColor = "text-emerald-300 font-bold bg-emerald-950/60 px-2 py-0.5 rounded";
+                  else if (log.startsWith("[NOTICE]")) badgeColor = "text-amber-300";
+
+                  return (
+                    <div key={i} className={`flex items-start gap-2 leading-relaxed ${badgeColor}`}>
+                      <span className="text-slate-600 select-none">{String(i + 1).padStart(2, '0')}.</span>
+                      <span className="break-all">{log}</span>
+                    </div>
+                  );
+                })}
+                {harvestError && (
+                  <div className="text-red-400 flex items-center gap-2 pt-1 font-bold">
+                    <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span>Error: {harvestError}</span>
+                  </div>
+                )}
+                <div ref={terminalEndRef} />
+              </div>
             </div>
           )}
         </div>

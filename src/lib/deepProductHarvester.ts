@@ -38,10 +38,20 @@ const AXIOS_HEADERS = {
  * Recursively crawls any corporate website or company name, traverses market/application trees,
  * parses structured specification tables & catalog arrays, and persists all products to PostgreSQL.
  */
-export async function harvestCompanyProducts(input: string): Promise<HarvestResult> {
+export async function harvestCompanyProducts(
+  input: string, 
+  onLog?: (msg: string) => void
+): Promise<HarvestResult> {
+  const log = (msg: string) => {
+    console.log(msg);
+    if (onLog) onLog(msg);
+  };
+
   const cleanInput = input.trim();
   let targetUrl = cleanInput;
   let companyName = cleanInput;
+
+  log(`[RESOLVER] Initializing autonomous crawler for: "${cleanInput}"`);
 
   // 1. Resolve Target Domain
   if (!cleanInput.startsWith('http://') && !cleanInput.startsWith('https://')) {
@@ -73,7 +83,7 @@ export async function harvestCompanyProducts(input: string): Promise<HarvestResu
     }
   }
 
-  console.log(`[Deep Harvester] Initiating deep product crawl for "${companyName}" -> Target Root: ${targetUrl}`);
+  log(`[DOMAIN] Verified Target Root URL: ${targetUrl} (Entity: ${companyName})`);
 
   const discoveredProducts: Map<string, ExtractedProductItem> = new Map();
   const visitedUrls = new Set<string>();
@@ -118,13 +128,15 @@ export async function harvestCompanyProducts(input: string): Promise<HarvestResu
     }
   }
 
+  log(`[HIERARCHY] Crawling root navigation tree to discover all markets & sub-applications...`);
+
   try {
     const rootRes = await axios.get(targetUrl, { headers: AXIOS_HEADERS, timeout: 9000 });
     visitedUrls.add(targetUrl);
     const $root = cheerio.load(rootRes.data);
 
     // Extract products on root
-    extractProductsFromCheerio($root, targetUrl, discoveredProducts, marketsDiscovered, applicationsDiscovered, 'General Industrial', 'Overview');
+    extractProductsFromCheerio($root, targetUrl, discoveredProducts, marketsDiscovered, applicationsDiscovered, log, 'General Industrial', 'Overview');
 
     // Discover Market / Industry / Sub-application links
     $root('a[href]').each((_, a) => {
@@ -150,7 +162,7 @@ export async function harvestCompanyProducts(input: string): Promise<HarvestResu
         !lowerHref.includes('login') && !lowerHref.includes('contact') && !lowerHref.includes('career') &&
         !lowerHref.includes('sustainability') && !lowerHref.includes('press') && !lowerHref.includes('stories');
 
-      if (isRelevant && !visitedUrls.has(fullUrl) && urlsToVisit.length < 120) {
+      if (isRelevant && !visitedUrls.has(fullUrl) && urlsToVisit.length < 80) {
         let market = 'Industrial';
         let application = text || 'General Application';
 
@@ -172,14 +184,14 @@ export async function harvestCompanyProducts(input: string): Promise<HarvestResu
     });
 
   } catch (err: any) {
-    console.warn(`[Deep Harvester] Notice visiting root: ${err.message}`);
+    log(`[NOTICE] Root visit notice: ${err.message}`);
   }
 
-  // 3. Concurrently Crawl Discovered Hierarchy Subpages in Batches of 5
-  console.log(`[Deep Harvester] Queued ${urlsToVisit.length} hierarchy sub-pages for deep extraction...`);
+  log(`[QUEUE] Discovered ${urlsToVisit.length} hierarchy sub-pages. Beginning high-speed parallel extraction...`);
 
-  const pagesToCrawl = urlsToVisit.slice(0, 100);
-  const BATCH_SIZE = 5;
+  // 3. Concurrently Crawl Discovered Hierarchy Subpages in Batches of 6
+  const pagesToCrawl = urlsToVisit.slice(0, 60);
+  const BATCH_SIZE = 6;
 
   for (let i = 0; i < pagesToCrawl.length; i += BATCH_SIZE) {
     const batch = pagesToCrawl.slice(i, i + BATCH_SIZE);
@@ -189,14 +201,20 @@ export async function harvestCompanyProducts(input: string): Promise<HarvestResu
         visitedUrls.add(page.url);
 
         try {
-          const res = await axios.get(page.url, { headers: AXIOS_HEADERS, timeout: 8000 });
+          const res = await axios.get(page.url, { headers: AXIOS_HEADERS, timeout: 7000 });
           const $ = cheerio.load(res.data);
-          extractProductsFromCheerio($, page.url, discoveredProducts, marketsDiscovered, applicationsDiscovered, page.market, page.application);
+          const initialCount = discoveredProducts.size;
+          extractProductsFromCheerio($, page.url, discoveredProducts, marketsDiscovered, applicationsDiscovered, log, page.market, page.application);
+          const newCount = discoveredProducts.size;
           
+          if (newCount > initialCount) {
+            log(`[CRAWL] +${newCount - initialCount} items from: ${page.url.split('/').pop()} (${page.market} -> ${page.application})`);
+          }
+
           // Also discover 2nd level links
           $('a[href*="/industry/markets/"], a[href*="/industry/products/"]').each((_, a) => {
             const href = $(a).attr('href');
-            if (href && urlsToVisit.length < 120) {
+            if (href && urlsToVisit.length < 80) {
               const full = href.startsWith('/') ? `${baseOrigin}${href}` : href;
               if (full.startsWith(baseOrigin) && !visitedUrls.has(full)) {
                 urlsToVisit.push({ url: full, market: page.market, application: $(a).text().trim() || page.application });
@@ -210,13 +228,14 @@ export async function harvestCompanyProducts(input: string): Promise<HarvestResu
     );
   }
 
-  console.log(`[Deep Harvester] Extraction finished. Discovered ${discoveredProducts.size} unique products.`);
+  log(`[FINISH] Extraction complete! Discovered ${discoveredProducts.size} unique products with specifications across ${marketsDiscovered.size} markets.`);
 
   const productsList = Array.from(discoveredProducts.values());
 
   // 4. Persist to PostgreSQL Database (ExtractedProduct Table)
   if (productsList.length > 0) {
     try {
+      log(`[DATABASE] Syncing ${productsList.length} items to PostgreSQL ExtractedProduct...`);
       for (const prod of productsList) {
         await prisma.extractedProduct.create({
           data: {
@@ -233,9 +252,9 @@ export async function harvestCompanyProducts(input: string): Promise<HarvestResu
           }
         });
       }
-      console.log(`[Deep Harvester] Successfully persisted ${productsList.length} products to database for ${companyName}.`);
+      log(`[DATABASE] Successfully persisted all ${productsList.length} verified products to database!`);
     } catch (dbErr: any) {
-      console.warn(`[Deep Harvester] Database persistence notice: ${dbErr.message}`);
+      log(`[DATABASE] Database notice: ${dbErr.message}`);
     }
   }
 
@@ -259,6 +278,7 @@ function extractProductsFromCheerio(
   productsMap: Map<string, ExtractedProductItem>,
   marketsSet: Set<string>,
   applicationsSet: Set<string>,
+  log?: (msg: string) => void,
   defaultMarket?: string,
   defaultApp?: string
 ) {
