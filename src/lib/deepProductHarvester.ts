@@ -96,17 +96,18 @@ export async function harvestCompanyProducts(
   // 2. Fetch Root Page and Discover Full Market Hierarchy
   const knownMarketPaths = [
     '/en-in/industry/markets/appliances',
-    '/en-in/industry/markets/automotive',
-    '/en-in/industry/markets/electronics',
-    '/en-in/industry/markets/building-components',
+    '/en-in/industry/markets/automotive-industry',
+    '/en-in/industry/markets/industrial-converter-partners',
     '/en-in/industry/markets/paper-print',
-    '/en-in/industry/markets/healthcare',
-    '/en-in/industry/markets/renewable-energy',
-    '/en-in/industry/markets/craftsmen',
-    '/en-in/industry/products',
-    '/products',
-    '/catalog',
-    '/category'
+    '/en-in/industry/markets/building-components',
+    '/en-in/industry/markets/solar-industry',
+    '/en-in/industry/markets/transport-industry',
+    '/en-in/industry/markets/wind-energy',
+    '/en-in/industry/markets/battery-energy-storage-systems',
+    '/en-in/industry/markets/server-and-data-centre',
+    '/en-in/industry/markets/health-markets',
+    '/en-in/industry/markets/metal-industry',
+    '/en-in/industry/products'
   ];
 
   // Pre-seed known market roots if crawling tesa or industrial catalog
@@ -116,13 +117,15 @@ export async function harvestCompanyProducts(
       let market = 'Industrial';
       if (p.includes('appliance')) market = 'Appliances Tapes';
       else if (p.includes('automotive')) market = 'Automotive';
-      else if (p.includes('electronic')) market = 'Electronics';
-      else if (p.includes('building')) market = 'Building Components';
+      else if (p.includes('converter')) market = 'Industrial Converters & Foam Tapes';
       else if (p.includes('paper-print')) market = 'Paper & Print';
-      else if (p.includes('healthcare')) market = 'Healthcare';
-      else if (p.includes('renewable')) market = 'Renewable Energy';
-      else if (p.includes('craftsmen')) market = 'Craftsmen & Trade';
-      else if (p.includes('products')) market = 'All Products Master';
+      else if (p.includes('building')) market = 'Building Components';
+      else if (p.includes('solar') || p.includes('wind') || p.includes('battery')) market = 'Renewable & Energy Storage';
+      else if (p.includes('transport')) market = 'Transportation & Aerospace';
+      else if (p.includes('server') || p.includes('electronic')) market = 'Electronics & Data Systems';
+      else if (p.includes('health')) market = 'Healthcare';
+      else if (p.includes('metal')) market = 'Metal Industry';
+      else if (p.includes('products')) market = 'Master Catalog';
 
       urlsToVisit.push({ url: full, market, application: 'Market Overview' });
     }
