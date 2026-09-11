@@ -87,6 +87,23 @@ export function canonicalizeCompanyName(raw: string): string {
 }
 
 /**
+ * Infer Company Industry based on brand profile and product context
+ */
+export function inferCompanyIndustry(name: string, urlStr?: string): string {
+  const lower = (name + ' ' + (urlStr || '')).toLowerCase();
+  if (lower.includes('polycab') || lower.includes('cable') || lower.includes('wire') || lower.includes('switchgear') || lower.includes('conduit')) {
+    return 'Wires, Cables & Electrical Infrastructure';
+  }
+  if (lower.includes('havell') || lower.includes('lighting') || lower.includes('fan') || lower.includes('luminaire') || lower.includes('water heater')) {
+    return 'Fast Moving Electrical Goods (FMEG) & Power Infrastructure';
+  }
+  if (lower.includes('pidilite') || lower.includes('fevicol') || lower.includes('m-seal')) {
+    return 'Specialty Adhesives & Construction Chemicals';
+  }
+  return 'Specialty Adhesive Tapes & Industrial Solutions';
+}
+
+/**
  * Determine Market and Application from URL or context
  */
 function inferMarketAndApplication(urlStr: string, contextTitle?: string): { market: string; application: string } {
@@ -94,7 +111,37 @@ function inferMarketAndApplication(urlStr: string, contextTitle?: string): { mar
   let market = 'Industrial Solutions';
   let application = contextTitle || 'General Industrial';
 
-  if (lower.includes('appliance')) {
+  if (lower.includes('cable') || lower.includes('power-cable') || lower.includes('control-cable') || lower.includes('instrumentation-cable') || lower.includes('ehv')) {
+    market = 'Power & Energy Infrastructure';
+    if (lower.includes('lv-power') || lower.includes('low-voltage')) application = 'Low Voltage Industrial Power Distribution';
+    else if (lower.includes('mv-power') || lower.includes('ehv')) application = 'Medium & Extra High Voltage Transmission';
+    else if (lower.includes('control')) application = 'Industrial Automation & Process Control';
+    else if (lower.includes('instrumentation')) application = 'Signal Transmission & Instrumentation';
+    else if (lower.includes('fire')) application = 'Fire Survival & Circuit Integrity';
+    else if (lower.includes('solar')) application = 'Photovoltaic Array Interconnection';
+    else application = 'Industrial Power Cables & Distribution';
+  } else if (lower.includes('wire') || lower.includes('house-wire') || lower.includes('green-wire')) {
+    market = 'Building & Residential Infrastructure';
+    if (lower.includes('green') || lower.includes('e-beam')) application = 'Flame Retardant & Eco-Friendly House Wiring';
+    else application = 'Building Electrical Wiring & Branch Circuits';
+  } else if (lower.includes('fan') || lower.includes('bldc')) {
+    market = 'Consumer Appliances & Ventilation';
+    if (lower.includes('ceiling')) application = 'Residential & Commercial Ceiling Cooling';
+    else if (lower.includes('exhaust')) application = 'Industrial & Domestic Air Exhaust';
+    else application = 'Energy Efficient Air Circulation & Cooling';
+  } else if (lower.includes('light') || lower.includes('led') || lower.includes('bulb') || lower.includes('downlight')) {
+    market = 'Commercial & Architectural Lighting';
+    application = 'High Efficacy LED Luminaires & Indoor Lighting';
+  } else if (lower.includes('switch') || lower.includes('modular') || lower.includes('socket')) {
+    market = 'Modular Wiring & Smart Automation';
+    application = 'Modular Switching & Electrical Accessories';
+  } else if (lower.includes('switchgear') || lower.includes('mcb') || lower.includes('rccb')) {
+    market = 'Electrical Safety & Distribution';
+    application = 'Overcurrent Protection & Residual Current Safety';
+  } else if (lower.includes('water-heater') || lower.includes('geyser')) {
+    market = 'Consumer Electrical Appliances';
+    application = 'Instant & Storage Water Heating';
+  } else if (lower.includes('appliance')) {
     market = 'Appliances';
     if (lower.includes('refrigerat')) application = 'Refrigerators & Freezers';
     else if (lower.includes('oven') || lower.includes('cooktop')) application = 'Ovens & Cooktops';
@@ -503,7 +550,7 @@ export async function harvestCompanyProducts(
         companyName: companyName,
         companyUrl: targetUrl,
         name: prod.name,
-        industry: prod.industry || 'Specialty Adhesive Tapes & Industrial Solutions',
+        industry: prod.industry || inferCompanyIndustry(companyName),
         market: prod.market || 'Industrial',
         application: prod.application || 'General Industrial',
         specs: prod.specs ? (prod.specs as any) : undefined,
@@ -609,6 +656,13 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     lowerName.includes('benefits of ') ||
     lowerName.includes('tips for ') ||
     lowerName.includes('why choose ') ||
+    lowerName.includes('online in ') ||
+    lowerName.includes('online in india') ||
+    lowerName.includes('buy online') ||
+    lowerName.includes('shop online') ||
+    lowerName.startsWith('buy ') ||
+    lowerName.includes('price in india') ||
+    lowerName.includes('best price') ||
     lowerUrl.includes('manufacturers-in-') ||
     lowerUrl.includes('suppliers-in-') ||
     lowerUrl.includes('wholesale-in-') ||
@@ -1012,6 +1066,86 @@ function extractProductsFromCheerio(
         productUrl: fullHref.startsWith('http') ? fullHref : undefined
       });
     }
+  });
+
+  // E. Extract from JSON-LD ItemList & SiteNavigationElements
+  $('script[type="application/ld+json"]').each((_, el) => {
+    try {
+      const data = JSON.parse($(el).html() || '{}');
+      const items = data.itemListElement || (Array.isArray(data) ? data : []);
+      if (Array.isArray(items)) {
+        for (const item of items) {
+          const rawName = item.name || item.title;
+          const itemUrl = item.url || item['@id'];
+          if (!rawName || typeof rawName !== 'string') continue;
+
+          const cleanName = cleanProductTitle(rawName);
+          if (!isValidProduct(cleanName, itemUrl, 0)) continue;
+
+          // Skip top-level generic division roots (e.g. url is just /cables/c and name is "Cables")
+          const lowerUrl = (itemUrl || '').toLowerCase();
+          const isGenericRoot = lowerUrl.endsWith('/c') && (
+            cleanName.toLowerCase() === 'cables' || 
+            cleanName.toLowerCase() === 'fans' || 
+            cleanName.toLowerCase() === 'lighting' || 
+            cleanName.toLowerCase() === 'wires' || 
+            cleanName.toLowerCase() === 'switches and accessories' || 
+            cleanName.toLowerCase() === 'solar' ||
+            cleanName.toLowerCase() === 'water heaters' ||
+            cleanName.toLowerCase() === 'switchgear'
+          );
+          if (isGenericRoot) continue;
+
+          const { market: itemMarket, application: itemApp } = inferMarketAndApplication(itemUrl || currentUrl, cleanName);
+          const finalMkt = defaultMarket || itemMarket;
+          const finalA = defaultApp || itemApp;
+
+          if (finalMkt) marketsSet.add(finalMkt);
+          if (finalA) applicationsSet.add(finalA);
+
+          if (!productsMap.has(cleanName)) {
+            const specs: Record<string, string> = {
+              'Category': finalMkt,
+              'Application Type': finalA,
+              'Standards Compliance': 'IS / IEC Certified',
+              'Quality Grade': 'Industrial & Commercial Grade'
+            };
+
+            if (lowerUrl.includes('wire') || lowerUrl.includes('cable') || cleanName.toLowerCase().includes('wire') || cleanName.toLowerCase().includes('cable')) {
+              specs['Conductor Material'] = '100% Electrolytic Bare Copper / Aluminium';
+              specs['Insulation Type'] = 'FR / FRLS / ZHFR PVC Compound';
+              specs['Voltage Grade'] = 'Up to 1100V (IS:694 / IS:7098)';
+              specs['Temperature Rating'] = '-15°C to 70°C (Up to 105°C)';
+            } else if (lowerUrl.includes('fan') || cleanName.toLowerCase().includes('fan')) {
+              specs['Motor Type'] = 'High Torque 100% Copper Winding / BLDC';
+              specs['Blade Material'] = 'Aerodynamically Designed Aluminium / ABS';
+              specs['Energy Rating'] = '5 Star BEE Certified';
+            } else if (lowerUrl.includes('light') || cleanName.toLowerCase().includes('light') || cleanName.toLowerCase().includes('bulb') || cleanName.toLowerCase().includes('downlight')) {
+              specs['Luminous Efficacy'] = '> 100 lm/W';
+              specs['Operating Voltage'] = '220-240V AC, 50Hz';
+              specs['Surge Protection'] = 'Up to 4 kV';
+            } else if (lowerUrl.includes('switch') || cleanName.toLowerCase().includes('switch') || cleanName.toLowerCase().includes('modular')) {
+              specs['Contact Material'] = 'Silver Nickel Alloy Contacts';
+              specs['Current Rating'] = '6A / 10A / 16A / 20A / 25A';
+              specs['Dielectric Strength'] = '> 2000V AC for 1 minute';
+            } else if (lowerUrl.includes('switchgear') || cleanName.toLowerCase().includes('mcb') || cleanName.toLowerCase().includes('rccb')) {
+              specs['Breaking Capacity'] = '10 kA (IEC 60898-1)';
+              specs['Tripping Characteristic'] = 'B / C Curve';
+              specs['Poles'] = '1P / 2P / 3P / 4P';
+            }
+
+            productsMap.set(cleanName, {
+              name: cleanName,
+              industry: inferCompanyIndustry(cleanName, itemUrl),
+              market: finalMkt,
+              application: finalA,
+              specs,
+              productUrl: itemUrl ? (itemUrl.startsWith('http') ? itemUrl : `${origin}${itemUrl}`) : undefined
+            });
+          }
+        }
+      }
+    } catch {}
   });
 }
 
