@@ -113,7 +113,16 @@ export async function GET(req: Request) {
     };
 
     if (company && company !== 'ALL') {
-      where.companyName = { contains: company, mode: 'insensitive' };
+      const compLower = company.toLowerCase();
+      if (compLower.includes('cgapl') || compLower.includes('cg adhesive') || compLower.includes('cg-ppi')) {
+        where.OR = [
+          { companyName: { contains: 'CGAPL', mode: 'insensitive' } },
+          { companyName: { contains: 'CG Adhesive', mode: 'insensitive' } },
+          { companyName: { contains: 'CG-PPI', mode: 'insensitive' } }
+        ];
+      } else {
+        where.companyName = { contains: company, mode: 'insensitive' };
+      }
     }
     if (market && market !== 'ALL') {
       where.market = { equals: market, mode: 'insensitive' };
@@ -205,8 +214,18 @@ export async function GET(req: Request) {
       const { ENTERPRISE_CATALOGS } = await import('@/lib/enterpriseCatalogs');
       const catalogItems: any[] = [];
 
+      const isCompanyMatch = (catComp: string, targetComp: string) => {
+        const c1 = catComp.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const c2 = targetComp.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (c1.includes(c2) || c2.includes(c1)) return true;
+        if ((c1.includes('cgapl') || c1.includes('cgadhesive')) && (c2.includes('cgapl') || c2.includes('cgadhesive'))) return true;
+        if ((c1.includes('aipl') || c1.includes('ajit')) && (c2.includes('aipl') || c2.includes('ajit'))) return true;
+        if ((c1.includes('vasavi') || c1.includes('satl')) && (c2.includes('vasavi') || c2.includes('satl'))) return true;
+        return false;
+      };
+
       for (const [catCompany, items] of Object.entries(ENTERPRISE_CATALOGS)) {
-        if (company && company !== 'ALL' && !catCompany.toLowerCase().includes(company.toLowerCase()) && !company.toLowerCase().includes(catCompany.toLowerCase())) {
+        if (company && company !== 'ALL' && !isCompanyMatch(catCompany, company)) {
           continue;
         }
 

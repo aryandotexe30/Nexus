@@ -2153,5 +2153,338 @@ export const ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "imageUrl": "https://www.henkel-adhesives.com/images/loctite680.jpg",
       "productUrl": "https://www.henkel-adhesives.com/products/loctite-680.html"
     }
+  ],
+  "CG Adhesive Products Ltd (CGAPL)": [
+    {
+      "name": "CGAPL 7011 Polyimide Kapton High Temp Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electronics & High-Tech",
+      "application": "High temperature electrical insulation (Class H), transformer wrapping, and PCB wave soldering masking",
+      "specs": {
+        "Backing material": "Kapton Polyimide Film (25 micron)",
+        "Adhesive type": "Polysiloxane (Silicone) Adhesive",
+        "Total thickness": "0.065 mm (2.5 mil)",
+        "Temperature resistance": "-73°C to 260°C (Class H)",
+        "Approvals": "UL File No. E194505, RDSO Approved (Electric & Motive Power), CLW Approved"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/polyimide-kapton-tape/"
+    },
+    {
+      "name": "CGAPL 8415 Fiberglass Glass Cloth High Temp Tape (Class H)",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electrical & Industrial Utilities",
+      "application": "Interface insulation holding, coil and transformer insulation, and traction machines",
+      "specs": {
+        "Backing material": "Woven Electrical Grade Fiberglass Cloth",
+        "Adhesive type": "Polysiloxane (Silicone) Adhesive",
+        "Temperature resistance": "Up to 180°C (Class H, Short Term 240°C)",
+        "Approvals": "UL File No. E194505, CLW Approved"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/fiberglass-glass-cloth-tapes/"
+    },
+    {
+      "name": "CGAPL 8410 Fiberglass Tape with Synthetic Resin Adhesive (Class F)",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electrical & Industrial Utilities",
+      "application": "Slot edge reinforcement, cable harnessing at high temperature, and coil wrapping",
+      "specs": {
+        "Backing material": "Electrical Grade Glass Cloth",
+        "Adhesive type": "Synthetic Resin Adhesive",
+        "Temperature resistance": "Up to 155°C (Class F)"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/fiberglass-glass-cloth-tapes/"
+    },
+    {
+      "name": "CGAPL 8411 Fiberglass Tape with Synthetic Rubber Adhesive (Class B)",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electrical & Industrial Utilities",
+      "application": "Outer wrap and core insulation of ignition coils in two-wheelers and three-wheelers",
+      "specs": {
+        "Backing material": "Woven Glass Fabric",
+        "Adhesive type": "Synthetic Rubber Adhesive",
+        "Temperature resistance": "Up to 130°C (Class B)"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/fiberglass-glass-cloth-tapes/"
+    },
+    {
+      "name": "CGAPL 6512 Polyamide Nomex Electrical Insulation Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electrical & Heavy Machinery",
+      "application": "Insulation for bar wound armatures, phase & layer insulation, coil banding and wrapping",
+      "specs": {
+        "Backing material": "Nomex Polyamide Aramid Paper",
+        "Adhesive type": "Synthetic Resin Adhesive",
+        "Temperature resistance": "Class F (155°C) & Class H (180°C)",
+        "Approvals": "UL File No. E194505, RDSO Approved (Electric)"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/polyamide-nomex-tapes/"
+    },
+    {
+      "name": "CGAPL 7500 Self-Fusing Silicone Rubber Tape (Class H)",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Power & Energy Infrastructure",
+      "application": "Self-fusing silicone rubber insulation for bus bars at extreme operating temperatures",
+      "specs": {
+        "Backing material": "Self-Fusing Silicone Elastomer",
+        "Adhesive type": "Non-Adhesive Self-Amalgamating",
+        "Temperature resistance": "Up to 180°C (Class H)",
+        "Approvals": "RDSO Approved (Electric)"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/self-fusing-tapes/"
+    },
+    {
+      "name": "CGAPL 7501 Self-Fusing EPDM Rubber Tape (Class B)",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Power & Energy Infrastructure",
+      "application": "Insulation of HT overhead power lines in outdoor environments with moisture and ozone resistance",
+      "specs": {
+        "Backing material": "Ethylene Propylene Diene Monomer (EPDM)",
+        "Adhesive type": "Self-Amalgamating Rubber",
+        "Temperature resistance": "Up to 130°C (Class B)"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/self-fusing-tapes/"
+    },
+    {
+      "name": "CGAPL ET900 HT Aluminium Foil High Temperature Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "HVAC & Industrial Surface Processing",
+      "application": "High temperature thermal insulation in HVAC equipment and thermal spray masking up to 240°C",
+      "specs": {
+        "Backing material": "Pure Aluminium Foil",
+        "Adhesive type": "Polysiloxane (Silicone) Adhesive",
+        "Temperature resistance": "Up to 240°C"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/metal-foil-tapes/"
+    },
+    {
+      "name": "CGAPL ET900 Aluminium Foil Adhesive Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "HVAC & Appliance Thermal Sealing",
+      "application": "Thermal insulation in HVAC equipment, anti-static flooring, and vapor barrier",
+      "specs": {
+        "Backing material": "Dead Soft Aluminium Foil",
+        "Adhesive type": "Synthetic Pressure Sensitive Adhesive"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/metal-foil-tapes/"
+    },
+    {
+      "name": "CGAPL ET9110 Copper Foil EMI/RFI Shielding Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electronics & Telecommunications",
+      "application": "Electromagnetic and radio frequency (EMI/RFI) interference shielding for sensitive electronics",
+      "specs": {
+        "Backing material": "Conductive Copper Foil",
+        "Adhesive type": "Conductive Pressure Sensitive Adhesive"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/metal-foil-tapes/"
+    },
+    {
+      "name": "CGAPL CG985 Aluminium Glass Plasma Spray Masking Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Aerospace & Industrial Surface Processing",
+      "application": "Thermal plasma spray and flame spray masking for turbine and heavy machinery components",
+      "specs": {
+        "Backing material": "Aluminium Foil Laminated to Fiberglass Cloth",
+        "Adhesive type": "Polysiloxane Silicone Adhesive",
+        "Temperature resistance": "Up to 260°C"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/metal-foil-tapes/"
+    },
+    {
+      "name": "CGAPL CG987 High Tack Sand Blasting Masking Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Industrial Surface Processing",
+      "application": "Heavy duty sand and grit blasting masking on industrial surfaces",
+      "specs": {
+        "Backing material": "Reinforced Aluminium Glass Composite",
+        "Adhesive type": "High Tack Polysiloxane Silicone"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/metal-foil-tapes/"
+    },
+    {
+      "name": "CGAPL 2026 UL Approved Polyester Transformer Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electrical & Power Utilities",
+      "application": "Varnish resistant insulation for transformer inner coils and final wrapping",
+      "specs": {
+        "Backing material": "Polyester (PET) Film",
+        "Adhesive type": "Thermosetting Acrylic Adhesive",
+        "Temperature resistance": "Class B (130°C)",
+        "Approvals": "UL Approved File No. E194505"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/polyester-tapes/"
+    },
+    {
+      "name": "CGAPL 1042T Oil Compatible Polyester Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electrical & Transformer Manufacturing",
+      "application": "Transformer oil compatible tape for kraft paper holding and coil insulation",
+      "specs": {
+        "Backing material": "Polyester (PET) Film",
+        "Adhesive type": "Oil-Resistant Synthetic Adhesive",
+        "Oil Compatibility": "100% Transformer Mineral Oil Compatible"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/polyester-tapes/"
+    },
+    {
+      "name": "CGAPL 5011 Halogen-Free Capacitor Polyester Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electronics & Component Assembly",
+      "application": "Sealing and insulation for metal case film and foil capacitors",
+      "specs": {
+        "Backing material": "Halogen-Free Polyester (PET) Film",
+        "Adhesive type": "High Purity Synthetic Acrylic"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/polyester-tapes/"
+    },
+    {
+      "name": "CGAPL 1711T Polyester Glass Composite Tape (Class F)",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electrical & Power Transformers",
+      "application": "Transformer oil compatible core, layer, and final insulation for coils and transformers",
+      "specs": {
+        "Backing material": "Polyester Film Laminated to Glass Cloth",
+        "Adhesive type": "Thermosetting Acrylic Adhesive",
+        "Temperature resistance": "155°C (Class F)"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/polyester-glass-tapes/"
+    },
+    {
+      "name": "CGAPL CG 1033 Varnish Resistant Polyester Fleece Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electrical Motors & Transformers",
+      "application": "Electrical insulation in FHP Motors, LT Motors, and Transformers",
+      "specs": {
+        "Backing material": "Polyester Film Laminated to Non-Woven Polyester Fleece",
+        "Adhesive type": "Thermosetting Synthetic Adhesive",
+        "Temperature resistance": "Class B (130°C) & Class F (155°C)",
+        "Approvals": "UL Approved File No. E194505"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/polyester-fleece-tapes/"
+    },
+    {
+      "name": "CGAPL CG203 Fire Retardant Cotton Wire Harness Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Railways & Wire Harnessing",
+      "application": "Fire Retardant Low Tension (FRLT) wire harnessing for rolling stock & coaches",
+      "specs": {
+        "Backing material": "Fire Retardant Woven Cotton Fabric",
+        "Adhesive type": "Pressure Sensitive Rubber Adhesive",
+        "Approvals": "ICF Part I Approved, UL Approved File No. E194505",
+        "Colors": "Black, White, Red, Green, Blue, Yellow, Chocolate"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/cotton-fabric-tapes/"
+    },
+    {
+      "name": "CGAPL CG300BLK High Thickness Cotton Fabric Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Automotive & Wire Harnessing",
+      "application": "Automotive wire harness bundling with superior abrasion resistance",
+      "specs": {
+        "Backing material": "Heavy Duty Woven Cotton Cloth",
+        "Adhesive type": "Synthetic Pressure Sensitive Adhesive",
+        "Color": "Black"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/cotton-fabric-tapes/"
+    },
+    {
+      "name": "CGAPL CG324 Double Sided Cotton Fabric Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Industrial Assembly & Printing",
+      "application": "Plate mounting, carpet hold-down, and multi-surface industrial fixing",
+      "specs": {
+        "Backing material": "Cotton Cloth Matrix",
+        "Adhesive type": "Differential Double Sided Synthetic Adhesive"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/cotton-fabric-tapes/"
+    },
+    {
+      "name": "CGAPL 3510 100% Acetate Rayon Fabric Tape (Class B)",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electrical & Switchgears",
+      "application": "Contactor coils, relay coils, and automotive wire harnessing",
+      "specs": {
+        "Backing material": "100% Acetate / Rayon Woven Fabric",
+        "Adhesive type": "Synthetic Thermosetting Resin",
+        "Temperature resistance": "130°C (Class B)",
+        "Approvals": "UL Approved File No. E194505"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/rayon-fabric-tapes/"
+    },
+    {
+      "name": "CGAPL CG THERM Aramid-PET-Aramid Electrical Laminate",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electrical Motors & Transformers",
+      "application": "Phase separation and slot & wedge insulation in rotating and static machines up to Class H",
+      "specs": {
+        "Composition": "PET Film sandwiched between two layers of Aramid Paper (Nomex)",
+        "Temperature resistance": "Class H (180°C)",
+        "Slit Widths": "10mm to 980mm"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/cg-therm/"
+    },
+    {
+      "name": "CGAPL CG LAM Polyester Fleece-PET Electrical Laminate",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Electrical Motors & Transformers",
+      "application": "Phase separation and slot & wedge insulation in motors and transformers up to Class F",
+      "specs": {
+        "Composition": "PET Film sandwiched between two layers of Non-Woven Polyester Fleece",
+        "Temperature resistance": "Class F (155°C)",
+        "Slit Widths": "10mm to 980mm"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/cg-lam/"
+    },
+    {
+      "name": "CGAPL CG4001 Resin Poor Polyester Mica Tape",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "High Voltage Rotating Machines & VPI",
+      "application": "Main wall insulation in HT rotating machines with Vacuum Pressure Impregnation (VPI)",
+      "specs": {
+        "Backing material": "Electrical Grade Polyester Film with Uncalcined Muscovite Mica",
+        "Total thickness": "0.13 mm",
+        "Binder": "Epoxy Resin System",
+        "Taping Type": "Hand & Machine Taping"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/polyester-mica/"
+    },
+    {
+      "name": "CGAPL CG4002 Kapton Polyimide Mica Traction Tape (Class N)",
+      "industry": "Specialty Adhesive Tapes & Industrial Solutions",
+      "market": "Railways & Traction Motors",
+      "application": "Main wall insulation for railway traction motors and extreme high voltage drives up to 200°C",
+      "specs": {
+        "Composition": "Calcined Muscovite Mica with Aramid supported by Kapton Polyimide Film",
+        "Binder": "High Temperature Silicone Resin",
+        "Temperature resistance": "Class N (200°C)",
+        "Approvals": "Traction Motor Grade"
+      },
+      "imageUrl": "https://cgapl.com/egyfigub/2022/09/cropped-CGAPL-LOGO-002-192x192.png",
+      "productUrl": "https://cgapl.com/polyimide-kapton-mica/"
+    }
   ]
 };

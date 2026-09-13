@@ -234,7 +234,7 @@ export async function harvestCompanyProducts(
       else if (lower.includes('ajit') || lower.includes('aipl')) targetUrl = 'https://aiplmarketing.com';
       else if (lower.includes('bagla')) targetUrl = 'https://bagla-group.com';
       else if (lower.includes('advance tape') || lower.includes('advancetapes')) targetUrl = 'https://advancetapes.com';
-      else if (lower.includes('cgapl') || lower.includes('cg adhesive')) targetUrl = 'https://cgapl.co.in';
+      else if (lower.includes('cgapl') || lower.includes('cg adhesive')) targetUrl = 'https://cgapl.com';
       else {
         const brand = lower.replace(/[^a-z0-9]/g, '');
         targetUrl = `https://www.${brand}.com`;
