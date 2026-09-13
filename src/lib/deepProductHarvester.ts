@@ -803,6 +803,13 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     lowerName.includes('webinar') ||
     lowerName.includes('podcast') ||
     lowerName.includes('frequently asked') ||
+    lowerName.includes('waste is costly') ||
+    lowerName.includes('is costly') ||
+    lowerName.includes('tape applicators') ||
+    lowerName.includes('packaging machines') ||
+    lowerName.includes('dispensers') ||
+    lowerName.includes('secure + sustainable') ||
+    lowerName.includes('shurseal products') ||
     lowerName.includes('best 10') ||
     lowerName.includes('top 10') ||
     lowerName.includes('best 5') ||
@@ -846,26 +853,9 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     return false;
   }
 
-  // 5. Check for generic category headings or sentence structures with no specs
-  if (specsCount === 0) {
-    if (
-      lowerName === 'car care products' ||
-      lowerName === 'industrial products' ||
-      lowerName === 'consumer products' ||
-      lowerName === 'packaging products' ||
-      lowerName === 'electronic products' ||
-      lowerName === 'automotive products' ||
-      lowerName === 'masking tape' ||
-      lowerName === 'duct tape' ||
-      lowerName === 'foam tape'
-    ) {
-      return false;
-    }
-
-    // Sentence-like structure without model code or specs
-    if (name.split(' ').length > 5 || name.includes(':') || name.includes('–') || name.includes('—') || name.includes(',')) {
-      return false;
-    }
+  // 5. Strict Requirement: Must have at least 2 real technical specifications
+  if (specsCount < 2) {
+    return false;
   }
 
   return true;

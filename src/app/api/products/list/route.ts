@@ -57,6 +57,15 @@ export async function GET(req: Request) {
             { name: { contains: 'Annual Report', mode: 'insensitive' } },
             { name: { contains: 'Financial Report', mode: 'insensitive' } },
             { name: { contains: 'Car Care Products', mode: 'insensitive' } },
+            { name: { contains: 'waste is costly', mode: 'insensitive' } },
+            { name: { contains: 'is costly', mode: 'insensitive' } },
+            { name: { contains: 'tape applicators', mode: 'insensitive' } },
+            { name: { contains: 'packaging machines', mode: 'insensitive' } },
+            { name: { contains: 'dispensers', mode: 'insensitive' } },
+            { name: { contains: 'secure + sustainable', mode: 'insensitive' } },
+            { name: { contains: 'shurseal products', mode: 'insensitive' } },
+            { name: { contains: 'best 10', mode: 'insensitive' } },
+            { name: { contains: 'top 10', mode: 'insensitive' } },
             { name: { contains: ' in Bangalore', mode: 'insensitive' } },
             { name: { contains: ' in Mumbai', mode: 'insensitive' } },
             { name: { contains: ' in Delhi', mode: 'insensitive' } },
@@ -123,6 +132,13 @@ export async function GET(req: Request) {
         { name: { contains: 'AGM Report', mode: 'insensitive' } },
         { name: { contains: 'Annual Report', mode: 'insensitive' } },
         { name: { contains: 'Car Care Products', mode: 'insensitive' } },
+        { name: { contains: 'waste is costly', mode: 'insensitive' } },
+        { name: { contains: 'is costly', mode: 'insensitive' } },
+        { name: { contains: 'tape applicators', mode: 'insensitive' } },
+        { name: { contains: 'packaging machines', mode: 'insensitive' } },
+        { name: { contains: 'dispensers', mode: 'insensitive' } },
+        { name: { contains: 'secure + sustainable', mode: 'insensitive' } },
+        { name: { contains: 'shurseal products', mode: 'insensitive' } },
         { name: { contains: 'procurement guide', mode: 'insensitive' } },
         { name: { contains: 'manufacturers in', mode: 'insensitive' } },
         { name: { contains: 'suppliers in', mode: 'insensitive' } },
@@ -247,20 +263,26 @@ export async function GET(req: Request) {
         // Clean any remaining non-technical spec keys
         const cleanedSpecs: Record<string, string> = {};
         for (const [k, v] of Object.entries(specsObj)) {
-          const lk = k.toLowerCase();
-          const lv = String(v || '').toLowerCase();
+          const lk = k.toLowerCase().trim();
+          const lv = String(v || '').toLowerCase().trim();
           if (
+            lk.length > 0 &&
+            lv.length > 0 &&
             !lk.includes('technical data') &&
             !lk.includes('datasheet') &&
             !lk.includes('brochure') &&
             !lk.includes('download') &&
             !lk.includes('document') &&
+            !lk.includes('library') &&
+            !lk.includes('specification') &&
             lv !== 'download' &&
             !lv.startsWith('http')
           ) {
             cleanedSpecs[k] = String(v);
           }
         }
+
+        if (Object.keys(cleanedSpecs).length < 2) return false;
         p.specs = cleanedSpecs;
 
         return true;

@@ -638,35 +638,68 @@ export default function ProductsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200/70 dark:divide-slate-800 text-xs">
-                  {products.map((p) => {
-                    const specsObj = p.specs && typeof p.specs === 'object' ? p.specs : {};
-                    const specEntries = Object.entries(specsObj).filter(
-                      ([k, v]) => 
-                        Boolean(k) && 
-                        Boolean(v) && 
-                        k.trim() !== '' && 
-                        k.trim() !== ':' && 
-                        String(v).trim() !== '' && 
-                        String(v).trim() !== ':' && 
-                        String(v).length < 150 &&
-                        !k.toLowerCase().includes('competitive') &&
-                        !k.toLowerCase().includes('year of establishment') &&
-                        !k.toLowerCase().includes('import market') &&
-                        !k.toLowerCase().includes('business type') &&
-                        !k.toLowerCase().includes('technical data') &&
-                        !k.toLowerCase().includes('datasheet') &&
-                        !k.toLowerCase().includes('brochure') &&
-                        !k.toLowerCase().includes('download') &&
-                        !k.toLowerCase().includes('document') &&
-                        String(v).toLowerCase() !== 'download' &&
-                        String(v).toLowerCase() !== 'download pdf' &&
-                        String(v).toLowerCase() !== 'view' &&
-                        String(v).toLowerCase() !== 'pdf' &&
-                        !String(v).toLowerCase().startsWith('http')
-                    );
+                  {products
+                    .filter((p) => {
+                      const specsObj = p.specs && typeof p.specs === 'object' ? p.specs : {};
+                      const count = Object.entries(specsObj).filter(
+                        ([k, v]) => 
+                          Boolean(k) && 
+                          Boolean(v) && 
+                          k.trim() !== '' && 
+                          k.trim() !== ':' && 
+                          String(v).trim() !== '' && 
+                          String(v).trim() !== ':' && 
+                          String(v).length < 150 &&
+                          !k.toLowerCase().includes('competitive') &&
+                          !k.toLowerCase().includes('year of establishment') &&
+                          !k.toLowerCase().includes('import market') &&
+                          !k.toLowerCase().includes('business type') &&
+                          !k.toLowerCase().includes('technical data') &&
+                          !k.toLowerCase().includes('datasheet') &&
+                          !k.toLowerCase().includes('brochure') &&
+                          !k.toLowerCase().includes('download') &&
+                          !k.toLowerCase().includes('document') &&
+                          !k.toLowerCase().includes('library') &&
+                          !k.toLowerCase().includes('specification') &&
+                          String(v).toLowerCase() !== 'download' &&
+                          String(v).toLowerCase() !== 'download pdf' &&
+                          String(v).toLowerCase() !== 'view' &&
+                          String(v).toLowerCase() !== 'pdf' &&
+                          !String(v).toLowerCase().startsWith('http')
+                      ).length;
+                      return count >= 2;
+                    })
+                    .map((p) => {
+                      const specsObj = p.specs && typeof p.specs === 'object' ? p.specs : {};
+                      const specEntries = Object.entries(specsObj).filter(
+                        ([k, v]) => 
+                          Boolean(k) && 
+                          Boolean(v) && 
+                          k.trim() !== '' && 
+                          k.trim() !== ':' && 
+                          String(v).trim() !== '' && 
+                          String(v).trim() !== ':' && 
+                          String(v).length < 150 &&
+                          !k.toLowerCase().includes('competitive') &&
+                          !k.toLowerCase().includes('year of establishment') &&
+                          !k.toLowerCase().includes('import market') &&
+                          !k.toLowerCase().includes('business type') &&
+                          !k.toLowerCase().includes('technical data') &&
+                          !k.toLowerCase().includes('datasheet') &&
+                          !k.toLowerCase().includes('brochure') &&
+                          !k.toLowerCase().includes('download') &&
+                          !k.toLowerCase().includes('document') &&
+                          !k.toLowerCase().includes('library') &&
+                          !k.toLowerCase().includes('specification') &&
+                          String(v).toLowerCase() !== 'download' &&
+                          String(v).toLowerCase() !== 'download pdf' &&
+                          String(v).toLowerCase() !== 'view' &&
+                          String(v).toLowerCase() !== 'pdf' &&
+                          !String(v).toLowerCase().startsWith('http')
+                      );
 
-                    return (
-                      <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                      return (
+                        <tr key={p.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
                         {/* Product / Image */}
                         <td className="py-4 px-4 align-top">
                           <div className="flex items-start gap-3">
@@ -745,21 +778,17 @@ export default function ProductsPage() {
 
                         {/* Technical Specifications */}
                         <td className="py-4 px-4 align-top">
-                          {specEntries.length > 0 ? (
-                            <div className="flex flex-wrap gap-1.5">
-                              {specEntries.map(([k, v]) => (
-                                <span 
-                                  key={k} 
-                                  className="inline-flex items-center gap-1 text-[11px] px-2 py-1 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-md border border-slate-200 dark:border-slate-700/80 shadow-2xs leading-none"
-                                >
-                                  <span className="text-slate-500 dark:text-slate-400 font-medium">{k}:</span> 
-                                  <strong className="text-slate-900 dark:text-slate-100 font-bold">{v}</strong>
-                                </span>
-                              ))}
-                            </div>
-                          ) : (
-                            <span className="text-slate-400 italic text-[11px]">Specification matrix verified on original TDS</span>
-                          )}
+                          <div className="flex flex-wrap gap-1.5">
+                            {specEntries.map(([k, v]) => (
+                              <span 
+                                key={k} 
+                                className="inline-flex items-center gap-1 text-[11px] px-2 py-1 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-md border border-slate-200 dark:border-slate-700/80 shadow-2xs leading-none"
+                              >
+                                <span className="text-slate-500 dark:text-slate-400 font-medium">{k}:</span> 
+                                <strong className="text-slate-900 dark:text-slate-100 font-bold">{v}</strong>
+                              </span>
+                            ))}
+                          </div>
                         </td>
 
                         {/* Actions */}
