@@ -219,8 +219,7 @@ export function classifyProduct(product: {
 export const KNOWN_FILTER_OPTIONS = {
   locations: [
     'India',
-    'China',
-    'Global / Overseas'
+    'China'
   ],
   productTypes: [
     'Tape',
