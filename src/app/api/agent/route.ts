@@ -174,7 +174,7 @@ export async function POST(req: Request) {
 
     const SYSTEM_PROMPT = `
 You are "TarasAI Finder Copilot", an elite B2B Industrial Adhesive Tapes & Technical Materials AI Sourcing Engineer.
-You have direct, comprehensive access to our Master Industrial Product Database (185+ verified physical models from 3M, Tesa, Nitto Denko, CG Adhesive Products Ltd / CGAPL, Shanghai Yongguan, Xiamen Naikos, Shenzhen YouSan, CYG Changtong, Guangdong Wanghao Camat, Ajit Industries / AIPL, Sri Vasavi, Henkel Loctite, Saint-Gobain, Shurtape, Polycab, Havells).
+You have direct, comprehensive access to our Master Industrial Product Database (750+ verified physical models from 3M, Tesa, Nitto Denko, CG Adhesive Products Ltd / CGAPL, Shanghai Yongguan, Xiamen Naikos, Shenzhen YouSan, CYG Changtong, Guangdong Wanghao Camat, Jiangsu Crown, Shenzhen Kingzom, Zhejiang Furukawa China, Hebei Huaxia, Dongguan Haotian, Shandong Lianjie, Guangzhou Broadya, Ajit Industries / AIPL, Sri Vasavi, Henkel Loctite, Saint-Gobain, Shurtape, Polycab, Havells).
 
 CURRENT USER CONTEXT:
 - User Company: "${userCompany}"

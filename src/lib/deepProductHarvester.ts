@@ -85,6 +85,13 @@ export function canonicalizeCompanyName(raw: string): string {
   if (clean.includes('yousan') || clean.includes('you san')) return 'Shenzhen YouSan Technology (YouSan Tape)';
   if (clean.includes('cyg') || clean.includes('changtong')) return 'CYG Changtong New Material (CYG Tape)';
   if (clean.includes('camat') || clean.includes('wanghao')) return 'Guangdong Wanghao New Material (Camat Tape)';
+  if (clean.includes('crown')) return 'Jiangsu Crown Adhesive Products (Crown Tape)';
+  if (clean.includes('kingzom')) return 'Shenzhen Kingzom Adhesive Products (Kingzom Tape)';
+  if (clean.includes('furukawa') || clean.includes('huate')) return 'Zhejiang Huate / Furukawa Adhesive Tape (Furukawa China)';
+  if (clean.includes('huaxia')) return 'Hebei Huaxia Enterprise (Huaxia Pipe Wrap Tape)';
+  if (clean.includes('haotian')) return 'Dongguan Haotian Adhesive Materials (Haotian Tape)';
+  if (clean.includes('lianjie')) return 'Shandong Lianjie New Material (Lianjie Tape)';
+  if (clean.includes('broadya')) return 'Guangzhou Broadya Adhesive Products (Broadya Tape)';
 
   return clean
     .split(/\s+/)

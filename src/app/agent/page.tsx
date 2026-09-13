@@ -131,14 +131,14 @@ export default function FinderPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'ai',
-      text: `👋 **Welcome, ${companyName}!**\n\nI am your **AI Materials & Tape Sourcing Copilot**, trained on our **Master Database of 185+ verified industrial specifications** (3M, Tesa, CGAPL, Shanghai Yongguan, Xiamen Naikos, Shenzhen YouSan, CYG Changtong, Wanghao Camat, Nitto, AIPL, Sri Vasavi, Henkel Loctite, Shurtape, Saint-Gobain).\n\nBased on your manufacturing profile (**${userIndustry}**), tell me what application, region/origin, or technical parameters you are sourcing (e.g. *Indian Class H tapes, Chinese acrylic foam, German double-sided PET, temperature rating, substrate material*).`,
+      text: `👋 **Welcome, ${companyName}!**\n\nI am your **AI Materials & Tape Sourcing Copilot**, trained on our **Master Database of 750+ verified industrial specifications** across premier global and Chinese manufacturers (3M, Tesa, CGAPL, Shanghai Yongguan, Xiamen Naikos, Shenzhen YouSan, CYG Changtong, Wanghao Camat, Jiangsu Crown, Shenzhen Kingzom, Zhejiang Furukawa China, Hebei Huaxia, Dongguan Haotian, Shandong Lianjie, Guangzhou Broadya, Nitto, AIPL, Sri Vasavi, Henkel Loctite, Shurtape, Saint-Gobain).\n\nBased on your manufacturing profile (**${userIndustry}**), tell me what application, region/origin, or technical parameters you are sourcing (e.g. *Indian Class H tapes, Chinese acrylic foam, German double-sided PET, temperature rating, substrate material*).`,
       options: [
         "Class H High Temp Insulation (260°C)",
         "Double-Sided Acrylic Foam VHB",
         "Wave Solder Kapton Polyimide",
         "Aluminium Foil HVAC & Shielding",
         "Indian Manufacturers for Class H",
-        "Chinese VHB & Kapton Suppliers"
+        "Chinese VHB, Aerogel & Kapton Suppliers"
       ]
     }
   ]);
@@ -525,7 +525,7 @@ export default function FinderPage() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
               <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl rounded-bl-none p-4 shadow-sm flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
                 <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
-                <span>Analyzing 185+ master TDS models and matching engineering parameters...</span>
+                <span>Analyzing 750+ master TDS models and matching engineering parameters...</span>
               </div>
             </motion.div>
           )}

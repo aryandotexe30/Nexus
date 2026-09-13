@@ -164,7 +164,7 @@ export function classifyProduct(product: {
   let location = 'Global / Other';
   if (compLower.includes('cgapl') || compLower.includes('cg adhesive') || compLower.includes('ajit') || compLower.includes('aipl') || compLower.includes('vasavi') || compLower.includes('satl') || compLower.includes('havell') || compLower.includes('polycab') || compLower.includes('bagla') || compLower.includes('pidilite') || compLower.includes('cosmos') || compLower.includes('india')) {
     location = 'India';
-  } else if (compLower.includes('yongguan') || compLower.includes('ygtape') || compLower.includes('naikos') || compLower.includes('yousan') || compLower.includes('cyg') || compLower.includes('changtong') || compLower.includes('camat') || compLower.includes('wanghao') || compLower.includes('china')) {
+  } else if (compLower.includes('yongguan') || compLower.includes('ygtape') || compLower.includes('naikos') || compLower.includes('yousan') || compLower.includes('cyg') || compLower.includes('changtong') || compLower.includes('camat') || compLower.includes('wanghao') || compLower.includes('crown') || compLower.includes('kingzom') || compLower.includes('furukawa') || compLower.includes('huate') || compLower.includes('huaxia') || compLower.includes('haotian') || compLower.includes('lianjie') || compLower.includes('broadya') || compLower.includes('china')) {
     location = 'China';
   } else if (compLower.includes('tesa') || compLower.includes('henkel') || compLower.includes('loctite') || compLower.includes('lohmann') || compLower.includes('advance') || compLower.includes('germany')) {
     location = 'Germany';
