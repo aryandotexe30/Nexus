@@ -155,54 +155,44 @@ export async function POST(req: Request) {
 - Link: ${p.productUrl || ''}`;
     }).join('\n\n');
 
-    // Format Conversation History
-    let filteredMessages = messages;
-    if (messages.length > 0 && messages[0].role === 'ai' && messages[0].text.includes("Welcome to")) {
-      filteredMessages = messages.slice(1);
-    }
-
-    const formattedMessages = filteredMessages.map((msg: any) => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }]
+    // Format Conversation History cleanly
+    const formattedMessages = messages.map((msg: any) => ({
+      role: msg.role === 'user' ? 'User' : 'Assistant',
+      text: msg.text
     }));
 
-    const historyPrompt = formattedMessages.map((m: any) => `${m.role}: ${m.parts[0].text}`).join("\n");
+    const historyPrompt = formattedMessages.map((m: any) => `${m.role}: ${m.text}`).join("\n\n");
 
     const SYSTEM_PROMPT = `
 You are "TarasAI Finder Copilot", an elite B2B Industrial Adhesive Tapes & Technical Materials AI Sourcing Engineer.
 You have direct, comprehensive access to our Master Industrial Product Database (160+ verified physical models from 3M, Tesa, Nitto Denko, CG Adhesive Products Ltd / CGAPL, Ajit Industries / AIPL, Sri Vasavi, Henkel Loctite, Saint-Gobain, Shurtape, Polycab, Havells).
 
-CURRENT USER PROFILE:
+CURRENT USER CONTEXT:
 - User Company: "${userCompany}"
-- Company Industry / Sector: "${userIndustry}"
+- Industry Sector: "${userIndustry}"
 
-YOUR CORE WORKFLOW:
-1. COMPANY & INDUSTRY SOURCING AWARENESS:
-   - When suggesting products or greeting the user, align your recommendations directly with the engineering demands of ${userCompany}'s sector (${userIndustry}).
-   - For example:
-     * Automotive: Recommend wire harnessing tapes (tesa 51608/51036), acrylic foam exterior bonding (3M 4229P / VHB 4910), high-temp powder coating masking.
-     * Electronics & PCB: Recommend Kapton polyimide (CGAPL 7011, 3M 5413), thermally conductive interface tapes (CGAPL 9500), copper foil EMI shielding (CGAPL ET9110).
-     * Electrical & Transformers: Recommend Class H glass cloth (CGAPL 8415, Nitto 188UL), Nomex aramid paper (CGAPL 6512), self-fusing silicone busbar tapes (CGAPL 7500).
-     * HVAC & Appliances: Recommend pure aluminium foil tapes (CGAPL ET900 HT, AIPL Aluminum, Shurtape AF 100), heavy duct sealing.
+CRITICAL SOURCING RULES:
+1. ALWAYS DELIVER PRODUCT RECOMMENDATIONS IMMEDIATELY:
+   - When the user asks for a tape, gives a specification, selects an option chip, or describes an application, you MUST DIRECTLY RETURN 2-4 MATCHING PRODUCTS in the "recommendations" array from the MASTER DATABASE below.
+   - DO NOT trap the user in a question loop or ask clarifying questions without providing recommendations. Present the best matching tapes immediately!
+   - In "text", provide a thorough technical comparison explaining backing material, adhesive chemistry, temperature rating, and why these models fit the stated requirements.
 
-2. SUPERVISED TECHNICAL GROUNDING:
-   - Ground all product recommendations exclusively in the MASTER DATABASE PRODUCTS provided below.
-   - NEVER hallucinate fake product codes or companies.
-   - For each recommended tape, provide:
-     * Model name and real manufacturer
-     * Backing substrate and adhesive chemistry
-     * Temperature rating and certifications (UL, RDSO, CLW)
-     * Technical Pros (2-3 strengths)
-     * Engineering Cons (1-2 limitations or substrate caveats)
-     * Clear application verdict
+2. GROUNDING & SPECIFICATIONS:
+   - Ground all recommendations in real models present in the database below (e.g. CGAPL 7011, 3M 5413, tesa 4965, 3M VHB 4910, AIPL 9080, CGAPL 8415, Nitto 188UL, etc.).
+   - For every product in "recommendations", provide:
+     * Exact name and real manufacturer
+     * Key technical specs (Backing, Adhesive, Thickness, Temp Rating)
+     * 2-3 Pros (strengths)
+     * 1-2 Cons (limitations / engineering caveats)
+     * 1-sentence engineering verdict
 
-3. INTERACTIVE FOLLOW-UP OPTIONS:
-   - Always output 3-5 concise, clickable multiple-choice option strings in the "options" array so the user can quickly specify technical requirements (e.g. ["Class H (Up to 260°C)", "Double Sided Foam", "Aluminium Foil Backing", "Request Anonymous RFQ", "Other"]).
+3. NEXT-STEP OPTIONS:
+   - In "options", provide 3-4 actionable next steps or comparison options (e.g. ["Request Anonymous RFQ", "Compare with 3M Equivalent", "View Full TDS Specs", "Check Other Temperature Classes"]).
 
 JSON OUTPUT FORMAT:
 Output your entire response strictly as valid JSON matching this schema:
 {
-  "type": "clarification" | "recommendation" | "comparison",
+  "type": "recommendation" | "comparison",
   "text": "Comprehensive technical markdown explanation covering materials chemistry, substrate adhesion, thermal performance, and comparisons.",
   "options": ["Option 1", "Option 2", "Option 3", "Other"],
   "recommendations": [
@@ -229,7 +219,7 @@ CHAT HISTORY:
 ${historyPrompt}`;
 
     const schemaProps = {
-      type: { type: Type.STRING, description: "clarification, recommendation, or comparison" },
+      type: { type: Type.STRING, description: "recommendation or comparison" },
       text: { type: Type.STRING, description: "Comprehensive markdown response with technical analysis and comparison tables." },
       options: { 
         type: Type.ARRAY, 
@@ -278,11 +268,26 @@ ${historyPrompt}`;
       });
     }
 
+    // Guarantee that recommendations are never empty!
+    let finalRecs = data.recommendations || [];
+    if (finalRecs.length === 0 && topProducts.length > 0) {
+      finalRecs = topProducts.slice(0, 3).map((p: any) => ({
+        name: p.name,
+        companyName: p.companyName,
+        application: p.application || "General Industrial",
+        specs: p.specs || {},
+        pros: ["Verified physical model in master database", "Industrial grade performance"],
+        cons: ["Confirm substrate compatibility prior to bulk order"],
+        verdict: `Recommended model from ${p.companyName}`,
+        productUrl: p.productUrl
+      }));
+    }
+
     return NextResponse.json({
       success: true,
       text: data.text || "Here are the matching verified specifications from our master database:",
-      options: data.options || ["Request RFQ", "Compare Models", "Check Temperature Rating", "Other"],
-      recommendations: data.recommendations || []
+      options: data.options || ["Request Anonymous RFQ", "Compare Models", "View Full TDS Specs", "Other"],
+      recommendations: finalRecs
     });
 
   } catch (error: any) {
