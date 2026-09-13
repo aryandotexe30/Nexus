@@ -652,7 +652,17 @@ export default function ProductsPage() {
                         !k.toLowerCase().includes('competitive') &&
                         !k.toLowerCase().includes('year of establishment') &&
                         !k.toLowerCase().includes('import market') &&
-                        !k.toLowerCase().includes('business type')
+                        !k.toLowerCase().includes('business type') &&
+                        !k.toLowerCase().includes('technical data') &&
+                        !k.toLowerCase().includes('datasheet') &&
+                        !k.toLowerCase().includes('brochure') &&
+                        !k.toLowerCase().includes('download') &&
+                        !k.toLowerCase().includes('document') &&
+                        String(v).toLowerCase() !== 'download' &&
+                        String(v).toLowerCase() !== 'download pdf' &&
+                        String(v).toLowerCase() !== 'view' &&
+                        String(v).toLowerCase() !== 'pdf' &&
+                        !String(v).toLowerCase().startsWith('http')
                     );
 
                     return (

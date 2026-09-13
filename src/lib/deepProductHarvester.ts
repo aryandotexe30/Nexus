@@ -701,6 +701,12 @@ export function isValidProduct(name: string, urlStr?: string, specsCount: number
     lowerName === 'page not found' || lowerName.includes('404') ||
     lowerName === 'sitemap' || lowerName === 'search' || lowerName === 'cart' ||
     lowerName === 'showroom' || lowerName.includes('showroom') ||
+    lowerName.includes('document library') || lowerName.includes('media library') ||
+    lowerName.includes('resource library') || lowerName.includes('document center') ||
+    lowerName.startsWith('browse ') || lowerName.includes('browse our') ||
+    lowerName.includes('download library') || lowerName.includes('downloads') ||
+    lowerName.includes('technical data sheet') || lowerName.includes('datasheet library') ||
+    lowerName.includes('brochure library') || lowerName.includes('case studies') ||
     lowerName === 'company profile' || lowerName.includes('company profile') || lowerName.includes('corporate profile') ||
     lowerName.includes('about the company') || lowerName.includes('our story') ||
     lowerName.includes('agm report') || lowerName.includes('annual report') || lowerName.includes('financial report') ||

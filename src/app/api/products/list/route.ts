@@ -62,6 +62,17 @@ export async function GET(req: Request) {
             { name: { contains: ' in Delhi', mode: 'insensitive' } },
             { name: { contains: ' in Chennai', mode: 'insensitive' } },
             { name: { contains: ' in India', mode: 'insensitive' } },
+            { name: { contains: 'Document Library', mode: 'insensitive' } },
+            { name: { contains: 'Document Center', mode: 'insensitive' } },
+            { name: { contains: 'Media Library', mode: 'insensitive' } },
+            { name: { contains: 'Resource Library', mode: 'insensitive' } },
+            { name: { startsWith: 'Browse ', mode: 'insensitive' } },
+            { name: { contains: 'Download', mode: 'insensitive' } },
+            { name: { contains: 'Brochure', mode: 'insensitive' } },
+            { name: { contains: 'Datasheet', mode: 'insensitive' } },
+            { name: { contains: 'technical data sheet', mode: 'insensitive' } },
+            { name: { contains: 'Case Studies', mode: 'insensitive' } },
+            { name: { contains: 'Press Release', mode: 'insensitive' } },
             { name: { contains: 'procurement guide', mode: 'insensitive' } },
             { name: { contains: 'manufacturers in', mode: 'insensitive' } },
             { name: { contains: 'suppliers in', mode: 'insensitive' } },
@@ -98,6 +109,15 @@ export async function GET(req: Request) {
         { name: { equals: 'Video', mode: 'insensitive' } },
         { name: { equals: 'Gallery', mode: 'insensitive' } },
         { name: { equals: 'Showroom', mode: 'insensitive' } },
+        { name: { contains: 'Document Library', mode: 'insensitive' } },
+        { name: { contains: 'Document Center', mode: 'insensitive' } },
+        { name: { contains: 'Media Library', mode: 'insensitive' } },
+        { name: { contains: 'Resource Library', mode: 'insensitive' } },
+        { name: { startsWith: 'Browse ', mode: 'insensitive' } },
+        { name: { contains: 'Download', mode: 'insensitive' } },
+        { name: { contains: 'Brochure', mode: 'insensitive' } },
+        { name: { contains: 'Datasheet', mode: 'insensitive' } },
+        { name: { contains: 'technical data sheet', mode: 'insensitive' } },
         { name: { contains: 'Company Profile', mode: 'insensitive' } },
         { name: { contains: 'Corporate Profile', mode: 'insensitive' } },
         { name: { contains: 'AGM Report', mode: 'insensitive' } },
@@ -214,7 +234,36 @@ export async function GET(req: Request) {
         });
         if (hasCorporateSpecs) return false;
 
-        return isValidProduct(p.name, p.productUrl || '', specKeys.length);
+        // Reject if specs are download/document library links
+        const downloadSpecsCount = specKeys.filter(k => {
+          const lk = k.toLowerCase();
+          const lv = String(specsObj[k] || '').toLowerCase();
+          return lk.includes('technical data') || lk.includes('datasheet') || lk.includes('download') || lk.includes('brochure') || lv === 'download' || lv.includes('download pdf');
+        }).length;
+        if (downloadSpecsCount > 1) return false;
+
+        if (!isValidProduct(p.name, p.productUrl || '', specKeys.length)) return false;
+
+        // Clean any remaining non-technical spec keys
+        const cleanedSpecs: Record<string, string> = {};
+        for (const [k, v] of Object.entries(specsObj)) {
+          const lk = k.toLowerCase();
+          const lv = String(v || '').toLowerCase();
+          if (
+            !lk.includes('technical data') &&
+            !lk.includes('datasheet') &&
+            !lk.includes('brochure') &&
+            !lk.includes('download') &&
+            !lk.includes('document') &&
+            lv !== 'download' &&
+            !lv.startsWith('http')
+          ) {
+            cleanedSpecs[k] = String(v);
+          }
+        }
+        p.specs = cleanedSpecs;
+
+        return true;
       });
 
       // Also merge verified enterprise catalogs to guarantee immediate zero-fail search coverage
