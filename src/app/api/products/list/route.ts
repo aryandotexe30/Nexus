@@ -214,18 +214,22 @@ export async function GET(req: Request) {
         searchTerms.push('Duct', 'Cloth', 'Waterproof', 'Sealing', 'PC 600', 'PC 957', '3939', '4651');
       }
 
-      // Add individual word tokens (longer than 2 characters)
-      const words = lowerSearch.split(/[\s\-_\/]+/).filter(w => w.length >= 3 && !['tape', 'tapes', 'and', 'for', 'the', 'with'].includes(w));
-      words.forEach(w => searchTerms.push(w));
+      if (lowerSearch.startsWith('tar-') || lowerSearch.startsWith('nx-')) {
+        searchTerms.push(search.trim());
+      } else {
+        // Add individual word tokens (longer than 2 characters)
+        const words = lowerSearch.split(/[\s\-_\/]+/).filter(w => w.length >= 3 && !['tape', 'tapes', 'and', 'for', 'the', 'with'].includes(w));
+        words.forEach(w => searchTerms.push(w));
 
-      const uniqueTerms = Array.from(new Set(searchTerms));
+        const uniqueTerms = Array.from(new Set(searchTerms));
 
-      where.OR = uniqueTerms.flatMap(term => [
-        { name: { contains: term, mode: 'insensitive' } },
-        { application: { contains: term, mode: 'insensitive' } },
-        { market: { contains: term, mode: 'insensitive' } },
-        { companyName: { contains: term, mode: 'insensitive' } }
-      ]);
+        where.OR = uniqueTerms.flatMap(term => [
+          { name: { contains: term, mode: 'insensitive' } },
+          { application: { contains: term, mode: 'insensitive' } },
+          { market: { contains: term, mode: 'insensitive' } },
+          { companyName: { contains: term, mode: 'insensitive' } }
+        ]);
+      }
     }
 
     let products: any[] = [];
@@ -320,9 +324,18 @@ export async function GET(req: Request) {
           }
 
           if (search) {
-            const itemText = `${item.name} ${item.application || ''} ${item.market || ''} ${catCompany} ${JSON.stringify(item.specs || {})}`.toLowerCase();
-            const matchesAnyTerm = searchTerms.some(term => itemText.includes(term.toLowerCase()));
-            if (!matchesAnyTerm) continue;
+            const { generateProductSerialCode } = await import('@/lib/productClusterEngine');
+            const itemSerial = generateProductSerialCode(item).toLowerCase();
+            const lowerQ = search.toLowerCase().trim();
+            const isSerialSearch = lowerQ.startsWith('tar-') || lowerQ.startsWith('nx-');
+
+            if (isSerialSearch) {
+              if (!itemSerial.includes(lowerQ)) continue;
+            } else {
+              const itemText = `${item.name} ${item.application || ''} ${item.market || ''} ${catCompany} ${itemSerial} ${JSON.stringify(item.specs || {})}`.toLowerCase();
+              const matchesAnyTerm = searchTerms.some(term => itemText.includes(term.toLowerCase()));
+              if (!matchesAnyTerm) continue;
+            }
           }
 
           const itemPrice = item.price || item.specs?.['Indicative Price'] || item.specs?.['Price'] || item.specs?.['Catalog Price'];
@@ -363,8 +376,9 @@ export async function GET(req: Request) {
       const merged = Array.from(productMap.values());
 
       const { classifyProduct, KNOWN_FILTER_OPTIONS } = await import('@/lib/productClassifier');
+      const { generateProductSerialCode } = await import('@/lib/productClusterEngine');
 
-      // Enhance each product with normalized classification
+      // Enhance each product with normalized classification and Tarasai serial code
       const classifiedMerged = merged.map((p: any) => {
         const classification = classifyProduct({
           name: p.name,
@@ -374,8 +388,10 @@ export async function GET(req: Request) {
           market: p.market,
           industry: p.industry
         });
+        const serialCode = generateProductSerialCode(p);
         return {
           ...p,
+          serialCode,
           classification
         };
       });
@@ -405,10 +421,24 @@ export async function GET(req: Request) {
         filtered = filtered.filter((p: any) => p.classification.tempRange.toLowerCase() === tempRange.toLowerCase());
       }
 
-      // Smart Relevance Scoring
+      // Smart Relevance & Serial Code Matching
       if (search) {
-        const lowerQ = search.toLowerCase();
+        const lowerQ = search.toLowerCase().trim();
+        const isSerialSearch = lowerQ.startsWith('tar-') || lowerQ.startsWith('nx-');
+
+        if (isSerialSearch) {
+          filtered = filtered.filter((p: any) => {
+            const pSerial = (p.serialCode || '').toLowerCase();
+            return pSerial.includes(lowerQ);
+          });
+        }
+
         filtered.sort((a: any, b: any) => {
+          const aSerial = (a.serialCode || '').toLowerCase();
+          const bSerial = (b.serialCode || '').toLowerCase();
+          if (aSerial === lowerQ && bSerial !== lowerQ) return -1;
+          if (bSerial === lowerQ && aSerial !== lowerQ) return 1;
+
           const aName = a.name.toLowerCase();
           const bName = b.name.toLowerCase();
 

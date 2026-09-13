@@ -299,3 +299,25 @@ export function clusterProducts(products: any[]): UnifiedGroupProduct[] {
 
   return unifiedProducts;
 }
+
+/**
+ * Calculates the exact Tarasai group serial code for any given product
+ */
+export function generateProductSerialCode(p: any): string {
+  const specs = (p.specs && typeof p.specs === 'object') ? p.specs : {};
+  const name = p.name || '';
+  const backing = specs['Backing material'] || specs['Carrier'] || specs['Composition'] || '';
+  const adhesive = specs['Adhesive type'] || specs['Adhesive'] || specs['Binder'] || '';
+  const thickness = specs['Total thickness'] || specs['Thickness'] || '';
+  const temp = specs['Temperature resistance'] || specs['Temperature'] || '';
+  const app = p.application || '';
+
+  const catInfo = extractCategoryCode(name, backing, app);
+  const adhCode = extractAdhesiveCode(adhesive, specs);
+  const thickCode = extractThicknessMicrons(thickness, name);
+  const tempCode = extractTempCode(temp, name);
+
+  const clusterKey = `${catInfo.code}-${adhCode}-${thickCode}-${tempCode}`;
+  const groupHash = computeGroupHash(clusterKey);
+  return `TAR-${catInfo.code}-${adhCode}-${thickCode}-${tempCode}-${groupHash}`;
+}

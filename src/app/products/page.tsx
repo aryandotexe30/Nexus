@@ -20,6 +20,7 @@ import Link from "next/link";
 
 interface ExtractedProduct {
   id: string;
+  serialCode?: string;
   companyName: string;
   companyUrl?: string;
   name: string;
@@ -496,13 +497,13 @@ export default function ProductsPage() {
             </div>
 
             {/* Search bar inside products */}
-            <div className="relative w-full md:w-72">
+            <div className="relative w-full md:w-80">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search model, spec, application..."
+                placeholder="Search model, Tarasai serial (TAR-...), spec..."
                 className="w-full pl-9 pr-4 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
@@ -599,9 +600,9 @@ export default function ProductsPage() {
           )}
         </div>
 
-        {/* Products Table */}
+          {/* Products Table */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
-          <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-slate-900 dark:text-white text-sm">
                 Extracted Products ({totalCount})
@@ -611,6 +612,21 @@ export default function ProductsPage() {
                 Verified Specs
               </span>
             </div>
+            {searchTerm.trim().toUpperCase().startsWith("TAR-") && (
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 rounded-lg text-xs">
+                <Network className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                <span className="font-semibold text-blue-900 dark:text-blue-200">
+                  Group Filter: <code className="font-mono font-bold">{searchTerm.trim()}</code>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  className="ml-1 text-[11px] font-bold text-blue-600 hover:text-blue-800 dark:text-blue-400 underline cursor-pointer"
+                >
+                  Clear
+                </button>
+              </div>
+            )}
           </div>
 
           {isLoadingList ? (
@@ -717,6 +733,19 @@ export default function ProductsPage() {
                               </div>
                             )}
                             <div className="min-w-0 flex-1">
+                              {p.serialCode && (
+                                <div className="mb-1">
+                                  <button
+                                    type="button"
+                                    onClick={() => setSearchTerm(p.serialCode || '')}
+                                    className="inline-flex items-center gap-1 font-mono font-bold text-[10px] px-2 py-0.5 bg-slate-900 hover:bg-blue-600 dark:bg-slate-100 dark:hover:bg-blue-500 text-white dark:text-slate-900 dark:hover:text-white rounded tracking-wider shadow-2xs transition-colors cursor-pointer"
+                                    title={`Filter all products grouped under Tarasai serial code ${p.serialCode}`}
+                                  >
+                                    <Network className="w-2.5 h-2.5 opacity-70" />
+                                    <span>{p.serialCode}</span>
+                                  </button>
+                                </div>
+                              )}
                               <div className="flex flex-wrap items-center gap-1.5">
                                 <span className="font-bold text-sm text-slate-900 dark:text-white leading-tight">
                                   {p.name}
