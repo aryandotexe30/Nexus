@@ -128,13 +128,9 @@ export async function POST(req: Request) {
       if ((queryLower.includes('auto') || queryLower.includes('automotive')) && (p.market?.toLowerCase().includes('auto') || p.industry?.toLowerCase().includes('auto'))) score += 35;
       if ((queryLower.includes('transformer') || queryLower.includes('electrical') || queryLower.includes('class h') || queryLower.includes('class f')) && (p.market?.toLowerCase().includes('electr') || p.application?.toLowerCase().includes('transformer'))) score += 35;
 
-      // Geographic Origin Boosts
-      if (queryLower.includes('india') && c.location === 'India') score += 35;
-      if (queryLower.includes('china') && c.location === 'China') score += 35;
-      if (queryLower.includes('germany') && c.location === 'Germany') score += 35;
-      if ((queryLower.includes('us') || queryLower.includes('usa') || queryLower.includes('america')) && c.location === 'United States') score += 35;
-      if (queryLower.includes('japan') && c.location === 'Japan') score += 35;
-      if (queryLower.includes('france') && c.location === 'France') score += 35;
+      // Manufacturing Plant Location Boosts
+      if ((queryLower.includes('india') || queryLower.includes('domestic') || queryLower.includes('indian plant') || queryLower.includes('local plant')) && c.location === 'India') score += 35;
+      if ((queryLower.includes('china') || queryLower.includes('chinese plant') || queryLower.includes('import') || queryLower.includes('shenzhen') || queryLower.includes('shanghai')) && c.location === 'China') score += 35;
 
       // Company industry affinity boost
       if (userIndustry && p.market && userIndustry.toLowerCase().includes(p.market.toLowerCase().slice(0, 5))) {
@@ -155,7 +151,7 @@ export async function POST(req: Request) {
       const c = p.classification;
       return `[Product #${i+1}]
 - Model: ${p.name} (${p.companyName})
-- Origin: ${c.location}
+- Manufacturing Plant: ${c.location}
 - Type: ${c.productType} | Side: ${c.sideType}
 - Backing: ${c.backingType} | Adhesive: ${c.adhesionType}
 - Thickness: ${c.thicknessCategory} | Temp Rating: ${c.tempRange}

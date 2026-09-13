@@ -160,20 +160,38 @@ export function classifyProduct(product: {
     tempRange = 'Standard (< 80°C)';
   }
 
-  // 7. Geographic Location / Country of Origin
-  let location = 'Global / Other';
-  if (compLower.includes('cgapl') || compLower.includes('cg adhesive') || compLower.includes('ajit') || compLower.includes('aipl') || compLower.includes('vasavi') || compLower.includes('satl') || compLower.includes('havell') || compLower.includes('polycab') || compLower.includes('bagla') || compLower.includes('pidilite') || compLower.includes('cosmos') || compLower.includes('india')) {
-    location = 'India';
-  } else if (compLower.includes('yongguan') || compLower.includes('ygtape') || compLower.includes('naikos') || compLower.includes('yousan') || compLower.includes('cyg') || compLower.includes('changtong') || compLower.includes('camat') || compLower.includes('wanghao') || compLower.includes('crown') || compLower.includes('kingzom') || compLower.includes('furukawa') || compLower.includes('huate') || compLower.includes('huaxia') || compLower.includes('haotian') || compLower.includes('lianjie') || compLower.includes('broadya') || compLower.includes('china')) {
+  // 7. Manufacturing Plant Location
+  let location = 'India';
+  if (
+    compLower.includes('yongguan') || compLower.includes('ygtape') ||
+    compLower.includes('naikos') || compLower.includes('yousan') ||
+    compLower.includes('cyg') || compLower.includes('changtong') ||
+    compLower.includes('camat') || compLower.includes('wanghao') ||
+    compLower.includes('crown') || compLower.includes('kingzom') ||
+    compLower.includes('furukawa') || compLower.includes('huate') ||
+    compLower.includes('huaxia') || compLower.includes('haotian') ||
+    compLower.includes('lianjie') || compLower.includes('broadya') ||
+    compLower.includes('china')
+  ) {
     location = 'China';
-  } else if (compLower.includes('tesa') || compLower.includes('henkel') || compLower.includes('loctite') || compLower.includes('lohmann') || compLower.includes('advance') || compLower.includes('germany')) {
-    location = 'Germany';
-  } else if (compLower.includes('3m') || compLower.includes('shurtape') || compLower.includes('avery') || compLower.includes('intertape') || compLower.includes('ipg') || compLower.includes('scapa') || compLower.includes('united states') || compLower.includes('usa')) {
-    location = 'United States';
-  } else if (compLower.includes('nitto') || compLower.includes('japan')) {
-    location = 'Japan';
-  } else if (compLower.includes('saint-gobain') || compLower.includes('saint gobain') || compLower.includes('france')) {
-    location = 'France';
+  } else if (
+    compLower.includes('cgapl') || compLower.includes('cg adhesive') ||
+    compLower.includes('ajit') || compLower.includes('aipl') ||
+    compLower.includes('vasavi') || compLower.includes('satl') ||
+    compLower.includes('havell') || compLower.includes('polycab') ||
+    compLower.includes('bagla') || compLower.includes('pidilite') ||
+    compLower.includes('cosmos') || compLower.includes('3m') ||
+    compLower.includes('tesa') || compLower.includes('henkel') ||
+    compLower.includes('loctite') || compLower.includes('saint-gobain') ||
+    compLower.includes('saint gobain') || compLower.includes('nitto') ||
+    compLower.includes('shurtape') || compLower.includes('avery') ||
+    compLower.includes('lohmann') || compLower.includes('advance') ||
+    compLower.includes('scapa') || compLower.includes('india')
+  ) {
+    location = 'India';
+  } else {
+    // Default to India for our database of 1200+ domestic manufacturing plant products
+    location = 'India';
   }
 
   const attributesList: string[] = [
@@ -202,11 +220,7 @@ export const KNOWN_FILTER_OPTIONS = {
   locations: [
     'India',
     'China',
-    'Germany',
-    'United States',
-    'Japan',
-    'France',
-    'Global / Other'
+    'Global / Overseas'
   ],
   productTypes: [
     'Tape',

@@ -78,13 +78,10 @@ interface ChatMessage {
 const getLocationBadge = (loc?: string) => {
   if (!loc) return null;
   switch (loc) {
-    case 'India': return '🇮🇳 India';
-    case 'China': return '🇨🇳 China';
-    case 'Germany': return '🇩🇪 Germany';
-    case 'United States': return '🇺🇸 USA';
-    case 'Japan': return '🇯🇵 Japan';
-    case 'France': return '🇫🇷 France';
-    default: return `🌐 ${loc}`;
+    case 'India': return '🇮🇳 Plant: India';
+    case 'China': return '🇨🇳 Plant: China';
+    case 'Global / Overseas': return '🌐 Global Plant';
+    default: return `🏭 Plant: ${loc}`;
   }
 };
 
@@ -593,14 +590,14 @@ export default function FinderPage() {
             </div>
 
             <div className="grid grid-cols-3 gap-1.5">
-              {/* Location / Country Filter */}
+              {/* Plant Location Filter */}
               <select
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
                 className="px-2 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-semibold text-slate-800 dark:text-slate-200 outline-none"
               >
-                <option value="ALL">All Origins</option>
-                {(filterOptions.locations || ['India', 'China', 'Germany', 'United States', 'Japan', 'France', 'Global / Other']).map((loc: string) => (
+                <option value="ALL">All Plants</option>
+                {(filterOptions.locations || ['India', 'China', 'Global / Overseas']).map((loc: string) => (
                   <option key={loc} value={loc}>{getLocationBadge(loc) || loc}</option>
                 ))}
               </select>

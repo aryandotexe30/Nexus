@@ -45,13 +45,10 @@ interface ExtractedProduct {
 const getLocationBadge = (loc?: string) => {
   if (!loc) return null;
   switch (loc) {
-    case 'India': return '🇮🇳 India';
-    case 'China': return '🇨🇳 China';
-    case 'Germany': return '🇩🇪 Germany';
-    case 'United States': return '🇺🇸 USA';
-    case 'Japan': return '🇯🇵 Japan';
-    case 'France': return '🇫🇷 France';
-    default: return `🌐 ${loc}`;
+    case 'India': return '🇮🇳 Plant: India';
+    case 'China': return '🇨🇳 Plant: China';
+    case 'Global / Overseas': return '🌐 Global Plant';
+    default: return `🏭 Plant: ${loc}`;
   }
 };
 
@@ -422,15 +419,15 @@ export default function ProductsPage() {
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-              {/* Origin / Location Filter */}
+              {/* Manufacturing Plant Location Filter */}
               <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                 <select
                   value={locationFilter}
                   onChange={(e) => setLocationFilter(e.target.value)}
                   className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none"
                 >
-                  <option value="ALL">All Origins</option>
-                  {(filterOptions.locations || ['India', 'China', 'Germany', 'United States', 'Japan', 'France', 'Global / Other']).map((loc: string) => (
+                  <option value="ALL">All Plant Locations</option>
+                  {(filterOptions.locations || ['India', 'China', 'Global / Overseas']).map((loc: string) => (
                     <option key={loc} value={loc}>
                       {getLocationBadge(loc) || loc} {filterOptions.facetCounts?.locations?.[loc] ? `(${filterOptions.facetCounts.locations[loc]})` : ''}
                     </option>
