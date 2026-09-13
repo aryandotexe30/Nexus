@@ -6,6 +6,49 @@ import prisma from "@/lib/prisma";
 import { fetchVerifiedInternetData, generateStructuredAIResponse } from "@/lib/searchProtocol";
 import { isValidProduct } from "@/lib/deepProductHarvester";
 
+export async function GET(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      select: {
+        id: true,
+        companyName: true,
+        industry: true,
+        isVerified: true,
+        role: true,
+        credits: true,
+        plan: true
+      }
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    const isAdmin = user.role === 'ADMIN';
+    const isVerified = user.isVerified || isAdmin;
+    const credits = isAdmin || user.plan === 'ENTERPRISE' ? 'Unlimited' : user.credits;
+
+    return NextResponse.json({
+      success: true,
+      isVerified,
+      credits,
+      rawCredits: user.credits,
+      plan: user.plan,
+      role: user.role,
+      companyName: user.companyName,
+      industry: user.industry
+    });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || 'Failed to fetch user status' }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -18,11 +61,43 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid messages array' }, { status: 400 });
     }
 
-    // Fetch user details for company-aware personalization
+    // Fetch user details for company-aware personalization, KYC verification, and credit checking
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
-      select: { companyName: true, industry: true, domain: true, gstNumber: true }
+      select: { 
+        id: true, 
+        companyName: true, 
+        industry: true, 
+        domain: true, 
+        gstNumber: true, 
+        isVerified: true, 
+        role: true, 
+        credits: true, 
+        plan: true 
+      }
     });
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 401 });
+    }
+
+    const isAdmin = user.role === 'ADMIN';
+
+    // 1. Enforce KYC Verification: Account must be verified or ADMIN
+    if (!user.isVerified && !isAdmin) {
+      return NextResponse.json({ 
+        error: 'KYC_UNVERIFIED', 
+        message: 'Your account KYC is currently unverified. Please complete company KYC verification in Settings to unlock the AI Materials Copilot.' 
+      }, { status: 403 });
+    }
+
+    // 2. Enforce Credits: Check if user has sufficient query credits
+    if (!isAdmin && user.plan !== 'ENTERPRISE' && user.credits <= 0) {
+      return NextResponse.json({ 
+        error: 'INSUFFICIENT_CREDITS', 
+        message: 'You have 0 Copilot credits remaining. Please upgrade your plan or purchase additional credits.' 
+      }, { status: 403 });
+    }
 
     const userCompany = companyContext?.companyName || user?.companyName || "Your Enterprise";
     const userIndustry = companyContext?.industry || user?.industry || "Industrial Manufacturing & Assembly";
@@ -269,8 +344,30 @@ ${historyPrompt}`;
           cons: ["Confirm substrate compatibility prior to bulk order"],
           verdict: `Recommended model from ${p.companyName}`,
           productUrl: p.productUrl
-        }))
+        })),
+        creditsRemaining: user.role === 'ADMIN' || user.plan === 'ENTERPRISE' ? 'Unlimited' : Math.max(0, user.credits - 1)
       });
+    }
+
+    // Deduct 1 credit for non-admin, non-enterprise users
+    let remainingCredits: number | string = 'Unlimited';
+    if (!isAdmin && user.plan !== 'ENTERPRISE') {
+      try {
+        const { logCreditTransaction } = await import('@/lib/audit');
+        await logCreditTransaction({
+          userId: user.id,
+          amount: -1,
+          type: 'AI_USAGE',
+          description: `Copilot Technical Query: "${latestUserMessage.substring(0, 45)}..."`
+        });
+        remainingCredits = Math.max(0, user.credits - 1);
+      } catch (creditErr) {
+        const updated = await prisma.user.update({
+          where: { id: user.id },
+          data: { credits: { decrement: 1 } }
+        });
+        remainingCredits = updated.credits;
+      }
     }
 
     // Guarantee that recommendations are never empty!
@@ -292,7 +389,8 @@ ${historyPrompt}`;
       success: true,
       text: data.text || "Here are the matching verified specifications from our master database:",
       options: data.options || ["Request Anonymous RFQ", "Compare Models", "View Full TDS Specs", "Other"],
-      recommendations: finalRecs
+      recommendations: finalRecs,
+      creditsRemaining: remainingCredits
     });
 
   } catch (error: any) {

@@ -26,7 +26,11 @@ import {
   ChevronRight,
   MessageSquare,
   PanelRightOpen,
-  PanelRightClose
+  PanelRightClose,
+  Lock,
+  ShieldAlert,
+  CreditCard,
+  AlertTriangle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -89,6 +93,38 @@ export default function FinderPage() {
   const user = session?.user as any;
   const companyName = user?.companyName || "Industrial Enterprise";
   const userIndustry = user?.industry || "Industrial Manufacturing";
+
+  // Account Verification & Live Credits State
+  const [isKycVerified, setIsKycVerified] = useState<boolean>(user?.isVerified ?? true);
+  const [userCredits, setUserCredits] = useState<number | string>(user?.credits ?? 3);
+  const [userPlan, setUserPlan] = useState<string>(user?.plan || "FREE");
+  const [userRole, setUserRole] = useState<string>(user?.role || "USER");
+  const [isCheckingAccount, setIsCheckingAccount] = useState(true);
+
+  const fetchAccountStatus = async () => {
+    try {
+      const res = await fetch("/api/agent");
+      const data = await res.json();
+      if (data.success) {
+        setIsKycVerified(data.isVerified);
+        setUserCredits(data.credits);
+        if (data.plan) setUserPlan(data.plan);
+        if (data.role) setUserRole(data.role);
+      }
+    } catch (err) {
+      console.warn("Could not load account status", err);
+    } finally {
+      setIsCheckingAccount(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAccountStatus();
+  }, [session]);
+
+  const isAdmin = userRole === 'ADMIN' || user?.role === 'ADMIN';
+  const isKycLocked = !isKycVerified && !isAdmin;
+  const isCreditsLocked = !isKycLocked && !isAdmin && userPlan !== 'ENTERPRISE' && typeof userCredits === 'number' && userCredits <= 0;
 
   // Mode: "chatbot" (default front-and-center) with optional side catalog drawer
   const [showCatalogDrawer, setShowCatalogDrawer] = useState(false);
@@ -201,6 +237,15 @@ export default function FinderPage() {
   };
 
   const handleSendMessage = async (customPrompt?: string) => {
+    if (isKycLocked) {
+      alert("Your account KYC is unverified. Please complete verification in Settings to unlock the AI Copilot.");
+      return;
+    }
+    if (isCreditsLocked) {
+      alert("You have 0 query credits remaining. Please upgrade or top up credits.");
+      return;
+    }
+
     const promptToSend = customPrompt || chatInput;
     if (!promptToSend.trim() || isAiLoading) return;
 
@@ -228,6 +273,9 @@ export default function FinderPage() {
 
       const data = await res.json();
       if (data.success) {
+        if (data.creditsRemaining !== undefined) {
+          setUserCredits(data.creditsRemaining);
+        }
         setMessages([
           ...newMessages,
           {
@@ -237,12 +285,30 @@ export default function FinderPage() {
             recommendations: data.recommendations
           }
         ]);
+      } else if (data.error === 'KYC_UNVERIFIED') {
+        setIsKycVerified(false);
+        setMessages([
+          ...newMessages,
+          {
+            role: 'ai',
+            text: `🔒 **Account Verification Required**\n\n${data.message || "Your account KYC is currently unverified. Please verify your company details in Settings to unlock the AI Copilot."}`
+          }
+        ]);
+      } else if (data.error === 'INSUFFICIENT_CREDITS') {
+        setUserCredits(0);
+        setMessages([
+          ...newMessages,
+          {
+            role: 'ai',
+            text: `⚡ **Insufficient Credits**\n\n${data.message || "You have 0 Copilot credits remaining. Please upgrade your plan or purchase additional credits in Settings."}`
+          }
+        ]);
       } else {
         setMessages([
           ...newMessages,
           {
             role: 'ai',
-            text: `⚠️ **Notice:** ${data.error || "Could not retrieve AI response. Please try again."}`
+            text: `⚠️ **Notice:** ${data.message || data.error || "Could not retrieve AI response. Please try again."}`
           }
         ]);
       }
@@ -305,21 +371,60 @@ export default function FinderPage() {
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
         <div>
-          <div className="flex items-center gap-2 mb-1.5">
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
             <span className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
               <Sparkles className="w-3.5 h-3.5" />
               AI Procurement Copilot
             </span>
-            <span className="text-xs px-2.5 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold rounded-full border border-emerald-500/20 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3" />
-              160+ Master TDS Models
+
+            {/* KYC Status Badge */}
+            {isKycVerified || isAdmin ? (
+              <span className="text-xs px-2.5 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold rounded-full border border-emerald-500/20 flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                KYC Verified
+              </span>
+            ) : (
+              <Link 
+                href="/dashboard/settings"
+                className="text-xs px-2.5 py-0.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold rounded-full border border-amber-500/30 flex items-center gap-1 transition-colors"
+                title="Account unverified. Click to complete KYC verification."
+              >
+                <Lock className="w-3.5 h-3.5" />
+                KYC Unverified (Action Required)
+              </Link>
+            )}
+
+            {/* Live Credits Badge */}
+            <Link
+              href="/dashboard/settings"
+              className={`text-xs px-2.5 py-0.5 font-bold rounded-full border flex items-center gap-1 transition-colors ${
+                typeof userCredits === 'number' && userCredits <= 0
+                  ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30 hover:bg-rose-500/20'
+                  : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30 hover:bg-blue-500/20'
+              }`}
+              title="Click to view plan and manage credits"
+            >
+              <Zap className="w-3.5 h-3.5" />
+              <span>
+                {typeof userCredits === 'number'
+                  ? `${userCredits} Query Credit${userCredits === 1 ? '' : 's'}`
+                  : `${userCredits} Credits`}
+              </span>
+              {typeof userCredits === 'number' && userCredits <= 1 && (
+                <span className="text-[10px] text-amber-500 font-black">TOP UP</span>
+              )}
+            </Link>
+
+            <span className="text-xs px-2.5 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold rounded-full border border-slate-200 dark:border-slate-700 flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+              1,800+ Master Models
             </span>
           </div>
           <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
             Intelligent Material & Tape Finder
           </h1>
           <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Grounded in verified manufacturer datasheets (3M, Tesa, CGAPL, Nitto, AIPL, Sri Vasavi, Henkel Loctite, Shurtape).
+            Grounded in verified manufacturer datasheets (3M, Tesa, CGAPL, Shanghai Yongguan, Xiamen Naikos, Nitto, AIPL, Sri Vasavi).
           </p>
         </div>
 
@@ -530,22 +635,64 @@ export default function FinderPage() {
         </div>
 
         {/* Chat Input Bar */}
-        <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+        <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 space-y-3">
+          {/* Unverified KYC Lock Alert */}
+          {isKycLocked && (
+            <div className="p-3.5 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2.5 text-amber-700 dark:text-amber-300">
+                <Lock className="w-4 h-4 text-amber-500 shrink-0" />
+                <span className="font-semibold">
+                  <strong>Copilot Locked:</strong> Company KYC verification required to unlock AI queries.
+                </span>
+              </div>
+              <Link href="/dashboard/settings">
+                <button className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition-all shadow-xs shrink-0 flex items-center gap-1.5 cursor-pointer">
+                  <ShieldAlert className="w-3.5 h-3.5" />
+                  Verify KYC
+                </button>
+              </Link>
+            </div>
+          )}
+
+          {/* Insufficient Credits Alert */}
+          {isCreditsLocked && (
+            <div className="p-3.5 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2.5 text-rose-700 dark:text-rose-300">
+                <Zap className="w-4 h-4 text-rose-500 shrink-0" />
+                <span className="font-semibold">
+                  <strong>0 Query Credits Remaining:</strong> You have exhausted your Copilot query quota.
+                </span>
+              </div>
+              <Link href="/pricing">
+                <button className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-all shadow-xs shrink-0 flex items-center gap-1.5 cursor-pointer">
+                  <CreditCard className="w-3.5 h-3.5" />
+                  Top Up Credits
+                </button>
+              </Link>
+            </div>
+          )}
+
           <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex items-center gap-3">
             <input
               type="text"
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
-              placeholder="Ask about any tape specification, substrate compatibility, or temperature requirements..."
-              disabled={isAiLoading}
-              className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors text-slate-800 dark:text-slate-100"
+              placeholder={
+                isKycLocked
+                  ? "🔒 Account KYC unverified. Verify company in Settings to query Copilot..."
+                  : isCreditsLocked
+                  ? "⚡ 0 Credits Remaining. Please top up or upgrade your plan in Settings..."
+                  : "Ask about any tape specification, substrate compatibility, or temperature requirements..."
+              }
+              disabled={isAiLoading || isKycLocked || isCreditsLocked}
+              className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors text-slate-800 dark:text-slate-100 disabled:opacity-60 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
-              disabled={!chatInput.trim() || isAiLoading}
+              disabled={!chatInput.trim() || isAiLoading || isKycLocked || isCreditsLocked}
               className="px-5 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold rounded-2xl shadow-md shadow-blue-500/20 transition-all flex items-center gap-2 active:scale-95 text-sm"
             >
-              <Send className="w-4 h-4" />
+              {isKycLocked ? <Lock className="w-4 h-4" /> : <Send className="w-4 h-4" />}
               <span>Send</span>
             </button>
           </form>
