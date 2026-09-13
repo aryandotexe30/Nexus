@@ -104,16 +104,17 @@ export async function POST(req: Request) {
 
     const latestUserMessage = messages[messages.length - 1]?.text || "";
 
-    // 1. Gather all verified enterprise catalogs and database products
+    // 1. Gather all verified enterprise catalogs (3,370+ physical models across all regions) and database products
     const { ENTERPRISE_CATALOGS } = await import('@/lib/enterpriseCatalogs');
     const { classifyProduct } = await import('@/lib/productClassifier');
+    const { clusterProducts } = await import('@/lib/productClusterEngine');
 
-    let allProducts: any[] = [];
+    let allRawProducts: any[] = [];
 
-    // Collect all enterprise catalog items (160+ verified models across 12 manufacturers)
-    for (const [catCompany, items] of Object.entries(ENTERPRISE_CATALOGS)) {
+    // Collect all enterprise catalog items
+    for (const [catCompany, items] of Object.entries(ENTERPRISE_CATALOGS || {})) {
       for (const item of items) {
-        allProducts.push({
+        allRawProducts.push({
           id: `cat-${catCompany}-${item.name.replace(/\s+/g, '-').toLowerCase()}`,
           name: item.name,
           companyName: catCompany,
@@ -122,6 +123,7 @@ export async function POST(req: Request) {
           market: item.market,
           application: item.application,
           specs: item.specs,
+          price: item.price || item.specs?.['Indicative Price'] || item.specs?.['Price'],
           classification: classifyProduct({
             name: item.name,
             specs: item.specs,
@@ -136,13 +138,13 @@ export async function POST(req: Request) {
     // Also fetch DB products
     try {
       const dbFetched = await prisma.extractedProduct.findMany({
-        take: 60,
+        take: 500,
         orderBy: { updatedAt: 'desc' }
       });
       const validDb = dbFetched.filter((p: any) => isValidProduct(p.name, p.productUrl, Object.keys(p.specs || {}).length));
       for (const p of validDb) {
-        if (!allProducts.some(ap => ap.name.toLowerCase() === p.name.toLowerCase())) {
-          allProducts.push({
+        if (!allRawProducts.some(ap => ap.name.toLowerCase() === p.name.toLowerCase())) {
+          allRawProducts.push({
             id: p.id,
             name: p.name,
             companyName: p.companyName,
@@ -151,6 +153,7 @@ export async function POST(req: Request) {
             market: p.market,
             application: p.application,
             specs: p.specs,
+            price: (p.specs as any)?.['Indicative Price'] || (p.specs as any)?.['Price'],
             classification: classifyProduct({
               name: p.name,
               specs: p.specs as any,
@@ -165,74 +168,88 @@ export async function POST(req: Request) {
       console.warn("[Copilot] Database fetch notice:", dbErr);
     }
 
-    // 2. Intelligent Supervised Technical & Company-Aware Semantic Ranking
+    // 2. Cluster all products into unified Tarasai Specification Standards
+    const clusteredTarasaiStandards = clusterProducts(allRawProducts);
+
+    // 3. Intelligent Semantic Ranking on Tarasai Specification Standards
     const queryLower = latestUserMessage.toLowerCase();
     const queryTokens = queryLower
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
       .filter((w: string) => w.length > 2 && !['the', 'and', 'for', 'with', 'need', 'want', 'buy', 'how', 'what', 'which', 'can', 'you', 'give', 'tape', 'tapes', 'show'].includes(w));
 
-    const scoredProducts = allProducts.map(p => {
+    const scoredStandards = clusteredTarasaiStandards.map(std => {
       let score = 0;
-      const c = p.classification;
-      const text = `${p.name} ${p.companyName} ${p.application || ''} ${p.market || ''} ${JSON.stringify(p.specs || {})} ${c.attributesList.join(' ')}`.toLowerCase();
+      const c = std.classification || {};
+      const specs = std.specs || {};
+      const text = `${std.serialCode} ${std.name} ${std.application || ''} ${std.market || ''} ${JSON.stringify(specs)} ${(c.attributesList || []).join(' ')}`.toLowerCase();
 
       // Exact phrase match
-      if (text.includes(queryLower)) score += 60;
+      if (text.includes(queryLower)) score += 80;
 
       // Token matches
       for (const token of queryTokens) {
-        if (text.includes(token)) score += 10;
-        if (p.name.toLowerCase().includes(token)) score += 20;
-        if (p.companyName.toLowerCase().includes(token)) score += 25;
+        if (text.includes(token)) score += 15;
+        if (std.name.toLowerCase().includes(token)) score += 30;
+        if (std.serialCode.toLowerCase().includes(token)) score += 40;
       }
 
       // Feature & Substrate Boosts
-      if (queryLower.includes('double') && c.sideType === 'Double-Sided') score += 35;
-      if (queryLower.includes('single') && c.sideType === 'Single-Sided') score += 20;
-      if (queryLower.includes('transfer') && c.sideType === 'Transfer (Unsupported)') score += 35;
-      if ((queryLower.includes('kapton') || queryLower.includes('polyimide')) && c.backingType.includes('Polyimide')) score += 40;
-      if ((queryLower.includes('glass') || queryLower.includes('fiberglass')) && c.backingType.includes('Glass')) score += 40;
-      if ((queryLower.includes('foam') || queryLower.includes('vhb')) && c.backingType.includes('Foam')) score += 40;
-      if ((queryLower.includes('foil') || queryLower.includes('aluminium') || queryLower.includes('aluminum')) && c.backingType.includes('Foil')) score += 40;
-      if (queryLower.includes('silicone') && c.adhesionType.includes('Silicone')) score += 35;
-      if (queryLower.includes('acrylic') && c.adhesionType.includes('Acrylic')) score += 30;
-      if ((queryLower.includes('heat') || queryLower.includes('temp') || queryLower.includes('high temperature')) && (c.tempRange.includes('Ultra-High') || c.tempRange.includes('High Temp'))) score += 30;
-      if (queryLower.includes('masking') && (p.name.toLowerCase().includes('masking') || c.backingType.includes('Crepe') || c.backingType.includes('Polyimide'))) score += 30;
-      if ((queryLower.includes('hvac') || queryLower.includes('duct')) && (p.market?.toLowerCase().includes('hvac') || c.backingType.includes('Foil'))) score += 35;
-      if ((queryLower.includes('auto') || queryLower.includes('automotive')) && (p.market?.toLowerCase().includes('auto') || p.industry?.toLowerCase().includes('auto'))) score += 35;
-      if ((queryLower.includes('transformer') || queryLower.includes('electrical') || queryLower.includes('class h') || queryLower.includes('class f')) && (p.market?.toLowerCase().includes('electr') || p.application?.toLowerCase().includes('transformer'))) score += 35;
+      if (queryLower.includes('kapton') || queryLower.includes('polyimide')) {
+        if (std.serialCode.includes('KAP') || text.includes('polyimide') || text.includes('kapton')) score += 70;
+      }
+      if (queryLower.includes('vhb') || queryLower.includes('acrylic foam') || queryLower.includes('foam')) {
+        if (std.serialCode.includes('VHB') || std.serialCode.includes('PEF')) score += 60;
+      }
+      if (queryLower.includes('masking') || queryLower.includes('crepe')) {
+        if (std.serialCode.includes('MSK')) score += 60;
+      }
+      if (queryLower.includes('aluminum') || queryLower.includes('aluminium') || queryLower.includes('foil')) {
+        if (std.serialCode.includes('ALU')) score += 60;
+      }
+      if (queryLower.includes('glass') || queryLower.includes('fiberglass')) {
+        if (std.serialCode.includes('GLS')) score += 60;
+      }
+      if (queryLower.includes('mica')) {
+        if (std.serialCode.includes('MIC')) score += 60;
+      }
+      if (queryLower.includes('silicone') && std.serialCode.includes('SIL')) score += 40;
+      if (queryLower.includes('acrylic') && std.serialCode.includes('ACR')) score += 35;
+      if (queryLower.includes('rubber') && std.serialCode.includes('RUB')) score += 35;
 
-      // Manufacturing Plant Location Boosts
-      if ((queryLower.includes('india') || queryLower.includes('domestic') || queryLower.includes('indian plant') || queryLower.includes('local plant')) && c.location === 'India') score += 35;
-      if ((queryLower.includes('china') || queryLower.includes('chinese plant') || queryLower.includes('import') || queryLower.includes('shenzhen') || queryLower.includes('shanghai')) && c.location === 'China') score += 35;
-
-      // Company industry affinity boost
-      if (userIndustry && p.market && userIndustry.toLowerCase().includes(p.market.toLowerCase().slice(0, 5))) {
-        score += 15;
+      // Specific Thickness / Temp matching
+      if (queryLower.includes('0.05') || queryLower.includes('50') || queryLower.includes('2 mil')) {
+        if (std.serialCode.includes('0050')) score += 50;
+      }
+      if (queryLower.includes('0.07') || queryLower.includes('70') || queryLower.includes('3 mil')) {
+        if (std.serialCode.includes('0070') || std.serialCode.includes('0075')) score += 50;
+      }
+      if (queryLower.includes('260') || queryLower.includes('wave solder')) {
+        if (std.serialCode.includes('T260')) score += 50;
+      }
+      if (queryLower.includes('180') || queryLower.includes('class h')) {
+        if (std.serialCode.includes('T180')) score += 50;
       }
 
-      return { product: p, score };
+      return { standard: std, score };
     });
 
-    scoredProducts.sort((a, b) => b.score - a.score);
-    const topProducts = (scoredProducts[0]?.score > 0 ? scoredProducts.slice(0, 20) : scoredProducts.slice(0, 15)).map(s => s.product);
+    scoredStandards.sort((a, b) => b.score - a.score);
+    const topStandards = (scoredStandards[0]?.score > 0 ? scoredStandards.slice(0, 15) : scoredStandards.slice(0, 10)).map(s => s.standard);
 
-    // Format Technical DB context
-    const dbContextString = topProducts.map((p: any, i: number) => {
-      const specsStr = Object.entries(p.specs || {})
+    // Format Clustered Tarasai Specification Standards for AI context
+    const dbContextString = topStandards.map((s: any, i: number) => {
+      const specsStr = Object.entries(s.specs || {})
         .map(([k, v]) => `${k}: ${v}`)
         .join(', ');
-      const c = p.classification;
-      return `[Product #${i+1}]
-- Model: ${p.name} (${p.companyName})
-- Manufacturing Plant: ${c.location}
-- Type: ${c.productType} | Side: ${c.sideType}
-- Backing: ${c.backingType} | Adhesive: ${c.adhesionType}
-- Thickness: ${c.thicknessCategory} | Temp Rating: ${c.tempRange}
-- Application: ${p.application || 'Industrial Engineering'}
-- Specs: { ${specsStr} }
-- Link: ${p.productUrl || ''}`;
+      return `[Tarasai Standard #${i+1}]
+- Tarasai Serial Code: ${s.serialCode}
+- Specification Standard: ${s.name}
+- Wholesale Benchmark Price: ${s.price}
+- Backing: ${s.specs?.['Backing material'] || 'Specialty Carrier'} | Adhesive: ${s.specs?.['Adhesive type'] || 'Pressure Sensitive'}
+- Caliper/Thickness: ${s.specs?.['Total thickness'] || 'Standard'} | Thermal Endurance: ${s.specs?.['Temperature resistance'] || 'Industrial Grade'}
+- Application Scope: ${s.application || 'Industrial Engineering'}
+- Full Technical Spec: { ${specsStr} }`;
     }).join('\n\n');
 
     // Format Conversation History cleanly
@@ -244,47 +261,59 @@ export async function POST(req: Request) {
     const historyPrompt = formattedMessages.map((m: any) => `${m.role}: ${m.text}`).join("\n\n");
 
     const SYSTEM_PROMPT = `
-You are "TarasAI Finder Copilot", an elite B2B Industrial Adhesive Tapes & Technical Materials AI Sourcing Engineer.
-You have direct, comprehensive access to our Master Industrial Product Database (750+ verified physical models from 3M, Tesa, Nitto Denko, CG Adhesive Products Ltd / CGAPL, Shanghai Yongguan, Xiamen Naikos, Shenzhen YouSan, CYG Changtong, Guangdong Wanghao Camat, Jiangsu Crown, Shenzhen Kingzom, Zhejiang Furukawa China, Hebei Huaxia, Dongguan Haotian, Shandong Lianjie, Guangzhou Broadya, Ajit Industries / AIPL, Sri Vasavi, Henkel Loctite, Saint-Gobain, Shurtape, Polycab, Havells).
+You are "TarasAI Copilot", an elite B2B Senior Materials & Adhesive Applications Engineer.
+You represent the TarasAI Technical Procurement Consortium. You have access to our unified Specification Cluster Database containing standardized industrial products.
 
-CURRENT USER CONTEXT:
-- User Company: "${userCompany}"
-- Industry Sector: "${userIndustry}"
+CURRENT CLIENT CONTEXT:
+- Client Enterprise: "${userCompany}"
+- Operating Sector: "${userIndustry}"
 
-CRITICAL SOURCING RULES:
-1. ALWAYS DELIVER PRODUCT RECOMMENDATIONS IMMEDIATELY:
-   - When the user asks for a tape, gives a specification, selects an option chip, or describes an application, you MUST DIRECTLY RETURN 2-4 MATCHING PRODUCTS in the "recommendations" array from the MASTER DATABASE below.
-   - DO NOT trap the user in a question loop or ask clarifying questions without providing recommendations. Present the best matching tapes immediately!
-   - In "text", provide a thorough technical comparison explaining backing material, adhesive chemistry, temperature rating, and why these models fit the stated requirements.
+CORE OPERATIONAL BEHAVIORS:
+1. ACTUAL AI MATERIALS APPLICATION ENGINEER (INTERACTIVE REQUIREMENTS GATHERING):
+   - When a user enters a broad, brief, or underspecified query (such as just "kapton tape", "masking tape", "vhb tape", "foam tape", "insulation tape", "silicone tape", "foil tape", etc.) WITHOUT stating key engineering variables:
+     * Act like a real senior materials engineer! Greet the inquiry technically, explain what physical parameters govern the correct specification selection, and actively ask the user for their exact requirements:
+       1. Total Caliper / Film Thickness (e.g., 0.05mm / 2 mil standard, 0.07mm / 3 mil dielectric, 0.10mm heavy-duty)
+       2. Continuous Temperature Rating & Process (e.g., 260°C Wave Soldering, 180°C Class H Motor Insulation, 300°C High-Bake Reflow)
+       3. Adhesive Chemistry (e.g., Cross-linked Silicone for zero residue vs Solvent Acrylic)
+       4. Specific Application / Substrate (e.g., PCB Gold Finger Masking, Lithium-Ion Battery Tab Wrapping, Transformer Winding)
+     * In "options", provide 4-5 clear, clickable interactive requirement choices matching these variants (e.g., ["0.05mm Silicone 260°C (PCB Wave Solder)", "0.07mm Class H 180°C (Transformer Insulation)", "0.06mm Flame-Retardant (Battery Tab Wrap)", "0.09mm High-Bake 300°C (Powder Coating)"]).
+     * In "recommendations", you may present 1-2 representative baseline Tarasai grouped standards matching that category so the user sees real benchmark specs while deciding.
+   - When the user selects an option chip or provides specific engineering requirements:
+     * Deliver the exact matching Tarasai specification standard(s) in "recommendations" with thorough engineering analysis in "text".
+     * In "options", provide next-step actions (e.g., ["Request Confidential Volume RFQ", "Inquire Custom Roll Width Slitting", "Check Dielectric Breakdown Specs", "Compare with 0.07mm Class H"]).
 
-2. GROUNDING & SPECIFICATIONS:
-   - Ground all recommendations in real models present in the database below (e.g. CGAPL 7011, 3M 5413, tesa 4965, 3M VHB 4910, AIPL 9080, CGAPL 8415, Nitto 188UL, etc.).
-   - For every product in "recommendations", provide:
-     * Exact name and real manufacturer
-     * Key technical specs (Backing, Adhesive, Thickness, Temp Rating)
-     * 2-3 Pros (strengths)
-     * 1-2 Cons (limitations / engineering caveats)
-     * 1-sentence engineering verdict
-
-3. NEXT-STEP OPTIONS:
-   - In "options", provide 3-4 actionable next steps or comparison options (e.g. ["Request Anonymous RFQ", "Compare with 3M Equivalent", "View Full TDS Specs", "Check Other Temperature Classes"]).
+2. STRICT TARASAI CODE & UNIFIED STANDARD FORMAT (NO MANUFACTURER NAMES):
+   - Every product in "recommendations" MUST use its unique **Tarasai Serial Code** (e.g. "TAR-KAP-SIL-0050-T260-G841", "TAR-VHB-ACR-1100-T150-G219", "TAR-MSK-RUB-0140-T110-G705") in the "serialCode" field.
+   - The "name" must be the professional unified specification standard title (e.g. "High-Temperature Polyimide (Kapton) Tape (0.05 mm / Silicone / 260°C)").
+   - In "companyName", always set "Tarasai Verified Consortium".
+   - **CRITICAL**: NEVER display individual competitor manufacturer brand names (e.g., DO NOT say "3M", "3M 5413", "CGAPL", "Shenzhen You-San", "AIPL", etc.). The buyer is interacting with Tarasai as a single unified procurement standard.
+   - Include realistic wholesale benchmark pricing (in ₹ INR / $ USD) in "price".
+   - Provide 2-3 detailed engineering pros (strengths), 1-2 honest engineering caveats (cons), and a 1-sentence engineering verdict.
 
 JSON OUTPUT FORMAT:
 Output your entire response strictly as valid JSON matching this schema:
 {
-  "type": "recommendation" | "comparison",
-  "text": "Comprehensive technical markdown explanation covering materials chemistry, substrate adhesion, thermal performance, and comparisons.",
-  "options": ["Option 1", "Option 2", "Option 3", "Other"],
+  "type": "recommendation" | "inquiry",
+  "text": "Detailed, professional engineering analysis in markdown explaining materials chemistry, thermal endurance, dielectric properties, and requirement clarification questions.",
+  "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
   "recommendations": [
     {
-      "name": "Exact Model Name",
-      "companyName": "Manufacturer Name",
-      "application": "Application description",
-      "specs": { "Backing material": "...", "Adhesive type": "...", "Total thickness": "...", "Temperature resistance": "..." },
-      "pros": ["Pro 1", "Pro 2"],
-      "cons": ["Con 1"],
-      "verdict": "Precise engineering verdict",
-      "productUrl": "https://..."
+      "serialCode": "TAR-KAP-SIL-0050-T260-G841",
+      "name": "High-Temperature Polyimide (Kapton) Tape (0.05 mm / Silicone / 260°C)",
+      "companyName": "Tarasai Verified Consortium",
+      "price": "₹340.00 / roll ($4.20)",
+      "application": "PCB wave solder masking & gold finger protection",
+      "specs": {
+        "Backing material": "Polyimide (Kapton) Film",
+        "Adhesive type": "High-Temp Cross-Linked Silicone",
+        "Total thickness": "0.05 mm (50 µm)",
+        "Temperature resistance": "-73°C to 260°C",
+        "Dielectric Breakdown": "6.5 kV",
+        "Adhesion to Steel": "28.0 N/25mm"
+      },
+      "pros": ["Zero adhesive residue post 260°C wave solder bath", "UL-94 V-0 flame retardancy", "Class H electrical insulation"],
+      "cons": ["Requires clean, degreased substrate for maximum initial tack"],
+      "verdict": "Industry standard benchmark specification for electronics wave soldering and high-temperature masking."
     }
   ]
 }
@@ -292,28 +321,30 @@ Output your entire response strictly as valid JSON matching this schema:
 
     const fullPrompt = `${SYSTEM_PROMPT}
 
-MASTER TECHNICAL PRODUCT MATRIX IN SYSTEM (160+ VERIFIED MODELS ACROSS ALL MAJOR MANUFACTURERS):
+TARASAI SPECIFICATION CLUSTER DATABASE (VERIFIED GROUPED STANDARDS):
 ${dbContextString}
 
 CHAT HISTORY:
 ${historyPrompt}`;
 
     const schemaProps = {
-      type: { type: Type.STRING, description: "recommendation or comparison" },
-      text: { type: Type.STRING, description: "Comprehensive markdown response with technical analysis and comparison tables." },
+      type: { type: Type.STRING, description: "recommendation or inquiry" },
+      text: { type: Type.STRING, description: "Comprehensive markdown engineering response with materials chemistry, thermal analysis, and clarifying questions." },
       options: { 
         type: Type.ARRAY, 
         items: { type: Type.STRING },
-        description: "3-5 clickable interactive technical options for the user."
+        description: "3-5 interactive clickable options for the user."
       },
       recommendations: {
         type: Type.ARRAY,
-        description: "List of matching verified products with pros, cons, and technical specs.",
+        description: "List of matching Tarasai specification standards with Tarasai serial code, pros, cons, and unified specs.",
         items: {
           type: Type.OBJECT,
           properties: {
+            serialCode: { type: Type.STRING },
             name: { type: Type.STRING },
             companyName: { type: Type.STRING },
+            price: { type: Type.STRING },
             application: { type: Type.STRING },
             specs: { type: Type.OBJECT },
             pros: { type: Type.ARRAY, items: { type: Type.STRING } },
@@ -321,7 +352,7 @@ ${historyPrompt}`;
             verdict: { type: Type.STRING },
             productUrl: { type: Type.STRING }
           },
-          required: ["name", "companyName", "application", "specs", "pros", "cons", "verdict"]
+          required: ["serialCode", "name", "specs", "pros", "cons", "verdict"]
         }
       }
     };
@@ -331,20 +362,28 @@ ${historyPrompt}`;
       data = await generateStructuredAIResponse(fullPrompt, schemaProps, ["type", "text", "options"]);
     } catch (aiErr: any) {
       console.error("[Copilot] AI Generation fallback:", aiErr);
+      const repStandard = topStandards[0] || clusteredTarasaiStandards[0];
       return NextResponse.json({
         success: true,
-        text: `Based on **${userCompany}**'s industry profile and your query "${latestUserMessage}", here are the top verified matching tapes from our master database:`,
-        options: ["View Technical Datasheets", "Request Anonymous RFQ", "Compare Specifications", "Other"],
-        recommendations: topProducts.slice(0, 3).map((p: any) => ({
-          name: p.name,
-          companyName: p.companyName,
-          application: p.application || "General Industrial",
-          specs: p.specs || {},
-          pros: ["Verified physical model in master database", "Industrial grade performance"],
-          cons: ["Confirm substrate compatibility prior to bulk order"],
-          verdict: `Recommended model from ${p.companyName}`,
-          productUrl: p.productUrl
-        })),
+        text: `Based on **${userCompany}**'s inquiry regarding **${latestUserMessage}**, please specify your physical requirements below (thickness, temperature range, and application) so we can assign the exact Tarasai standard:`,
+        options: [
+          "0.05mm Silicone 260°C (PCB Wave Solder)",
+          "0.07mm Class H 180°C (Transformer Insulation)",
+          "0.06mm Flame-Retardant (Battery Tab Wrap)",
+          "0.09mm High-Bake 300°C (Powder Coating)"
+        ],
+        recommendations: repStandard ? [{
+          serialCode: repStandard.serialCode,
+          name: repStandard.name,
+          companyName: "Tarasai Verified Consortium",
+          price: repStandard.price,
+          application: repStandard.application,
+          specs: repStandard.specs,
+          pros: ["Unified specification verified across network", "Complies with ISO 9001 & RoHS industrial standards"],
+          cons: ["Confirm substrate compatibility for non-polar plastics"],
+          verdict: `Standard benchmark specification ${repStandard.serialCode}.`,
+          underlyingManufacturers: repStandard.underlyingManufacturers || []
+        }] : [],
         creditsRemaining: user.role === 'ADMIN' || user.plan === 'ENTERPRISE' ? 'Unlimited' : Math.max(0, user.credits - 1)
       });
     }
@@ -370,25 +409,26 @@ ${historyPrompt}`;
       }
     }
 
-    // Guarantee that recommendations are never empty!
-    let finalRecs = data.recommendations || [];
-    if (finalRecs.length === 0 && topProducts.length > 0) {
-      finalRecs = topProducts.slice(0, 3).map((p: any) => ({
-        name: p.name,
-        companyName: p.companyName,
-        application: p.application || "General Industrial",
-        specs: p.specs || {},
-        pros: ["Verified physical model in master database", "Industrial grade performance"],
-        cons: ["Confirm substrate compatibility prior to bulk order"],
-        verdict: `Recommended model from ${p.companyName}`,
-        productUrl: p.productUrl
-      }));
-    }
+    // Map underlying manufacturers for RFQ routing on recommended standards
+    const finalRecs = (data.recommendations || []).map((rec: any) => {
+      // Find matching standard to attach underlying manufacturers for background RFQ
+      const matchedStd = clusteredTarasaiStandards.find(s => 
+        s.serialCode === rec.serialCode || 
+        s.name.toLowerCase() === rec.name?.toLowerCase()
+      );
+      return {
+        ...rec,
+        serialCode: rec.serialCode || matchedStd?.serialCode || `TAR-${(rec.name || 'SPEC').substring(0, 3).toUpperCase()}`,
+        companyName: "Tarasai Verified Consortium",
+        price: rec.price || matchedStd?.price || "₹320.00 / roll ($4.00)",
+        underlyingManufacturers: matchedStd?.underlyingManufacturers || []
+      };
+    });
 
     return NextResponse.json({
       success: true,
-      text: data.text || "Here are the matching verified specifications from our master database:",
-      options: data.options || ["Request Anonymous RFQ", "Compare Models", "View Full TDS Specs", "Other"],
+      text: data.text || "Here are the engineering parameters and matching Tarasai standards:",
+      options: data.options || ["Request Confidential RFQ", "Check Temperature Specs", "Custom Width Slitting", "Other"],
       recommendations: finalRecs,
       creditsRemaining: remainingCredits
     });

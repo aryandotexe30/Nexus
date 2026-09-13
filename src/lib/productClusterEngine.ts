@@ -231,8 +231,8 @@ export function clusterProducts(products: any[]): UnifiedGroupProduct[] {
 
   for (const [clusterKey, data] of clusterMap.entries()) {
     const groupHash = computeGroupHash(clusterKey);
-    // Unique Pattern-based Group Serial Code: NX-[Category]-[Adhesive]-[ThicknessMicrons]-[TempCode]-[GroupHash]
-    const groupSerialCode = `NX-${data.catInfo.code}-${data.adhCode}-${data.thickCode}-${data.tempCode}-${groupHash}`;
+    // Unique Pattern-based Group Serial Code: TAR-[Category]-[Adhesive]-[ThicknessMicrons]-[TempCode]-[GroupHash]
+    const groupSerialCode = `TAR-${data.catInfo.code}-${data.adhCode}-${data.thickCode}-${data.tempCode}-${groupHash}`;
     const rep = data.representativeProduct;
 
     // Pick best/benchmark indicative price

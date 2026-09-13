@@ -64,15 +64,18 @@ interface ExtractedProduct {
 }
 
 interface CopilotRecommendation {
+  serialCode?: string;
   name: string;
-  companyName: string;
+  companyName?: string;
   location?: string;
+  price?: string;
   application?: string;
   specs?: Record<string, string>;
   pros?: string[];
   cons?: string[];
   verdict?: string;
   productUrl?: string;
+  underlyingManufacturers?: any[];
 }
 
 interface ChatMessage {
@@ -548,7 +551,7 @@ export default function FinderPage() {
                   {msg.recommendations && msg.recommendations.length > 0 && (
                     <div className="mt-5 space-y-4 pt-4 border-t border-slate-100 dark:border-slate-700/80">
                       <p className="text-xs font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                        <Sparkles className="w-4 h-4" /> Master Database Verified Matches ({msg.recommendations.length})
+                        <Sparkles className="w-4 h-4" /> Tarasai Verified Standard Matches ({msg.recommendations.length})
                       </p>
                       <div className="grid grid-cols-1 gap-4">
                         {msg.recommendations.map((rec, rIdx) => (
@@ -556,29 +559,29 @@ export default function FinderPage() {
                             <div className="flex items-start justify-between gap-3">
                               <div>
                                 <div className="flex items-center gap-1.5 flex-wrap">
-                                  <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-md">
-                                    {rec.companyName}
+                                  <span className="text-[10px] font-mono font-extrabold uppercase px-2.5 py-0.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded tracking-wider shadow-2xs">
+                                    {rec.serialCode || `TAR-${rec.name.substring(0, 3).toUpperCase()}`}
                                   </span>
+                                  {rec.price && (
+                                    <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 rounded border border-emerald-200 dark:border-emerald-800 shadow-2xs">
+                                      {rec.price}
+                                    </span>
+                                  )}
                                   {rec.location && (
                                     <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-md border border-slate-200/60 dark:border-slate-700/60">
                                       {getLocationBadge(rec.location)}
                                     </span>
                                   )}
                                 </div>
-                                <h4 className="text-sm font-black text-slate-900 dark:text-white mt-1">{rec.name}</h4>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">{rec.application}</p>
+                                <h4 className="text-sm font-black text-slate-900 dark:text-white mt-1.5">{rec.name}</h4>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{rec.application}</p>
                               </div>
-                              {rec.productUrl && (
-                                <a href={rec.productUrl} target="_blank" rel="noreferrer" className="p-1.5 bg-white dark:bg-slate-800 text-slate-500 hover:text-blue-600 rounded-lg shadow-2xs" title="Official Datasheet">
-                                  <ExternalLink className="w-4 h-4" />
-                                </a>
-                              )}
                             </div>
 
                           {/* Technical Specs */}
                           {rec.specs && Object.keys(rec.specs).length > 0 && (
-                            <div className="grid grid-cols-2 gap-2 bg-white dark:bg-slate-800/60 p-2.5 rounded-xl text-[11px] border border-slate-100 dark:border-slate-700/60">
-                              {Object.entries(rec.specs).slice(0, 4).map(([k, v], sIdx) => (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 bg-white dark:bg-slate-800/60 p-2.5 rounded-xl text-[11px] border border-slate-100 dark:border-slate-700/60">
+                              {Object.entries(rec.specs).slice(0, 6).map(([k, v], sIdx) => (
                                 <div key={sIdx} className="truncate">
                                   <span className="text-slate-400 font-medium">{k}: </span>
                                   <span className="text-slate-800 dark:text-slate-200 font-bold">{String(v)}</span>
@@ -592,7 +595,7 @@ export default function FinderPage() {
                             {rec.pros && rec.pros.length > 0 && (
                               <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-900/30 space-y-1">
                                 <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
-                                  <Check className="w-3 h-3 text-emerald-600" /> Key Strengths
+                                  <Check className="w-3 h-3 text-emerald-600" /> Engineering Strengths
                                 </span>
                                 {rec.pros.map((p, pIdx) => (
                                   <p key={pIdx} className="text-[11px] text-emerald-900 dark:text-emerald-200 leading-tight">• {p}</p>
@@ -614,10 +617,17 @@ export default function FinderPage() {
                           {/* Verdict & Action */}
                           <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
                             <p className="text-[11px] text-slate-500 italic max-w-[65%] truncate">
-                              {rec.verdict || `Recommended model from ${rec.companyName}`}
+                              {rec.verdict || `Standard recommended specification for this application profile.`}
                             </p>
                             <button
-                              onClick={() => openEnquiry(rec)}
+                              onClick={() => openEnquiry({
+                                id: rec.serialCode || rec.name,
+                                serialCode: rec.serialCode,
+                                name: rec.name,
+                                price: rec.price,
+                                specs: rec.specs,
+                                underlyingManufacturers: rec.underlyingManufacturers || []
+                              })}
                               className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1 active:scale-95"
                             >
                               <Send className="w-3 h-3" /> Quick RFQ
