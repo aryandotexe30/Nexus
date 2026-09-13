@@ -5,11 +5,13 @@ export interface ProductAttributes {
   adhesionType: string;
   thicknessCategory: 'Ultra-Thin (< 0.1 mm)' | 'Standard (0.1 - 0.5 mm)' | 'Heavy / Foam (0.5 - 1.0 mm)' | 'Thick (> 1.0 mm)' | 'Unspecified';
   tempRange: 'Ultra-High Temp (≥ 200°C)' | 'High Temp (150 - 199°C)' | 'Medium Temp (80 - 149°C)' | 'Standard (< 80°C)' | 'Unspecified';
+  location: string;
   attributesList: string[];
 }
 
 export function classifyProduct(product: {
   name: string;
+  companyName?: string | null;
   specs?: Record<string, string> | null;
   application?: string | null;
   market?: string | null;
@@ -17,9 +19,10 @@ export function classifyProduct(product: {
 }): ProductAttributes {
   const specs = product.specs || {};
   const nameLower = (product.name || '').toLowerCase();
+  const compLower = (product.companyName || '').toLowerCase();
   const appLower = (product.application || '').toLowerCase();
   const specsStr = Object.entries(specs).map(([k, v]) => `${k}: ${v}`).join(' ').toLowerCase();
-  const combined = `${nameLower} ${appLower} ${specsStr} ${(product.market || '').toLowerCase()} ${(product.industry || '').toLowerCase()}`;
+  const combined = `${nameLower} ${compLower} ${appLower} ${specsStr} ${(product.market || '').toLowerCase()} ${(product.industry || '').toLowerCase()}`;
 
   // 1. Product Type
   let productType: ProductAttributes['productType'] = 'Tape';
@@ -47,7 +50,8 @@ export function classifyProduct(product: {
     nameLower.includes('df 65') || nameLower.includes('5000ns') || 
     nameLower.includes('500') || nameLower.includes('p-637') || 
     nameLower.includes('sv-202') || nameLower.includes('sv-201') || 
-    nameLower.includes('cg324') || combined.includes('differential acrylic') ||
+    nameLower.includes('cg324') || nameLower.includes('8820') ||
+    combined.includes('differential acrylic') ||
     combined.includes('dual sided')
   ) {
     sideType = 'Double-Sided';
@@ -62,76 +66,76 @@ export function classifyProduct(product: {
   } else if (
     nameLower.includes('self-amalgamating') || nameLower.includes('self fusing') || 
     nameLower.includes('self-fusing') || nameLower.includes('7500') || 
-    nameLower.includes('7501') || nameLower.includes('scotch 23') || 
+    nameLower.includes('7501') || nameLower.includes('ct-500') ||
+    nameLower.includes('ct-600') || nameLower.includes('scotch 23') || 
     nameLower.includes('scotch 130c')
   ) {
     sideType = 'Self-Amalgamating / Non-Adhesive';
   }
 
-  // 3. Backing Material
-  let backingType = 'Specialty Film / Base';
-  const backingSpec = (specs['Backing material'] || specs['Backing'] || specs['Composition'] || specs['Conductor'] || '').toLowerCase();
+  // 3. Backing Material / Substrate
+  let backingType = 'Other / Unspecified';
+  const backingSpec = (specs['Backing material'] || specs['Carrier'] || specs['Substrate'] || specs['Backing'] || '').toLowerCase();
   const searchBacking = `${backingSpec} ${combined}`;
 
-  if (searchBacking.includes('kapton') || searchBacking.includes('polyimide')) {
+  if (searchBacking.includes('kapton') || searchBacking.includes('polyimide') || searchBacking.includes('pi film') || searchBacking.includes('7011') || searchBacking.includes('7020') || searchBacking.includes('5413') || searchBacking.includes('nks-101') || searchBacking.includes('pi260')) {
     backingType = 'Polyimide / Kapton';
-  } else if (searchBacking.includes('ptfe') || searchBacking.includes('teflon') || searchBacking.includes('nitoflon') || searchBacking.includes('fluoropolymer')) {
-    backingType = 'PTFE / Fluoropolymer';
-  } else if (searchBacking.includes('glass cloth') || searchBacking.includes('fiberglass') || searchBacking.includes('glass fabric') || searchBacking.includes('woven glass')) {
+  } else if (searchBacking.includes('glass cloth') || searchBacking.includes('fiberglass') || searchBacking.includes('woven glass') || searchBacking.includes('glass fabric') || searchBacking.includes('8415') || searchBacking.includes('8410') || searchBacking.includes('8411') || searchBacking.includes('8420') || searchBacking.includes('188ul') || searchBacking.includes('nks-gc')) {
     backingType = 'Fiberglass / Glass Cloth';
-  } else if (searchBacking.includes('aluminium') || searchBacking.includes('aluminum') || searchBacking.includes('copper foil') || searchBacking.includes('metal foil')) {
-    backingType = 'Aluminum / Copper Foil';
-  } else if (searchBacking.includes('acrylic foam') || searchBacking.includes('pe foam') || searchBacking.includes('polyurethane foam') || searchBacking.includes('pvc foam') || searchBacking.includes('foam')) {
-    backingType = 'Foam (Acrylic / PE / PU)';
-  } else if (searchBacking.includes('pet') || searchBacking.includes('polyester film') || searchBacking.includes('mylar')) {
+  } else if (searchBacking.includes('polyester') || searchBacking.includes('pet') || searchBacking.includes('mylar') || searchBacking.includes('2026') || searchBacking.includes('1042t') || searchBacking.includes('1045') || searchBacking.includes('4965') || searchBacking.includes('8820')) {
     backingType = 'PET / Polyester Film';
-  } else if (searchBacking.includes('pvc') || searchBacking.includes('vinyl') || searchBacking.includes('polyvinyl')) {
+  } else if (searchBacking.includes('aluminium') || searchBacking.includes('aluminum') || searchBacking.includes('copper') || searchBacking.includes('foil') || searchBacking.includes('metal foil') || searchBacking.includes('et900') || searchBacking.includes('et9110') || searchBacking.includes('al50') || searchBacking.includes('nks-cu')) {
+    backingType = 'Aluminum / Copper Foil';
+  } else if (searchBacking.includes('foam') || searchBacking.includes('acrylic foam') || searchBacking.includes('pe foam') || searchBacking.includes('pu foam') || searchBacking.includes('eva') || searchBacking.includes('vhb') || searchBacking.includes('acxplus') || searchBacking.includes('norbond') || searchBacking.includes('nks-vhb')) {
+    backingType = 'Foam (Acrylic / PE / PU)';
+  } else if (searchBacking.includes('pvc') || searchBacking.includes('vinyl') || searchBacking.includes('polyvinyl chloride') || searchBacking.includes('5010') || searchBacking.includes('yg-pvc')) {
     backingType = 'PVC / Vinyl';
-  } else if (searchBacking.includes('tissue') || searchBacking.includes('non-woven tissue') || searchBacking.includes('nonwoven')) {
-    backingType = 'Tissue / Non-Woven';
-  } else if (searchBacking.includes('cotton') || searchBacking.includes('rayon') || searchBacking.includes('acetate') || searchBacking.includes('fleece') || searchBacking.includes('cloth scrim')) {
-    backingType = 'Cloth / Cotton / Rayon';
-  } else if (searchBacking.includes('crepe') || searchBacking.includes('washi') || searchBacking.includes('paper')) {
+  } else if (searchBacking.includes('crepe') || searchBacking.includes('paper') || searchBacking.includes('washi') || searchBacking.includes('masking paper') || searchBacking.includes('kraft') || searchBacking.includes('9050') || searchBacking.includes('9080') || searchBacking.includes('yg-600') || searchBacking.includes('5005')) {
     backingType = 'Paper / Crepe / Washi';
-  } else if (searchBacking.includes('epdm') || searchBacking.includes('silicone rubber') || searchBacking.includes('epr')) {
+  } else if (searchBacking.includes('tissue') || searchBacking.includes('non-woven') || searchBacking.includes('nonwoven') || searchBacking.includes('3002') || searchBacking.includes('9448')) {
+    backingType = 'Tissue / Non-Woven';
+  } else if (searchBacking.includes('cloth') || searchBacking.includes('cotton') || searchBacking.includes('rayon') || searchBacking.includes('duct') || searchBacking.includes('3010') || searchBacking.includes('51608') || searchBacking.includes('801')) {
+    backingType = 'Cloth / Cotton / Rayon';
+  } else if (searchBacking.includes('ptfe') || searchBacking.includes('teflon') || searchBacking.includes('fluoropolymer') || searchBacking.includes('nks-ptfe')) {
+    backingType = 'PTFE / Fluoropolymer';
+  } else if (searchBacking.includes('epdm') || searchBacking.includes('silicone rubber') || searchBacking.includes('silicone elastomer') || searchBacking.includes('7500') || searchBacking.includes('7501') || searchBacking.includes('ct-500') || searchBacking.includes('ct-600')) {
     backingType = 'EPDM / Silicone Elastomer';
+  } else if (searchBacking.includes('nomex') || searchBacking.includes('polyamide') || searchBacking.includes('aramid') || searchBacking.includes('6512')) {
+    backingType = 'Nomex / Aramid Paper';
   } else if (sideType === 'Transfer (Unsupported)') {
     backingType = 'Unsupported (Adhesive Transfer)';
-  } else if (productType === 'Adhesive & Sealant') {
-    backingType = 'Liquid / Gel / Paste (No Backing)';
-  } else if (productType === 'Cable & Wire') {
-    backingType = 'Copper / Aluminium Conductor';
   }
 
   // 4. Adhesion Chemistry
-  let adhesionType = 'Specialty Adhesive';
-  const adhesiveSpec = (specs['Adhesive type'] || specs['Adhesive'] || specs['Chemical Type'] || '').toLowerCase();
-  const searchAdhesive = `${adhesiveSpec} ${combined}`;
+  let adhesionType = 'Other / Unspecified';
+  const adhSpec = (specs['Adhesive type'] || specs['Adhesive'] || specs['Adhesive Type'] || specs['Binder'] || '').toLowerCase();
+  const searchAdh = `${adhSpec} ${combined}`;
 
-  if (searchAdhesive.includes('silicone') || searchAdhesive.includes('polysiloxane')) {
+  if (searchAdh.includes('silicone') || searchAdh.includes('polysiloxane') || searchAdh.includes('cross-linked silicone') || searchBacking.includes('kapton') || searchBacking.includes('7011') || searchBacking.includes('8415') || searchBacking.includes('nks-101') || searchBacking.includes('nks-gc') || searchBacking.includes('pi260')) {
     adhesionType = 'Silicone / Polysiloxane';
-  } else if (searchAdhesive.includes('anaerobic') || searchAdhesive.includes('dimethacrylate')) {
-    adhesionType = 'Anaerobic (Dimethacrylate)';
-  } else if (searchAdhesive.includes('cyanoacrylate') || searchAdhesive.includes('instant adhesive')) {
-    adhesionType = 'Cyanoacrylate (Instant)';
-  } else if (searchAdhesive.includes('acrylic') || searchAdhesive.includes('300lse') || searchAdhesive.includes('200mp') || searchAdhesive.includes('vhb')) {
+  } else if (searchAdh.includes('acrylic') || searchAdh.includes('modified acrylic') || searchAdh.includes('pure acrylic') || searchAdh.includes('solvent acrylic') || searchAdh.includes('water-based') || searchAdh.includes('4965') || searchAdh.includes('vhb') || searchAdh.includes('8820') || searchAdh.includes('1001') || searchAdh.includes('3002')) {
     adhesionType = 'Acrylic (Solvent / Pure)';
-  } else if (searchAdhesive.includes('rubber') || searchAdhesive.includes('hot melt') || searchAdhesive.includes('resin')) {
+  } else if (searchAdh.includes('natural rubber') || searchAdh.includes('synthetic rubber') || searchAdh.includes('rubber') || searchAdh.includes('synthetic resin') || searchAdh.includes('hot melt') || searchAdh.includes('8410') || searchAdh.includes('8411') || searchAdh.includes('6512') || searchAdh.includes('801') || searchAdh.includes('600') || searchAdh.includes('7008')) {
     adhesionType = 'Rubber / Synthetic Resin';
-  } else if (searchAdhesive.includes('non-adhesive') || searchAdhesive.includes('self-fusing') || searchAdhesive.includes('self-amalgamating')) {
+  } else if (searchAdh.includes('anaerobic') || searchAdh.includes('dimethacrylate') || searchAdh.includes('methacrylate') || searchAdh.includes('loctite')) {
+    adhesionType = 'Anaerobic (Dimethacrylate)';
+  } else if (searchAdh.includes('cyanoacrylate') || searchAdh.includes('instant adhesive') || searchAdh.includes('super glue')) {
+    adhesionType = 'Cyanoacrylate (Instant)';
+  } else if (sideType === 'Self-Amalgamating / Non-Adhesive' || searchAdh.includes('non-adhesive') || searchAdh.includes('self-amalgamating') || searchAdh.includes('self-fusing')) {
     adhesionType = 'Self-Fusing / Non-Adhesive';
   }
 
-  // 5. Thickness / Size Category
+  // 5. Thickness Category
   let thicknessCategory: ProductAttributes['thicknessCategory'] = 'Unspecified';
-  const thickSpec = (specs['Total thickness'] || specs['Thickness'] || '').toLowerCase();
-  const numMatch = thickSpec.match(/([0-9.]+)\s*(mm|mil|micron|µm)/i) || combined.match(/([0-9.]+)\s*(mm|mil|micron|µm)/i);
+  const thickSpec = (specs['Total thickness'] || specs['Thickness'] || specs['Caliper'] || '').toLowerCase();
+  const thickMatch = thickSpec.match(/([0-9.]+)\s*(mm|micron|µm|mil)/i) || combined.match(/([0-9.]+)\s*(mm|micron|µm|mil)/i);
 
-  if (numMatch) {
-    let mm = parseFloat(numMatch[1]);
-    const unit = numMatch[2].toLowerCase();
-    if (unit === 'mil') mm = mm * 0.0254;
-    else if (unit === 'micron' || unit === 'µm') mm = mm / 1000;
+  if (thickMatch) {
+    const val = parseFloat(thickMatch[1]);
+    const unit = thickMatch[2].toLowerCase();
+    let mm = val;
+    if (unit === 'micron' || unit === 'µm') mm = val / 1000;
+    else if (unit === 'mil') mm = val * 0.0254;
 
     if (!isNaN(mm)) {
       if (mm < 0.1) thicknessCategory = 'Ultra-Thin (< 0.1 mm)';
@@ -146,8 +150,6 @@ export function classifyProduct(product: {
   const tempSpec = (specs['Temperature resistance'] || specs['Temperature range'] || specs['Temperature rating'] || '').toLowerCase();
   const searchTemp = `${tempSpec} ${combined}`;
 
-  const tempMatch = searchTemp.match(/(?:up to|to|-)?\s*([0-9]{2,3})\s*°\s*c/i) || searchTemp.match(/class\s*([a-z0-9]+)/i);
-
   if (searchTemp.includes('260°c') || searchTemp.includes('250°c') || searchTemp.includes('240°c') || searchTemp.includes('230°c') || searchTemp.includes('220°c') || searchTemp.includes('204°c') || searchTemp.includes('200°c') || searchTemp.includes('class c') || searchTemp.includes('class n') || searchTemp.includes('class 200')) {
     tempRange = 'Ultra-High Temp (≥ 200°C)';
   } else if (searchTemp.includes('180°c') || searchTemp.includes('160°c') || searchTemp.includes('150°c') || searchTemp.includes('155°c') || searchTemp.includes('class h') || searchTemp.includes('class f')) {
@@ -158,11 +160,28 @@ export function classifyProduct(product: {
     tempRange = 'Standard (< 80°C)';
   }
 
+  // 7. Geographic Location / Country of Origin
+  let location = 'Global / Other';
+  if (compLower.includes('cgapl') || compLower.includes('cg adhesive') || compLower.includes('ajit') || compLower.includes('aipl') || compLower.includes('vasavi') || compLower.includes('satl') || compLower.includes('havell') || compLower.includes('polycab') || compLower.includes('bagla') || compLower.includes('pidilite') || compLower.includes('cosmos') || compLower.includes('india')) {
+    location = 'India';
+  } else if (compLower.includes('yongguan') || compLower.includes('ygtape') || compLower.includes('naikos') || compLower.includes('yousan') || compLower.includes('cyg') || compLower.includes('changtong') || compLower.includes('camat') || compLower.includes('wanghao') || compLower.includes('china')) {
+    location = 'China';
+  } else if (compLower.includes('tesa') || compLower.includes('henkel') || compLower.includes('loctite') || compLower.includes('lohmann') || compLower.includes('advance') || compLower.includes('germany')) {
+    location = 'Germany';
+  } else if (compLower.includes('3m') || compLower.includes('shurtape') || compLower.includes('avery') || compLower.includes('intertape') || compLower.includes('ipg') || compLower.includes('scapa') || compLower.includes('united states') || compLower.includes('usa')) {
+    location = 'United States';
+  } else if (compLower.includes('nitto') || compLower.includes('japan')) {
+    location = 'Japan';
+  } else if (compLower.includes('saint-gobain') || compLower.includes('saint gobain') || compLower.includes('france')) {
+    location = 'France';
+  }
+
   const attributesList: string[] = [
     productType,
     sideType !== 'N/A' ? sideType : '',
     backingType,
     adhesionType,
+    location,
     thicknessCategory !== 'Unspecified' ? thicknessCategory : '',
     tempRange !== 'Unspecified' ? tempRange : ''
   ].filter(Boolean);
@@ -174,11 +193,21 @@ export function classifyProduct(product: {
     adhesionType,
     thicknessCategory,
     tempRange,
+    location,
     attributesList
   };
 }
 
 export const KNOWN_FILTER_OPTIONS = {
+  locations: [
+    'India',
+    'China',
+    'Germany',
+    'United States',
+    'Japan',
+    'France',
+    'Global / Other'
+  ],
   productTypes: [
     'Tape',
     'Adhesive & Sealant',
@@ -205,6 +234,7 @@ export const KNOWN_FILTER_OPTIONS = {
     'Cloth / Cotton / Rayon',
     'PTFE / Fluoropolymer',
     'EPDM / Silicone Elastomer',
+    'Nomex / Aramid Paper',
     'Unsupported (Adhesive Transfer)'
   ],
   adhesionTypes: [

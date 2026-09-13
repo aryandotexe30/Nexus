@@ -16,6 +16,7 @@ export async function GET(req: Request) {
     const market = searchParams.get('market')?.trim();
     const industry = searchParams.get('industry')?.trim();
     const search = searchParams.get('search')?.trim();
+    const location = searchParams.get('location')?.trim();
     const productType = searchParams.get('productType')?.trim();
     const sideType = searchParams.get('sideType')?.trim();
     const backing = searchParams.get('backing')?.trim();
@@ -289,6 +290,7 @@ export async function GET(req: Request) {
       const classifiedMerged = merged.map((p: any) => {
         const classification = classifyProduct({
           name: p.name,
+          companyName: p.companyName,
           specs: p.specs,
           application: p.application,
           market: p.market,
@@ -300,9 +302,12 @@ export async function GET(req: Request) {
         };
       });
 
-      // Filter by technical facets if provided
+      // Filter by technical facets & location if provided
       let filtered = classifiedMerged;
 
+      if (location && location !== 'ALL') {
+        filtered = filtered.filter((p: any) => p.classification.location.toLowerCase() === location.toLowerCase());
+      }
       if (productType && productType !== 'ALL') {
         filtered = filtered.filter((p: any) => p.classification.productType.toLowerCase() === productType.toLowerCase());
       }
@@ -346,6 +351,7 @@ export async function GET(req: Request) {
 
       // Compute dynamic available facets across all discovered products
       const facetCounts = {
+        locations: {} as Record<string, number>,
         productTypes: {} as Record<string, number>,
         sideTypes: {} as Record<string, number>,
         backingTypes: {} as Record<string, number>,
@@ -356,6 +362,7 @@ export async function GET(req: Request) {
 
       for (const item of classifiedMerged) {
         const c = item.classification;
+        if (c.location) facetCounts.locations[c.location] = (facetCounts.locations[c.location] || 0) + 1;
         if (c.productType) facetCounts.productTypes[c.productType] = (facetCounts.productTypes[c.productType] || 0) + 1;
         if (c.sideType && c.sideType !== 'N/A') facetCounts.sideTypes[c.sideType] = (facetCounts.sideTypes[c.sideType] || 0) + 1;
         if (c.backingType) facetCounts.backingTypes[c.backingType] = (facetCounts.backingTypes[c.backingType] || 0) + 1;
@@ -393,6 +400,7 @@ export async function GET(req: Request) {
         companies,
         markets,
         filterOptions: {
+          locations: Object.keys(facetCounts.locations).sort(),
           productTypes: Object.keys(facetCounts.productTypes).sort(),
           sideTypes: Object.keys(facetCounts.sideTypes).sort(),
           backingTypes: Object.keys(facetCounts.backingTypes).sort(),

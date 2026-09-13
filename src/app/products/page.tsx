@@ -37,9 +37,23 @@ interface ExtractedProduct {
     adhesionType: string;
     thicknessCategory: string;
     tempRange: string;
+    location?: string;
     attributesList: string[];
   };
 }
+
+const getLocationBadge = (loc?: string) => {
+  if (!loc) return null;
+  switch (loc) {
+    case 'India': return '🇮🇳 India';
+    case 'China': return '🇨🇳 China';
+    case 'Germany': return '🇩🇪 Germany';
+    case 'United States': return '🇺🇸 USA';
+    case 'Japan': return '🇯🇵 Japan';
+    case 'France': return '🇫🇷 France';
+    default: return `🌐 ${loc}`;
+  }
+};
 
 export default function ProductsPage() {
   const [query, setQuery] = useState("");
@@ -59,6 +73,7 @@ export default function ProductsPage() {
   const [isLoadingList, setIsLoadingList] = useState(true);
 
   const [companyFilter, setCompanyFilter] = useState("ALL");
+  const [locationFilter, setLocationFilter] = useState("ALL");
   const [marketFilter, setMarketFilter] = useState("ALL");
   const [productTypeFilter, setProductTypeFilter] = useState("ALL");
   const [sideTypeFilter, setSideTypeFilter] = useState("ALL");
@@ -79,6 +94,7 @@ export default function ProductsPage() {
     try {
       const params = new URLSearchParams();
       if (companyFilter && companyFilter !== "ALL") params.append("company", companyFilter);
+      if (locationFilter && locationFilter !== "ALL") params.append("location", locationFilter);
       if (marketFilter && marketFilter !== "ALL") params.append("market", marketFilter);
       if (productTypeFilter && productTypeFilter !== "ALL") params.append("productType", productTypeFilter);
       if (sideTypeFilter && sideTypeFilter !== "ALL") params.append("sideType", sideTypeFilter);
@@ -107,6 +123,7 @@ export default function ProductsPage() {
 
   const resetAllFilters = () => {
     setCompanyFilter("ALL");
+    setLocationFilter("ALL");
     setMarketFilter("ALL");
     setProductTypeFilter("ALL");
     setSideTypeFilter("ALL");
@@ -119,6 +136,7 @@ export default function ProductsPage() {
 
   const activeFilterCount = [
     companyFilter !== "ALL",
+    locationFilter !== "ALL",
     marketFilter !== "ALL",
     productTypeFilter !== "ALL",
     sideTypeFilter !== "ALL",
@@ -133,6 +151,7 @@ export default function ProductsPage() {
     fetchProducts();
   }, [
     companyFilter, 
+    locationFilter,
     marketFilter,
     productTypeFilter,
     sideTypeFilter,
@@ -403,6 +422,22 @@ export default function ProductsPage() {
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+              {/* Origin / Location Filter */}
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                <select
+                  value={locationFilter}
+                  onChange={(e) => setLocationFilter(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none"
+                >
+                  <option value="ALL">All Origins</option>
+                  {(filterOptions.locations || ['India', 'China', 'Germany', 'United States', 'Japan', 'France', 'Global / Other']).map((loc: string) => (
+                    <option key={loc} value={loc}>
+                      {getLocationBadge(loc) || loc} {filterOptions.facetCounts?.locations?.[loc] ? `(${filterOptions.facetCounts.locations[loc]})` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* Company Filter */}
               <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
                 <Building2 className="w-4 h-4 text-slate-400" />
@@ -674,10 +709,17 @@ export default function ProductsPage() {
                         </td>
 
                         {/* Company */}
-                        <td className="py-4 px-4 align-top">
+                        <td className="py-4 px-4 align-top space-y-1">
                           <span className="inline-block font-semibold text-xs px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-lg border border-slate-200/80 dark:border-slate-700 shadow-2xs whitespace-nowrap">
                             {p.companyName}
                           </span>
+                          {p.classification?.location && (
+                            <div>
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 rounded-md border border-slate-200/60 dark:border-slate-700/60">
+                                {getLocationBadge(p.classification.location)}
+                              </span>
+                            </div>
+                          )}
                         </td>
 
                         {/* Market & Application */}
