@@ -30,6 +30,15 @@ interface ExtractedProduct {
   imageUrl?: string;
   productUrl?: string;
   createdAt: string;
+  classification?: {
+    productType: string;
+    sideType: string;
+    backingType: string;
+    adhesionType: string;
+    thicknessCategory: string;
+    tempRange: string;
+    attributesList: string[];
+  };
 }
 
 export default function ProductsPage() {
@@ -51,10 +60,18 @@ export default function ProductsPage() {
 
   const [companyFilter, setCompanyFilter] = useState("ALL");
   const [marketFilter, setMarketFilter] = useState("ALL");
+  const [productTypeFilter, setProductTypeFilter] = useState("ALL");
+  const [sideTypeFilter, setSideTypeFilter] = useState("ALL");
+  const [backingFilter, setBackingFilter] = useState("ALL");
+  const [adhesionFilter, setAdhesionFilter] = useState("ALL");
+  const [thicknessFilter, setThicknessFilter] = useState("ALL");
+  const [tempRangeFilter, setTempRangeFilter] = useState("ALL");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   const [availableCompanies, setAvailableCompanies] = useState<string[]>([]);
   const [availableMarkets, setAvailableMarkets] = useState<string[]>([]);
+  const [filterOptions, setFilterOptions] = useState<any>({});
 
   // Fetch product list
   const fetchProducts = async () => {
@@ -63,6 +80,12 @@ export default function ProductsPage() {
       const params = new URLSearchParams();
       if (companyFilter && companyFilter !== "ALL") params.append("company", companyFilter);
       if (marketFilter && marketFilter !== "ALL") params.append("market", marketFilter);
+      if (productTypeFilter && productTypeFilter !== "ALL") params.append("productType", productTypeFilter);
+      if (sideTypeFilter && sideTypeFilter !== "ALL") params.append("sideType", sideTypeFilter);
+      if (backingFilter && backingFilter !== "ALL") params.append("backing", backingFilter);
+      if (adhesionFilter && adhesionFilter !== "ALL") params.append("adhesionType", adhesionFilter);
+      if (thicknessFilter && thicknessFilter !== "ALL") params.append("thickness", thicknessFilter);
+      if (tempRangeFilter && tempRangeFilter !== "ALL") params.append("tempRange", tempRangeFilter);
       if (searchTerm) params.append("search", searchTerm);
       params.append("limit", "1000");
 
@@ -73,6 +96,7 @@ export default function ProductsPage() {
         setTotalCount(data.total || 0);
         if (data.companies) setAvailableCompanies(data.companies);
         if (data.markets) setAvailableMarkets(data.markets);
+        if (data.filterOptions) setFilterOptions(data.filterOptions);
       }
     } catch (err) {
       console.error("Failed to load products:", err);
@@ -81,9 +105,42 @@ export default function ProductsPage() {
     }
   };
 
+  const resetAllFilters = () => {
+    setCompanyFilter("ALL");
+    setMarketFilter("ALL");
+    setProductTypeFilter("ALL");
+    setSideTypeFilter("ALL");
+    setBackingFilter("ALL");
+    setAdhesionFilter("ALL");
+    setThicknessFilter("ALL");
+    setTempRangeFilter("ALL");
+    setSearchTerm("");
+  };
+
+  const activeFilterCount = [
+    companyFilter !== "ALL",
+    marketFilter !== "ALL",
+    productTypeFilter !== "ALL",
+    sideTypeFilter !== "ALL",
+    backingFilter !== "ALL",
+    adhesionFilter !== "ALL",
+    thicknessFilter !== "ALL",
+    tempRangeFilter !== "ALL",
+    searchTerm.trim() !== ""
+  ].filter(Boolean).length;
+
   useEffect(() => {
     fetchProducts();
-  }, [companyFilter, marketFilter]);
+  }, [
+    companyFilter, 
+    marketFilter,
+    productTypeFilter,
+    sideTypeFilter,
+    backingFilter,
+    adhesionFilter,
+    thicknessFilter,
+    tempRangeFilter
+  ]);
 
   // Debounced search
   useEffect(() => {
@@ -343,50 +400,168 @@ export default function ProductsPage() {
         </div>
 
         {/* Filter Controls & Search */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-            {/* Company Filter */}
-            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-              <Building2 className="w-4 h-4 text-slate-400" />
-              <select
-                value={companyFilter}
-                onChange={(e) => setCompanyFilter(e.target.value)}
-                className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none"
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm space-y-3">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+              {/* Company Filter */}
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                <Building2 className="w-4 h-4 text-slate-400" />
+                <select
+                  value={companyFilter}
+                  onChange={(e) => setCompanyFilter(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none"
+                >
+                  <option value="ALL">All Companies ({availableCompanies.length})</option>
+                  {availableCompanies.map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Product Type Filter */}
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                <Tag className="w-4 h-4 text-slate-400" />
+                <select
+                  value={productTypeFilter}
+                  onChange={(e) => setProductTypeFilter(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none"
+                >
+                  <option value="ALL">All Product Types</option>
+                  {(filterOptions.productTypes || ['Tape', 'Adhesive & Sealant', 'Cable & Wire', 'Laminate & Insulation', 'Label & Marking', 'Surface Protection']).map((t: string) => (
+                    <option key={t} value={t}>{t} {filterOptions.facetCounts?.productTypes?.[t] ? `(${filterOptions.facetCounts.productTypes[t]})` : ''}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Side Format */}
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                <select
+                  value={sideTypeFilter}
+                  onChange={(e) => setSideTypeFilter(e.target.value)}
+                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none"
+                >
+                  <option value="ALL">All Sides (Single / Double / Transfer)</option>
+                  {(filterOptions.sideTypes || ['Double-Sided', 'Single-Sided', 'Transfer (Unsupported)', 'Self-Amalgamating / Non-Adhesive']).map((s: string) => (
+                    <option key={s} value={s}>{s} {filterOptions.facetCounts?.sideTypes?.[s] ? `(${filterOptions.facetCounts.sideTypes[s]})` : ''}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Advanced Specs Toggle */}
+              <button
+                type="button"
+                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                  showAdvancedFilters || activeFilterCount > 0
+                    ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800"
+                    : "bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                }`}
               >
-                <option value="ALL">All Companies ({availableCompanies.length})</option>
-                {availableCompanies.map(c => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
+                <Filter className="w-3.5 h-3.5" />
+                <span>Technical Specs</span>
+                {activeFilterCount > 0 && (
+                  <span className="ml-1 px-1.5 py-0.2 bg-blue-600 text-white rounded-full text-[10px]">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </button>
+
+              {activeFilterCount > 0 && (
+                <button
+                  type="button"
+                  onClick={resetAllFilters}
+                  className="text-red-500 hover:text-red-700 dark:text-red-400 font-bold underline text-xs"
+                >
+                  Reset ({activeFilterCount})
+                </button>
+              )}
             </div>
 
-            {/* Market Filter */}
-            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-              <Layers className="w-4 h-4 text-slate-400" />
-              <select
-                value={marketFilter}
-                onChange={(e) => setMarketFilter(e.target.value)}
-                className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none"
-              >
-                <option value="ALL">All Markets ({availableMarkets.length})</option>
-                {availableMarkets.map(m => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
+            {/* Search bar inside products */}
+            <div className="relative w-full md:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search model, spec, application..."
+                className="w-full pl-9 pr-4 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
             </div>
           </div>
 
-          {/* Search bar inside products */}
-          <div className="relative w-full md:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search model, spec, application..."
-              className="w-full pl-9 pr-4 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
+          {/* Advanced Technical Dropdown Matrix */}
+          {showAdvancedFilters && (
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+              {/* Backing Material */}
+              <div className="space-y-1">
+                <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <Layers className="w-3.5 h-3.5 text-blue-500" /> Backing Material
+                </label>
+                <select
+                  value={backingFilter}
+                  onChange={(e) => setBackingFilter(e.target.value)}
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                >
+                  <option value="ALL">All Backing Materials</option>
+                  {(filterOptions.backingTypes || ['Polyimide / Kapton', 'PET / Polyester Film', 'Fiberglass / Glass Cloth', 'Aluminum / Copper Foil', 'Foam (Acrylic / PE / PU)', 'PVC / Vinyl', 'Paper / Crepe / Washi', 'Tissue / Non-Woven', 'Cloth / Cotton / Rayon', 'PTFE / Fluoropolymer']).map((b: string) => (
+                    <option key={b} value={b}>{b} {filterOptions.facetCounts?.backingTypes?.[b] ? `(${filterOptions.facetCounts.backingTypes[b]})` : ''}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Adhesion Chemistry */}
+              <div className="space-y-1">
+                <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Adhesion Chemistry
+                </label>
+                <select
+                  value={adhesionFilter}
+                  onChange={(e) => setAdhesionFilter(e.target.value)}
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                >
+                  <option value="ALL">All Adhesives</option>
+                  {(filterOptions.adhesionTypes || ['Acrylic (Solvent / Pure)', 'Silicone / Polysiloxane', 'Rubber / Synthetic Resin', 'Anaerobic (Dimethacrylate)', 'Cyanoacrylate (Instant)', 'Self-Fusing / Non-Adhesive']).map((a: string) => (
+                    <option key={a} value={a}>{a} {filterOptions.facetCounts?.adhesionTypes?.[a] ? `(${filterOptions.facetCounts.adhesionTypes[a]})` : ''}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Temperature Class */}
+              <div className="space-y-1">
+                <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <Sparkles className="w-3.5 h-3.5 text-rose-500" /> Temperature Rating
+                </label>
+                <select
+                  value={tempRangeFilter}
+                  onChange={(e) => setTempRangeFilter(e.target.value)}
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                >
+                  <option value="ALL">All Temperature Classes</option>
+                  {(filterOptions.tempRanges || ['Ultra-High Temp (≥ 200°C)', 'High Temp (150 - 199°C)', 'Medium Temp (80 - 149°C)', 'Standard (< 80°C)']).map((t: string) => (
+                    <option key={t} value={t}>{t} {filterOptions.facetCounts?.tempRanges?.[t] ? `(${filterOptions.facetCounts.tempRanges[t]})` : ''}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Thickness Category */}
+              <div className="space-y-1">
+                <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <Database className="w-3.5 h-3.5 text-emerald-500" /> Thickness Range
+                </label>
+                <select
+                  value={thicknessFilter}
+                  onChange={(e) => setThicknessFilter(e.target.value)}
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                >
+                  <option value="ALL">All Thickness Ranges</option>
+                  {(filterOptions.thicknessCategories || ['Ultra-Thin (< 0.1 mm)', 'Standard (0.1 - 0.5 mm)', 'Heavy / Foam (0.5 - 1.0 mm)', 'Thick (> 1.0 mm)']).map((th: string) => (
+                    <option key={th} value={th}>{th} {filterOptions.facetCounts?.thicknessCategories?.[th] ? `(${filterOptions.facetCounts.thicknessCategories[th]})` : ''}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Products Table */}
@@ -470,6 +645,30 @@ export default function ProductsPage() {
                               <div className="text-[11px] text-slate-400 font-normal mt-0.5 truncate">
                                 {p.industry || 'Specialty Industrial Solutions'}
                               </div>
+                              {p.classification && (
+                                <div className="flex flex-wrap gap-1 mt-1.5">
+                                  {p.classification.sideType && p.classification.sideType !== 'Single-Sided' && (
+                                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                                      {p.classification.sideType}
+                                    </span>
+                                  )}
+                                  {p.classification.backingType && p.classification.backingType !== 'Other / Unspecified' && (
+                                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                                      {p.classification.backingType}
+                                    </span>
+                                  )}
+                                  {p.classification.adhesionType && p.classification.adhesionType !== 'Other / Unspecified' && (
+                                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                                      {p.classification.adhesionType}
+                                    </span>
+                                  )}
+                                  {p.classification.tempRange && p.classification.tempRange !== 'Standard (< 80°C)' && (
+                                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+                                      {p.classification.tempRange}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </td>

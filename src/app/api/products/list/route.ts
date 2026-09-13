@@ -16,6 +16,12 @@ export async function GET(req: Request) {
     const market = searchParams.get('market')?.trim();
     const industry = searchParams.get('industry')?.trim();
     const search = searchParams.get('search')?.trim();
+    const productType = searchParams.get('productType')?.trim();
+    const sideType = searchParams.get('sideType')?.trim();
+    const backing = searchParams.get('backing')?.trim();
+    const adhesionType = searchParams.get('adhesionType')?.trim();
+    const thickness = searchParams.get('thickness')?.trim();
+    const tempRange = searchParams.get('tempRange')?.trim();
     const limit = Math.min(parseInt(searchParams.get('limit') || '1000', 10), 2000);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
 
@@ -277,10 +283,49 @@ export async function GET(req: Request) {
 
       const merged = Array.from(productMap.values());
 
+      const { classifyProduct, KNOWN_FILTER_OPTIONS } = await import('@/lib/productClassifier');
+
+      // Enhance each product with normalized classification
+      const classifiedMerged = merged.map((p: any) => {
+        const classification = classifyProduct({
+          name: p.name,
+          specs: p.specs,
+          application: p.application,
+          market: p.market,
+          industry: p.industry
+        });
+        return {
+          ...p,
+          classification
+        };
+      });
+
+      // Filter by technical facets if provided
+      let filtered = classifiedMerged;
+
+      if (productType && productType !== 'ALL') {
+        filtered = filtered.filter((p: any) => p.classification.productType.toLowerCase() === productType.toLowerCase());
+      }
+      if (sideType && sideType !== 'ALL') {
+        filtered = filtered.filter((p: any) => p.classification.sideType.toLowerCase() === sideType.toLowerCase());
+      }
+      if (backing && backing !== 'ALL') {
+        filtered = filtered.filter((p: any) => p.classification.backingType.toLowerCase().includes(backing.toLowerCase()) || backing.toLowerCase().includes(p.classification.backingType.toLowerCase()));
+      }
+      if (adhesionType && adhesionType !== 'ALL') {
+        filtered = filtered.filter((p: any) => p.classification.adhesionType.toLowerCase().includes(adhesionType.toLowerCase()) || adhesionType.toLowerCase().includes(p.classification.adhesionType.toLowerCase()));
+      }
+      if (thickness && thickness !== 'ALL') {
+        filtered = filtered.filter((p: any) => p.classification.thicknessCategory.toLowerCase() === thickness.toLowerCase());
+      }
+      if (tempRange && tempRange !== 'ALL') {
+        filtered = filtered.filter((p: any) => p.classification.tempRange.toLowerCase() === tempRange.toLowerCase());
+      }
+
       // Smart Relevance Scoring
       if (search) {
         const lowerQ = search.toLowerCase();
-        merged.sort((a, b) => {
+        filtered.sort((a: any, b: any) => {
           const aName = a.name.toLowerCase();
           const bName = b.name.toLowerCase();
 
@@ -296,24 +341,37 @@ export async function GET(req: Request) {
         });
       }
 
-      products = merged.slice(0, limit);
-      total = merged.length;
-    } catch (dbErr: any) {
-      console.warn(`[API /api/products/list] Database notice: ${dbErr.message}`);
-    }
+      products = filtered.slice(0, limit);
+      total = filtered.length;
 
-    // Get distinct companies and markets for filter dropdowns
-    let companies: string[] = [];
-    let markets: string[] = [];
-    try {
+      // Compute dynamic available facets across all discovered products
+      const facetCounts = {
+        productTypes: {} as Record<string, number>,
+        sideTypes: {} as Record<string, number>,
+        backingTypes: {} as Record<string, number>,
+        adhesionTypes: {} as Record<string, number>,
+        thicknessCategories: {} as Record<string, number>,
+        tempRanges: {} as Record<string, number>
+      };
+
+      for (const item of classifiedMerged) {
+        const c = item.classification;
+        if (c.productType) facetCounts.productTypes[c.productType] = (facetCounts.productTypes[c.productType] || 0) + 1;
+        if (c.sideType && c.sideType !== 'N/A') facetCounts.sideTypes[c.sideType] = (facetCounts.sideTypes[c.sideType] || 0) + 1;
+        if (c.backingType) facetCounts.backingTypes[c.backingType] = (facetCounts.backingTypes[c.backingType] || 0) + 1;
+        if (c.adhesionType) facetCounts.adhesionTypes[c.adhesionType] = (facetCounts.adhesionTypes[c.adhesionType] || 0) + 1;
+        if (c.thicknessCategory && c.thicknessCategory !== 'Unspecified') facetCounts.thicknessCategories[c.thicknessCategory] = (facetCounts.thicknessCategories[c.thicknessCategory] || 0) + 1;
+        if (c.tempRange && c.tempRange !== 'Unspecified') facetCounts.tempRanges[c.tempRange] = (facetCounts.tempRanges[c.tempRange] || 0) + 1;
+      }
+
+      // Format distinct lists
       const distinctCompanies = await prisma.extractedProduct.findMany({
         select: { companyName: true },
         distinct: ['companyName']
       });
       const dbCompanyNames = distinctCompanies.map(c => c.companyName).filter(Boolean);
-      const { ENTERPRISE_CATALOGS } = await import('@/lib/enterpriseCatalogs');
       const allCompanies = Array.from(new Set([...dbCompanyNames, ...Object.keys(ENTERPRISE_CATALOGS)]));
-      companies = allCompanies.sort();
+      const companies = allCompanies.sort();
 
       const distinctMarkets = await prisma.extractedProduct.findMany({
         select: { market: true },
@@ -326,15 +384,36 @@ export async function GET(req: Request) {
           if (it.market) catalogMarkets.push(it.market);
         }
       }
-      markets = Array.from(new Set([...dbMarkets, ...catalogMarkets])).sort();
-    } catch {}
+      const markets = Array.from(new Set([...dbMarkets, ...catalogMarkets])).sort();
+
+      return NextResponse.json({
+        success: true,
+        products,
+        total,
+        companies,
+        markets,
+        filterOptions: {
+          productTypes: Object.keys(facetCounts.productTypes).sort(),
+          sideTypes: Object.keys(facetCounts.sideTypes).sort(),
+          backingTypes: Object.keys(facetCounts.backingTypes).sort(),
+          adhesionTypes: Object.keys(facetCounts.adhesionTypes).sort(),
+          thicknessCategories: Object.keys(facetCounts.thicknessCategories).sort(),
+          tempRanges: Object.keys(facetCounts.tempRanges).sort(),
+          facetCounts,
+          defaults: KNOWN_FILTER_OPTIONS
+        }
+      });
+    } catch (dbErr: any) {
+      console.warn(`[API /api/products/list] Database notice: ${dbErr.message}`);
+    }
 
     return NextResponse.json({
       success: true,
-      products,
-      total,
-      companies,
-      markets
+      products: [],
+      total: 0,
+      companies: [],
+      markets: [],
+      filterOptions: {}
     });
 
   } catch (error: any) {

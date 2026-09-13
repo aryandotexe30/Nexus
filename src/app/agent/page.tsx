@@ -38,6 +38,15 @@ interface ExtractedProduct {
   application?: string;
   specs?: Record<string, string>;
   imageUrl?: string;
+  classification?: {
+    productType: string;
+    sideType: string;
+    backingType: string;
+    adhesionType: string;
+    thicknessCategory: string;
+    tempRange: string;
+    attributesList: string[];
+  };
 }
 
 interface CopilotRecommendation {
@@ -76,9 +85,18 @@ export default function FinderPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("ALL");
   const [selectedMarket, setSelectedMarket] = useState("ALL");
+  const [selectedProductType, setSelectedProductType] = useState("ALL");
+  const [selectedSideType, setSelectedSideType] = useState("ALL");
+  const [selectedBacking, setSelectedBacking] = useState("ALL");
+  const [selectedAdhesionType, setSelectedAdhesionType] = useState("ALL");
+  const [selectedThickness, setSelectedThickness] = useState("ALL");
+  const [selectedTempRange, setSelectedTempRange] = useState("ALL");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+
   const [products, setProducts] = useState<ExtractedProduct[]>([]);
   const [companies, setCompanies] = useState<string[]>([]);
   const [markets, setMarkets] = useState<string[]>([]);
+  const [filterOptions, setFilterOptions] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
 
@@ -108,7 +126,17 @@ export default function FinderPage() {
       fetchMasterProducts();
     }, 250);
     return () => clearTimeout(timer);
-  }, [searchQuery, selectedCompany, selectedMarket]);
+  }, [
+    searchQuery, 
+    selectedCompany, 
+    selectedMarket,
+    selectedProductType,
+    selectedSideType,
+    selectedBacking,
+    selectedAdhesionType,
+    selectedThickness,
+    selectedTempRange
+  ]);
 
   const fetchMasterProducts = async () => {
     setLoading(true);
@@ -117,6 +145,12 @@ export default function FinderPage() {
       if (searchQuery.trim()) params.append("search", searchQuery.trim());
       if (selectedCompany !== "ALL") params.append("company", selectedCompany);
       if (selectedMarket !== "ALL") params.append("market", selectedMarket);
+      if (selectedProductType !== "ALL") params.append("productType", selectedProductType);
+      if (selectedSideType !== "ALL") params.append("sideType", selectedSideType);
+      if (selectedBacking !== "ALL") params.append("backing", selectedBacking);
+      if (selectedAdhesionType !== "ALL") params.append("adhesionType", selectedAdhesionType);
+      if (selectedThickness !== "ALL") params.append("thickness", selectedThickness);
+      if (selectedTempRange !== "ALL") params.append("tempRange", selectedTempRange);
       params.append("limit", "150");
 
       const res = await fetch(`/api/products/list?${params.toString()}`);
@@ -130,6 +164,9 @@ export default function FinderPage() {
         if (data.markets && data.markets.length > 0) {
           setMarkets(data.markets);
         }
+        if (data.filterOptions) {
+          setFilterOptions(data.filterOptions);
+        }
       }
     } catch (err) {
       console.error("Failed to query master products:", err);
@@ -137,6 +174,30 @@ export default function FinderPage() {
       setLoading(false);
     }
   };
+
+  const resetFilters = () => {
+    setSearchQuery("");
+    setSelectedCompany("ALL");
+    setSelectedMarket("ALL");
+    setSelectedProductType("ALL");
+    setSelectedSideType("ALL");
+    setSelectedBacking("ALL");
+    setSelectedAdhesionType("ALL");
+    setSelectedThickness("ALL");
+    setSelectedTempRange("ALL");
+  };
+
+  const activeFilterCount = [
+    selectedCompany !== "ALL",
+    selectedMarket !== "ALL",
+    selectedProductType !== "ALL",
+    selectedSideType !== "ALL",
+    selectedBacking !== "ALL",
+    selectedAdhesionType !== "ALL",
+    selectedThickness !== "ALL",
+    selectedTempRange !== "ALL",
+    searchQuery.trim() !== ""
+  ].filter(Boolean).length;
 
   const openEnquiry = (prod: ExtractedProduct) => {
     setSelectedProduct(prod);
@@ -331,20 +392,62 @@ export default function FinderPage() {
                     </select>
                   </div>
 
-                  {/* Market Filter */}
+                  {/* Product Type Filter */}
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-500">Market Sector:</span>
+                    <span className="font-bold text-slate-500">Type:</span>
                     <select
-                      value={selectedMarket}
-                      onChange={(e) => setSelectedMarket(e.target.value)}
+                      value={selectedProductType}
+                      onChange={(e) => setSelectedProductType(e.target.value)}
                       className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
                     >
-                      <option value="ALL">All Markets ({markets.length})</option>
-                      {markets.map((m) => (
-                        <option key={m} value={m}>{m}</option>
+                      <option value="ALL">All Product Types</option>
+                      {(filterOptions.productTypes || ['Tape', 'Adhesive & Sealant', 'Cable & Wire', 'Laminate & Insulation', 'Label & Marking', 'Surface Protection']).map((t: string) => (
+                        <option key={t} value={t}>{t} {filterOptions.facetCounts?.productTypes?.[t] ? `(${filterOptions.facetCounts.productTypes[t]})` : ''}</option>
                       ))}
                     </select>
                   </div>
+
+                  {/* Side Format */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-slate-500">Sides:</span>
+                    <select
+                      value={selectedSideType}
+                      onChange={(e) => setSelectedSideType(e.target.value)}
+                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                    >
+                      <option value="ALL">All Side Types</option>
+                      {(filterOptions.sideTypes || ['Double-Sided', 'Single-Sided', 'Transfer (Unsupported)', 'Self-Amalgamating / Non-Adhesive']).map((s: string) => (
+                        <option key={s} value={s}>{s} {filterOptions.facetCounts?.sideTypes?.[s] ? `(${filterOptions.facetCounts.sideTypes[s]})` : ''}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Advanced Filters Toggle */}
+                  <button
+                    onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold transition-all border ${
+                      showAdvancedFilters || activeFilterCount > 0
+                        ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                    }`}
+                  >
+                    <SlidersHorizontal className="w-3.5 h-3.5" />
+                    <span>Technical Specs</span>
+                    {activeFilterCount > 0 && (
+                      <span className="ml-1 px-1.5 py-0.2 bg-blue-600 text-white rounded-full text-[10px]">
+                        {activeFilterCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {activeFilterCount > 0 && (
+                    <button
+                      onClick={resetFilters}
+                      className="text-red-500 hover:text-red-700 dark:text-red-400 font-bold underline text-xs"
+                    >
+                      Reset ({activeFilterCount})
+                    </button>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2 text-slate-500 font-bold">
@@ -352,6 +455,84 @@ export default function FinderPage() {
                   <span>Showing {products.length} of {totalCount} verified products</span>
                 </div>
               </div>
+
+              {/* Advanced Technical Filters Dropdowns */}
+              {showAdvancedFilters && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs"
+                >
+                  {/* Backing Material */}
+                  <div className="space-y-1">
+                    <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <Layers className="w-3.5 h-3.5 text-blue-500" /> Backing Material
+                    </label>
+                    <select
+                      value={selectedBacking}
+                      onChange={(e) => setSelectedBacking(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                    >
+                      <option value="ALL">All Backing Materials</option>
+                      {(filterOptions.backingTypes || ['Polyimide / Kapton', 'PET / Polyester Film', 'Fiberglass / Glass Cloth', 'Aluminum / Copper Foil', 'Foam (Acrylic / PE / PU)', 'PVC / Vinyl', 'Paper / Crepe / Washi', 'Tissue / Non-Woven', 'Cloth / Cotton / Rayon', 'PTFE / Fluoropolymer']).map((b: string) => (
+                        <option key={b} value={b}>{b} {filterOptions.facetCounts?.backingTypes?.[b] ? `(${filterOptions.facetCounts.backingTypes[b]})` : ''}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Adhesion Chemistry */}
+                  <div className="space-y-1">
+                    <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Adhesion Chemistry
+                    </label>
+                    <select
+                      value={selectedAdhesionType}
+                      onChange={(e) => setSelectedAdhesionType(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                    >
+                      <option value="ALL">All Adhesives</option>
+                      {(filterOptions.adhesionTypes || ['Acrylic (Solvent / Pure)', 'Silicone / Polysiloxane', 'Rubber / Synthetic Resin', 'Anaerobic (Dimethacrylate)', 'Cyanoacrylate (Instant)', 'Self-Fusing / Non-Adhesive']).map((a: string) => (
+                        <option key={a} value={a}>{a} {filterOptions.facetCounts?.adhesionTypes?.[a] ? `(${filterOptions.facetCounts.adhesionTypes[a]})` : ''}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Temperature Class */}
+                  <div className="space-y-1">
+                    <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <Zap className="w-3.5 h-3.5 text-rose-500" /> Temperature Class
+                    </label>
+                    <select
+                      value={selectedTempRange}
+                      onChange={(e) => setSelectedTempRange(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                    >
+                      <option value="ALL">All Temperature Classes</option>
+                      {(filterOptions.tempRanges || ['Ultra-High Temp (≥ 200°C)', 'High Temp (150 - 199°C)', 'Medium Temp (80 - 149°C)', 'Standard (< 80°C)']).map((t: string) => (
+                        <option key={t} value={t}>{t} {filterOptions.facetCounts?.tempRanges?.[t] ? `(${filterOptions.tempRanges[t] || filterOptions.facetCounts.tempRanges[t]})` : ''}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Thickness / Caliper */}
+                  <div className="space-y-1">
+                    <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <Sliders className="w-3.5 h-3.5 text-emerald-500" /> Thickness Category
+                    </label>
+                    <select
+                      value={selectedThickness}
+                      onChange={(e) => setSelectedThickness(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                    >
+                      <option value="ALL">All Thickness Ranges</option>
+                      {(filterOptions.thicknessCategories || ['Ultra-Thin (< 0.1 mm)', 'Standard (0.1 - 0.5 mm)', 'Heavy / Foam (0.5 - 1.0 mm)', 'Thick (> 1.0 mm)']).map((th: string) => (
+                        <option key={th} value={th}>{th} {filterOptions.facetCounts?.thicknessCategories?.[th] ? `(${filterOptions.facetCounts.thicknessCategories[th]})` : ''}</option>
+                      ))}
+                    </select>
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             {/* Products Grid */}
@@ -368,7 +549,7 @@ export default function FinderPage() {
                   Try clearing specific filters or search using broader technical terms like "Double Sided", "Polyimide", "Foil", or "Masking".
                 </p>
                 <button
-                  onClick={() => { setSearchQuery(""); setSelectedCompany("ALL"); setSelectedMarket("ALL"); }}
+                  onClick={resetFilters}
                   className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-blue-700"
                 >
                   Reset All Filters
@@ -411,6 +592,32 @@ export default function FinderPage() {
                         <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">
                           {prod.name}
                         </h3>
+
+                        {/* Classification Badges */}
+                        {prod.classification && (
+                          <div className="flex flex-wrap gap-1.5 mb-3">
+                            {prod.classification.sideType && prod.classification.sideType !== 'N/A' && (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                                {prod.classification.sideType}
+                              </span>
+                            )}
+                            {prod.classification.backingType && (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                                {prod.classification.backingType}
+                              </span>
+                            )}
+                            {prod.classification.adhesionType && (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                                {prod.classification.adhesionType}
+                              </span>
+                            )}
+                            {prod.classification.tempRange && prod.classification.tempRange !== 'Unspecified' && (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+                                {prod.classification.tempRange}
+                              </span>
+                            )}
+                          </div>
+                        )}
 
                         {/* Market & Application */}
                         {(prod.market || prod.application) && (

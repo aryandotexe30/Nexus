@@ -69,71 +69,122 @@ export async function POST(req: Request) {
 
     const latestUserMessage = messages[messages.length - 1]?.text || "";
 
-    // 1. Query Master ExtractedProduct Database in PostgreSQL for live grounding
-    let dbProducts: any[] = [];
-    try {
-      // Extract keywords from user query
-      const searchTerms = latestUserMessage
-        .replace(/[^\w\s]/g, '')
-        .split(/\s+/)
-        .filter((w: string) => w.length > 2 && !['the', 'and', 'for', 'with', 'need', 'want', 'buy', 'how', 'what', 'which', 'can', 'you', 'give'].includes(w.toLowerCase()));
+    // 1. Gather all verified enterprise catalogs and database products
+    const { ENTERPRISE_CATALOGS } = await import('@/lib/enterpriseCatalogs');
+    const { classifyProduct } = await import('@/lib/productClassifier');
 
-      const orConditions: any[] = [
-        { name: { contains: latestUserMessage.slice(0, 30), mode: 'insensitive' } },
-        { application: { contains: latestUserMessage.slice(0, 30), mode: 'insensitive' } }
-      ];
+    let allProducts: any[] = [];
 
-      for (const term of searchTerms.slice(0, 4)) {
-        orConditions.push({ name: { contains: term, mode: 'insensitive' } });
-        orConditions.push({ application: { contains: term, mode: 'insensitive' } });
-        orConditions.push({ companyName: { contains: term, mode: 'insensitive' } });
-      }
-
-      const fetched = await prisma.extractedProduct.findMany({
-        where: {
-          OR: orConditions
-        },
-        take: 25,
-        orderBy: { updatedAt: 'desc' }
-      });
-
-      dbProducts = fetched.filter((p: any) => isValidProduct(p.name, p.productUrl, Object.keys(p.specs || {}).length));
-
-      // If specific search yields few, fetch high-quality sample models from each top brand
-      if (dbProducts.length < 8) {
-        const topBrands = ['Tesa', '3M', 'Ajit Industries (AIPL)', 'Sri Vasavi Tapes', 'Polycab', 'Havells'];
-        const sampleProducts = await prisma.extractedProduct.findMany({
-          where: {
-            companyName: { in: topBrands }
-          },
-          take: 20,
-          orderBy: { createdAt: 'desc' }
+    // Collect all enterprise catalog items
+    for (const [catCompany, items] of Object.entries(ENTERPRISE_CATALOGS)) {
+      for (const item of items) {
+        allProducts.push({
+          id: `cat-${catCompany}-${item.name.replace(/\s+/g, '-').toLowerCase()}`,
+          name: item.name,
+          companyName: catCompany,
+          productUrl: item.productUrl,
+          industry: item.industry,
+          market: item.market,
+          application: item.application,
+          specs: item.specs,
+          classification: classifyProduct({
+            name: item.name,
+            specs: item.specs,
+            application: item.application,
+            market: item.market,
+            industry: item.industry
+          })
         });
-        const validSamples = sampleProducts.filter((p: any) => isValidProduct(p.name, p.productUrl, Object.keys(p.specs || {}).length));
-        dbProducts = Array.from(new Map([...dbProducts, ...validSamples].map(p => [p.name, p])).values()).slice(0, 30);
       }
-    } catch (dbErr) {
-      console.warn("Database search in Copilot noticed:", dbErr);
     }
 
-    // Format DB context
-    const dbContextString = dbProducts.map((p: any, i: number) => {
+    // Also fetch DB products
+    try {
+      const dbFetched = await prisma.extractedProduct.findMany({
+        take: 50,
+        orderBy: { updatedAt: 'desc' }
+      });
+      const validDb = dbFetched.filter((p: any) => isValidProduct(p.name, p.productUrl, Object.keys(p.specs || {}).length));
+      for (const p of validDb) {
+        if (!allProducts.some(ap => ap.name.toLowerCase() === p.name.toLowerCase())) {
+          allProducts.push({
+            id: p.id,
+            name: p.name,
+            companyName: p.companyName,
+            productUrl: p.productUrl,
+            industry: p.industry,
+            market: p.market,
+            application: p.application,
+            specs: p.specs,
+            classification: classifyProduct({
+              name: p.name,
+              specs: p.specs as any,
+              application: p.application,
+              market: p.market,
+              industry: p.industry
+            })
+          });
+        }
+      }
+    } catch (dbErr) {
+      console.warn("Database fetch in Copilot noticed:", dbErr);
+    }
+
+    // 2. Intelligent Multi-Attribute Semantic Ranking
+    const queryLower = latestUserMessage.toLowerCase();
+    const queryTokens = queryLower
+      .replace(/[^\w\s]/g, ' ')
+      .split(/\s+/)
+      .filter((w: string) => w.length > 2 && !['the', 'and', 'for', 'with', 'need', 'want', 'buy', 'how', 'what', 'which', 'can', 'you', 'give', 'tape', 'tapes'].includes(w));
+
+    const scoredProducts = allProducts.map(p => {
+      let score = 0;
+      const c = p.classification;
+      const text = `${p.name} ${p.companyName} ${p.application || ''} ${JSON.stringify(p.specs || {})} ${c.attributesList.join(' ')}`.toLowerCase();
+
+      // Exact phrase match
+      if (text.includes(queryLower)) score += 50;
+
+      // Token matches
+      for (const token of queryTokens) {
+        if (text.includes(token)) score += 10;
+        if (p.name.toLowerCase().includes(token)) score += 15;
+      }
+
+      // Feature specific boosts
+      if (queryLower.includes('double') && c.sideType === 'Double-Sided') score += 30;
+      if (queryLower.includes('single') && c.sideType === 'Single-Sided') score += 20;
+      if (queryLower.includes('transfer') && c.sideType === 'Transfer (Unsupported)') score += 30;
+      if ((queryLower.includes('kapton') || queryLower.includes('polyimide')) && c.backingType === 'Polyimide / Kapton') score += 35;
+      if ((queryLower.includes('glass') || queryLower.includes('fiberglass')) && c.backingType === 'Fiberglass / Glass Cloth') score += 35;
+      if ((queryLower.includes('foam') || queryLower.includes('vhb')) && c.backingType.includes('Foam')) score += 35;
+      if ((queryLower.includes('silicone') || queryLower.includes('polysiloxane')) && c.adhesionType.includes('Silicone')) score += 35;
+      if (queryLower.includes('acrylic') && c.adhesionType.includes('Acrylic')) score += 25;
+      if ((queryLower.includes('high temp') || queryLower.includes('heat') || queryLower.includes('200') || queryLower.includes('260') || queryLower.includes('180') || queryLower.includes('150')) && (c.tempRange.includes('High') || c.tempRange.includes('Ultra-High'))) score += 30;
+
+      return { product: p, score };
+    });
+
+    scoredProducts.sort((a, b) => b.score - a.score);
+    const topProducts = (scoredProducts[0]?.score > 0 ? scoredProducts.slice(0, 20) : scoredProducts.slice(0, 15)).map(s => s.product);
+
+    // Format Technical DB context
+    const dbContextString = topProducts.map((p: any, i: number) => {
       const specsStr = Object.entries(p.specs || {})
         .map(([k, v]) => `${k}: ${v}`)
         .join(', ');
-      return `[Product #${i+1}] Name: ${p.name} | Manufacturer: ${p.companyName} | Market: ${p.market || 'Industrial'} | Application: ${p.application || 'General'} | Specs: { ${specsStr} } | URL: ${p.productUrl || ''}`;
-    }).join('\n');
+      const c = p.classification;
+      return `[Product #${i+1}]
+- Model: ${p.name} (${p.companyName})
+- Type: ${c.productType} | Side: ${c.sideType}
+- Backing: ${c.backingType} | Adhesive: ${c.adhesionType}
+- Thickness: ${c.thicknessCategory} | Temp Rating: ${c.tempRange}
+- Application: ${p.application || 'Industrial'}
+- Specs: { ${specsStr} }
+- Link: ${p.productUrl || ''}`;
+    }).join('\n\n');
 
-    // 2. Search live internet if database context is minimal
-    let searchContext = "";
-    if (dbProducts.length < 3) {
-      try {
-        const tavilyRes = await fetchVerifiedInternetData(`"${latestUserMessage}" technical specifications datasheet TDS manufacturer`, 3, false);
-        searchContext = tavilyRes.contextString;
-      } catch (e) {}
-    }
-
-    // 3. Format Conversation History
+    // Format Conversation History
     let filteredMessages = messages;
     if (messages.length > 0 && messages[0].role === 'ai' && messages[0].text.includes("Welcome to")) {
       filteredMessages = messages.slice(1);
@@ -148,11 +199,8 @@ export async function POST(req: Request) {
     
     const fullPrompt = `${SYSTEM_PROMPT}
 
-MASTER DATABASE PRODUCTS IN SYSTEM (GROUND TRUTH):
-${dbContextString || "Master database connected."}
-
-ADDITIONAL MARKET INTELLIGENCE:
-${searchContext || "No external search required; use master database."}
+MASTER TECHNICAL PRODUCT MATRIX IN SYSTEM (160+ VERIFIED MODELS ACROSS ALL MAJOR MANUFACTURERS):
+${dbContextString}
 
 CHAT HISTORY:
 ${historyPrompt}`;
@@ -187,9 +235,9 @@ ${historyPrompt}`;
       console.error("AI Generation failed:", aiErr);
       return NextResponse.json({
         success: true,
-        text: `I found ${dbProducts.length} verified products in our master catalog matching "${latestUserMessage}". Here are the top options:`,
+        text: `I found ${topProducts.length} verified products in our master catalog matching "${latestUserMessage}". Here are the top options:`,
         options: ["View Technical Datasheets", "Request Anonymous RFQ", "Compare Specifications", "Other"],
-        recommendations: dbProducts.slice(0, 3).map(p => ({
+        recommendations: topProducts.slice(0, 3).map((p: any) => ({
           name: p.name,
           companyName: p.companyName,
           application: p.application || "General Industrial",
