@@ -118,13 +118,14 @@ export function evaluateMaterialsConversation(
   // Helper to find standard from clustered list
   const findStandard = (matcher: (s: any) => boolean, fallbackPrefix: string) => {
     return clusteredStandards.find(matcher) || clusteredStandards.find(s => (s.serialCode || '').includes(fallbackPrefix)) || clusteredStandards[0] || {
-      serialCode: 'TAR-KAP-SIL-0050-T260-G841',
-      name: 'High-Temperature Polyimide (Kapton) Tape (0.05 mm / Silicone / 260°C)',
+      serialCode: 'TAR-KAP-AMB-SIL-0050-T260-G841',
+      name: 'High-Temperature Amber Polyimide (Kapton) Tape (0.05 mm / Amber / Silicone / 260°C)',
       companyName: 'Tarasai Verified Consortium',
       price: '₹340.00 / roll ($4.20)',
       application: 'PCB wave solder masking & gold finger protection',
       specs: {
         'Backing material': 'Polyimide (Kapton) Film',
+        'Color / Appearance': 'Amber / Tawny',
         'Adhesive type': 'High-Temp Cross-Linked Silicone',
         'Total thickness': '0.05 mm (50 µm)',
         'Temperature resistance': '-73°C to 260°C',

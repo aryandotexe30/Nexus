@@ -1,4 +1,4 @@
-import { ExtractedProductItem } from './deepProductHarvester';
+import type { ExtractedProductItem } from './deepProductHarvester';
 
 export interface UnderlyingManufacturer {
   companyName: string;
@@ -142,6 +142,121 @@ function extractThicknessMicrons(thicknessStr: string, name: string): string {
 }
 
 /**
+ * Normalizes color and optical clarity code (3 uppercase characters)
+ */
+export function extractColorCode(name: string, specs: Record<string, string>, app: string): { code: string; label: string } {
+  const specColor = (specs['Color'] || specs['Colour'] || specs['Appearance'] || '').toLowerCase();
+  const nameL = name.toLowerCase();
+  const backingL = (specs['Backing material'] || specs['Carrier'] || '').toLowerCase();
+  const appL = app.toLowerCase();
+  const combined = `${specColor} ${nameL} ${backingL} ${appL}`;
+
+  // 1. Clear / Transparent / Optically Clear
+  if (
+    specColor.includes('clear') || 
+    specColor.includes('transparent') || 
+    specColor.includes('transparency') || 
+    specColor.includes('optically clear') ||
+    nameL.includes('clear') || 
+    nameL.includes('transparency') || 
+    nameL.includes('transparent') ||
+    combined.includes('optically clear') ||
+    combined.includes('glass clear') ||
+    combined.includes('invisible')
+  ) {
+    return { code: 'CLR', label: 'Clear / High Transparency' };
+  }
+
+  // 2. Black / Deep Black / Matte Black / Anthracite
+  if (
+    specColor.includes('black') || 
+    nameL.includes('black') || 
+    combined.includes('deep black') || 
+    combined.includes('matte black') ||
+    combined.includes('anthracite')
+  ) {
+    return { code: 'BLK', label: 'Black' };
+  }
+
+  // 3. Grey / Gray
+  if (
+    specColor.includes('grey') || 
+    specColor.includes('gray') || 
+    nameL.includes('grey') || 
+    nameL.includes('gray') ||
+    combined.includes('dark gray') || 
+    combined.includes('dark grey')
+  ) {
+    return { code: 'GRY', label: 'Grey' };
+  }
+
+  // 4. White
+  if (specColor.includes('white') || nameL.includes('white')) {
+    return { code: 'WHT', label: 'White' };
+  }
+
+  // 5. Amber / Tawny / Gold (Kapton/Polyimide)
+  if (
+    specColor.includes('amber') || 
+    nameL.includes('amber') || 
+    combined.includes('tawny') || 
+    combined.includes('gold') || 
+    combined.includes('brown') || 
+    combined.includes('polyimide') || 
+    combined.includes('kapton')
+  ) {
+    return { code: 'AMB', label: 'Amber / Tawny' };
+  }
+
+  // 6. Blue
+  if (specColor.includes('blue') || nameL.includes('blue')) {
+    return { code: 'BLU', label: 'Blue' };
+  }
+
+  // 7. Green
+  if (specColor.includes('green') || nameL.includes('green')) {
+    return { code: 'GRN', label: 'Green' };
+  }
+
+  // 8. Yellow
+  if (specColor.includes('yellow') || nameL.includes('yellow')) {
+    return { code: 'YEL', label: 'Yellow' };
+  }
+
+  // 9. Red
+  if (specColor.includes('red') || nameL.includes('red')) {
+    return { code: 'RED', label: 'Red' };
+  }
+
+  // 10. Metallic / Silver / Aluminum / Copper
+  if (
+    specColor.includes('aluminum') || 
+    specColor.includes('silver') || 
+    specColor.includes('copper') || 
+    nameL.includes('aluminum') || 
+    nameL.includes('aluminium') || 
+    nameL.includes('copper') || 
+    nameL.includes('foil')
+  ) {
+    return { code: 'MET', label: 'Metallic' };
+  }
+
+  // 11. Natural / Buff / Beige / Crepe
+  if (
+    specColor.includes('natural') || 
+    specColor.includes('beige') || 
+    specColor.includes('buff') || 
+    nameL.includes('crepe') || 
+    nameL.includes('masking') || 
+    combined.includes('tan')
+  ) {
+    return { code: 'NAT', label: 'Natural / Buff' };
+  }
+
+  return { code: 'STD', label: 'Standard' };
+}
+
+/**
  * Normalizes temperature code (e.g. 260°C -> "T260", 150°C -> "T150", 80°C -> "T080")
  */
 function extractTempCode(tempStr: string, name: string): string {
@@ -179,6 +294,7 @@ function computeGroupHash(key: string): string {
 export function clusterProducts(products: any[]): UnifiedGroupProduct[] {
   const clusterMap = new Map<string, {
     catInfo: { code: string; title: string };
+    colorInfo: { code: string; label: string };
     adhCode: string;
     thickCode: string;
     tempCode: string;
@@ -200,16 +316,18 @@ export function clusterProducts(products: any[]): UnifiedGroupProduct[] {
     const app = p.application || '';
 
     const catInfo = extractCategoryCode(name, backing, app);
+    const colorInfo = extractColorCode(name, specs, app);
     const adhCode = extractAdhesiveCode(adhesive, specs);
     const thickCode = extractThicknessMicrons(thickness, name);
     const tempCode = extractTempCode(temp, name);
 
-    // Grouping Key (Same physical spec profile)
-    const clusterKey = `${catInfo.code}-${adhCode}-${thickCode}-${tempCode}`;
+    // Grouping Key (Same physical spec & color/optical profile)
+    const clusterKey = `${catInfo.code}-${colorInfo.code}-${adhCode}-${thickCode}-${tempCode}`;
 
     if (!clusterMap.has(clusterKey)) {
       clusterMap.set(clusterKey, {
         catInfo,
+        colorInfo,
         adhCode,
         thickCode,
         tempCode,
@@ -231,8 +349,8 @@ export function clusterProducts(products: any[]): UnifiedGroupProduct[] {
 
   for (const [clusterKey, data] of clusterMap.entries()) {
     const groupHash = computeGroupHash(clusterKey);
-    // Unique Pattern-based Group Serial Code: TAR-[Category]-[Adhesive]-[ThicknessMicrons]-[TempCode]-[GroupHash]
-    const groupSerialCode = `TAR-${data.catInfo.code}-${data.adhCode}-${data.thickCode}-${data.tempCode}-${groupHash}`;
+    // Unique Pattern-based Group Serial Code: TAR-[Category]-[Color]-[Adhesive]-[ThicknessMicrons]-[TempCode]-[GroupHash]
+    const groupSerialCode = `TAR-${data.catInfo.code}-${data.colorInfo.code}-${data.adhCode}-${data.thickCode}-${data.tempCode}-${groupHash}`;
     const rep = data.representativeProduct;
 
     // Pick best/benchmark indicative price
@@ -254,6 +372,7 @@ export function clusterProducts(products: any[]): UnifiedGroupProduct[] {
       "Group Serial Code": groupSerialCode,
       "Backing material": data.backingName,
       "Adhesive type": data.adhesiveName,
+      "Color / Appearance": data.colorInfo.label,
       "Total thickness": data.thicknessName,
       "Temperature resistance": data.tempName,
       "Catalog Price": bestPriceStr,
@@ -273,7 +392,10 @@ export function clusterProducts(products: any[]): UnifiedGroupProduct[] {
     }));
 
     const formattedThickness = (parseInt(data.thickCode, 10) / 1000).toFixed(2);
-    const unifiedTitle = `${data.catInfo.title} (${formattedThickness} mm / ${data.adhCode === 'SIL' ? 'Silicone' : data.adhCode === 'ACR' ? 'Acrylic' : data.adhCode === 'RUB' ? 'Natural Rubber' : 'High Tack'} / ${data.tempCode.replace('T', '')}°C)`;
+    const colorPart = data.colorInfo.code !== 'STD' ? ` / ${data.colorInfo.label}` : '';
+    const adhPart = data.adhCode === 'SIL' ? 'Silicone' : data.adhCode === 'ACR' ? 'Acrylic' : data.adhCode === 'RUB' ? 'Natural Rubber' : 'High Tack';
+    const tempClean = parseInt(data.tempCode.replace('T', ''), 10) + '°C';
+    const unifiedTitle = `${data.catInfo.title} (${formattedThickness} mm${colorPart} / ${adhPart} / ${tempClean})`;
 
     unifiedProducts.push({
       id: groupSerialCode,
@@ -313,11 +435,12 @@ export function generateProductSerialCode(p: any): string {
   const app = p.application || '';
 
   const catInfo = extractCategoryCode(name, backing, app);
+  const colorInfo = extractColorCode(name, specs, app);
   const adhCode = extractAdhesiveCode(adhesive, specs);
   const thickCode = extractThicknessMicrons(thickness, name);
   const tempCode = extractTempCode(temp, name);
 
-  const clusterKey = `${catInfo.code}-${adhCode}-${thickCode}-${tempCode}`;
+  const clusterKey = `${catInfo.code}-${colorInfo.code}-${adhCode}-${thickCode}-${tempCode}`;
   const groupHash = computeGroupHash(clusterKey);
-  return `TAR-${catInfo.code}-${adhCode}-${thickCode}-${tempCode}-${groupHash}`;
+  return `TAR-${catInfo.code}-${colorInfo.code}-${adhCode}-${thickCode}-${tempCode}-${groupHash}`;
 }
