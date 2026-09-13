@@ -2,13 +2,15 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import { Users, Database, Activity, ShieldAlert, Flag, UserCheck } from "lucide-react";
+import { Users, Database, Activity, ShieldAlert, Flag, UserCheck, Sliders } from "lucide-react";
 import AdminUserTable from "@/components/AdminUserTable";
 import AdminInvitePanel from "@/components/AdminInvitePanel";
 import AdminModerationTable from "@/components/AdminModerationTable";
 import AdminVerificationQueue from "@/components/AdminVerificationQueue";
+import AdminFeatureControls from "@/components/AdminFeatureControls";
+import { getModuleConfigurations } from "@/lib/featureFlags";
 
-
+export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
@@ -30,6 +32,8 @@ export default async function AdminDashboard() {
       </div>
     );
   }
+
+  const moduleConfigs = await getModuleConfigurations();
 
   const users = await prisma.user.findMany({
     orderBy: { createdAt: 'desc' }
@@ -75,60 +79,70 @@ export default async function AdminDashboard() {
   }));
 
   return (
-    <div className="max-w-6xl mx-auto font-sans">
-      <header className="mb-12">
-        <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-2 flex items-center gap-3">
+    <div className="max-w-6xl mx-auto font-sans space-y-12 pb-24">
+      <header>
+        <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2 flex items-center gap-3">
           Admin Console
         </h1>
-        <p className="text-lg text-slate-500 font-medium">
-          Manage system users, view global usage, and adjust quotas.
+        <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">
+          Manage system users, navigation permissions, module access levels, and moderation queues.
         </p>
       </header>
 
       {/* Admin Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400">
             <Users className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm text-slate-500 font-semibold uppercase tracking-wider">Total Users</p>
-            <h3 className="text-2xl font-bold text-slate-900">{users.length}</h3>
+            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Users</p>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white">{users.length}</h3>
           </div>
         </div>
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
             <Database className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm text-slate-500 font-semibold uppercase tracking-wider">Companies Indexed</p>
-            <h3 className="text-2xl font-bold text-slate-900">{totalCompanies}</h3>
+            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Companies Indexed</p>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white">{totalCompanies}</h3>
           </div>
         </div>
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center text-orange-600">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-orange-50 dark:bg-orange-950/60 flex items-center justify-center text-orange-600 dark:text-orange-400">
             <Flag className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm text-slate-500 font-semibold uppercase tracking-wider">Flagged Posts</p>
-            <h3 className="text-2xl font-bold text-slate-900">{flaggedPosts.length}</h3>
+            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Flagged Posts</p>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white">{flaggedPosts.length}</h3>
           </div>
         </div>
       </div>
 
-      <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3">
-        <UserCheck className="w-6 h-6 text-emerald-500" /> Pending KYC Approvals
-      </h2>
-      <AdminVerificationQueue initialUsers={serializedUnverifiedUsers} />
+      {/* Dynamic Module & Sidebar Access Matrix */}
+      <div>
+        <AdminFeatureControls initialModules={moduleConfigs} />
+      </div>
 
-      <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-3 mt-12">
-        <ShieldAlert className="w-6 h-6 text-red-500" /> Moderation Queue
-      </h2>
-      <AdminModerationTable initialPosts={flaggedPosts} />
+      <div>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+          <UserCheck className="w-6 h-6 text-emerald-500" /> Pending KYC Approvals
+        </h2>
+        <AdminVerificationQueue initialUsers={serializedUnverifiedUsers} />
+      </div>
 
-      <h2 className="text-2xl font-bold text-slate-900 mb-6 mt-12">Registered Users</h2>
-      
-      <AdminUserTable initialUsers={serializedUsers} />
+      <div>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+          <ShieldAlert className="w-6 h-6 text-red-500" /> Moderation Queue
+        </h2>
+        <AdminModerationTable initialPosts={flaggedPosts} />
+      </div>
+
+      <div>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Registered Users</h2>
+        <AdminUserTable initialUsers={serializedUsers} />
+      </div>
 
     </div>
   );

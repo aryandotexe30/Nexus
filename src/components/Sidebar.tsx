@@ -7,54 +7,113 @@ import { useSession, signOut } from "next-auth/react";
 import { 
   LayoutDashboard, 
   Search, 
-  Network,
-  UploadCloud, 
   Settings, 
   LogOut, 
   ShieldCheck,
   Building2,
   Store,
-  MessageSquare,
   TrendingUp,
   Landmark,
   Menu,
   X,
-  CreditCard,
   Lock,
   Headset,
-  Database
+  Database,
+  AlertTriangle
 } from "lucide-react";
 import { motion } from "framer-motion";
+
+interface ClientModuleFlag {
+  id: string;
+  name: string;
+  path: string;
+  access: 'ALL' | 'ADMIN_ONLY' | 'MAINTENANCE';
+  isSidebarVisible: boolean;
+  requiredPlan?: string[];
+  maintenanceMessage?: string;
+}
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const [moduleFlags, setModuleFlags] = useState<Record<string, ClientModuleFlag>>({});
 
   // Close sidebar on route change for mobile
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
 
+  // Fetch active module flags
+  useEffect(() => {
+    let isMounted = true;
+    const loadFlags = async () => {
+      try {
+        const res = await fetch("/api/features");
+        const data = await res.json();
+        if (isMounted && data.success && Array.isArray(data.modules)) {
+          const map: Record<string, ClientModuleFlag> = {};
+          for (const m of data.modules) {
+            map[m.id] = m;
+          }
+          setModuleFlags(map);
+        }
+      } catch (err) {
+        console.warn("[Sidebar] Features load notice:", err);
+      }
+    };
+
+    loadFlags();
+    const interval = setInterval(loadFlags, 15000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
   if (!session) return null;
 
   const isAdmin = (session.user as any)?.role === "ADMIN";
+  const userPlan = (session.user as any)?.plan || "FREE";
   const companyName = (session.user as any)?.companyName || "My Company";
 
-  const routes = [
-    { name: "Hub", path: "/dashboard", icon: LayoutDashboard },
-    { name: "Finder", path: "/agent", icon: Search },
-    { name: "Marketplace", path: "/dashboard/marketplace", icon: Store },
-    { name: "Products Master", path: "/products", icon: Database },
-    { name: "Business Plan", path: "/dashboard/business-plan", icon: TrendingUp, requiredPlan: ["ENTERPRISE"] },
-    { name: "Equity & IPO", path: "/dashboard/equity-funding", icon: Landmark, requiredPlan: ["ENTERPRISE"] },
-    { name: "Settings", path: "/dashboard/settings", icon: Settings },
+  const allRoutes = [
+    { id: "hub", name: "Hub", path: "/dashboard", icon: LayoutDashboard },
+    { id: "finder", name: "Finder", path: "/agent", icon: Search },
+    { id: "marketplace", name: "Marketplace", path: "/dashboard/marketplace", icon: Store },
+    { id: "products", name: "Products Master", path: "/products", icon: Database },
+    { id: "business_plan", name: "Business Plan", path: "/dashboard/business-plan", icon: TrendingUp, requiredPlan: ["ENTERPRISE"] },
+    { id: "equity_funding", name: "Equity & IPO", path: "/dashboard/equity-funding", icon: Landmark, requiredPlan: ["ENTERPRISE"] },
+    { id: "settings", name: "Settings", path: "/dashboard/settings", icon: Settings },
   ];
 
   if (isAdmin) {
-    routes.push({ name: "Admin Console", path: "/admin", icon: ShieldCheck });
-    routes.push({ name: "Customer Care", path: "/admin/support", icon: Headset });
+    allRoutes.push({ id: "admin_console", name: "Admin Console", path: "/admin", icon: ShieldCheck });
+    allRoutes.push({ id: "customer_care", name: "Customer Care", path: "/admin/support", icon: Headset });
   }
+
+  // Filter routes based on feature flags & admin access
+  const visibleRoutes = allRoutes.filter((route) => {
+    const flag = moduleFlags[route.id];
+
+    // Default Products Master to Admin-Only if flags not loaded yet
+    if (route.id === "products" && !isAdmin) {
+      if (!flag || flag.access === "ADMIN_ONLY") return false;
+    }
+
+    if (!flag) return true;
+
+    // If module is explicitly hidden from sidebar
+    if (!flag.isSidebarVisible && !isAdmin) return false;
+
+    // If module is restricted to Admin Only
+    if (flag.access === "ADMIN_ONLY" && !isAdmin) return false;
+
+    // If module is under Maintenance
+    if (flag.access === "MAINTENANCE" && !isAdmin) return false;
+
+    return true;
+  });
 
   return (
     <>
@@ -89,11 +148,12 @@ export default function Sidebar() {
       </div>
 
       <div className="flex-1 py-4 px-5 space-y-1.5 relative z-10 overflow-y-auto scrollbar-hide">
-        {routes.map((route) => {
+        {visibleRoutes.map((route) => {
           const isActive = pathname === route.path;
-          const userPlan = (session.user as any)?.plan || "FREE";
-          const isAdminRole = (session.user as any)?.role === "ADMIN";
-          const isLocked = !isAdminRole && route.requiredPlan && !route.requiredPlan.includes(userPlan);
+          const flag = moduleFlags[route.id];
+          const isLocked = !isAdmin && route.requiredPlan && !route.requiredPlan.includes(userPlan);
+          const isAdminOnlyBadge = isAdmin && (flag?.access === 'ADMIN_ONLY' || route.id === 'products');
+          const isMaintenanceBadge = isAdmin && flag?.access === 'MAINTENANCE';
 
           return (
             <Link key={route.path} href={isLocked ? "/pricing" : route.path}>
@@ -108,6 +168,18 @@ export default function Sidebar() {
                 <div className={`absolute inset-0 bg-white/40 dark:bg-slate-800/40 rounded-2xl opacity-0 transition-opacity duration-300 ${(isActive && !isLocked) ? 'hidden' : 'group-hover:opacity-100'} ${isLocked ? 'hidden' : 'block'}`}></div>
                 <route.icon className={`w-5 h-5 relative z-10 ${isActive && !isLocked ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 group-hover:text-blue-500 transition-colors'}`} />
                 <span className={`relative z-10 flex-1 text-sm tracking-tight`}>{route.name}</span>
+                
+                {/* Admin Status Indicators */}
+                {isAdminOnlyBadge && (
+                  <span className="relative z-10 text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                    Admin
+                  </span>
+                )}
+                {isMaintenanceBadge && (
+                  <span className="relative z-10 text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex items-center gap-0.5">
+                    <AlertTriangle className="w-2.5 h-2.5" /> Maint
+                  </span>
+                )}
                 {isLocked && <Lock className="w-4 h-4 text-slate-300 relative z-10" />}
               </div>
             </Link>

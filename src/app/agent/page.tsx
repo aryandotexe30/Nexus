@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useTransition } from "react";
+import { useState, useRef, useEffect } from "react";
 import { 
   Search, 
   Bot, 
@@ -18,14 +18,20 @@ import {
   Zap, 
   ArrowRight,
   Database,
-  Sliders,
   Filter,
   RefreshCw,
-  PackageCheck
+  PackageCheck,
+  CheckCircle2,
+  AlertCircle,
+  ChevronRight,
+  MessageSquare,
+  PanelRightOpen,
+  PanelRightClose
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { useSession } from "next-auth/react";
 
 interface ExtractedProduct {
   id: string;
@@ -67,21 +73,16 @@ interface ChatMessage {
   recommendations?: CopilotRecommendation[];
 }
 
-const QUICK_TAGS = [
-  "Double Sided Tape",
-  "High Temperature",
-  "Automotive",
-  "Masking Tape",
-  "Electrical Insulation",
-  "Kapton Polyimide",
-  "Foam Tape",
-  "Surface Protection"
-];
-
 export default function FinderPage() {
-  const [activeTab, setActiveTab] = useState<"catalog" | "copilot">("catalog");
+  const { data: session } = useSession();
+  const user = session?.user as any;
+  const companyName = user?.companyName || "Industrial Enterprise";
+  const userIndustry = user?.industry || "Industrial Manufacturing";
 
-  // Search & Filter State
+  // Mode: "chatbot" (default front-and-center) with optional side catalog drawer
+  const [showCatalogDrawer, setShowCatalogDrawer] = useState(false);
+
+  // Search & Filter State for Catalog Drawer
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("ALL");
   const [selectedMarket, setSelectedMarket] = useState("ALL");
@@ -97,36 +98,51 @@ export default function FinderPage() {
   const [companies, setCompanies] = useState<string[]>([]);
   const [markets, setMarkets] = useState<string[]>([]);
   const [filterOptions, setFilterOptions] = useState<any>({});
-  const [loading, setLoading] = useState(true);
+  const [loadingCatalog, setLoadingCatalog] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
 
   // Enquiry Modal State
   const [isEnquiryModalOpen, setIsEnquiryModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<ExtractedProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const [isSendingEnquiry, setIsSendingEnquiry] = useState(false);
   const [formQty, setFormQty] = useState("");
   const [formUnit, setFormUnit] = useState("Rolls / Sq. Meters");
   const [formPurpose, setFormPurpose] = useState("Industrial Production");
   const [formDetails, setFormDetails] = useState("");
+  const [enquirySuccess, setEnquirySuccess] = useState(false);
 
   // AI Copilot Chat State
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'ai',
-      text: "👋 Welcome to **TarasAI Intelligent Finder**. I have direct access to our **Master Industrial Product Database**.\n\nTell me what application, substrate, or specification you are sourcing (e.g., *'High temperature masking tape for powder coating up to 200°C'* or *'Double sided acrylic foam tape for automotive exterior trim'*), and I will analyze the database and compare matching models with pros and cons."
+      text: `👋 **Welcome, ${companyName}!**\n\nI am your **AI Materials & Tape Sourcing Copilot**, trained on our **Master Database of 160+ verified industrial specifications** (3M, Tesa, CGAPL, Nitto, AIPL, Sri Vasavi, Henkel Loctite, Shurtape, Saint-Gobain).\n\nBased on your manufacturing profile (**${userIndustry}**), tell me what application or technical parameters you are sourcing (e.g. *temperature rating, substrate material, single vs double sided, adhesive chemistry*).`,
+      options: [
+        "Class H High Temp Insulation (260°C)",
+        "Double-Sided Acrylic Foam VHB",
+        "Wave Solder Kapton Polyimide",
+        "Aluminium Foil HVAC & Shielding",
+        "Automotive Wire Harnessing"
+      ]
     }
   ]);
   const [chatInput, setChatInput] = useState("");
   const [isAiLoading, setIsAiLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Debounced live search against the master ExtractedProduct database
+  // Auto-scroll chat
   useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isAiLoading]);
+
+  // Load catalog products when drawer is open or search changes
+  useEffect(() => {
+    if (!showCatalogDrawer && products.length > 0) return;
     const timer = setTimeout(() => {
       fetchMasterProducts();
     }, 250);
     return () => clearTimeout(timer);
   }, [
+    showCatalogDrawer,
     searchQuery, 
     selectedCompany, 
     selectedMarket,
@@ -139,7 +155,7 @@ export default function FinderPage() {
   ]);
 
   const fetchMasterProducts = async () => {
-    setLoading(true);
+    setLoadingCatalog(true);
     try {
       const params = new URLSearchParams();
       if (searchQuery.trim()) params.append("search", searchQuery.trim());
@@ -151,805 +167,607 @@ export default function FinderPage() {
       if (selectedAdhesionType !== "ALL") params.append("adhesionType", selectedAdhesionType);
       if (selectedThickness !== "ALL") params.append("thickness", selectedThickness);
       if (selectedTempRange !== "ALL") params.append("tempRange", selectedTempRange);
-      params.append("limit", "150");
+      params.append("limit", "100");
 
       const res = await fetch(`/api/products/list?${params.toString()}`);
       const data = await res.json();
       if (data.success) {
         setProducts(data.products || []);
         setTotalCount(data.total || data.products?.length || 0);
-        if (data.companies && data.companies.length > 0) {
-          setCompanies(data.companies);
-        }
-        if (data.markets && data.markets.length > 0) {
-          setMarkets(data.markets);
-        }
-        if (data.filterOptions) {
-          setFilterOptions(data.filterOptions);
-        }
+        if (data.companies) setCompanies(data.companies);
+        if (data.markets) setMarkets(data.markets);
+        if (data.filterOptions) setFilterOptions(data.filterOptions);
       }
     } catch (err) {
-      console.error("Failed to query master products:", err);
+      console.warn("Failed to fetch catalog products", err);
     } finally {
-      setLoading(false);
+      setLoadingCatalog(false);
     }
   };
 
-  const resetFilters = () => {
-    setSearchQuery("");
-    setSelectedCompany("ALL");
-    setSelectedMarket("ALL");
-    setSelectedProductType("ALL");
-    setSelectedSideType("ALL");
-    setSelectedBacking("ALL");
-    setSelectedAdhesionType("ALL");
-    setSelectedThickness("ALL");
-    setSelectedTempRange("ALL");
-  };
+  const handleSendMessage = async (customPrompt?: string) => {
+    const promptToSend = customPrompt || chatInput;
+    if (!promptToSend.trim() || isAiLoading) return;
 
-  const activeFilterCount = [
-    selectedCompany !== "ALL",
-    selectedMarket !== "ALL",
-    selectedProductType !== "ALL",
-    selectedSideType !== "ALL",
-    selectedBacking !== "ALL",
-    selectedAdhesionType !== "ALL",
-    selectedThickness !== "ALL",
-    selectedTempRange !== "ALL",
-    searchQuery.trim() !== ""
-  ].filter(Boolean).length;
+    const newMessages: ChatMessage[] = [
+      ...messages,
+      { role: 'user', text: promptToSend }
+    ];
 
-  const openEnquiry = (prod: ExtractedProduct) => {
-    setSelectedProduct(prod);
-    setFormDetails(`We are looking to procure ${prod.name} (${prod.companyName}). Please provide your quotation, MOQ, lead time, and technical data sheet confirmation.`);
-    setIsEnquiryModalOpen(true);
-  };
-
-  const handleSendEnquiry = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedProduct) return;
-    setIsSendingEnquiry(true);
-    try {
-      const res = await fetch('/api/enquiry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          targetToken: selectedProduct.companyName,
-          productName: selectedProduct.name,
-          quantity: formQty,
-          unit: formUnit,
-          purpose: formPurpose,
-          details: formDetails
-        })
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert(`RFQ Inquiry successfully dispatched! Support Ticket Ref: ENQ-${data.token}`);
-        setIsEnquiryModalOpen(false);
-      } else {
-        alert("Failed to send enquiry: " + (data.error || "Unknown error"));
-      }
-    } catch (err) {
-      alert("Network error sending enquiry.");
-    } finally {
-      setIsSendingEnquiry(false);
-    }
-  };
-
-  const handleSendChatMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!chatInput.trim() || isAiLoading) return;
-
-    const userMsg = chatInput.trim();
-    setChatInput("");
-
-    const newMessages = [...messages, { role: 'user' as const, text: userMsg }];
     setMessages(newMessages);
+    setChatInput("");
     setIsAiLoading(true);
 
     try {
-      const res = await fetch('/api/agent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: newMessages.map(m => ({ role: m.role, text: m.text }))
+      const res = await fetch("/api/agent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          messages: newMessages,
+          companyContext: {
+            companyName,
+            industry: userIndustry
+          }
         })
       });
 
       const data = await res.json();
       if (data.success) {
-        setMessages(prev => [...prev, {
-          role: 'ai',
-          text: data.text,
-          options: data.options,
-          recommendations: data.recommendations
-        }]);
+        setMessages([
+          ...newMessages,
+          {
+            role: 'ai',
+            text: data.text,
+            options: data.options,
+            recommendations: data.recommendations
+          }
+        ]);
       } else {
-        setMessages(prev => [...prev, { role: 'ai', text: "Sorry, I encountered an error searching the database. Please try again." }]);
+        setMessages([
+          ...newMessages,
+          {
+            role: 'ai',
+            text: `⚠️ **Notice:** ${data.error || "Could not retrieve AI response. Please try again."}`
+          }
+        ]);
       }
     } catch (err) {
-      setMessages(prev => [...prev, { role: 'ai', text: "Network error connecting to AI procurement engine." }]);
+      setMessages([
+        ...newMessages,
+        {
+          role: 'ai',
+          text: "⚠️ Network connection issue. Please check your internet or retry."
+        }
+      ]);
     } finally {
       setIsAiLoading(false);
     }
   };
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  const openEnquiry = (prod: any) => {
+    setSelectedProduct(prod);
+    setFormQty("");
+    setFormDetails("");
+    setEnquirySuccess(false);
+    setIsEnquiryModalOpen(true);
+  };
+
+  const submitEnquiry = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedProduct) return;
+
+    setIsSendingEnquiry(true);
+    try {
+      const res = await fetch("/api/marketplace/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: `Procurement RFQ: ${selectedProduct.name} (${selectedProduct.companyName})`,
+          description: `Target Product: ${selectedProduct.name}\nManufacturer: ${selectedProduct.companyName}\nRequired Quantity: ${formQty} ${formUnit}\nUsage Application: ${formPurpose}\n\nTechnical Specifications Required:\n${JSON.stringify(selectedProduct.specs || {}, null, 2)}\n\nBuyer Notes:\n${formDetails || 'Please provide quotation with TDS certification.'}`,
+          type: "REQUEST",
+          budget: "Negotiable / Factory Direct",
+          isAnonymous: true
+        })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setEnquirySuccess(true);
+        setTimeout(() => {
+          setIsEnquiryModalOpen(false);
+          setEnquirySuccess(false);
+        }, 2000);
+      }
+    } catch (err) {
+      console.warn("Failed to create RFQ", err);
+    } finally {
+      setIsSendingEnquiry(false);
+    }
+  };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 font-sans pb-28">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="w-full max-w-7xl mx-auto space-y-6 pb-20 font-sans">
+      {/* Top Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm">
         <div>
-          <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-              Product & Lead Finder
-            </h1>
-            <span className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-black uppercase px-3 py-1 rounded-full border border-blue-200 dark:border-blue-800">
-              Master Intel
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5" />
+              AI Procurement Copilot
+            </span>
+            <span className="text-xs px-2.5 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold rounded-full border border-emerald-500/20 flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3" />
+              160+ Master TDS Models
             </span>
           </div>
-          <p className="text-slate-500 dark:text-slate-400 font-medium text-sm">
-            Search verified manufacturer catalogs, technical datasheets, and specification matrices in real-time.
+          <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            Intelligent Material & Tape Finder
+          </h1>
+          <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Grounded in verified manufacturer datasheets (3M, Tesa, CGAPL, Nitto, AIPL, Sri Vasavi, Henkel Loctite, Shurtape).
           </p>
         </div>
 
-        {/* Mode Switcher */}
-        <div className="flex items-center gap-2 p-1.5 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl w-fit border border-slate-300/40 dark:border-slate-700/50 self-start md:self-auto">
+        {/* Drawer Toggle */}
+        <div className="flex items-center gap-3">
           <button
-            onClick={() => setActiveTab("catalog")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === "catalog"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+            onClick={() => {
+              setShowCatalogDrawer(!showCatalogDrawer);
+              if (!showCatalogDrawer && products.length === 0) fetchMasterProducts();
+            }}
+            className={`px-4 py-2.5 rounded-2xl font-bold text-xs flex items-center gap-2 transition-all border shadow-2xs ${
+              showCatalogDrawer 
+                ? 'bg-blue-600 text-white border-blue-600 shadow-blue-500/20' 
+                : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700'
             }`}
           >
-            <Database className="w-3.5 h-3.5 text-blue-600" /> Master Catalog Search
-          </button>
-          <button
-            onClick={() => setActiveTab("copilot")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === "copilot"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-            }`}
-          >
-            <Bot className="w-3.5 h-3.5 text-purple-600" /> AI Procurement Copilot
+            {showCatalogDrawer ? <PanelRightClose className="w-4 h-4" /> : <PanelRightOpen className="w-4 h-4" />}
+            <span>{showCatalogDrawer ? "Hide Catalog Drawer" : "Browse Technical Catalog"}</span>
           </button>
         </div>
       </div>
 
-      <AnimatePresence mode="wait">
-        {activeTab === "catalog" ? (
-          <motion.div
-            key="catalog"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="space-y-6"
-          >
-            {/* Search Box & Quick Chips */}
-            <div className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
-              <div className="relative flex items-center">
-                <Search className="absolute left-4 w-5 h-5 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search by product model (e.g. 468MP, 4965, Kapton, VHB), material (e.g. Polyimide, PET, Crepe), or application..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-10 py-3.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
+      {/* Main Layout Grid */}
+      <div className={`grid grid-cols-1 ${showCatalogDrawer ? 'lg:grid-cols-12' : 'lg:grid-cols-1'} gap-6 items-start`}>
+        
+        {/* Chatbot Interface (Main Area) */}
+        <div className={`${showCatalogDrawer ? 'lg:col-span-7' : 'w-full max-w-5xl mx-auto'} bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm flex flex-col h-[750px]`}>
+          
+          {/* Chat Header Bar */}
+          <div className="p-4 px-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/90 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                <Bot className="w-5 h-5" />
               </div>
-
-              {/* Quick Suggestion Chips */}
-              <div className="flex flex-wrap items-center gap-2 pt-1">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mr-1">
-                  <Tag className="w-3.5 h-3.5" /> Popular:
-                </span>
-                {QUICK_TAGS.map((tag) => {
-                  const isActive = searchQuery.toLowerCase() === tag.toLowerCase();
-                  return (
-                    <button
-                      key={tag}
-                      onClick={() => setSearchQuery(isActive ? "" : tag)}
-                      className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors border ${
-                        isActive
-                          ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                          : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-blue-400"
-                      }`}
-                    >
-                      {tag}
-                    </button>
-                  );
-                })}
+              <div>
+                <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                  TarasAI Sourcing Copilot
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                </h3>
+                <p className="text-[11px] text-slate-400 font-medium">Personalized for {companyName} • {userIndustry}</p>
               </div>
-
-              {/* Filter Bar */}
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
-                <div className="flex flex-wrap items-center gap-3">
-                  {/* Company Filter */}
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-500">Manufacturer:</span>
-                    <select
-                      value={selectedCompany}
-                      onChange={(e) => setSelectedCompany(e.target.value)}
-                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
-                    >
-                      <option value="ALL">All Manufacturers ({companies.length})</option>
-                      {companies.map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Product Type Filter */}
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-500">Type:</span>
-                    <select
-                      value={selectedProductType}
-                      onChange={(e) => setSelectedProductType(e.target.value)}
-                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
-                    >
-                      <option value="ALL">All Product Types</option>
-                      {(filterOptions.productTypes || ['Tape', 'Adhesive & Sealant', 'Cable & Wire', 'Laminate & Insulation', 'Label & Marking', 'Surface Protection']).map((t: string) => (
-                        <option key={t} value={t}>{t} {filterOptions.facetCounts?.productTypes?.[t] ? `(${filterOptions.facetCounts.productTypes[t]})` : ''}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Side Format */}
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-500">Sides:</span>
-                    <select
-                      value={selectedSideType}
-                      onChange={(e) => setSelectedSideType(e.target.value)}
-                      className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
-                    >
-                      <option value="ALL">All Side Types</option>
-                      {(filterOptions.sideTypes || ['Double-Sided', 'Single-Sided', 'Transfer (Unsupported)', 'Self-Amalgamating / Non-Adhesive']).map((s: string) => (
-                        <option key={s} value={s}>{s} {filterOptions.facetCounts?.sideTypes?.[s] ? `(${filterOptions.facetCounts.sideTypes[s]})` : ''}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Advanced Filters Toggle */}
-                  <button
-                    onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold transition-all border ${
-                      showAdvancedFilters || activeFilterCount > 0
-                        ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-slate-300"
-                    }`}
-                  >
-                    <SlidersHorizontal className="w-3.5 h-3.5" />
-                    <span>Technical Specs</span>
-                    {activeFilterCount > 0 && (
-                      <span className="ml-1 px-1.5 py-0.2 bg-blue-600 text-white rounded-full text-[10px]">
-                        {activeFilterCount}
-                      </span>
-                    )}
-                  </button>
-
-                  {activeFilterCount > 0 && (
-                    <button
-                      onClick={resetFilters}
-                      className="text-red-500 hover:text-red-700 dark:text-red-400 font-bold underline text-xs"
-                    >
-                      Reset ({activeFilterCount})
-                    </button>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-2 text-slate-500 font-bold">
-                  <PackageCheck className="w-4 h-4 text-emerald-600" />
-                  <span>Showing {products.length} of {totalCount} verified products</span>
-                </div>
-              </div>
-
-              {/* Advanced Technical Filters Dropdowns */}
-              {showAdvancedFilters && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs"
-                >
-                  {/* Backing Material */}
-                  <div className="space-y-1">
-                    <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                      <Layers className="w-3.5 h-3.5 text-blue-500" /> Backing Material
-                    </label>
-                    <select
-                      value={selectedBacking}
-                      onChange={(e) => setSelectedBacking(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
-                    >
-                      <option value="ALL">All Backing Materials</option>
-                      {(filterOptions.backingTypes || ['Polyimide / Kapton', 'PET / Polyester Film', 'Fiberglass / Glass Cloth', 'Aluminum / Copper Foil', 'Foam (Acrylic / PE / PU)', 'PVC / Vinyl', 'Paper / Crepe / Washi', 'Tissue / Non-Woven', 'Cloth / Cotton / Rayon', 'PTFE / Fluoropolymer']).map((b: string) => (
-                        <option key={b} value={b}>{b} {filterOptions.facetCounts?.backingTypes?.[b] ? `(${filterOptions.facetCounts.backingTypes[b]})` : ''}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Adhesion Chemistry */}
-                  <div className="space-y-1">
-                    <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Adhesion Chemistry
-                    </label>
-                    <select
-                      value={selectedAdhesionType}
-                      onChange={(e) => setSelectedAdhesionType(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
-                    >
-                      <option value="ALL">All Adhesives</option>
-                      {(filterOptions.adhesionTypes || ['Acrylic (Solvent / Pure)', 'Silicone / Polysiloxane', 'Rubber / Synthetic Resin', 'Anaerobic (Dimethacrylate)', 'Cyanoacrylate (Instant)', 'Self-Fusing / Non-Adhesive']).map((a: string) => (
-                        <option key={a} value={a}>{a} {filterOptions.facetCounts?.adhesionTypes?.[a] ? `(${filterOptions.facetCounts.adhesionTypes[a]})` : ''}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Temperature Class */}
-                  <div className="space-y-1">
-                    <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                      <Zap className="w-3.5 h-3.5 text-rose-500" /> Temperature Class
-                    </label>
-                    <select
-                      value={selectedTempRange}
-                      onChange={(e) => setSelectedTempRange(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
-                    >
-                      <option value="ALL">All Temperature Classes</option>
-                      {(filterOptions.tempRanges || ['Ultra-High Temp (≥ 200°C)', 'High Temp (150 - 199°C)', 'Medium Temp (80 - 149°C)', 'Standard (< 80°C)']).map((t: string) => (
-                        <option key={t} value={t}>{t} {filterOptions.facetCounts?.tempRanges?.[t] ? `(${filterOptions.tempRanges[t] || filterOptions.facetCounts.tempRanges[t]})` : ''}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Thickness / Caliper */}
-                  <div className="space-y-1">
-                    <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                      <Sliders className="w-3.5 h-3.5 text-emerald-500" /> Thickness Category
-                    </label>
-                    <select
-                      value={selectedThickness}
-                      onChange={(e) => setSelectedThickness(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-800 dark:text-slate-200 outline-none"
-                    >
-                      <option value="ALL">All Thickness Ranges</option>
-                      {(filterOptions.thicknessCategories || ['Ultra-Thin (< 0.1 mm)', 'Standard (0.1 - 0.5 mm)', 'Heavy / Foam (0.5 - 1.0 mm)', 'Thick (> 1.0 mm)']).map((th: string) => (
-                        <option key={th} value={th}>{th} {filterOptions.facetCounts?.thicknessCategories?.[th] ? `(${filterOptions.facetCounts.thicknessCategories[th]})` : ''}</option>
-                      ))}
-                    </select>
-                  </div>
-                </motion.div>
-              )}
             </div>
 
-            {/* Products Grid */}
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-24 space-y-3">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Searching Master Specification Database...</p>
-              </div>
-            ) : products.length === 0 ? (
-              <div className="text-center py-24 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 space-y-3">
-                <Database className="w-10 h-10 text-slate-300 mx-auto" />
-                <h3 className="text-base font-bold text-slate-700 dark:text-slate-300">No products match your search query</h3>
-                <p className="text-xs text-slate-400 max-w-md mx-auto">
-                  Try clearing specific filters or search using broader technical terms like "Double Sided", "Polyimide", "Foil", or "Masking".
-                </p>
-                <button
-                  onClick={resetFilters}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold shadow-md hover:bg-blue-700"
+            <button
+              onClick={() => {
+                setMessages([
+                  {
+                    role: 'ai',
+                    text: `👋 **Welcome back, ${companyName}!**\n\nWhat industrial tape or material specification are you looking for today?`,
+                    options: [
+                      "Class H High Temp Insulation (260°C)",
+                      "Double-Sided Acrylic Foam VHB",
+                      "Wave Solder Kapton Polyimide",
+                      "Aluminium Foil HVAC & Shielding",
+                      "Automotive Wire Harnessing"
+                    ]
+                  }
+                ]);
+              }}
+              className="text-[11px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-1 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              title="Reset Chat"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              New Chat
+            </button>
+          </div>
+
+          {/* Chat Messages Log */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/40 dark:bg-slate-950/40">
+            {messages.map((msg, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-[90%] rounded-3xl p-5 shadow-sm text-sm ${
+                    msg.role === 'user'
+                      ? 'bg-blue-600 text-white rounded-br-none font-medium'
+                      : 'bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-slate-100 rounded-bl-none'
+                  }`}
                 >
-                  Reset All Filters
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.map((prod) => {
-                  const specsObj = prod.specs && typeof prod.specs === 'object' ? prod.specs : {};
-                  const specEntries = Object.entries(specsObj).filter(
-                    ([k, v]) => 
-                      Boolean(k) && 
-                      Boolean(v) && 
-                      k.trim() !== '' && 
-                      k.trim() !== ':' && 
-                      String(v).trim() !== '' && 
-                      String(v).trim() !== ':' && 
-                      String(v).length < 150
-                  );
+                  <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed">
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  </div>
 
-                  return (
-                    <motion.div
-                      key={prod.id}
-                      whileHover={{ y: -3 }}
-                      transition={{ duration: 0.15 }}
-                      className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-blue-400 dark:hover:border-blue-500 transition-all flex flex-col justify-between"
-                    >
-                      <div>
-                        {/* Company Badge & Verified Pill */}
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-xs font-extrabold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-xl border border-blue-200/60 dark:border-blue-800/50">
-                            {prod.companyName}
-                          </span>
-                          <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 px-2.5 py-0.5 rounded-full">
-                            <ShieldCheck className="w-3 h-3" /> TDS Verified
-                          </span>
-                        </div>
-
-                        {/* Product Title */}
-                        <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2">
-                          {prod.name}
-                        </h3>
-
-                        {/* Classification Badges */}
-                        {prod.classification && (
-                          <div className="flex flex-wrap gap-1.5 mb-3">
-                            {prod.classification.sideType && prod.classification.sideType !== 'N/A' && (
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-                                {prod.classification.sideType}
-                              </span>
-                            )}
-                            {prod.classification.backingType && (
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-                                {prod.classification.backingType}
-                              </span>
-                            )}
-                            {prod.classification.adhesionType && (
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                                {prod.classification.adhesionType}
-                              </span>
-                            )}
-                            {prod.classification.tempRange && prod.classification.tempRange !== 'Unspecified' && (
-                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
-                                {prod.classification.tempRange}
-                              </span>
-                            )}
-                          </div>
-                        )}
-
-                        {/* Market & Application */}
-                        {(prod.market || prod.application) && (
-                          <div className="mb-4 space-y-1">
-                            {prod.market && (
-                              <p className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
-                                {prod.market}
-                              </p>
-                            )}
-                            {prod.application && (
-                              <p className="text-[11px] text-slate-400 line-clamp-1">
-                                {prod.application}
-                              </p>
-                            )}
-                          </div>
-                        )}
-
-                        {/* Technical Specifications Matrix */}
-                        <div className="bg-slate-50 dark:bg-slate-950/40 rounded-2xl p-3 mb-5 border border-slate-100 dark:border-slate-800/80">
-                          <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">
-                            Technical Specification Matrix
-                          </p>
-                          {specEntries.length > 0 ? (
-                            <div className="space-y-1.5">
-                              {specEntries.slice(0, 4).map(([key, val], idx) => (
-                                <div key={idx} className="flex justify-between items-center text-[11px]">
-                                  <span className="text-slate-500 dark:text-slate-400 truncate max-w-[45%] font-medium">
-                                    {key}:
-                                  </span>
-                                  <span className="text-slate-900 dark:text-white font-bold truncate max-w-[50%] text-right">
-                                    {String(val)}
-                                  </span>
-                                </div>
-                              ))}
-                              {specEntries.length > 4 && (
-                                <p className="text-[10px] text-blue-600 dark:text-blue-400 font-bold pt-1">
-                                  +{specEntries.length - 4} more verified specs
-                                </p>
-                              )}
-                            </div>
-                          ) : (
-                            <p className="text-[11px] text-slate-400 italic">
-                              Specification matrix verified on original manufacturer datasheet.
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                        <button
-                          onClick={() => openEnquiry(prod)}
-                          className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 active:scale-95"
-                        >
-                          <Send className="w-3.5 h-3.5" /> Quick RFQ
-                        </button>
-                        {prod.productUrl && (
-                          <a
-                            href={prod.productUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="p-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl transition-colors"
-                            title="View Official Datasheet"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                          </a>
-                        )}
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            )}
-          </motion.div>
-        ) : (
-          <motion.div
-            key="copilot"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="h-[650px] bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm flex flex-col"
-          >
-            {/* Chat Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50 dark:bg-slate-950/40">
-              {messages.map((msg, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[85%] rounded-3xl p-5 shadow-sm text-sm ${
-                      msg.role === 'user'
-                        ? 'bg-blue-600 text-white rounded-br-none'
-                        : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-bl-none'
-                    }`}
-                  >
-                    <div className="prose prose-sm dark:prose-invert max-w-none leading-relaxed">
-                      <ReactMarkdown>{msg.text}</ReactMarkdown>
-                    </div>
-
-                    {/* Pros & Cons Recommendations Cards */}
-                    {msg.recommendations && msg.recommendations.length > 0 && (
-                      <div className="mt-5 space-y-4 pt-4 border-t border-slate-100 dark:border-slate-700/80">
-                        <p className="text-xs font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                          <Sparkles className="w-4 h-4" /> Master Database Verified Matches ({msg.recommendations.length})
-                        </p>
-                        <div className="grid grid-cols-1 gap-4">
-                          {msg.recommendations.map((rec, rIdx) => (
-                            <div key={rIdx} className="bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm space-y-3">
-                              <div className="flex items-start justify-between">
-                                <div>
-                                  <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-md">
-                                    {rec.companyName}
-                                  </span>
-                                  <h4 className="text-sm font-extrabold text-slate-900 dark:text-white mt-1">{rec.name}</h4>
-                                  <p className="text-xs text-slate-500 dark:text-slate-400">{rec.application}</p>
-                                </div>
-                                {rec.productUrl && (
-                                  <a href={rec.productUrl} target="_blank" rel="noreferrer" className="p-1.5 bg-white dark:bg-slate-800 text-slate-500 rounded-lg hover:text-blue-600" title="View Datasheet">
-                                    <ExternalLink className="w-3.5 h-3.5" />
-                                  </a>
-                                )}
-                              </div>
-
-                              {/* Specs */}
-                              {rec.specs && Object.keys(rec.specs).length > 0 && (
-                                <div className="grid grid-cols-2 gap-2 bg-white dark:bg-slate-800/60 p-2.5 rounded-xl text-[11px] border border-slate-100 dark:border-slate-700/60">
-                                  {Object.entries(rec.specs).slice(0, 4).map(([k, v], sIdx) => (
-                                    <div key={sIdx} className="truncate">
-                                      <span className="text-slate-400 font-medium">{k}:</span> <span className="font-bold text-slate-800 dark:text-slate-200">{String(v)}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-
-                              {/* Pros & Cons */}
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
-                                {rec.pros && rec.pros.length > 0 && (
-                                  <div className="space-y-1">
-                                    <p className="text-[10px] font-extrabold uppercase text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                                      <Check className="w-3 h-3" /> Advantages (Pros)
-                                    </p>
-                                    <ul className="space-y-1">
-                                      {rec.pros.map((p, pIdx) => (
-                                        <li key={pIdx} className="text-[11px] text-slate-700 dark:text-slate-300 flex items-start gap-1">
-                                          <span className="text-emerald-500 font-bold">•</span>
-                                          <span>{p}</span>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-
-                                {rec.cons && rec.cons.length > 0 && (
-                                  <div className="space-y-1">
-                                    <p className="text-[10px] font-extrabold uppercase text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                                      <ShieldCheck className="w-3 h-3" /> Limitations (Cons)
-                                    </p>
-                                    <ul className="space-y-1">
-                                      {rec.cons.map((c, cIdx) => (
-                                        <li key={cIdx} className="text-[11px] text-slate-600 dark:text-slate-400 flex items-start gap-1">
-                                          <span className="text-amber-500 font-bold">•</span>
-                                          <span>{c}</span>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-                              </div>
-
-                              {/* Verdict & RFQ Action */}
-                              {rec.verdict && (
-                                <div className="p-2.5 bg-blue-50/70 dark:bg-blue-950/40 rounded-xl border border-blue-100 dark:border-blue-900/40 text-[11px] text-blue-900 dark:text-blue-200 font-medium">
-                                  💡 <strong>Engineering Verdict:</strong> {rec.verdict}
-                                </div>
-                              )}
-
-                              <button
-                                onClick={() => openEnquiry({
-                                  id: rec.name,
-                                  name: rec.name,
-                                  companyName: rec.companyName,
-                                  application: rec.application,
-                                  specs: rec.specs,
-                                  productUrl: rec.productUrl
-                                })}
-                                className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all active:scale-95"
-                              >
-                                <Send className="w-3.5 h-3.5" /> Request Quotation for {rec.name}
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Options Pills */}
-                    {msg.options && msg.options.length > 0 && idx === messages.length - 1 && (
-                      <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-700">
+                  {/* Interactive Option Chips */}
+                  {msg.options && msg.options.length > 0 && (
+                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60">
+                      <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">
+                        Suggested Technical Specifications:
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
                         {msg.options.map((opt, oIdx) => (
                           <button
                             key={oIdx}
-                            onClick={() => {
-                              setChatInput(opt);
-                            }}
-                            className="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700 rounded-xl text-xs font-bold hover:bg-blue-100 transition-colors"
+                            onClick={() => handleSendMessage(opt)}
+                            disabled={isAiLoading}
+                            className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 rounded-xl text-xs font-bold transition-all border border-blue-200 dark:border-blue-800/60 flex items-center gap-1 active:scale-95 text-left"
                           >
-                            {opt}
+                            <span>{opt}</span>
+                            <ChevronRight className="w-3 h-3 opacity-60" />
                           </button>
                         ))}
                       </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+                    </div>
+                  )}
 
-              {isAiLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 flex items-center gap-2 text-xs font-bold text-slate-500">
-                    <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
-                    Consulting Master Product Database & Generating Analysis...
-                  </div>
+                  {/* Recommended Products Cards with Pros & Cons */}
+                  {msg.recommendations && msg.recommendations.length > 0 && (
+                    <div className="mt-5 space-y-4 pt-4 border-t border-slate-100 dark:border-slate-700/80">
+                      <p className="text-xs font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+                        <Sparkles className="w-4 h-4" /> Master Database Verified Matches ({msg.recommendations.length})
+                      </p>
+                      <div className="grid grid-cols-1 gap-4">
+                        {msg.recommendations.map((rec, rIdx) => (
+                          <div key={rIdx} className="bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm space-y-3">
+                            <div className="flex items-start justify-between gap-3">
+                              <div>
+                                <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-md">
+                                  {rec.companyName}
+                                </span>
+                                <h4 className="text-sm font-black text-slate-900 dark:text-white mt-1">{rec.name}</h4>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">{rec.application}</p>
+                              </div>
+                              {rec.productUrl && (
+                                <a href={rec.productUrl} target="_blank" rel="noreferrer" className="p-1.5 bg-white dark:bg-slate-800 text-slate-500 hover:text-blue-600 rounded-lg shadow-2xs" title="Official Datasheet">
+                                  <ExternalLink className="w-4 h-4" />
+                                </a>
+                              )}
+                            </div>
+
+                            {/* Technical Specs */}
+                            {rec.specs && Object.keys(rec.specs).length > 0 && (
+                              <div className="grid grid-cols-2 gap-2 bg-white dark:bg-slate-800/60 p-2.5 rounded-xl text-[11px] border border-slate-100 dark:border-slate-700/60">
+                                {Object.entries(rec.specs).slice(0, 4).map(([k, v], sIdx) => (
+                                  <div key={sIdx} className="truncate">
+                                    <span className="text-slate-400 font-medium">{k}: </span>
+                                    <span className="text-slate-800 dark:text-slate-200 font-bold">{String(v)}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Pros & Cons */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                              {rec.pros && rec.pros.length > 0 && (
+                                <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-900/30 space-y-1">
+                                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
+                                    <Check className="w-3 h-3 text-emerald-600" /> Key Strengths
+                                  </span>
+                                  {rec.pros.map((p, pIdx) => (
+                                    <p key={pIdx} className="text-[11px] text-emerald-900 dark:text-emerald-200 leading-tight">• {p}</p>
+                                  ))}
+                                </div>
+                              )}
+                              {rec.cons && rec.cons.length > 0 && (
+                                <div className="bg-rose-50/60 dark:bg-rose-950/30 p-2.5 rounded-xl border border-rose-100 dark:border-rose-900/30 space-y-1">
+                                  <span className="text-[10px] font-black uppercase tracking-wider text-rose-700 dark:text-rose-300 flex items-center gap-1">
+                                    <AlertCircle className="w-3 h-3 text-rose-600" /> Engineering Caveats
+                                  </span>
+                                  {rec.cons.map((c, cIdx) => (
+                                    <p key={cIdx} className="text-[11px] text-rose-900 dark:text-rose-200 leading-tight">• {c}</p>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Verdict & Action */}
+                            <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
+                              <p className="text-[11px] text-slate-500 italic max-w-[65%] truncate">
+                                {rec.verdict || `Recommended model from ${rec.companyName}`}
+                              </p>
+                              <button
+                                onClick={() => openEnquiry(rec)}
+                                className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1 active:scale-95"
+                              >
+                                <Send className="w-3 h-3" /> Quick RFQ
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
+              </motion.div>
+            ))}
 
-            {/* Chat Input */}
-            <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
-              <form onSubmit={handleSendChatMessage} className="flex gap-2 items-center">
-                <input
-                  type="text"
-                  placeholder="Ask for recommendations (e.g. 'Compare 3M 468MP vs Tesa 4965 for high temp PCB bonding')..."
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-blue-500 font-medium text-slate-900 dark:text-white"
-                />
-                <button
-                  type="submit"
-                  disabled={isAiLoading || !chatInput.trim()}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white p-3 rounded-2xl shadow-sm transition-all flex items-center justify-center"
-                >
-                  {isAiLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                </button>
-              </form>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {isAiLoading && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+                <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-3xl rounded-bl-none p-4 shadow-sm flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+                  <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                  <span>Analyzing 160+ master TDS models and matching engineering parameters...</span>
+                </div>
+              </motion.div>
+            )}
 
-      {/* Anonymous RFQ Modal */}
-      {isEnquiryModalOpen && selectedProduct && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 dark:border-slate-800"
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Chat Input Bar */}
+          <div className="p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+            <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="flex items-center gap-3">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Ask about any tape specification, substrate compatibility, or temperature requirements..."
+                disabled={isAiLoading}
+                className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors text-slate-800 dark:text-slate-100"
+              />
+              <button
+                type="submit"
+                disabled={!chatInput.trim() || isAiLoading}
+                className="px-5 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold rounded-2xl shadow-md shadow-blue-500/20 transition-all flex items-center gap-2 active:scale-95 text-sm"
+              >
+                <Send className="w-4 h-4" />
+                <span>Send</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* Collapsible Technical Catalog Drawer */}
+        {showCatalogDrawer && (
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-4 h-[750px] flex flex-col"
           >
-            <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-              <div>
-                <h3 className="text-base font-black text-slate-900 dark:text-white">Request Quotation & RFQ</h3>
-                <p className="text-xs text-blue-600 font-bold">{selectedProduct.name} • {selectedProduct.companyName}</p>
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <Database className="w-4 h-4 text-blue-600" />
+                <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
+                  Technical Catalog ({totalCount})
+                </h3>
               </div>
-              <button onClick={() => setIsEnquiryModalOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-600 rounded-full">
-                <X className="w-5 h-5" />
+              <button
+                onClick={() => setShowCatalogDrawer(false)}
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg"
+              >
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSendEnquiry} className="p-6 space-y-4 text-xs font-semibold">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-1">Estimated Quantity</label>
-                  <input
-                    type="number"
-                    required
-                    placeholder="e.g. 500"
-                    value={formQty}
-                    onChange={(e) => setFormQty(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-slate-700 dark:text-slate-300 mb-1">Unit of Measure</label>
-                  <input
-                    type="text"
-                    required
-                    value={formUnit}
-                    onChange={(e) => setFormUnit(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-slate-700 dark:text-slate-300 mb-1">Procurement Requirement Details</label>
-                <textarea
-                  rows={4}
-                  required
-                  value={formDetails}
-                  onChange={(e) => setFormDetails(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            {/* Quick Search & Filters */}
+            <div className="space-y-2">
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search catalog models..."
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500"
                 />
               </div>
 
-              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl text-[11px] text-blue-700 dark:text-blue-300 font-medium">
-                🛡️ TarasAI acts as an anonymous middleman. Your business identity and trade terms are securely encrypted.
-              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {/* Backing Filter */}
+                <select
+                  value={selectedBacking}
+                  onChange={(e) => setSelectedBacking(e.target.value)}
+                  className="px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                >
+                  <option value="ALL">All Backings</option>
+                  {(filterOptions.backingTypes || ['Polyimide / Kapton', 'PET / Polyester Film', 'Fiberglass / Glass Cloth', 'Aluminum / Copper Foil', 'Foam (Acrylic / PE / PU)', 'PVC / Vinyl', 'Paper / Crepe / Washi']).map((b: string) => (
+                    <option key={b} value={b}>{b}</option>
+                  ))}
+                </select>
 
-              <div className="flex justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsEnquiryModalOpen(false)}
-                  className="px-4 py-2.5 text-slate-600 dark:text-slate-400 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
+                {/* Company Filter */}
+                <select
+                  value={selectedCompany}
+                  onChange={(e) => setSelectedCompany(e.target.value)}
+                  className="px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-semibold text-slate-800 dark:text-slate-200 outline-none"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSendingEnquiry}
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md flex items-center gap-2"
-                >
-                  {isSendingEnquiry ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                  Dispatch RFQ Anonymously
-                </button>
+                  <option value="ALL">All Companies</option>
+                  {companies.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
               </div>
-            </form>
+            </div>
+
+            {/* Product Cards List */}
+            <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+              {loadingCatalog ? (
+                <div className="py-20 text-center text-slate-400 flex flex-col items-center justify-center gap-2">
+                  <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                  <p className="text-xs font-semibold">Filtering catalog database...</p>
+                </div>
+              ) : products.length === 0 ? (
+                <div className="py-20 text-center text-slate-400 text-xs">
+                  No products matched the current filters.
+                </div>
+              ) : (
+                products.map((prod) => (
+                  <div key={prod.id} className="bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60 rounded-2xl p-3.5 space-y-2 hover:border-blue-400 transition-colors">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-md">
+                          {prod.companyName}
+                        </span>
+                        <h4 className="text-xs font-black text-slate-900 dark:text-white mt-1">{prod.name}</h4>
+                        <p className="text-[11px] text-slate-400 line-clamp-1">{prod.application}</p>
+                      </div>
+                      {prod.productUrl && (
+                        <a href={prod.productUrl} target="_blank" rel="noreferrer" className="p-1 bg-white dark:bg-slate-800 text-slate-400 hover:text-blue-600 rounded-md">
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                    </div>
+
+                    {/* Attribute Badges */}
+                    {prod.classification && (
+                      <div className="flex flex-wrap gap-1">
+                        {prod.classification.sideType && prod.classification.sideType !== 'Single-Sided' && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded">
+                            {prod.classification.sideType}
+                          </span>
+                        )}
+                        {prod.classification.backingType && prod.classification.backingType !== 'Other / Unspecified' && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 rounded">
+                            {prod.classification.backingType}
+                          </span>
+                        )}
+                        {prod.classification.tempRange && prod.classification.tempRange !== 'Standard (< 80°C)' && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 rounded">
+                            {prod.classification.tempRange}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2 pt-1 border-t border-slate-200/50 dark:border-slate-700/50">
+                      <button
+                        onClick={() => handleSendMessage(`Tell me about ${prod.name} from ${prod.companyName} and compare it with alternatives.`)}
+                        className="flex-1 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-700 dark:text-slate-300 font-bold text-[11px] rounded-xl border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center gap-1"
+                      >
+                        <Bot className="w-3 h-3 text-blue-600" /> Ask Copilot
+                      </button>
+                      <button
+                        onClick={() => openEnquiry(prod)}
+                        className="py-1.5 px-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] rounded-xl transition-all"
+                      >
+                        RFQ
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </motion.div>
-        </div>
-      )}
+        )}
+      </div>
+
+      {/* RFQ Enquiry Modal */}
+      <AnimatePresence>
+        {isEnquiryModalOpen && selectedProduct && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl space-y-6 relative"
+            >
+              <button
+                onClick={() => setIsEnquiryModalOpen(false)}
+                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {enquirySuccess ? (
+                <div className="py-8 text-center space-y-3">
+                  <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto">
+                    <CheckCircle2 className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">Anonymous RFQ Dispatched</h3>
+                  <p className="text-xs text-slate-500">Your requirement has been listed on the marketplace for certified distributors.</p>
+                </div>
+              ) : (
+                <form onSubmit={submitEnquiry} className="space-y-4">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-md">
+                      {selectedProduct.companyName}
+                    </span>
+                    <h3 className="text-lg font-black text-slate-900 dark:text-white mt-1">{selectedProduct.name}</h3>
+                    <p className="text-xs text-slate-400 mt-0.5">Publish an anonymous procurement request to certified suppliers.</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Required Quantity</label>
+                      <input
+                        type="text"
+                        required
+                        value={formQty}
+                        onChange={(e) => setFormQty(e.target.value)}
+                        placeholder="e.g. 500, 2000"
+                        className="w-full mt-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Unit</label>
+                      <input
+                        type="text"
+                        value={formUnit}
+                        onChange={(e) => setFormUnit(e.target.value)}
+                        className="w-full mt-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Application Purpose</label>
+                    <input
+                      type="text"
+                      value={formPurpose}
+                      onChange={(e) => setFormPurpose(e.target.value)}
+                      className="w-full mt-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Additional Notes / Custom Widths</label>
+                    <textarea
+                      rows={2}
+                      value={formDetails}
+                      onChange={(e) => setFormDetails(e.target.value)}
+                      placeholder="e.g. 24mm width rolls, batch test certificate required..."
+                      className="w-full mt-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500 resize-none"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsEnquiryModalOpen(false)}
+                      className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-xs"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSendingEnquiry}
+                      className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20"
+                    >
+                      {isSendingEnquiry ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                      <span>Dispatch RFQ</span>
+                    </button>
+                  </div>
+                </form>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-
