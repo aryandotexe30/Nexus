@@ -465,20 +465,6 @@ export default function ProductsPage() {
                 </select>
               </div>
 
-              {/* Side Format */}
-              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                <select
-                  value={sideTypeFilter}
-                  onChange={(e) => setSideTypeFilter(e.target.value)}
-                  className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold focus:outline-none"
-                >
-                  <option value="ALL">All Sides (Single / Double / Transfer)</option>
-                  {(filterOptions.sideTypes || ['Double-Sided', 'Single-Sided', 'Transfer (Unsupported)', 'Self-Amalgamating / Non-Adhesive']).map((s: string) => (
-                    <option key={s} value={s}>{s} {filterOptions.facetCounts?.sideTypes?.[s] ? `(${filterOptions.facetCounts.sideTypes[s]})` : ''}</option>
-                  ))}
-                </select>
-              </div>
-
               {/* Advanced Specs Toggle */}
               <button
                 type="button"
@@ -524,7 +510,24 @@ export default function ProductsPage() {
 
           {/* Advanced Technical Dropdown Matrix */}
           {showAdvancedFilters && (
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+              {/* Side Format */}
+              <div className="space-y-1">
+                <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <Tag className="w-3.5 h-3.5 text-indigo-500" /> Side Format
+                </label>
+                <select
+                  value={sideTypeFilter}
+                  onChange={(e) => setSideTypeFilter(e.target.value)}
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg font-semibold text-slate-800 dark:text-slate-200 outline-none"
+                >
+                  <option value="ALL">All Sides</option>
+                  {(filterOptions.sideTypes || ['Double-Sided', 'Single-Sided', 'Transfer (Unsupported)', 'Self-Amalgamating / Non-Adhesive']).map((s: string) => (
+                    <option key={s} value={s}>{s} {filterOptions.facetCounts?.sideTypes?.[s] ? `(${filterOptions.facetCounts.sideTypes[s]})` : ''}</option>
+                  ))}
+                </select>
+              </div>
+
               {/* Backing Material */}
               <div className="space-y-1">
                 <label className="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
