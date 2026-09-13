@@ -7,6 +7,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Construction",
       "application": "Engineered for hvac & construction applications requiring pe-coated cloth / cotton mesh and high performance natural rubber / synthetic resin.",
+      "price": "$3.89 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "Natural Rubber / Synthetic Resin",
@@ -24,6 +25,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Maintenance & Sealing",
       "application": "Engineered for industrial maintenance & sealing applications requiring pe-coated cloth / cotton mesh and high performance high-tack hot melt rubber.",
+      "price": "$2.05 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "High-Tack Hot Melt Rubber",
@@ -41,6 +43,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Marine Bundling",
       "application": "Engineered for automotive & marine bundling applications requiring pe-coated cloth / cotton mesh and high performance natural rubber / synthetic resin.",
+      "price": "$2.62 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "Natural Rubber / Synthetic Resin",
@@ -58,6 +61,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Construction",
       "application": "Engineered for hvac & construction applications requiring pe-coated cloth / cotton mesh and high performance high-tack hot melt rubber.",
+      "price": "$1.26 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "High-Tack Hot Melt Rubber",
@@ -75,6 +79,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Maintenance & Sealing",
       "application": "Engineered for industrial maintenance & sealing applications requiring pe-coated cloth / cotton mesh and high performance natural rubber / synthetic resin.",
+      "price": "$1.25 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "Natural Rubber / Synthetic Resin",
@@ -92,6 +97,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Marine Bundling",
       "application": "Engineered for automotive & marine bundling applications requiring pe-coated cloth / cotton mesh and high performance high-tack hot melt rubber.",
+      "price": "$4.40 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "High-Tack Hot Melt Rubber",
@@ -109,6 +115,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Construction",
       "application": "Engineered for hvac & construction applications requiring pe-coated cloth / cotton mesh and high performance natural rubber / synthetic resin.",
+      "price": "$4.81 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "Natural Rubber / Synthetic Resin",
@@ -126,6 +133,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Maintenance & Sealing",
       "application": "Engineered for industrial maintenance & sealing applications requiring pe-coated cloth / cotton mesh and high performance high-tack hot melt rubber.",
+      "price": "$2.49 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "High-Tack Hot Melt Rubber",
@@ -143,6 +151,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Marine Bundling",
       "application": "Engineered for automotive & marine bundling applications requiring pe-coated cloth / cotton mesh and high performance natural rubber / synthetic resin.",
+      "price": "$3.88 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "Natural Rubber / Synthetic Resin",
@@ -160,6 +169,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Construction",
       "application": "Engineered for hvac & construction applications requiring pe-coated cloth / cotton mesh and high performance high-tack hot melt rubber.",
+      "price": "$4.11 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "High-Tack Hot Melt Rubber",
@@ -177,6 +187,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Maintenance & Sealing",
       "application": "Engineered for industrial maintenance & sealing applications requiring pe-coated cloth / cotton mesh and high performance natural rubber / synthetic resin.",
+      "price": "$4.60 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "Natural Rubber / Synthetic Resin",
@@ -194,6 +205,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Marine Bundling",
       "application": "Engineered for automotive & marine bundling applications requiring pe-coated cloth / cotton mesh and high performance high-tack hot melt rubber.",
+      "price": "$2.03 / roll",
       "specs": {
         "Backing material": "PE-Coated Cloth / Cotton Mesh",
         "Adhesive type": "High-Tack Hot Melt Rubber",
@@ -211,6 +223,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical Installation & Building",
       "application": "Engineered for electrical installation & building applications requiring plasticized pvc / vinyl film and high performance pressure sensitive rubber.",
+      "price": "$4.81 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Pressure Sensitive Rubber",
@@ -228,6 +241,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Wire Harnessing",
       "application": "Engineered for automotive wire harnessing applications requiring plasticized pvc / vinyl film and high performance flame retardant solvent rubber.",
+      "price": "$4.51 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Flame Retardant Solvent Rubber",
@@ -245,6 +259,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Telecommunications & Utility",
       "application": "Engineered for telecommunications & utility applications requiring plasticized pvc / vinyl film and high performance pressure sensitive rubber.",
+      "price": "$5.23 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Pressure Sensitive Rubber",
@@ -262,6 +277,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical Installation & Building",
       "application": "Engineered for electrical installation & building applications requiring plasticized pvc / vinyl film and high performance flame retardant solvent rubber.",
+      "price": "$4.07 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Flame Retardant Solvent Rubber",
@@ -279,6 +295,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Wire Harnessing",
       "application": "Engineered for automotive wire harnessing applications requiring plasticized pvc / vinyl film and high performance pressure sensitive rubber.",
+      "price": "$2.60 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Pressure Sensitive Rubber",
@@ -296,6 +313,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Telecommunications & Utility",
       "application": "Engineered for telecommunications & utility applications requiring plasticized pvc / vinyl film and high performance flame retardant solvent rubber.",
+      "price": "$2.00 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Flame Retardant Solvent Rubber",
@@ -313,6 +331,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical Installation & Building",
       "application": "Engineered for electrical installation & building applications requiring plasticized pvc / vinyl film and high performance pressure sensitive rubber.",
+      "price": "$2.72 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Pressure Sensitive Rubber",
@@ -330,6 +349,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Wire Harnessing",
       "application": "Engineered for automotive wire harnessing applications requiring plasticized pvc / vinyl film and high performance flame retardant solvent rubber.",
+      "price": "$3.14 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Flame Retardant Solvent Rubber",
@@ -347,6 +367,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Telecommunications & Utility",
       "application": "Engineered for telecommunications & utility applications requiring plasticized pvc / vinyl film and high performance pressure sensitive rubber.",
+      "price": "$3.18 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Pressure Sensitive Rubber",
@@ -364,6 +385,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical Installation & Building",
       "application": "Engineered for electrical installation & building applications requiring plasticized pvc / vinyl film and high performance flame retardant solvent rubber.",
+      "price": "$1.47 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Flame Retardant Solvent Rubber",
@@ -381,6 +403,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Wire Harnessing",
       "application": "Engineered for automotive wire harnessing applications requiring plasticized pvc / vinyl film and high performance pressure sensitive rubber.",
+      "price": "$2.55 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Pressure Sensitive Rubber",
@@ -398,6 +421,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Telecommunications & Utility",
       "application": "Engineered for telecommunications & utility applications requiring plasticized pvc / vinyl film and high performance flame retardant solvent rubber.",
+      "price": "$1.57 / roll",
       "specs": {
         "Backing material": "Plasticized PVC / Vinyl Film",
         "Adhesive type": "Flame Retardant Solvent Rubber",
@@ -415,6 +439,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Paint & OEM Spraying",
       "application": "Engineered for automotive paint & oem spraying applications requiring crepe paper / washi paper and high performance natural rubber solvent.",
+      "price": "$5.58 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Natural Rubber Solvent",
@@ -432,6 +457,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Temp Powder Coating",
       "application": "Engineered for high temp powder coating applications requiring crepe paper / washi paper and high performance synthetic rubber.",
+      "price": "$3.81 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Synthetic Rubber",
@@ -449,6 +475,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "General Industrial Painting",
       "application": "Engineered for general industrial painting applications requiring crepe paper / washi paper and high performance natural rubber solvent.",
+      "price": "$4.11 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Natural Rubber Solvent",
@@ -466,6 +493,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Paint & OEM Spraying",
       "application": "Engineered for automotive paint & oem spraying applications requiring crepe paper / washi paper and high performance synthetic rubber.",
+      "price": "$4.27 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Synthetic Rubber",
@@ -483,6 +511,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Temp Powder Coating",
       "application": "Engineered for high temp powder coating applications requiring crepe paper / washi paper and high performance natural rubber solvent.",
+      "price": "$5.04 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Natural Rubber Solvent",
@@ -500,6 +529,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "General Industrial Painting",
       "application": "Engineered for general industrial painting applications requiring crepe paper / washi paper and high performance synthetic rubber.",
+      "price": "$5.45 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Synthetic Rubber",
@@ -517,6 +547,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Paint & OEM Spraying",
       "application": "Engineered for automotive paint & oem spraying applications requiring crepe paper / washi paper and high performance natural rubber solvent.",
+      "price": "$3.50 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Natural Rubber Solvent",
@@ -534,6 +565,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Temp Powder Coating",
       "application": "Engineered for high temp powder coating applications requiring crepe paper / washi paper and high performance synthetic rubber.",
+      "price": "$3.41 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Synthetic Rubber",
@@ -551,6 +583,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "General Industrial Painting",
       "application": "Engineered for general industrial painting applications requiring crepe paper / washi paper and high performance natural rubber solvent.",
+      "price": "$3.75 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Natural Rubber Solvent",
@@ -568,6 +601,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Paint & OEM Spraying",
       "application": "Engineered for automotive paint & oem spraying applications requiring crepe paper / washi paper and high performance synthetic rubber.",
+      "price": "$5.32 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Synthetic Rubber",
@@ -585,6 +619,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Temp Powder Coating",
       "application": "Engineered for high temp powder coating applications requiring crepe paper / washi paper and high performance natural rubber solvent.",
+      "price": "$4.69 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Natural Rubber Solvent",
@@ -602,6 +637,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "General Industrial Painting",
       "application": "Engineered for general industrial painting applications requiring crepe paper / washi paper and high performance synthetic rubber.",
+      "price": "$4.20 / roll",
       "specs": {
         "Backing material": "Crepe Paper / Washi Paper",
         "Adhesive type": "Synthetic Rubber",
@@ -619,6 +655,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC Duct Sealing & Insulation",
       "application": "Engineered for hvac duct sealing & insulation applications requiring aluminum foil / reinforced foil-scrim-kraft (fsk) and high performance solvent acrylic (flame retardant).",
+      "price": "$4.62 / roll",
       "specs": {
         "Backing material": "Aluminum Foil / Reinforced Foil-Scrim-Kraft (FSK)",
         "Adhesive type": "Solvent Acrylic (Flame Retardant)",
@@ -636,6 +673,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cold Storage & Thermal Insulation",
       "application": "Engineered for cold storage & thermal insulation applications requiring aluminum foil / reinforced foil-scrim-kraft (fsk) and high performance synthetic rubber.",
+      "price": "$5.38 / roll",
       "specs": {
         "Backing material": "Aluminum Foil / Reinforced Foil-Scrim-Kraft (FSK)",
         "Adhesive type": "Synthetic Rubber",
@@ -653,6 +691,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Appliance Heat Shielding",
       "application": "Engineered for appliance heat shielding applications requiring aluminum foil / reinforced foil-scrim-kraft (fsk) and high performance solvent acrylic (flame retardant).",
+      "price": "$1.86 / roll",
       "specs": {
         "Backing material": "Aluminum Foil / Reinforced Foil-Scrim-Kraft (FSK)",
         "Adhesive type": "Solvent Acrylic (Flame Retardant)",
@@ -670,6 +709,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC Duct Sealing & Insulation",
       "application": "Engineered for hvac duct sealing & insulation applications requiring aluminum foil / reinforced foil-scrim-kraft (fsk) and high performance synthetic rubber.",
+      "price": "$4.44 / roll",
       "specs": {
         "Backing material": "Aluminum Foil / Reinforced Foil-Scrim-Kraft (FSK)",
         "Adhesive type": "Synthetic Rubber",
@@ -687,6 +727,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cold Storage & Thermal Insulation",
       "application": "Engineered for cold storage & thermal insulation applications requiring aluminum foil / reinforced foil-scrim-kraft (fsk) and high performance solvent acrylic (flame retardant).",
+      "price": "$1.55 / roll",
       "specs": {
         "Backing material": "Aluminum Foil / Reinforced Foil-Scrim-Kraft (FSK)",
         "Adhesive type": "Solvent Acrylic (Flame Retardant)",
@@ -704,6 +745,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Appliance Heat Shielding",
       "application": "Engineered for appliance heat shielding applications requiring aluminum foil / reinforced foil-scrim-kraft (fsk) and high performance synthetic rubber.",
+      "price": "$3.42 / roll",
       "specs": {
         "Backing material": "Aluminum Foil / Reinforced Foil-Scrim-Kraft (FSK)",
         "Adhesive type": "Synthetic Rubber",
@@ -721,6 +763,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC Duct Sealing & Insulation",
       "application": "Engineered for hvac duct sealing & insulation applications requiring aluminum foil / reinforced foil-scrim-kraft (fsk) and high performance solvent acrylic (flame retardant).",
+      "price": "$2.24 / roll",
       "specs": {
         "Backing material": "Aluminum Foil / Reinforced Foil-Scrim-Kraft (FSK)",
         "Adhesive type": "Solvent Acrylic (Flame Retardant)",
@@ -738,6 +781,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cold Storage & Thermal Insulation",
       "application": "Engineered for cold storage & thermal insulation applications requiring aluminum foil / reinforced foil-scrim-kraft (fsk) and high performance synthetic rubber.",
+      "price": "$5.69 / roll",
       "specs": {
         "Backing material": "Aluminum Foil / Reinforced Foil-Scrim-Kraft (FSK)",
         "Adhesive type": "Synthetic Rubber",
@@ -755,6 +799,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Appliance Heat Shielding",
       "application": "Engineered for appliance heat shielding applications requiring aluminum foil / reinforced foil-scrim-kraft (fsk) and high performance solvent acrylic (flame retardant).",
+      "price": "$5.16 / roll",
       "specs": {
         "Backing material": "Aluminum Foil / Reinforced Foil-Scrim-Kraft (FSK)",
         "Adhesive type": "Solvent Acrylic (Flame Retardant)",
@@ -772,6 +817,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC Duct Sealing & Insulation",
       "application": "Engineered for hvac duct sealing & insulation applications requiring aluminum foil / reinforced foil-scrim-kraft (fsk) and high performance synthetic rubber.",
+      "price": "$3.93 / roll",
       "specs": {
         "Backing material": "Aluminum Foil / Reinforced Foil-Scrim-Kraft (FSK)",
         "Adhesive type": "Synthetic Rubber",
@@ -789,6 +835,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Emblem & Trim",
       "application": "Engineered for automotive emblem & trim applications requiring closed-cell pe foam / cross-linked eva and high performance high-tack solvent acrylic.",
+      "price": "$1.69 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "High-Tack Solvent Acrylic",
@@ -806,6 +853,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Mirror Mounting & Construction",
       "application": "Engineered for mirror mounting & construction applications requiring closed-cell pe foam / cross-linked eva and high performance modified synthetic rubber.",
+      "price": "$2.74 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "Modified Synthetic Rubber",
@@ -823,6 +871,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronic Gasketing & Sealing",
       "application": "Engineered for electronic gasketing & sealing applications requiring closed-cell pe foam / cross-linked eva and high performance high-tack solvent acrylic.",
+      "price": "$5.65 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "High-Tack Solvent Acrylic",
@@ -840,6 +889,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Emblem & Trim",
       "application": "Engineered for automotive emblem & trim applications requiring closed-cell pe foam / cross-linked eva and high performance modified synthetic rubber.",
+      "price": "$3.50 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "Modified Synthetic Rubber",
@@ -857,6 +907,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Mirror Mounting & Construction",
       "application": "Engineered for mirror mounting & construction applications requiring closed-cell pe foam / cross-linked eva and high performance high-tack solvent acrylic.",
+      "price": "$5.06 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "High-Tack Solvent Acrylic",
@@ -874,6 +925,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronic Gasketing & Sealing",
       "application": "Engineered for electronic gasketing & sealing applications requiring closed-cell pe foam / cross-linked eva and high performance modified synthetic rubber.",
+      "price": "$3.84 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "Modified Synthetic Rubber",
@@ -891,6 +943,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Emblem & Trim",
       "application": "Engineered for automotive emblem & trim applications requiring closed-cell pe foam / cross-linked eva and high performance high-tack solvent acrylic.",
+      "price": "$5.17 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "High-Tack Solvent Acrylic",
@@ -908,6 +961,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Mirror Mounting & Construction",
       "application": "Engineered for mirror mounting & construction applications requiring closed-cell pe foam / cross-linked eva and high performance modified synthetic rubber.",
+      "price": "$1.23 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "Modified Synthetic Rubber",
@@ -925,6 +979,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronic Gasketing & Sealing",
       "application": "Engineered for electronic gasketing & sealing applications requiring closed-cell pe foam / cross-linked eva and high performance high-tack solvent acrylic.",
+      "price": "$1.76 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "High-Tack Solvent Acrylic",
@@ -942,6 +997,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Emblem & Trim",
       "application": "Engineered for automotive emblem & trim applications requiring closed-cell pe foam / cross-linked eva and high performance modified synthetic rubber.",
+      "price": "$3.84 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "Modified Synthetic Rubber",
@@ -959,6 +1015,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Mirror Mounting & Construction",
       "application": "Engineered for mirror mounting & construction applications requiring closed-cell pe foam / cross-linked eva and high performance high-tack solvent acrylic.",
+      "price": "$3.39 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "High-Tack Solvent Acrylic",
@@ -976,6 +1033,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronic Gasketing & Sealing",
       "application": "Engineered for electronic gasketing & sealing applications requiring closed-cell pe foam / cross-linked eva and high performance modified synthetic rubber.",
+      "price": "$4.96 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam / Cross-Linked EVA",
         "Adhesive type": "Modified Synthetic Rubber",
@@ -993,6 +1051,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Steel Strapping & Palletizing",
       "application": "Engineered for heavy steel strapping & palletizing applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance synthetic rubber resin.",
+      "price": "$3.42 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "Synthetic Rubber Resin",
@@ -1010,6 +1069,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Appliance Coil & Component Securing",
       "application": "Engineered for appliance coil & component securing applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance high-shear acrylic.",
+      "price": "$1.28 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "High-Shear Acrylic",
@@ -1027,6 +1087,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Voltage Transformer Binding",
       "application": "Engineered for high voltage transformer binding applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance synthetic rubber resin.",
+      "price": "$5.37 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "Synthetic Rubber Resin",
@@ -1044,6 +1105,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Steel Strapping & Palletizing",
       "application": "Engineered for heavy steel strapping & palletizing applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance high-shear acrylic.",
+      "price": "$4.79 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "High-Shear Acrylic",
@@ -1061,6 +1123,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Appliance Coil & Component Securing",
       "application": "Engineered for appliance coil & component securing applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance synthetic rubber resin.",
+      "price": "$3.10 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "Synthetic Rubber Resin",
@@ -1078,6 +1141,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Voltage Transformer Binding",
       "application": "Engineered for high voltage transformer binding applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance high-shear acrylic.",
+      "price": "$4.07 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "High-Shear Acrylic",
@@ -1095,6 +1159,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Steel Strapping & Palletizing",
       "application": "Engineered for heavy steel strapping & palletizing applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance synthetic rubber resin.",
+      "price": "$1.48 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "Synthetic Rubber Resin",
@@ -1112,6 +1177,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Appliance Coil & Component Securing",
       "application": "Engineered for appliance coil & component securing applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance high-shear acrylic.",
+      "price": "$4.26 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "High-Shear Acrylic",
@@ -1129,6 +1195,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Voltage Transformer Binding",
       "application": "Engineered for high voltage transformer binding applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance synthetic rubber resin.",
+      "price": "$5.63 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "Synthetic Rubber Resin",
@@ -1146,6 +1213,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Steel Strapping & Palletizing",
       "application": "Engineered for heavy steel strapping & palletizing applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance high-shear acrylic.",
+      "price": "$1.97 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "High-Shear Acrylic",
@@ -1163,6 +1231,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Appliance Coil & Component Securing",
       "application": "Engineered for appliance coil & component securing applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance synthetic rubber resin.",
+      "price": "$4.01 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "Synthetic Rubber Resin",
@@ -1180,6 +1249,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Voltage Transformer Binding",
       "application": "Engineered for high voltage transformer binding applications requiring pet film reinforced with longitudinal / cross fiberglass and high performance high-shear acrylic.",
+      "price": "$2.81 / roll",
       "specs": {
         "Backing material": "PET Film Reinforced with Longitudinal / Cross Fiberglass",
         "Adhesive type": "High-Shear Acrylic",
@@ -1199,6 +1269,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "PCB SMT Wave Soldering",
       "application": "Engineered for pcb smt wave soldering applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance cross-linked silicone.",
+      "price": "$3.15 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "Cross-Linked Silicone",
@@ -1216,6 +1287,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Battery Thermal Insulation",
       "application": "Engineered for ev battery thermal insulation applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance high-temp acrylic.",
+      "price": "$4.15 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "High-Temp Acrylic",
@@ -1233,6 +1305,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace & High Voltage Coils",
       "application": "Engineered for aerospace & high voltage coils applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance cross-linked silicone.",
+      "price": "$1.41 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "Cross-Linked Silicone",
@@ -1250,6 +1323,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "PCB SMT Wave Soldering",
       "application": "Engineered for pcb smt wave soldering applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance high-temp acrylic.",
+      "price": "$2.93 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "High-Temp Acrylic",
@@ -1267,6 +1341,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Battery Thermal Insulation",
       "application": "Engineered for ev battery thermal insulation applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance cross-linked silicone.",
+      "price": "$2.67 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "Cross-Linked Silicone",
@@ -1284,6 +1359,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace & High Voltage Coils",
       "application": "Engineered for aerospace & high voltage coils applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance high-temp acrylic.",
+      "price": "$4.89 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "High-Temp Acrylic",
@@ -1301,6 +1377,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "PCB SMT Wave Soldering",
       "application": "Engineered for pcb smt wave soldering applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance cross-linked silicone.",
+      "price": "$3.33 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "Cross-Linked Silicone",
@@ -1318,6 +1395,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Battery Thermal Insulation",
       "application": "Engineered for ev battery thermal insulation applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance high-temp acrylic.",
+      "price": "$1.49 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "High-Temp Acrylic",
@@ -1335,6 +1413,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace & High Voltage Coils",
       "application": "Engineered for aerospace & high voltage coils applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance cross-linked silicone.",
+      "price": "$3.61 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "Cross-Linked Silicone",
@@ -1352,6 +1431,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "PCB SMT Wave Soldering",
       "application": "Engineered for pcb smt wave soldering applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance high-temp acrylic.",
+      "price": "$4.13 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "High-Temp Acrylic",
@@ -1369,6 +1449,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Battery Thermal Insulation",
       "application": "Engineered for ev battery thermal insulation applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance cross-linked silicone.",
+      "price": "$1.85 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "Cross-Linked Silicone",
@@ -1386,6 +1467,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace & High Voltage Coils",
       "application": "Engineered for aerospace & high voltage coils applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance high-temp acrylic.",
+      "price": "$5.31 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "High-Temp Acrylic",
@@ -1403,6 +1485,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "PCB SMT Wave Soldering",
       "application": "Engineered for pcb smt wave soldering applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance cross-linked silicone.",
+      "price": "$3.26 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "Cross-Linked Silicone",
@@ -1420,6 +1503,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Battery Thermal Insulation",
       "application": "Engineered for ev battery thermal insulation applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance high-temp acrylic.",
+      "price": "$2.18 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "High-Temp Acrylic",
@@ -1437,6 +1521,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace & High Voltage Coils",
       "application": "Engineered for aerospace & high voltage coils applications requiring polyimide (kapton) film (25u / 50u / 75u) and high performance cross-linked silicone.",
+      "price": "$3.28 / roll",
       "specs": {
         "Backing material": "Polyimide (Kapton) Film (25u / 50u / 75u)",
         "Adhesive type": "Cross-Linked Silicone",
@@ -1454,6 +1539,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Architectural Glazing & Cladding",
       "application": "Engineered for architectural glazing & cladding applications requiring solid / closed-cell visco-elastic acrylic foam and high performance high performance pure acrylic.",
+      "price": "$1.64 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "High Performance Pure Acrylic",
@@ -1471,6 +1557,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Exterior Body Panels",
       "application": "Engineered for automotive exterior body panels applications requiring solid / closed-cell visco-elastic acrylic foam and high performance modified tackified acrylic.",
+      "price": "$3.39 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "Modified Tackified Acrylic",
@@ -1488,6 +1575,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar PV Module Assembly & Signage",
       "application": "Engineered for solar pv module assembly & signage applications requiring solid / closed-cell visco-elastic acrylic foam and high performance high performance pure acrylic.",
+      "price": "$1.78 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "High Performance Pure Acrylic",
@@ -1505,6 +1593,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Architectural Glazing & Cladding",
       "application": "Engineered for architectural glazing & cladding applications requiring solid / closed-cell visco-elastic acrylic foam and high performance modified tackified acrylic.",
+      "price": "$5.50 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "Modified Tackified Acrylic",
@@ -1522,6 +1611,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Exterior Body Panels",
       "application": "Engineered for automotive exterior body panels applications requiring solid / closed-cell visco-elastic acrylic foam and high performance high performance pure acrylic.",
+      "price": "$4.13 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "High Performance Pure Acrylic",
@@ -1539,6 +1629,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar PV Module Assembly & Signage",
       "application": "Engineered for solar pv module assembly & signage applications requiring solid / closed-cell visco-elastic acrylic foam and high performance modified tackified acrylic.",
+      "price": "$4.36 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "Modified Tackified Acrylic",
@@ -1556,6 +1647,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Architectural Glazing & Cladding",
       "application": "Engineered for architectural glazing & cladding applications requiring solid / closed-cell visco-elastic acrylic foam and high performance high performance pure acrylic.",
+      "price": "$3.57 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "High Performance Pure Acrylic",
@@ -1573,6 +1665,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Exterior Body Panels",
       "application": "Engineered for automotive exterior body panels applications requiring solid / closed-cell visco-elastic acrylic foam and high performance modified tackified acrylic.",
+      "price": "$3.36 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "Modified Tackified Acrylic",
@@ -1590,6 +1683,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar PV Module Assembly & Signage",
       "application": "Engineered for solar pv module assembly & signage applications requiring solid / closed-cell visco-elastic acrylic foam and high performance high performance pure acrylic.",
+      "price": "$2.90 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "High Performance Pure Acrylic",
@@ -1607,6 +1701,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Architectural Glazing & Cladding",
       "application": "Engineered for architectural glazing & cladding applications requiring solid / closed-cell visco-elastic acrylic foam and high performance modified tackified acrylic.",
+      "price": "$4.24 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "Modified Tackified Acrylic",
@@ -1624,6 +1719,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Exterior Body Panels",
       "application": "Engineered for automotive exterior body panels applications requiring solid / closed-cell visco-elastic acrylic foam and high performance high performance pure acrylic.",
+      "price": "$4.89 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "High Performance Pure Acrylic",
@@ -1641,6 +1737,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar PV Module Assembly & Signage",
       "application": "Engineered for solar pv module assembly & signage applications requiring solid / closed-cell visco-elastic acrylic foam and high performance modified tackified acrylic.",
+      "price": "$3.47 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "Modified Tackified Acrylic",
@@ -1658,6 +1755,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Architectural Glazing & Cladding",
       "application": "Engineered for architectural glazing & cladding applications requiring solid / closed-cell visco-elastic acrylic foam and high performance high performance pure acrylic.",
+      "price": "$4.89 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "High Performance Pure Acrylic",
@@ -1675,6 +1773,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Exterior Body Panels",
       "application": "Engineered for automotive exterior body panels applications requiring solid / closed-cell visco-elastic acrylic foam and high performance modified tackified acrylic.",
+      "price": "$5.03 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "Modified Tackified Acrylic",
@@ -1692,6 +1791,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar PV Module Assembly & Signage",
       "application": "Engineered for solar pv module assembly & signage applications requiring solid / closed-cell visco-elastic acrylic foam and high performance high performance pure acrylic.",
+      "price": "$2.17 / roll",
       "specs": {
         "Backing material": "Solid / Closed-Cell Visco-Elastic Acrylic Foam",
         "Adhesive type": "High Performance Pure Acrylic",
@@ -1709,6 +1809,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "LED Lighting & Heat Sinks",
       "application": "Engineered for led lighting & heat sinks applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance thermally conductive acrylic.",
+      "price": "$4.87 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Thermally Conductive Acrylic",
@@ -1726,6 +1827,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power Semiconductor Modules (IGBT)",
       "application": "Engineered for power semiconductor modules (igbt) applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance silicone thermal adhesive.",
+      "price": "$2.27 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Silicone Thermal Adhesive",
@@ -1743,6 +1845,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "CPU / GPU Thermal Management",
       "application": "Engineered for cpu / gpu thermal management applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance thermally conductive acrylic.",
+      "price": "$5.46 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Thermally Conductive Acrylic",
@@ -1760,6 +1863,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "LED Lighting & Heat Sinks",
       "application": "Engineered for led lighting & heat sinks applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance silicone thermal adhesive.",
+      "price": "$4.03 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Silicone Thermal Adhesive",
@@ -1777,6 +1881,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power Semiconductor Modules (IGBT)",
       "application": "Engineered for power semiconductor modules (igbt) applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance thermally conductive acrylic.",
+      "price": "$3.88 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Thermally Conductive Acrylic",
@@ -1794,6 +1899,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "CPU / GPU Thermal Management",
       "application": "Engineered for cpu / gpu thermal management applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance silicone thermal adhesive.",
+      "price": "$3.61 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Silicone Thermal Adhesive",
@@ -1811,6 +1917,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "LED Lighting & Heat Sinks",
       "application": "Engineered for led lighting & heat sinks applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance thermally conductive acrylic.",
+      "price": "$3.94 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Thermally Conductive Acrylic",
@@ -1828,6 +1935,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power Semiconductor Modules (IGBT)",
       "application": "Engineered for power semiconductor modules (igbt) applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance silicone thermal adhesive.",
+      "price": "$4.00 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Silicone Thermal Adhesive",
@@ -1845,6 +1953,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "CPU / GPU Thermal Management",
       "application": "Engineered for cpu / gpu thermal management applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance thermally conductive acrylic.",
+      "price": "$2.05 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Thermally Conductive Acrylic",
@@ -1862,6 +1971,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "LED Lighting & Heat Sinks",
       "application": "Engineered for led lighting & heat sinks applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance silicone thermal adhesive.",
+      "price": "$1.51 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Silicone Thermal Adhesive",
@@ -1879,6 +1989,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power Semiconductor Modules (IGBT)",
       "application": "Engineered for power semiconductor modules (igbt) applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance thermally conductive acrylic.",
+      "price": "$4.83 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Thermally Conductive Acrylic",
@@ -1896,6 +2007,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "CPU / GPU Thermal Management",
       "application": "Engineered for cpu / gpu thermal management applications requiring ceramic filled thermally conductive acrylic / fiberglass matrix and high performance silicone thermal adhesive.",
+      "price": "$3.16 / roll",
       "specs": {
         "Backing material": "Ceramic Filled Thermally Conductive Acrylic / Fiberglass Matrix",
         "Adhesive type": "Silicone Thermal Adhesive",
@@ -1913,6 +2025,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Transformer Class H Coils",
       "application": "Engineered for transformer class h coils applications requiring woven fiberglass / glass cloth fabric and high performance thermosetting silicone.",
+      "price": "$1.94 / roll",
       "specs": {
         "Backing material": "Woven Fiberglass / Glass Cloth Fabric",
         "Adhesive type": "Thermosetting Silicone",
@@ -1930,6 +2043,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Traction Motor Splicing",
       "application": "Engineered for traction motor splicing applications requiring woven fiberglass / glass cloth fabric and high performance thermosetting rubber.",
+      "price": "$1.50 / roll",
       "specs": {
         "Backing material": "Woven Fiberglass / Glass Cloth Fabric",
         "Adhesive type": "Thermosetting Rubber",
@@ -1947,6 +2061,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Induction Furnace Power Cables",
       "application": "Engineered for induction furnace power cables applications requiring woven fiberglass / glass cloth fabric and high performance thermosetting silicone.",
+      "price": "$3.46 / roll",
       "specs": {
         "Backing material": "Woven Fiberglass / Glass Cloth Fabric",
         "Adhesive type": "Thermosetting Silicone",
@@ -1964,6 +2079,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Transformer Class H Coils",
       "application": "Engineered for transformer class h coils applications requiring woven fiberglass / glass cloth fabric and high performance thermosetting rubber.",
+      "price": "$1.60 / roll",
       "specs": {
         "Backing material": "Woven Fiberglass / Glass Cloth Fabric",
         "Adhesive type": "Thermosetting Rubber",
@@ -1981,6 +2097,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Traction Motor Splicing",
       "application": "Engineered for traction motor splicing applications requiring woven fiberglass / glass cloth fabric and high performance thermosetting silicone.",
+      "price": "$4.14 / roll",
       "specs": {
         "Backing material": "Woven Fiberglass / Glass Cloth Fabric",
         "Adhesive type": "Thermosetting Silicone",
@@ -1998,6 +2115,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Induction Furnace Power Cables",
       "application": "Engineered for induction furnace power cables applications requiring woven fiberglass / glass cloth fabric and high performance thermosetting rubber.",
+      "price": "$3.51 / roll",
       "specs": {
         "Backing material": "Woven Fiberglass / Glass Cloth Fabric",
         "Adhesive type": "Thermosetting Rubber",
@@ -2015,6 +2133,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Transformer Class H Coils",
       "application": "Engineered for transformer class h coils applications requiring woven fiberglass / glass cloth fabric and high performance thermosetting silicone.",
+      "price": "$3.89 / roll",
       "specs": {
         "Backing material": "Woven Fiberglass / Glass Cloth Fabric",
         "Adhesive type": "Thermosetting Silicone",
@@ -2032,6 +2151,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Traction Motor Splicing",
       "application": "Engineered for traction motor splicing applications requiring woven fiberglass / glass cloth fabric and high performance thermosetting rubber.",
+      "price": "$5.29 / roll",
       "specs": {
         "Backing material": "Woven Fiberglass / Glass Cloth Fabric",
         "Adhesive type": "Thermosetting Rubber",
@@ -2049,6 +2169,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Induction Furnace Power Cables",
       "application": "Engineered for induction furnace power cables applications requiring woven fiberglass / glass cloth fabric and high performance thermosetting silicone.",
+      "price": "$2.27 / roll",
       "specs": {
         "Backing material": "Woven Fiberglass / Glass Cloth Fabric",
         "Adhesive type": "Thermosetting Silicone",
@@ -2066,6 +2187,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Transformer Class H Coils",
       "application": "Engineered for transformer class h coils applications requiring woven fiberglass / glass cloth fabric and high performance thermosetting rubber.",
+      "price": "$2.60 / roll",
       "specs": {
         "Backing material": "Woven Fiberglass / Glass Cloth Fabric",
         "Adhesive type": "Thermosetting Rubber",
@@ -2083,6 +2205,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smartphone & Tablet EMI Shielding",
       "application": "Engineered for smartphone & tablet emi shielding applications requiring pure rolled copper / aluminum foil (conductive) and high performance nickel-plated conductive acrylic.",
+      "price": "$5.56 / roll",
       "specs": {
         "Backing material": "Pure Rolled Copper / Aluminum Foil (Conductive)",
         "Adhesive type": "Nickel-Plated Conductive Acrylic",
@@ -2100,6 +2223,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Medical MRI & RF Equipment",
       "application": "Engineered for medical mri & rf equipment applications requiring pure rolled copper / aluminum foil (conductive) and high performance electrically conductive acrylic.",
+      "price": "$4.99 / roll",
       "specs": {
         "Backing material": "Pure Rolled Copper / Aluminum Foil (Conductive)",
         "Adhesive type": "Electrically Conductive Acrylic",
@@ -2117,6 +2241,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Radar & ADAS Shielding",
       "application": "Engineered for automotive radar & adas shielding applications requiring pure rolled copper / aluminum foil (conductive) and high performance nickel-plated conductive acrylic.",
+      "price": "$2.10 / roll",
       "specs": {
         "Backing material": "Pure Rolled Copper / Aluminum Foil (Conductive)",
         "Adhesive type": "Nickel-Plated Conductive Acrylic",
@@ -2134,6 +2259,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smartphone & Tablet EMI Shielding",
       "application": "Engineered for smartphone & tablet emi shielding applications requiring pure rolled copper / aluminum foil (conductive) and high performance electrically conductive acrylic.",
+      "price": "$2.49 / roll",
       "specs": {
         "Backing material": "Pure Rolled Copper / Aluminum Foil (Conductive)",
         "Adhesive type": "Electrically Conductive Acrylic",
@@ -2151,6 +2277,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Medical MRI & RF Equipment",
       "application": "Engineered for medical mri & rf equipment applications requiring pure rolled copper / aluminum foil (conductive) and high performance nickel-plated conductive acrylic.",
+      "price": "$4.11 / roll",
       "specs": {
         "Backing material": "Pure Rolled Copper / Aluminum Foil (Conductive)",
         "Adhesive type": "Nickel-Plated Conductive Acrylic",
@@ -2168,6 +2295,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Radar & ADAS Shielding",
       "application": "Engineered for automotive radar & adas shielding applications requiring pure rolled copper / aluminum foil (conductive) and high performance electrically conductive acrylic.",
+      "price": "$3.78 / roll",
       "specs": {
         "Backing material": "Pure Rolled Copper / Aluminum Foil (Conductive)",
         "Adhesive type": "Electrically Conductive Acrylic",
@@ -2185,6 +2313,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smartphone & Tablet EMI Shielding",
       "application": "Engineered for smartphone & tablet emi shielding applications requiring pure rolled copper / aluminum foil (conductive) and high performance nickel-plated conductive acrylic.",
+      "price": "$2.87 / roll",
       "specs": {
         "Backing material": "Pure Rolled Copper / Aluminum Foil (Conductive)",
         "Adhesive type": "Nickel-Plated Conductive Acrylic",
@@ -2202,6 +2331,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Medical MRI & RF Equipment",
       "application": "Engineered for medical mri & rf equipment applications requiring pure rolled copper / aluminum foil (conductive) and high performance electrically conductive acrylic.",
+      "price": "$5.49 / roll",
       "specs": {
         "Backing material": "Pure Rolled Copper / Aluminum Foil (Conductive)",
         "Adhesive type": "Electrically Conductive Acrylic",
@@ -2219,6 +2349,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Radar & ADAS Shielding",
       "application": "Engineered for automotive radar & adas shielding applications requiring pure rolled copper / aluminum foil (conductive) and high performance nickel-plated conductive acrylic.",
+      "price": "$4.04 / roll",
       "specs": {
         "Backing material": "Pure Rolled Copper / Aluminum Foil (Conductive)",
         "Adhesive type": "Nickel-Plated Conductive Acrylic",
@@ -2236,6 +2367,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smartphone & Tablet EMI Shielding",
       "application": "Engineered for smartphone & tablet emi shielding applications requiring pure rolled copper / aluminum foil (conductive) and high performance electrically conductive acrylic.",
+      "price": "$3.29 / roll",
       "specs": {
         "Backing material": "Pure Rolled Copper / Aluminum Foil (Conductive)",
         "Adhesive type": "Electrically Conductive Acrylic",
@@ -2253,6 +2385,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heat Sealing Packaging Machines",
       "application": "Engineered for heat sealing packaging machines applications requiring pure skived ptfe film / ptfe coated woven glass cloth and high performance high temperature silicone.",
+      "price": "$2.79 / roll",
       "specs": {
         "Backing material": "Pure Skived PTFE Film / PTFE Coated Woven Glass Cloth",
         "Adhesive type": "High Temperature Silicone",
@@ -2270,6 +2403,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Friction Reduction & Chute Lining",
       "application": "Engineered for friction reduction & chute lining applications requiring pure skived ptfe film / ptfe coated woven glass cloth and high performance high tack acrylic.",
+      "price": "$2.83 / roll",
       "specs": {
         "Backing material": "Pure Skived PTFE Film / PTFE Coated Woven Glass Cloth",
         "Adhesive type": "High Tack Acrylic",
@@ -2287,6 +2421,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Chemical Barrier & Non-Stick Applications",
       "application": "Engineered for chemical barrier & non-stick applications applications requiring pure skived ptfe film / ptfe coated woven glass cloth and high performance high temperature silicone.",
+      "price": "$5.65 / roll",
       "specs": {
         "Backing material": "Pure Skived PTFE Film / PTFE Coated Woven Glass Cloth",
         "Adhesive type": "High Temperature Silicone",
@@ -2304,6 +2439,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heat Sealing Packaging Machines",
       "application": "Engineered for heat sealing packaging machines applications requiring pure skived ptfe film / ptfe coated woven glass cloth and high performance high tack acrylic.",
+      "price": "$3.69 / roll",
       "specs": {
         "Backing material": "Pure Skived PTFE Film / PTFE Coated Woven Glass Cloth",
         "Adhesive type": "High Tack Acrylic",
@@ -2321,6 +2457,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Friction Reduction & Chute Lining",
       "application": "Engineered for friction reduction & chute lining applications requiring pure skived ptfe film / ptfe coated woven glass cloth and high performance high temperature silicone.",
+      "price": "$2.24 / roll",
       "specs": {
         "Backing material": "Pure Skived PTFE Film / PTFE Coated Woven Glass Cloth",
         "Adhesive type": "High Temperature Silicone",
@@ -2338,6 +2475,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Chemical Barrier & Non-Stick Applications",
       "application": "Engineered for chemical barrier & non-stick applications applications requiring pure skived ptfe film / ptfe coated woven glass cloth and high performance high tack acrylic.",
+      "price": "$2.14 / roll",
       "specs": {
         "Backing material": "Pure Skived PTFE Film / PTFE Coated Woven Glass Cloth",
         "Adhesive type": "High Tack Acrylic",
@@ -2355,6 +2493,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heat Sealing Packaging Machines",
       "application": "Engineered for heat sealing packaging machines applications requiring pure skived ptfe film / ptfe coated woven glass cloth and high performance high temperature silicone.",
+      "price": "$4.92 / roll",
       "specs": {
         "Backing material": "Pure Skived PTFE Film / PTFE Coated Woven Glass Cloth",
         "Adhesive type": "High Temperature Silicone",
@@ -2372,6 +2511,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Friction Reduction & Chute Lining",
       "application": "Engineered for friction reduction & chute lining applications requiring pure skived ptfe film / ptfe coated woven glass cloth and high performance high tack acrylic.",
+      "price": "$3.24 / roll",
       "specs": {
         "Backing material": "Pure Skived PTFE Film / PTFE Coated Woven Glass Cloth",
         "Adhesive type": "High Tack Acrylic",
@@ -2391,6 +2531,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smartphone Display Panel Mounting",
       "application": "Engineered for smartphone display panel mounting applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance high shear solvent acrylic.",
+      "price": "$5.13 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "High Shear Solvent Acrylic",
@@ -2408,6 +2549,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "FPC Flexible Circuit Attachment",
       "application": "Engineered for fpc flexible circuit attachment applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance anti-repulsion tackified acrylic.",
+      "price": "$4.89 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "Anti-Repulsion Tackified Acrylic",
@@ -2425,6 +2567,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Tablet & Wearable Battery Securing",
       "application": "Engineered for tablet & wearable battery securing applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance high shear solvent acrylic.",
+      "price": "$3.11 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "High Shear Solvent Acrylic",
@@ -2442,6 +2585,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smartphone Display Panel Mounting",
       "application": "Engineered for smartphone display panel mounting applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance anti-repulsion tackified acrylic.",
+      "price": "$1.36 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "Anti-Repulsion Tackified Acrylic",
@@ -2459,6 +2603,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "FPC Flexible Circuit Attachment",
       "application": "Engineered for fpc flexible circuit attachment applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance high shear solvent acrylic.",
+      "price": "$4.20 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "High Shear Solvent Acrylic",
@@ -2476,6 +2621,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Tablet & Wearable Battery Securing",
       "application": "Engineered for tablet & wearable battery securing applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance anti-repulsion tackified acrylic.",
+      "price": "$3.59 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "Anti-Repulsion Tackified Acrylic",
@@ -2493,6 +2639,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smartphone Display Panel Mounting",
       "application": "Engineered for smartphone display panel mounting applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance high shear solvent acrylic.",
+      "price": "$4.62 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "High Shear Solvent Acrylic",
@@ -2510,6 +2657,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "FPC Flexible Circuit Attachment",
       "application": "Engineered for fpc flexible circuit attachment applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance anti-repulsion tackified acrylic.",
+      "price": "$1.69 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "Anti-Repulsion Tackified Acrylic",
@@ -2527,6 +2675,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Tablet & Wearable Battery Securing",
       "application": "Engineered for tablet & wearable battery securing applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance high shear solvent acrylic.",
+      "price": "$3.53 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "High Shear Solvent Acrylic",
@@ -2544,6 +2693,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smartphone Display Panel Mounting",
       "application": "Engineered for smartphone display panel mounting applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance anti-repulsion tackified acrylic.",
+      "price": "$3.56 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "Anti-Repulsion Tackified Acrylic",
@@ -2561,6 +2711,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "FPC Flexible Circuit Attachment",
       "application": "Engineered for fpc flexible circuit attachment applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance high shear solvent acrylic.",
+      "price": "$3.80 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "High Shear Solvent Acrylic",
@@ -2578,6 +2729,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Tablet & Wearable Battery Securing",
       "application": "Engineered for tablet & wearable battery securing applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance anti-repulsion tackified acrylic.",
+      "price": "$4.03 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "Anti-Repulsion Tackified Acrylic",
@@ -2595,6 +2747,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smartphone Display Panel Mounting",
       "application": "Engineered for smartphone display panel mounting applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance high shear solvent acrylic.",
+      "price": "$3.11 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "High Shear Solvent Acrylic",
@@ -2612,6 +2765,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "FPC Flexible Circuit Attachment",
       "application": "Engineered for fpc flexible circuit attachment applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance anti-repulsion tackified acrylic.",
+      "price": "$2.93 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "Anti-Repulsion Tackified Acrylic",
@@ -2629,6 +2783,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Tablet & Wearable Battery Securing",
       "application": "Engineered for tablet & wearable battery securing applications requiring ultra-thin pet film (5u / 12u / 25u / 50u) and high performance high shear solvent acrylic.",
+      "price": "$1.60 / roll",
       "specs": {
         "Backing material": "Ultra-Thin PET Film (5u / 12u / 25u / 50u)",
         "Adhesive type": "High Shear Solvent Acrylic",
@@ -2646,6 +2801,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Semiconductor Wafer Packaging",
       "application": "Engineered for semiconductor wafer packaging applications requiring esd treated polyimide film / anti-static pet and high performance esd anti-static silicone.",
+      "price": "$3.24 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "ESD Anti-Static Silicone",
@@ -2663,6 +2819,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cleanroom Static Protection",
       "application": "Engineered for cleanroom static protection applications requiring esd treated polyimide film / anti-static pet and high performance conductive acrylic.",
+      "price": "$4.44 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "Conductive Acrylic",
@@ -2680,6 +2837,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Hard Disk Drive & Sensor Assembly",
       "application": "Engineered for hard disk drive & sensor assembly applications requiring esd treated polyimide film / anti-static pet and high performance esd anti-static silicone.",
+      "price": "$4.85 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "ESD Anti-Static Silicone",
@@ -2697,6 +2855,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Semiconductor Wafer Packaging",
       "application": "Engineered for semiconductor wafer packaging applications requiring esd treated polyimide film / anti-static pet and high performance conductive acrylic.",
+      "price": "$1.44 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "Conductive Acrylic",
@@ -2714,6 +2873,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cleanroom Static Protection",
       "application": "Engineered for cleanroom static protection applications requiring esd treated polyimide film / anti-static pet and high performance esd anti-static silicone.",
+      "price": "$2.78 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "ESD Anti-Static Silicone",
@@ -2731,6 +2891,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Hard Disk Drive & Sensor Assembly",
       "application": "Engineered for hard disk drive & sensor assembly applications requiring esd treated polyimide film / anti-static pet and high performance conductive acrylic.",
+      "price": "$5.38 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "Conductive Acrylic",
@@ -2748,6 +2909,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Semiconductor Wafer Packaging",
       "application": "Engineered for semiconductor wafer packaging applications requiring esd treated polyimide film / anti-static pet and high performance esd anti-static silicone.",
+      "price": "$4.20 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "ESD Anti-Static Silicone",
@@ -2765,6 +2927,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cleanroom Static Protection",
       "application": "Engineered for cleanroom static protection applications requiring esd treated polyimide film / anti-static pet and high performance conductive acrylic.",
+      "price": "$2.19 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "Conductive Acrylic",
@@ -2782,6 +2945,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Hard Disk Drive & Sensor Assembly",
       "application": "Engineered for hard disk drive & sensor assembly applications requiring esd treated polyimide film / anti-static pet and high performance esd anti-static silicone.",
+      "price": "$5.27 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "ESD Anti-Static Silicone",
@@ -2799,6 +2963,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Semiconductor Wafer Packaging",
       "application": "Engineered for semiconductor wafer packaging applications requiring esd treated polyimide film / anti-static pet and high performance conductive acrylic.",
+      "price": "$5.66 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "Conductive Acrylic",
@@ -2816,6 +2981,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cleanroom Static Protection",
       "application": "Engineered for cleanroom static protection applications requiring esd treated polyimide film / anti-static pet and high performance esd anti-static silicone.",
+      "price": "$2.11 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "ESD Anti-Static Silicone",
@@ -2833,6 +2999,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Hard Disk Drive & Sensor Assembly",
       "application": "Engineered for hard disk drive & sensor assembly applications requiring esd treated polyimide film / anti-static pet and high performance conductive acrylic.",
+      "price": "$2.65 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "Conductive Acrylic",
@@ -2850,6 +3017,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Semiconductor Wafer Packaging",
       "application": "Engineered for semiconductor wafer packaging applications requiring esd treated polyimide film / anti-static pet and high performance esd anti-static silicone.",
+      "price": "$4.21 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "ESD Anti-Static Silicone",
@@ -2867,6 +3035,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cleanroom Static Protection",
       "application": "Engineered for cleanroom static protection applications requiring esd treated polyimide film / anti-static pet and high performance conductive acrylic.",
+      "price": "$5.55 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "Conductive Acrylic",
@@ -2884,6 +3053,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Hard Disk Drive & Sensor Assembly",
       "application": "Engineered for hard disk drive & sensor assembly applications requiring esd treated polyimide film / anti-static pet and high performance esd anti-static silicone.",
+      "price": "$2.53 / roll",
       "specs": {
         "Backing material": "ESD Treated Polyimide Film / Anti-Static PET",
         "Adhesive type": "ESD Anti-Static Silicone",
@@ -2901,6 +3071,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "5G Smartphone Processor Cooling",
       "application": "Engineered for 5g smartphone processor cooling applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$3.60 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -2918,6 +3089,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Laptop Heat Pipes & Antennas",
       "application": "Engineered for laptop heat pipes & antennas applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$5.19 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -2935,6 +3107,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "OLED Screen Heat Uniformity",
       "application": "Engineered for oled screen heat uniformity applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$1.51 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -2952,6 +3125,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "5G Smartphone Processor Cooling",
       "application": "Engineered for 5g smartphone processor cooling applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$2.49 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -2969,6 +3143,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Laptop Heat Pipes & Antennas",
       "application": "Engineered for laptop heat pipes & antennas applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$3.11 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -2986,6 +3161,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "OLED Screen Heat Uniformity",
       "application": "Engineered for oled screen heat uniformity applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$5.04 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -3003,6 +3179,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "5G Smartphone Processor Cooling",
       "application": "Engineered for 5g smartphone processor cooling applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$5.59 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -3020,6 +3197,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Laptop Heat Pipes & Antennas",
       "application": "Engineered for laptop heat pipes & antennas applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$2.36 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -3037,6 +3215,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "OLED Screen Heat Uniformity",
       "application": "Engineered for oled screen heat uniformity applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$4.07 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -3054,6 +3233,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "5G Smartphone Processor Cooling",
       "application": "Engineered for 5g smartphone processor cooling applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$4.75 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -3071,6 +3251,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Laptop Heat Pipes & Antennas",
       "application": "Engineered for laptop heat pipes & antennas applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$2.31 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -3088,6 +3269,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "OLED Screen Heat Uniformity",
       "application": "Engineered for oled screen heat uniformity applications requiring synthetic pyrolytic graphite (pgs) laminated with pet and high performance ultra-thin thermally conductive acrylic (5u - 10u).",
+      "price": "$4.88 / roll",
       "specs": {
         "Backing material": "Synthetic Pyrolytic Graphite (PGS) Laminated with PET",
         "Adhesive type": "Ultra-Thin Thermally Conductive Acrylic (5u - 10u)",
@@ -3105,6 +3287,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Infotainment EMI Shielding",
       "application": "Engineered for automotive infotainment emi shielding applications requiring nickel/copper plated woven conductive fabric and high performance isotropically conductive acrylic.",
+      "price": "$1.89 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "Isotropically Conductive Acrylic",
@@ -3122,6 +3305,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Telecom Base Station Enclosures",
       "application": "Engineered for telecom base station enclosures applications requiring nickel/copper plated woven conductive fabric and high performance high tack conductive resin.",
+      "price": "$4.81 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "High Tack Conductive Resin",
@@ -3139,6 +3323,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Robotics Cable Grounding",
       "application": "Engineered for robotics cable grounding applications requiring nickel/copper plated woven conductive fabric and high performance isotropically conductive acrylic.",
+      "price": "$1.78 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "Isotropically Conductive Acrylic",
@@ -3156,6 +3341,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Infotainment EMI Shielding",
       "application": "Engineered for automotive infotainment emi shielding applications requiring nickel/copper plated woven conductive fabric and high performance high tack conductive resin.",
+      "price": "$3.07 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "High Tack Conductive Resin",
@@ -3173,6 +3359,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Telecom Base Station Enclosures",
       "application": "Engineered for telecom base station enclosures applications requiring nickel/copper plated woven conductive fabric and high performance isotropically conductive acrylic.",
+      "price": "$2.93 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "Isotropically Conductive Acrylic",
@@ -3190,6 +3377,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Robotics Cable Grounding",
       "application": "Engineered for robotics cable grounding applications requiring nickel/copper plated woven conductive fabric and high performance high tack conductive resin.",
+      "price": "$3.91 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "High Tack Conductive Resin",
@@ -3207,6 +3395,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Infotainment EMI Shielding",
       "application": "Engineered for automotive infotainment emi shielding applications requiring nickel/copper plated woven conductive fabric and high performance isotropically conductive acrylic.",
+      "price": "$4.94 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "Isotropically Conductive Acrylic",
@@ -3224,6 +3413,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Telecom Base Station Enclosures",
       "application": "Engineered for telecom base station enclosures applications requiring nickel/copper plated woven conductive fabric and high performance high tack conductive resin.",
+      "price": "$3.04 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "High Tack Conductive Resin",
@@ -3241,6 +3431,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Robotics Cable Grounding",
       "application": "Engineered for robotics cable grounding applications requiring nickel/copper plated woven conductive fabric and high performance isotropically conductive acrylic.",
+      "price": "$4.84 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "Isotropically Conductive Acrylic",
@@ -3258,6 +3449,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Infotainment EMI Shielding",
       "application": "Engineered for automotive infotainment emi shielding applications requiring nickel/copper plated woven conductive fabric and high performance high tack conductive resin.",
+      "price": "$5.20 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "High Tack Conductive Resin",
@@ -3275,6 +3467,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Telecom Base Station Enclosures",
       "application": "Engineered for telecom base station enclosures applications requiring nickel/copper plated woven conductive fabric and high performance isotropically conductive acrylic.",
+      "price": "$4.81 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "Isotropically Conductive Acrylic",
@@ -3292,6 +3485,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Robotics Cable Grounding",
       "application": "Engineered for robotics cable grounding applications requiring nickel/copper plated woven conductive fabric and high performance high tack conductive resin.",
+      "price": "$3.78 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "High Tack Conductive Resin",
@@ -3309,6 +3503,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Infotainment EMI Shielding",
       "application": "Engineered for automotive infotainment emi shielding applications requiring nickel/copper plated woven conductive fabric and high performance isotropically conductive acrylic.",
+      "price": "$1.88 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "Isotropically Conductive Acrylic",
@@ -3326,6 +3521,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Telecom Base Station Enclosures",
       "application": "Engineered for telecom base station enclosures applications requiring nickel/copper plated woven conductive fabric and high performance high tack conductive resin.",
+      "price": "$1.38 / roll",
       "specs": {
         "Backing material": "Nickel/Copper Plated Woven Conductive Fabric",
         "Adhesive type": "High Tack Conductive Resin",
@@ -3343,6 +3539,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Optical Lens Dust Sealing & Shock Absorption",
       "application": "Engineered for optical lens dust sealing & shock absorption applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance differential double-sided acrylic (hi/lo tack).",
+      "price": "$1.62 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Differential Double-Sided Acrylic (Hi/Lo Tack)",
@@ -3360,6 +3557,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Speaker & Acoustic Cushioning",
       "application": "Engineered for speaker & acoustic cushioning applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance solvent acrylic.",
+      "price": "$3.65 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Solvent Acrylic",
@@ -3377,6 +3575,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Battery Pack Shock Absorption",
       "application": "Engineered for ev battery pack shock absorption applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance differential double-sided acrylic (hi/lo tack).",
+      "price": "$3.03 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Differential Double-Sided Acrylic (Hi/Lo Tack)",
@@ -3394,6 +3593,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Optical Lens Dust Sealing & Shock Absorption",
       "application": "Engineered for optical lens dust sealing & shock absorption applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance solvent acrylic.",
+      "price": "$5.64 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Solvent Acrylic",
@@ -3411,6 +3611,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Speaker & Acoustic Cushioning",
       "application": "Engineered for speaker & acoustic cushioning applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance differential double-sided acrylic (hi/lo tack).",
+      "price": "$1.32 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Differential Double-Sided Acrylic (Hi/Lo Tack)",
@@ -3428,6 +3629,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Battery Pack Shock Absorption",
       "application": "Engineered for ev battery pack shock absorption applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance solvent acrylic.",
+      "price": "$2.32 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Solvent Acrylic",
@@ -3445,6 +3647,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Optical Lens Dust Sealing & Shock Absorption",
       "application": "Engineered for optical lens dust sealing & shock absorption applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance differential double-sided acrylic (hi/lo tack).",
+      "price": "$5.02 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Differential Double-Sided Acrylic (Hi/Lo Tack)",
@@ -3462,6 +3665,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Speaker & Acoustic Cushioning",
       "application": "Engineered for speaker & acoustic cushioning applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance solvent acrylic.",
+      "price": "$1.93 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Solvent Acrylic",
@@ -3479,6 +3683,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Battery Pack Shock Absorption",
       "application": "Engineered for ev battery pack shock absorption applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance differential double-sided acrylic (hi/lo tack).",
+      "price": "$1.57 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Differential Double-Sided Acrylic (Hi/Lo Tack)",
@@ -3496,6 +3701,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Optical Lens Dust Sealing & Shock Absorption",
       "application": "Engineered for optical lens dust sealing & shock absorption applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance solvent acrylic.",
+      "price": "$1.95 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Solvent Acrylic",
@@ -3513,6 +3719,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Speaker & Acoustic Cushioning",
       "application": "Engineered for speaker & acoustic cushioning applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance differential double-sided acrylic (hi/lo tack).",
+      "price": "$2.94 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Differential Double-Sided Acrylic (Hi/Lo Tack)",
@@ -3530,6 +3737,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Battery Pack Shock Absorption",
       "application": "Engineered for ev battery pack shock absorption applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance solvent acrylic.",
+      "price": "$2.50 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Solvent Acrylic",
@@ -3547,6 +3755,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Optical Lens Dust Sealing & Shock Absorption",
       "application": "Engineered for optical lens dust sealing & shock absorption applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance differential double-sided acrylic (hi/lo tack).",
+      "price": "$3.59 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Differential Double-Sided Acrylic (Hi/Lo Tack)",
@@ -3564,6 +3773,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Speaker & Acoustic Cushioning",
       "application": "Engineered for speaker & acoustic cushioning applications requiring high density microcellular polyurethane (pu) / cr rubber foam and high performance solvent acrylic.",
+      "price": "$2.65 / roll",
       "specs": {
         "Backing material": "High Density Microcellular Polyurethane (PU) / CR Rubber Foam",
         "Adhesive type": "Solvent Acrylic",
@@ -3583,6 +3793,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power Substations & 11kV - 35kV Busbars",
       "application": "Engineered for power substations & 11kv - 35kv busbars applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$2.83 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3600,6 +3811,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Voltage Switchgear Terminations",
       "application": "Engineered for high voltage switchgear terminations applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$2.52 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3617,6 +3829,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Mining & Marine Cable Protection",
       "application": "Engineered for mining & marine cable protection applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$2.81 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3634,6 +3847,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power Substations & 11kV - 35kV Busbars",
       "application": "Engineered for power substations & 11kv - 35kv busbars applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$2.37 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3651,6 +3865,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Voltage Switchgear Terminations",
       "application": "Engineered for high voltage switchgear terminations applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$1.69 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3668,6 +3883,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Mining & Marine Cable Protection",
       "application": "Engineered for mining & marine cable protection applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$2.58 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3685,6 +3901,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power Substations & 11kV - 35kV Busbars",
       "application": "Engineered for power substations & 11kv - 35kv busbars applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$2.01 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3702,6 +3919,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Voltage Switchgear Terminations",
       "application": "Engineered for high voltage switchgear terminations applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$4.17 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3719,6 +3937,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Mining & Marine Cable Protection",
       "application": "Engineered for mining & marine cable protection applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$2.50 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3736,6 +3955,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power Substations & 11kV - 35kV Busbars",
       "application": "Engineered for power substations & 11kv - 35kv busbars applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$2.82 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3753,6 +3973,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Voltage Switchgear Terminations",
       "application": "Engineered for high voltage switchgear terminations applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$4.77 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3770,6 +3991,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Mining & Marine Cable Protection",
       "application": "Engineered for mining & marine cable protection applications requiring self-fusing silicone elastomer (class h) and high performance non-adhesive self-amalgamating.",
+      "price": "$5.58 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer (Class H)",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -3787,6 +4009,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Underground Power Utilities (up to 69kV)",
       "application": "Engineered for underground power utilities (up to 69kv) applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$1.79 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3804,6 +4027,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Wind Turbine Tower Cabling",
       "application": "Engineered for wind turbine tower cabling applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$3.60 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3821,6 +4045,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Submersible Pump Joint Waterproofing",
       "application": "Engineered for submersible pump joint waterproofing applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$2.81 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3838,6 +4063,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Underground Power Utilities (up to 69kV)",
       "application": "Engineered for underground power utilities (up to 69kv) applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$2.81 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3855,6 +4081,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Wind Turbine Tower Cabling",
       "application": "Engineered for wind turbine tower cabling applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$1.80 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3872,6 +4099,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Submersible Pump Joint Waterproofing",
       "application": "Engineered for submersible pump joint waterproofing applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$2.67 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3889,6 +4117,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Underground Power Utilities (up to 69kV)",
       "application": "Engineered for underground power utilities (up to 69kv) applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$1.96 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3906,6 +4135,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Wind Turbine Tower Cabling",
       "application": "Engineered for wind turbine tower cabling applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$4.41 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3923,6 +4153,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Submersible Pump Joint Waterproofing",
       "application": "Engineered for submersible pump joint waterproofing applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$5.63 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3940,6 +4171,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Underground Power Utilities (up to 69kV)",
       "application": "Engineered for underground power utilities (up to 69kv) applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$1.50 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3957,6 +4189,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Wind Turbine Tower Cabling",
       "application": "Engineered for wind turbine tower cabling applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$5.37 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3974,6 +4207,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Submersible Pump Joint Waterproofing",
       "application": "Engineered for submersible pump joint waterproofing applications requiring self-fusing ethylene propylene rubber (epr) and high performance self-fusing non-vulcanizing rubber matrix.",
+      "price": "$2.49 / roll",
       "specs": {
         "Backing material": "Self-Fusing Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Vulcanizing Rubber Matrix",
@@ -3991,6 +4225,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Oil, Gas & Municipal Pipelines",
       "application": "Engineered for oil, gas & municipal pipelines applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$4.21 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4008,6 +4243,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Offshore Riser Pipes & Flange Wrap",
       "application": "Engineered for offshore riser pipes & flange wrap applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$3.58 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4025,6 +4261,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Underground Steel Tank Corrosion Protection",
       "application": "Engineered for underground steel tank corrosion protection applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$3.92 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4042,6 +4279,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Oil, Gas & Municipal Pipelines",
       "application": "Engineered for oil, gas & municipal pipelines applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$2.24 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4059,6 +4297,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Offshore Riser Pipes & Flange Wrap",
       "application": "Engineered for offshore riser pipes & flange wrap applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$2.22 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4076,6 +4315,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Underground Steel Tank Corrosion Protection",
       "application": "Engineered for underground steel tank corrosion protection applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$1.38 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4093,6 +4333,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Oil, Gas & Municipal Pipelines",
       "application": "Engineered for oil, gas & municipal pipelines applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$5.20 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4110,6 +4351,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Offshore Riser Pipes & Flange Wrap",
       "application": "Engineered for offshore riser pipes & flange wrap applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$1.56 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4127,6 +4369,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Underground Steel Tank Corrosion Protection",
       "application": "Engineered for underground steel tank corrosion protection applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$1.97 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4144,6 +4387,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Oil, Gas & Municipal Pipelines",
       "application": "Engineered for oil, gas & municipal pipelines applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$2.52 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4161,6 +4405,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Offshore Riser Pipes & Flange Wrap",
       "application": "Engineered for offshore riser pipes & flange wrap applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$1.88 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4178,6 +4423,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Underground Steel Tank Corrosion Protection",
       "application": "Engineered for underground steel tank corrosion protection applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$3.65 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4195,6 +4441,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Oil, Gas & Municipal Pipelines",
       "application": "Engineered for oil, gas & municipal pipelines applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$4.90 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4212,6 +4459,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Offshore Riser Pipes & Flange Wrap",
       "application": "Engineered for offshore riser pipes & flange wrap applications requiring non-crystalline polyolefin visco-elastic matrix with pe carrier and high performance 100% solid visco-elastic flow compound.",
+      "price": "$5.11 / roll",
       "specs": {
         "Backing material": "Non-Crystalline Polyolefin Visco-Elastic Matrix with PE Carrier",
         "Adhesive type": "100% Solid Visco-Elastic Flow Compound",
@@ -4229,6 +4477,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "District Heating Pipe Girth Welds",
       "application": "Engineered for district heating pipe girth welds applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$3.51 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4246,6 +4495,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Directional Drilling Pipeline Joints",
       "application": "Engineered for directional drilling pipeline joints applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$1.97 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4263,6 +4513,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Cable Jacket Repair",
       "application": "Engineered for industrial cable jacket repair applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$5.32 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4280,6 +4531,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "District Heating Pipe Girth Welds",
       "application": "Engineered for district heating pipe girth welds applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$3.16 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4297,6 +4549,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Directional Drilling Pipeline Joints",
       "application": "Engineered for directional drilling pipeline joints applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$2.62 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4314,6 +4567,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Cable Jacket Repair",
       "application": "Engineered for industrial cable jacket repair applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$1.37 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4331,6 +4585,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "District Heating Pipe Girth Welds",
       "application": "Engineered for district heating pipe girth welds applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$5.23 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4348,6 +4603,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Directional Drilling Pipeline Joints",
       "application": "Engineered for directional drilling pipeline joints applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$3.62 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4365,6 +4621,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Cable Jacket Repair",
       "application": "Engineered for industrial cable jacket repair applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$4.04 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4382,6 +4639,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "District Heating Pipe Girth Welds",
       "application": "Engineered for district heating pipe girth welds applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$2.53 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4399,6 +4657,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Directional Drilling Pipeline Joints",
       "application": "Engineered for directional drilling pipeline joints applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$2.90 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4416,6 +4675,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Cable Jacket Repair",
       "application": "Engineered for industrial cable jacket repair applications requiring radiation cross-linked polyolefin with hot melt mastic and high performance visco-elastic hot melt adhesive.",
+      "price": "$4.03 / roll",
       "specs": {
         "Backing material": "Radiation Cross-Linked Polyolefin with Hot Melt Mastic",
         "Adhesive type": "Visco-Elastic Hot Melt Adhesive",
@@ -4435,6 +4695,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automated High-Speed Carton Packaging",
       "application": "Engineered for automated high-speed carton packaging applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance water-based emulsion acrylic.",
+      "price": "$2.69 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Water-based Emulsion Acrylic",
@@ -4452,6 +4713,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "E-Commerce Fulfillment & Heavy Pallets",
       "application": "Engineered for e-commerce fulfillment & heavy pallets applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance solvent acrylic.",
+      "price": "$4.96 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Solvent Acrylic",
@@ -4469,6 +4731,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cold Storage Food Logistics",
       "application": "Engineered for cold storage food logistics applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance synthetic hot melt.",
+      "price": "$3.96 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Synthetic Hot Melt",
@@ -4486,6 +4749,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automated High-Speed Carton Packaging",
       "application": "Engineered for automated high-speed carton packaging applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance water-based emulsion acrylic.",
+      "price": "$3.20 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Water-based Emulsion Acrylic",
@@ -4503,6 +4767,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "E-Commerce Fulfillment & Heavy Pallets",
       "application": "Engineered for e-commerce fulfillment & heavy pallets applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance solvent acrylic.",
+      "price": "$5.05 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Solvent Acrylic",
@@ -4520,6 +4785,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cold Storage Food Logistics",
       "application": "Engineered for cold storage food logistics applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance synthetic hot melt.",
+      "price": "$4.76 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Synthetic Hot Melt",
@@ -4537,6 +4803,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automated High-Speed Carton Packaging",
       "application": "Engineered for automated high-speed carton packaging applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance water-based emulsion acrylic.",
+      "price": "$4.21 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Water-based Emulsion Acrylic",
@@ -4554,6 +4821,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "E-Commerce Fulfillment & Heavy Pallets",
       "application": "Engineered for e-commerce fulfillment & heavy pallets applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance solvent acrylic.",
+      "price": "$2.77 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Solvent Acrylic",
@@ -4571,6 +4839,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cold Storage Food Logistics",
       "application": "Engineered for cold storage food logistics applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance synthetic hot melt.",
+      "price": "$4.24 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Synthetic Hot Melt",
@@ -4588,6 +4857,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automated High-Speed Carton Packaging",
       "application": "Engineered for automated high-speed carton packaging applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance water-based emulsion acrylic.",
+      "price": "$4.78 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Water-based Emulsion Acrylic",
@@ -4605,6 +4875,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "E-Commerce Fulfillment & Heavy Pallets",
       "application": "Engineered for e-commerce fulfillment & heavy pallets applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance solvent acrylic.",
+      "price": "$5.67 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Solvent Acrylic",
@@ -4622,6 +4893,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cold Storage Food Logistics",
       "application": "Engineered for cold storage food logistics applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance synthetic hot melt.",
+      "price": "$5.44 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Synthetic Hot Melt",
@@ -4639,6 +4911,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automated High-Speed Carton Packaging",
       "application": "Engineered for automated high-speed carton packaging applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance water-based emulsion acrylic.",
+      "price": "$4.50 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Water-based Emulsion Acrylic",
@@ -4656,6 +4929,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "E-Commerce Fulfillment & Heavy Pallets",
       "application": "Engineered for e-commerce fulfillment & heavy pallets applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance solvent acrylic.",
+      "price": "$1.58 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Solvent Acrylic",
@@ -4673,6 +4947,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cold Storage Food Logistics",
       "application": "Engineered for cold storage food logistics applications requiring biaxially oriented polypropylene (bopp) film (28u / 35u / 50u) and high performance synthetic hot melt.",
+      "price": "$4.71 / roll",
       "specs": {
         "Backing material": "Biaxially Oriented Polypropylene (BOPP) Film (28u / 35u / 50u)",
         "Adhesive type": "Synthetic Hot Melt",
@@ -4690,6 +4965,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Shoe & Leather Manufacturing",
       "application": "Engineered for shoe & leather manufacturing applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance solvent acrylic (heat resistant).",
+      "price": "$3.45 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Solvent Acrylic (Heat Resistant)",
@@ -4707,6 +4983,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Embroidery Fixing & Foam Bonding",
       "application": "Engineered for embroidery fixing & foam bonding applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance water-based modified acrylic.",
+      "price": "$4.26 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Water-based Modified Acrylic",
@@ -4724,6 +5001,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Paper Splicing & Membrane Switches",
       "application": "Engineered for paper splicing & membrane switches applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance solvent acrylic (heat resistant).",
+      "price": "$2.13 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Solvent Acrylic (Heat Resistant)",
@@ -4741,6 +5019,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Shoe & Leather Manufacturing",
       "application": "Engineered for shoe & leather manufacturing applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance water-based modified acrylic.",
+      "price": "$4.37 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Water-based Modified Acrylic",
@@ -4758,6 +5037,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Embroidery Fixing & Foam Bonding",
       "application": "Engineered for embroidery fixing & foam bonding applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance solvent acrylic (heat resistant).",
+      "price": "$5.21 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Solvent Acrylic (Heat Resistant)",
@@ -4775,6 +5055,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Paper Splicing & Membrane Switches",
       "application": "Engineered for paper splicing & membrane switches applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance water-based modified acrylic.",
+      "price": "$1.89 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Water-based Modified Acrylic",
@@ -4792,6 +5073,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Shoe & Leather Manufacturing",
       "application": "Engineered for shoe & leather manufacturing applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance solvent acrylic (heat resistant).",
+      "price": "$5.13 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Solvent Acrylic (Heat Resistant)",
@@ -4809,6 +5091,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Embroidery Fixing & Foam Bonding",
       "application": "Engineered for embroidery fixing & foam bonding applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance water-based modified acrylic.",
+      "price": "$1.52 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Water-based Modified Acrylic",
@@ -4826,6 +5109,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Paper Splicing & Membrane Switches",
       "application": "Engineered for paper splicing & membrane switches applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance solvent acrylic (heat resistant).",
+      "price": "$4.38 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Solvent Acrylic (Heat Resistant)",
@@ -4843,6 +5127,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Shoe & Leather Manufacturing",
       "application": "Engineered for shoe & leather manufacturing applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance water-based modified acrylic.",
+      "price": "$1.34 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Water-based Modified Acrylic",
@@ -4860,6 +5145,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Embroidery Fixing & Foam Bonding",
       "application": "Engineered for embroidery fixing & foam bonding applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance solvent acrylic (heat resistant).",
+      "price": "$4.99 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Solvent Acrylic (Heat Resistant)",
@@ -4877,6 +5163,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Paper Splicing & Membrane Switches",
       "application": "Engineered for paper splicing & membrane switches applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance water-based modified acrylic.",
+      "price": "$2.38 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Water-based Modified Acrylic",
@@ -4894,6 +5181,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Shoe & Leather Manufacturing",
       "application": "Engineered for shoe & leather manufacturing applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance solvent acrylic (heat resistant).",
+      "price": "$5.12 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Solvent Acrylic (Heat Resistant)",
@@ -4911,6 +5199,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Embroidery Fixing & Foam Bonding",
       "application": "Engineered for embroidery fixing & foam bonding applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance water-based modified acrylic.",
+      "price": "$2.09 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Water-based Modified Acrylic",
@@ -4928,6 +5217,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Paper Splicing & Membrane Switches",
       "application": "Engineered for paper splicing & membrane switches applications requiring non-woven tissue paper carrier (12g / 14g / 21g) and high performance solvent acrylic (heat resistant).",
+      "price": "$4.15 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Paper Carrier (12g / 14g / 21g)",
         "Adhesive type": "Solvent Acrylic (Heat Resistant)",
@@ -4945,6 +5235,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Body Shop 2K Spray Baking",
       "application": "Engineered for automotive body shop 2k spray baking applications requiring saturated crepe paper / ultra-thin washi and high performance natural rubber solvent.",
+      "price": "$4.35 / roll",
       "specs": {
         "Backing material": "Saturated Crepe Paper / Ultra-Thin Washi",
         "Adhesive type": "Natural Rubber Solvent",
@@ -4962,6 +5253,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Marine & Yacht Gelcoat Painting",
       "application": "Engineered for marine & yacht gelcoat painting applications requiring saturated crepe paper / ultra-thin washi and high performance synthetic polymer.",
+      "price": "$3.50 / roll",
       "specs": {
         "Backing material": "Saturated Crepe Paper / Ultra-Thin Washi",
         "Adhesive type": "Synthetic Polymer",
@@ -4979,6 +5271,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Architectural Trim Masking",
       "application": "Engineered for architectural trim masking applications requiring saturated crepe paper / ultra-thin washi and high performance natural rubber solvent.",
+      "price": "$2.02 / roll",
       "specs": {
         "Backing material": "Saturated Crepe Paper / Ultra-Thin Washi",
         "Adhesive type": "Natural Rubber Solvent",
@@ -4996,6 +5289,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Body Shop 2K Spray Baking",
       "application": "Engineered for automotive body shop 2k spray baking applications requiring saturated crepe paper / ultra-thin washi and high performance synthetic polymer.",
+      "price": "$2.61 / roll",
       "specs": {
         "Backing material": "Saturated Crepe Paper / Ultra-Thin Washi",
         "Adhesive type": "Synthetic Polymer",
@@ -5013,6 +5307,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Marine & Yacht Gelcoat Painting",
       "application": "Engineered for marine & yacht gelcoat painting applications requiring saturated crepe paper / ultra-thin washi and high performance natural rubber solvent.",
+      "price": "$3.58 / roll",
       "specs": {
         "Backing material": "Saturated Crepe Paper / Ultra-Thin Washi",
         "Adhesive type": "Natural Rubber Solvent",
@@ -5030,6 +5325,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Architectural Trim Masking",
       "application": "Engineered for architectural trim masking applications requiring saturated crepe paper / ultra-thin washi and high performance synthetic polymer.",
+      "price": "$1.77 / roll",
       "specs": {
         "Backing material": "Saturated Crepe Paper / Ultra-Thin Washi",
         "Adhesive type": "Synthetic Polymer",
@@ -5047,6 +5343,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Body Shop 2K Spray Baking",
       "application": "Engineered for automotive body shop 2k spray baking applications requiring saturated crepe paper / ultra-thin washi and high performance natural rubber solvent.",
+      "price": "$1.42 / roll",
       "specs": {
         "Backing material": "Saturated Crepe Paper / Ultra-Thin Washi",
         "Adhesive type": "Natural Rubber Solvent",
@@ -5064,6 +5361,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Marine & Yacht Gelcoat Painting",
       "application": "Engineered for marine & yacht gelcoat painting applications requiring saturated crepe paper / ultra-thin washi and high performance synthetic polymer.",
+      "price": "$2.54 / roll",
       "specs": {
         "Backing material": "Saturated Crepe Paper / Ultra-Thin Washi",
         "Adhesive type": "Synthetic Polymer",
@@ -5081,6 +5379,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Architectural Trim Masking",
       "application": "Engineered for architectural trim masking applications requiring saturated crepe paper / ultra-thin washi and high performance natural rubber solvent.",
+      "price": "$3.72 / roll",
       "specs": {
         "Backing material": "Saturated Crepe Paper / Ultra-Thin Washi",
         "Adhesive type": "Natural Rubber Solvent",
@@ -5098,6 +5397,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Body Shop 2K Spray Baking",
       "application": "Engineered for automotive body shop 2k spray baking applications requiring saturated crepe paper / ultra-thin washi and high performance synthetic polymer.",
+      "price": "$3.90 / roll",
       "specs": {
         "Backing material": "Saturated Crepe Paper / Ultra-Thin Washi",
         "Adhesive type": "Synthetic Polymer",
@@ -5115,6 +5415,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Tamper-Evident High Security Carton Sealing",
       "application": "Engineered for tamper-evident high security carton sealing applications requiring virgin kraft paper reinforced with cross fiberglass yarn and high performance water-activated starch animal glue.",
+      "price": "$4.03 / roll",
       "specs": {
         "Backing material": "Virgin Kraft Paper Reinforced with Cross Fiberglass Yarn",
         "Adhesive type": "Water-Activated Starch Animal Glue",
@@ -5132,6 +5433,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Export Cargo Heavy Packaging",
       "application": "Engineered for export cargo heavy packaging applications requiring virgin kraft paper reinforced with cross fiberglass yarn and high performance hot melt synthetic resin.",
+      "price": "$5.63 / roll",
       "specs": {
         "Backing material": "Virgin Kraft Paper Reinforced with Cross Fiberglass Yarn",
         "Adhesive type": "Hot Melt Synthetic Resin",
@@ -5149,6 +5451,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Eco-Friendly 100% Recyclable Packaging",
       "application": "Engineered for eco-friendly 100% recyclable packaging applications requiring virgin kraft paper reinforced with cross fiberglass yarn and high performance water-activated starch animal glue.",
+      "price": "$2.71 / roll",
       "specs": {
         "Backing material": "Virgin Kraft Paper Reinforced with Cross Fiberglass Yarn",
         "Adhesive type": "Water-Activated Starch Animal Glue",
@@ -5166,6 +5469,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Tamper-Evident High Security Carton Sealing",
       "application": "Engineered for tamper-evident high security carton sealing applications requiring virgin kraft paper reinforced with cross fiberglass yarn and high performance hot melt synthetic resin.",
+      "price": "$1.90 / roll",
       "specs": {
         "Backing material": "Virgin Kraft Paper Reinforced with Cross Fiberglass Yarn",
         "Adhesive type": "Hot Melt Synthetic Resin",
@@ -5183,6 +5487,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Export Cargo Heavy Packaging",
       "application": "Engineered for export cargo heavy packaging applications requiring virgin kraft paper reinforced with cross fiberglass yarn and high performance water-activated starch animal glue.",
+      "price": "$1.56 / roll",
       "specs": {
         "Backing material": "Virgin Kraft Paper Reinforced with Cross Fiberglass Yarn",
         "Adhesive type": "Water-Activated Starch Animal Glue",
@@ -5200,6 +5505,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Eco-Friendly 100% Recyclable Packaging",
       "application": "Engineered for eco-friendly 100% recyclable packaging applications requiring virgin kraft paper reinforced with cross fiberglass yarn and high performance hot melt synthetic resin.",
+      "price": "$4.80 / roll",
       "specs": {
         "Backing material": "Virgin Kraft Paper Reinforced with Cross Fiberglass Yarn",
         "Adhesive type": "Hot Melt Synthetic Resin",
@@ -5217,6 +5523,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Tamper-Evident High Security Carton Sealing",
       "application": "Engineered for tamper-evident high security carton sealing applications requiring virgin kraft paper reinforced with cross fiberglass yarn and high performance water-activated starch animal glue.",
+      "price": "$3.19 / roll",
       "specs": {
         "Backing material": "Virgin Kraft Paper Reinforced with Cross Fiberglass Yarn",
         "Adhesive type": "Water-Activated Starch Animal Glue",
@@ -5234,6 +5541,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Export Cargo Heavy Packaging",
       "application": "Engineered for export cargo heavy packaging applications requiring virgin kraft paper reinforced with cross fiberglass yarn and high performance hot melt synthetic resin.",
+      "price": "$5.26 / roll",
       "specs": {
         "Backing material": "Virgin Kraft Paper Reinforced with Cross Fiberglass Yarn",
         "Adhesive type": "Hot Melt Synthetic Resin",
@@ -5251,6 +5559,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Eco-Friendly 100% Recyclable Packaging",
       "application": "Engineered for eco-friendly 100% recyclable packaging applications requiring virgin kraft paper reinforced with cross fiberglass yarn and high performance water-activated starch animal glue.",
+      "price": "$5.40 / roll",
       "specs": {
         "Backing material": "Virgin Kraft Paper Reinforced with Cross Fiberglass Yarn",
         "Adhesive type": "Water-Activated Starch Animal Glue",
@@ -5268,6 +5577,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Tamper-Evident High Security Carton Sealing",
       "application": "Engineered for tamper-evident high security carton sealing applications requiring virgin kraft paper reinforced with cross fiberglass yarn and high performance hot melt synthetic resin.",
+      "price": "$3.36 / roll",
       "specs": {
         "Backing material": "Virgin Kraft Paper Reinforced with Cross Fiberglass Yarn",
         "Adhesive type": "Hot Melt Synthetic Resin",
@@ -5287,6 +5597,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Home Appliance Nameplates & Control Panels",
       "application": "Engineered for home appliance nameplates & control panels applications requiring non-woven cotton fiber tissue and high performance high cohesion solvent acrylic.",
+      "price": "$5.12 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "High Cohesion Solvent Acrylic",
@@ -5304,6 +5615,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Dashboard Vibration Damping",
       "application": "Engineered for automotive dashboard vibration damping applications requiring non-woven cotton fiber tissue and high performance flame retardant acrylic.",
+      "price": "$1.97 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "Flame Retardant Acrylic",
@@ -5321,6 +5633,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Acoustic Insulation Foam Lamination",
       "application": "Engineered for acoustic insulation foam lamination applications requiring non-woven cotton fiber tissue and high performance high cohesion solvent acrylic.",
+      "price": "$2.65 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "High Cohesion Solvent Acrylic",
@@ -5338,6 +5651,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Home Appliance Nameplates & Control Panels",
       "application": "Engineered for home appliance nameplates & control panels applications requiring non-woven cotton fiber tissue and high performance flame retardant acrylic.",
+      "price": "$2.09 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "Flame Retardant Acrylic",
@@ -5355,6 +5669,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Dashboard Vibration Damping",
       "application": "Engineered for automotive dashboard vibration damping applications requiring non-woven cotton fiber tissue and high performance high cohesion solvent acrylic.",
+      "price": "$2.53 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "High Cohesion Solvent Acrylic",
@@ -5372,6 +5687,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Acoustic Insulation Foam Lamination",
       "application": "Engineered for acoustic insulation foam lamination applications requiring non-woven cotton fiber tissue and high performance flame retardant acrylic.",
+      "price": "$3.12 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "Flame Retardant Acrylic",
@@ -5389,6 +5705,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Home Appliance Nameplates & Control Panels",
       "application": "Engineered for home appliance nameplates & control panels applications requiring non-woven cotton fiber tissue and high performance high cohesion solvent acrylic.",
+      "price": "$3.52 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "High Cohesion Solvent Acrylic",
@@ -5406,6 +5723,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Dashboard Vibration Damping",
       "application": "Engineered for automotive dashboard vibration damping applications requiring non-woven cotton fiber tissue and high performance flame retardant acrylic.",
+      "price": "$1.52 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "Flame Retardant Acrylic",
@@ -5423,6 +5741,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Acoustic Insulation Foam Lamination",
       "application": "Engineered for acoustic insulation foam lamination applications requiring non-woven cotton fiber tissue and high performance high cohesion solvent acrylic.",
+      "price": "$5.31 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "High Cohesion Solvent Acrylic",
@@ -5440,6 +5759,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Home Appliance Nameplates & Control Panels",
       "application": "Engineered for home appliance nameplates & control panels applications requiring non-woven cotton fiber tissue and high performance flame retardant acrylic.",
+      "price": "$2.20 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "Flame Retardant Acrylic",
@@ -5457,6 +5777,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Dashboard Vibration Damping",
       "application": "Engineered for automotive dashboard vibration damping applications requiring non-woven cotton fiber tissue and high performance high cohesion solvent acrylic.",
+      "price": "$4.54 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "High Cohesion Solvent Acrylic",
@@ -5474,6 +5795,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Acoustic Insulation Foam Lamination",
       "application": "Engineered for acoustic insulation foam lamination applications requiring non-woven cotton fiber tissue and high performance flame retardant acrylic.",
+      "price": "$4.43 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "Flame Retardant Acrylic",
@@ -5491,6 +5813,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Home Appliance Nameplates & Control Panels",
       "application": "Engineered for home appliance nameplates & control panels applications requiring non-woven cotton fiber tissue and high performance high cohesion solvent acrylic.",
+      "price": "$1.45 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "High Cohesion Solvent Acrylic",
@@ -5508,6 +5831,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Dashboard Vibration Damping",
       "application": "Engineered for automotive dashboard vibration damping applications requiring non-woven cotton fiber tissue and high performance flame retardant acrylic.",
+      "price": "$4.32 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "Flame Retardant Acrylic",
@@ -5525,6 +5849,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Acoustic Insulation Foam Lamination",
       "application": "Engineered for acoustic insulation foam lamination applications requiring non-woven cotton fiber tissue and high performance high cohesion solvent acrylic.",
+      "price": "$4.39 / roll",
       "specs": {
         "Backing material": "Non-Woven Cotton Fiber Tissue",
         "Adhesive type": "High Cohesion Solvent Acrylic",
@@ -5542,6 +5867,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Flexographic Printing Plate Mounting",
       "application": "Engineered for flexographic printing plate mounting applications requiring clear polyester (pet) carrier film and high performance modified solvent acrylic (high shear).",
+      "price": "$2.57 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Modified Solvent Acrylic (High Shear)",
@@ -5559,6 +5885,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronic Battery Wrap & Enclosure Attachment",
       "application": "Engineered for electronic battery wrap & enclosure attachment applications requiring clear polyester (pet) carrier film and high performance removable clean release silicone.",
+      "price": "$2.85 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Removable Clean Release Silicone",
@@ -5576,6 +5903,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Plastic Extrusion Profile Mounting",
       "application": "Engineered for plastic extrusion profile mounting applications requiring clear polyester (pet) carrier film and high performance modified solvent acrylic (high shear).",
+      "price": "$3.47 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Modified Solvent Acrylic (High Shear)",
@@ -5593,6 +5921,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Flexographic Printing Plate Mounting",
       "application": "Engineered for flexographic printing plate mounting applications requiring clear polyester (pet) carrier film and high performance removable clean release silicone.",
+      "price": "$3.95 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Removable Clean Release Silicone",
@@ -5610,6 +5939,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronic Battery Wrap & Enclosure Attachment",
       "application": "Engineered for electronic battery wrap & enclosure attachment applications requiring clear polyester (pet) carrier film and high performance modified solvent acrylic (high shear).",
+      "price": "$1.96 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Modified Solvent Acrylic (High Shear)",
@@ -5627,6 +5957,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Plastic Extrusion Profile Mounting",
       "application": "Engineered for plastic extrusion profile mounting applications requiring clear polyester (pet) carrier film and high performance removable clean release silicone.",
+      "price": "$2.49 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Removable Clean Release Silicone",
@@ -5644,6 +5975,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Flexographic Printing Plate Mounting",
       "application": "Engineered for flexographic printing plate mounting applications requiring clear polyester (pet) carrier film and high performance modified solvent acrylic (high shear).",
+      "price": "$2.06 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Modified Solvent Acrylic (High Shear)",
@@ -5661,6 +5993,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronic Battery Wrap & Enclosure Attachment",
       "application": "Engineered for electronic battery wrap & enclosure attachment applications requiring clear polyester (pet) carrier film and high performance removable clean release silicone.",
+      "price": "$5.64 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Removable Clean Release Silicone",
@@ -5678,6 +6011,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Plastic Extrusion Profile Mounting",
       "application": "Engineered for plastic extrusion profile mounting applications requiring clear polyester (pet) carrier film and high performance modified solvent acrylic (high shear).",
+      "price": "$2.85 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Modified Solvent Acrylic (High Shear)",
@@ -5695,6 +6029,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Flexographic Printing Plate Mounting",
       "application": "Engineered for flexographic printing plate mounting applications requiring clear polyester (pet) carrier film and high performance removable clean release silicone.",
+      "price": "$4.73 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Removable Clean Release Silicone",
@@ -5712,6 +6047,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronic Battery Wrap & Enclosure Attachment",
       "application": "Engineered for electronic battery wrap & enclosure attachment applications requiring clear polyester (pet) carrier film and high performance modified solvent acrylic (high shear).",
+      "price": "$1.34 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Modified Solvent Acrylic (High Shear)",
@@ -5729,6 +6065,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Plastic Extrusion Profile Mounting",
       "application": "Engineered for plastic extrusion profile mounting applications requiring clear polyester (pet) carrier film and high performance removable clean release silicone.",
+      "price": "$2.98 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Removable Clean Release Silicone",
@@ -5746,6 +6083,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Flexographic Printing Plate Mounting",
       "application": "Engineered for flexographic printing plate mounting applications requiring clear polyester (pet) carrier film and high performance modified solvent acrylic (high shear).",
+      "price": "$3.26 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Modified Solvent Acrylic (High Shear)",
@@ -5763,6 +6101,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronic Battery Wrap & Enclosure Attachment",
       "application": "Engineered for electronic battery wrap & enclosure attachment applications requiring clear polyester (pet) carrier film and high performance removable clean release silicone.",
+      "price": "$3.65 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Removable Clean Release Silicone",
@@ -5780,6 +6119,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Plastic Extrusion Profile Mounting",
       "application": "Engineered for plastic extrusion profile mounting applications requiring clear polyester (pet) carrier film and high performance modified solvent acrylic (high shear).",
+      "price": "$4.47 / roll",
       "specs": {
         "Backing material": "Clear Polyester (PET) Carrier Film",
         "Adhesive type": "Modified Solvent Acrylic (High Shear)",
@@ -5797,6 +6137,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Curtain Wall Structural Glazing",
       "application": "Engineered for curtain wall structural glazing applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$4.18 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -5814,6 +6155,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Roof Drip Molding",
       "application": "Engineered for automotive roof drip molding applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$3.64 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -5831,6 +6173,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar Inverter Heat Sink Fixation",
       "application": "Engineered for solar inverter heat sink fixation applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$3.56 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -5848,6 +6191,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Curtain Wall Structural Glazing",
       "application": "Engineered for curtain wall structural glazing applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$4.42 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -5865,6 +6209,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Roof Drip Molding",
       "application": "Engineered for automotive roof drip molding applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$4.21 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -5882,6 +6227,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar Inverter Heat Sink Fixation",
       "application": "Engineered for solar inverter heat sink fixation applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$3.35 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -5899,6 +6245,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Curtain Wall Structural Glazing",
       "application": "Engineered for curtain wall structural glazing applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$5.43 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -5916,6 +6263,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Roof Drip Molding",
       "application": "Engineered for automotive roof drip molding applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$3.64 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -5933,6 +6281,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar Inverter Heat Sink Fixation",
       "application": "Engineered for solar inverter heat sink fixation applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$4.38 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -5950,6 +6299,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Curtain Wall Structural Glazing",
       "application": "Engineered for curtain wall structural glazing applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$1.90 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -5967,6 +6317,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Roof Drip Molding",
       "application": "Engineered for automotive roof drip molding applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$5.59 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -5984,6 +6335,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar Inverter Heat Sink Fixation",
       "application": "Engineered for solar inverter heat sink fixation applications requiring viscoelastic closed-cell acrylic foam and high performance ultra-high tack pure acrylic.",
+      "price": "$1.60 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "Ultra-High Tack Pure Acrylic",
@@ -6001,6 +6353,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Precision Die-Cutting & Rotary Processing",
       "application": "Engineered for precision die-cutting & rotary processing applications requiring fluorosilicone coated pet / glassine liner and high performance unsupported high temperature acrylic film.",
+      "price": "$1.38 / roll",
       "specs": {
         "Backing material": "Fluorosilicone Coated PET / Glassine Liner",
         "Adhesive type": "Unsupported High Temperature Acrylic Film",
@@ -6018,6 +6371,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Optical Display OCA Backing",
       "application": "Engineered for optical display oca backing applications requiring fluorosilicone coated pet / glassine liner and high performance unsupported high temperature acrylic film.",
+      "price": "$4.18 / roll",
       "specs": {
         "Backing material": "Fluorosilicone Coated PET / Glassine Liner",
         "Adhesive type": "Unsupported High Temperature Acrylic Film",
@@ -6035,6 +6389,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Medical Patch Manufacturing",
       "application": "Engineered for medical patch manufacturing applications requiring fluorosilicone coated pet / glassine liner and high performance unsupported high temperature acrylic film.",
+      "price": "$4.61 / roll",
       "specs": {
         "Backing material": "Fluorosilicone Coated PET / Glassine Liner",
         "Adhesive type": "Unsupported High Temperature Acrylic Film",
@@ -6052,6 +6407,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Precision Die-Cutting & Rotary Processing",
       "application": "Engineered for precision die-cutting & rotary processing applications requiring fluorosilicone coated pet / glassine liner and high performance unsupported high temperature acrylic film.",
+      "price": "$3.77 / roll",
       "specs": {
         "Backing material": "Fluorosilicone Coated PET / Glassine Liner",
         "Adhesive type": "Unsupported High Temperature Acrylic Film",
@@ -6069,6 +6425,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Optical Display OCA Backing",
       "application": "Engineered for optical display oca backing applications requiring fluorosilicone coated pet / glassine liner and high performance unsupported high temperature acrylic film.",
+      "price": "$1.30 / roll",
       "specs": {
         "Backing material": "Fluorosilicone Coated PET / Glassine Liner",
         "Adhesive type": "Unsupported High Temperature Acrylic Film",
@@ -6086,6 +6443,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Medical Patch Manufacturing",
       "application": "Engineered for medical patch manufacturing applications requiring fluorosilicone coated pet / glassine liner and high performance unsupported high temperature acrylic film.",
+      "price": "$1.73 / roll",
       "specs": {
         "Backing material": "Fluorosilicone Coated PET / Glassine Liner",
         "Adhesive type": "Unsupported High Temperature Acrylic Film",
@@ -6103,6 +6461,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Precision Die-Cutting & Rotary Processing",
       "application": "Engineered for precision die-cutting & rotary processing applications requiring fluorosilicone coated pet / glassine liner and high performance unsupported high temperature acrylic film.",
+      "price": "$3.90 / roll",
       "specs": {
         "Backing material": "Fluorosilicone Coated PET / Glassine Liner",
         "Adhesive type": "Unsupported High Temperature Acrylic Film",
@@ -6120,6 +6479,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Optical Display OCA Backing",
       "application": "Engineered for optical display oca backing applications requiring fluorosilicone coated pet / glassine liner and high performance unsupported high temperature acrylic film.",
+      "price": "$4.56 / roll",
       "specs": {
         "Backing material": "Fluorosilicone Coated PET / Glassine Liner",
         "Adhesive type": "Unsupported High Temperature Acrylic Film",
@@ -6139,6 +6499,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Lithium Battery Thermal Runaway Barrier",
       "application": "Engineered for ev lithium battery thermal runaway barrier applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance flame retardant silicone.",
+      "price": "$3.11 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "Flame Retardant Silicone",
@@ -6156,6 +6517,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Flagship Smartphone Processor Heat Blocker",
       "application": "Engineered for flagship smartphone processor heat blocker applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance high temp acrylic.",
+      "price": "$2.75 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "High Temp Acrylic",
@@ -6173,6 +6535,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace Cryogenic & High Temp Shielding",
       "application": "Engineered for aerospace cryogenic & high temp shielding applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance flame retardant silicone.",
+      "price": "$5.01 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "Flame Retardant Silicone",
@@ -6190,6 +6553,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Lithium Battery Thermal Runaway Barrier",
       "application": "Engineered for ev lithium battery thermal runaway barrier applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance high temp acrylic.",
+      "price": "$3.12 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "High Temp Acrylic",
@@ -6207,6 +6571,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Flagship Smartphone Processor Heat Blocker",
       "application": "Engineered for flagship smartphone processor heat blocker applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance flame retardant silicone.",
+      "price": "$4.34 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "Flame Retardant Silicone",
@@ -6224,6 +6589,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace Cryogenic & High Temp Shielding",
       "application": "Engineered for aerospace cryogenic & high temp shielding applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance high temp acrylic.",
+      "price": "$2.49 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "High Temp Acrylic",
@@ -6241,6 +6607,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Lithium Battery Thermal Runaway Barrier",
       "application": "Engineered for ev lithium battery thermal runaway barrier applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance flame retardant silicone.",
+      "price": "$3.83 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "Flame Retardant Silicone",
@@ -6258,6 +6625,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Flagship Smartphone Processor Heat Blocker",
       "application": "Engineered for flagship smartphone processor heat blocker applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance high temp acrylic.",
+      "price": "$4.09 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "High Temp Acrylic",
@@ -6275,6 +6643,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace Cryogenic & High Temp Shielding",
       "application": "Engineered for aerospace cryogenic & high temp shielding applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance flame retardant silicone.",
+      "price": "$2.61 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "Flame Retardant Silicone",
@@ -6292,6 +6661,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "EV Lithium Battery Thermal Runaway Barrier",
       "application": "Engineered for ev lithium battery thermal runaway barrier applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance high temp acrylic.",
+      "price": "$5.47 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "High Temp Acrylic",
@@ -6309,6 +6679,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Flagship Smartphone Processor Heat Blocker",
       "application": "Engineered for flagship smartphone processor heat blocker applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance flame retardant silicone.",
+      "price": "$1.23 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "Flame Retardant Silicone",
@@ -6326,6 +6697,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace Cryogenic & High Temp Shielding",
       "application": "Engineered for aerospace cryogenic & high temp shielding applications requiring nanoporous silica aerogel composite with polyimide / pet carrier and high performance high temp acrylic.",
+      "price": "$4.80 / roll",
       "specs": {
         "Backing material": "Nanoporous Silica Aerogel Composite with Polyimide / PET Carrier",
         "Adhesive type": "High Temp Acrylic",
@@ -6343,6 +6715,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Silicon Wafer Precision Dicing",
       "application": "Engineered for silicon wafer precision dicing applications requiring high purity po (polyolefin) / pvc film and high performance uv-curable acrylic (switchable adhesion).",
+      "price": "$4.95 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "UV-Curable Acrylic (Switchable Adhesion)",
@@ -6360,6 +6733,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Semiconductor QFN/BGA Packaging",
       "application": "Engineered for semiconductor qfn/bga packaging applications requiring high purity po (polyolefin) / pvc film and high performance static tackless acrylic.",
+      "price": "$2.19 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "Static Tackless Acrylic",
@@ -6377,6 +6751,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Ceramic & Glass Laser Cutting",
       "application": "Engineered for ceramic & glass laser cutting applications requiring high purity po (polyolefin) / pvc film and high performance uv-curable acrylic (switchable adhesion).",
+      "price": "$3.53 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "UV-Curable Acrylic (Switchable Adhesion)",
@@ -6394,6 +6769,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Silicon Wafer Precision Dicing",
       "application": "Engineered for silicon wafer precision dicing applications requiring high purity po (polyolefin) / pvc film and high performance static tackless acrylic.",
+      "price": "$4.62 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "Static Tackless Acrylic",
@@ -6411,6 +6787,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Semiconductor QFN/BGA Packaging",
       "application": "Engineered for semiconductor qfn/bga packaging applications requiring high purity po (polyolefin) / pvc film and high performance uv-curable acrylic (switchable adhesion).",
+      "price": "$4.85 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "UV-Curable Acrylic (Switchable Adhesion)",
@@ -6428,6 +6805,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Ceramic & Glass Laser Cutting",
       "application": "Engineered for ceramic & glass laser cutting applications requiring high purity po (polyolefin) / pvc film and high performance static tackless acrylic.",
+      "price": "$1.24 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "Static Tackless Acrylic",
@@ -6445,6 +6823,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Silicon Wafer Precision Dicing",
       "application": "Engineered for silicon wafer precision dicing applications requiring high purity po (polyolefin) / pvc film and high performance uv-curable acrylic (switchable adhesion).",
+      "price": "$1.36 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "UV-Curable Acrylic (Switchable Adhesion)",
@@ -6462,6 +6841,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Semiconductor QFN/BGA Packaging",
       "application": "Engineered for semiconductor qfn/bga packaging applications requiring high purity po (polyolefin) / pvc film and high performance static tackless acrylic.",
+      "price": "$5.57 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "Static Tackless Acrylic",
@@ -6479,6 +6859,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Ceramic & Glass Laser Cutting",
       "application": "Engineered for ceramic & glass laser cutting applications requiring high purity po (polyolefin) / pvc film and high performance uv-curable acrylic (switchable adhesion).",
+      "price": "$4.69 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "UV-Curable Acrylic (Switchable Adhesion)",
@@ -6496,6 +6877,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Silicon Wafer Precision Dicing",
       "application": "Engineered for silicon wafer precision dicing applications requiring high purity po (polyolefin) / pvc film and high performance static tackless acrylic.",
+      "price": "$2.82 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "Static Tackless Acrylic",
@@ -6513,6 +6895,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Semiconductor QFN/BGA Packaging",
       "application": "Engineered for semiconductor qfn/bga packaging applications requiring high purity po (polyolefin) / pvc film and high performance uv-curable acrylic (switchable adhesion).",
+      "price": "$5.55 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "UV-Curable Acrylic (Switchable Adhesion)",
@@ -6530,6 +6913,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Ceramic & Glass Laser Cutting",
       "application": "Engineered for ceramic & glass laser cutting applications requiring high purity po (polyolefin) / pvc film and high performance static tackless acrylic.",
+      "price": "$2.82 / roll",
       "specs": {
         "Backing material": "High Purity PO (Polyolefin) / PVC Film",
         "Adhesive type": "Static Tackless Acrylic",
@@ -6547,6 +6931,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Camera Sensor OIS Shock Cushioning",
       "application": "Engineered for camera sensor ois shock cushioning applications requiring microcellular polyurethane (pu) foam and high performance reinforced double sided pet film acrylic.",
+      "price": "$1.25 / roll",
       "specs": {
         "Backing material": "Microcellular Polyurethane (PU) Foam",
         "Adhesive type": "Reinforced Double Sided PET Film Acrylic",
@@ -6564,6 +6949,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Foldable Phone Hinge Damping",
       "application": "Engineered for foldable phone hinge damping applications requiring microcellular polyurethane (pu) foam and high performance reinforced double sided pet film acrylic.",
+      "price": "$1.55 / roll",
       "specs": {
         "Backing material": "Microcellular Polyurethane (PU) Foam",
         "Adhesive type": "Reinforced Double Sided PET Film Acrylic",
@@ -6581,6 +6967,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smart Watch Touch Sensor Backing",
       "application": "Engineered for smart watch touch sensor backing applications requiring microcellular polyurethane (pu) foam and high performance reinforced double sided pet film acrylic.",
+      "price": "$4.43 / roll",
       "specs": {
         "Backing material": "Microcellular Polyurethane (PU) Foam",
         "Adhesive type": "Reinforced Double Sided PET Film Acrylic",
@@ -6598,6 +6985,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Camera Sensor OIS Shock Cushioning",
       "application": "Engineered for camera sensor ois shock cushioning applications requiring microcellular polyurethane (pu) foam and high performance reinforced double sided pet film acrylic.",
+      "price": "$3.84 / roll",
       "specs": {
         "Backing material": "Microcellular Polyurethane (PU) Foam",
         "Adhesive type": "Reinforced Double Sided PET Film Acrylic",
@@ -6615,6 +7003,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Foldable Phone Hinge Damping",
       "application": "Engineered for foldable phone hinge damping applications requiring microcellular polyurethane (pu) foam and high performance reinforced double sided pet film acrylic.",
+      "price": "$1.98 / roll",
       "specs": {
         "Backing material": "Microcellular Polyurethane (PU) Foam",
         "Adhesive type": "Reinforced Double Sided PET Film Acrylic",
@@ -6632,6 +7021,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smart Watch Touch Sensor Backing",
       "application": "Engineered for smart watch touch sensor backing applications requiring microcellular polyurethane (pu) foam and high performance reinforced double sided pet film acrylic.",
+      "price": "$2.28 / roll",
       "specs": {
         "Backing material": "Microcellular Polyurethane (PU) Foam",
         "Adhesive type": "Reinforced Double Sided PET Film Acrylic",
@@ -6649,6 +7039,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Camera Sensor OIS Shock Cushioning",
       "application": "Engineered for camera sensor ois shock cushioning applications requiring microcellular polyurethane (pu) foam and high performance reinforced double sided pet film acrylic.",
+      "price": "$4.18 / roll",
       "specs": {
         "Backing material": "Microcellular Polyurethane (PU) Foam",
         "Adhesive type": "Reinforced Double Sided PET Film Acrylic",
@@ -6666,6 +7057,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Foldable Phone Hinge Damping",
       "application": "Engineered for foldable phone hinge damping applications requiring microcellular polyurethane (pu) foam and high performance reinforced double sided pet film acrylic.",
+      "price": "$5.60 / roll",
       "specs": {
         "Backing material": "Microcellular Polyurethane (PU) Foam",
         "Adhesive type": "Reinforced Double Sided PET Film Acrylic",
@@ -6683,6 +7075,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Smart Watch Touch Sensor Backing",
       "application": "Engineered for smart watch touch sensor backing applications requiring microcellular polyurethane (pu) foam and high performance reinforced double sided pet film acrylic.",
+      "price": "$3.23 / roll",
       "specs": {
         "Backing material": "Microcellular Polyurethane (PU) Foam",
         "Adhesive type": "Reinforced Double Sided PET Film Acrylic",
@@ -6700,6 +7093,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Camera Sensor OIS Shock Cushioning",
       "application": "Engineered for camera sensor ois shock cushioning applications requiring microcellular polyurethane (pu) foam and high performance reinforced double sided pet film acrylic.",
+      "price": "$1.21 / roll",
       "specs": {
         "Backing material": "Microcellular Polyurethane (PU) Foam",
         "Adhesive type": "Reinforced Double Sided PET Film Acrylic",
@@ -6717,6 +7111,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Foldable Phone Hinge Damping",
       "application": "Engineered for foldable phone hinge damping applications requiring microcellular polyurethane (pu) foam and high performance reinforced double sided pet film acrylic.",
+      "price": "$4.86 / roll",
       "specs": {
         "Backing material": "Microcellular Polyurethane (PU) Foam",
         "Adhesive type": "Reinforced Double Sided PET Film Acrylic",
@@ -6734,6 +7129,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Server CPU / GPU Cold Plates",
       "application": "Engineered for server cpu / gpu cold plates applications requiring wax/polymer phase change matrix with aluminum carrier and high performance inherent thermal tack (phase change at 52°c).",
+      "price": "$2.90 / roll",
       "specs": {
         "Backing material": "Wax/Polymer Phase Change Matrix with Aluminum Carrier",
         "Adhesive type": "Inherent Thermal Tack (Phase Change at 52°C)",
@@ -6751,6 +7147,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Radar Modules",
       "application": "Engineered for automotive radar modules applications requiring wax/polymer phase change matrix with aluminum carrier and high performance inherent thermal tack (phase change at 52°c).",
+      "price": "$1.89 / roll",
       "specs": {
         "Backing material": "Wax/Polymer Phase Change Matrix with Aluminum Carrier",
         "Adhesive type": "Inherent Thermal Tack (Phase Change at 52°C)",
@@ -6768,6 +7165,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "5G Telecom Active Antennas (AAU)",
       "application": "Engineered for 5g telecom active antennas (aau) applications requiring wax/polymer phase change matrix with aluminum carrier and high performance inherent thermal tack (phase change at 52°c).",
+      "price": "$2.47 / roll",
       "specs": {
         "Backing material": "Wax/Polymer Phase Change Matrix with Aluminum Carrier",
         "Adhesive type": "Inherent Thermal Tack (Phase Change at 52°C)",
@@ -6785,6 +7183,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Server CPU / GPU Cold Plates",
       "application": "Engineered for server cpu / gpu cold plates applications requiring wax/polymer phase change matrix with aluminum carrier and high performance inherent thermal tack (phase change at 52°c).",
+      "price": "$4.95 / roll",
       "specs": {
         "Backing material": "Wax/Polymer Phase Change Matrix with Aluminum Carrier",
         "Adhesive type": "Inherent Thermal Tack (Phase Change at 52°C)",
@@ -6802,6 +7201,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Radar Modules",
       "application": "Engineered for automotive radar modules applications requiring wax/polymer phase change matrix with aluminum carrier and high performance inherent thermal tack (phase change at 52°c).",
+      "price": "$4.67 / roll",
       "specs": {
         "Backing material": "Wax/Polymer Phase Change Matrix with Aluminum Carrier",
         "Adhesive type": "Inherent Thermal Tack (Phase Change at 52°C)",
@@ -6819,6 +7219,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "5G Telecom Active Antennas (AAU)",
       "application": "Engineered for 5g telecom active antennas (aau) applications requiring wax/polymer phase change matrix with aluminum carrier and high performance inherent thermal tack (phase change at 52°c).",
+      "price": "$3.60 / roll",
       "specs": {
         "Backing material": "Wax/Polymer Phase Change Matrix with Aluminum Carrier",
         "Adhesive type": "Inherent Thermal Tack (Phase Change at 52°C)",
@@ -6836,6 +7237,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Server CPU / GPU Cold Plates",
       "application": "Engineered for server cpu / gpu cold plates applications requiring wax/polymer phase change matrix with aluminum carrier and high performance inherent thermal tack (phase change at 52°c).",
+      "price": "$1.28 / roll",
       "specs": {
         "Backing material": "Wax/Polymer Phase Change Matrix with Aluminum Carrier",
         "Adhesive type": "Inherent Thermal Tack (Phase Change at 52°C)",
@@ -6853,6 +7255,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Radar Modules",
       "application": "Engineered for automotive radar modules applications requiring wax/polymer phase change matrix with aluminum carrier and high performance inherent thermal tack (phase change at 52°c).",
+      "price": "$3.38 / roll",
       "specs": {
         "Backing material": "Wax/Polymer Phase Change Matrix with Aluminum Carrier",
         "Adhesive type": "Inherent Thermal Tack (Phase Change at 52°C)",
@@ -6870,6 +7273,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "5G Telecom Active Antennas (AAU)",
       "application": "Engineered for 5g telecom active antennas (aau) applications requiring wax/polymer phase change matrix with aluminum carrier and high performance inherent thermal tack (phase change at 52°c).",
+      "price": "$2.16 / roll",
       "specs": {
         "Backing material": "Wax/Polymer Phase Change Matrix with Aluminum Carrier",
         "Adhesive type": "Inherent Thermal Tack (Phase Change at 52°C)",
@@ -6887,6 +7291,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Server CPU / GPU Cold Plates",
       "application": "Engineered for server cpu / gpu cold plates applications requiring wax/polymer phase change matrix with aluminum carrier and high performance inherent thermal tack (phase change at 52°c).",
+      "price": "$4.23 / roll",
       "specs": {
         "Backing material": "Wax/Polymer Phase Change Matrix with Aluminum Carrier",
         "Adhesive type": "Inherent Thermal Tack (Phase Change at 52°C)",
@@ -6906,6 +7311,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Cockpit Wire Harnessing",
       "application": "Engineered for automotive cockpit wire harnessing applications requiring polyester fleece / pet non-woven cloth and high performance synthetic rubber (low voc, low odor).",
+      "price": "$4.87 / roll",
       "specs": {
         "Backing material": "Polyester Fleece / PET Non-Woven Cloth",
         "Adhesive type": "Synthetic Rubber (Low VOC, Low Odor)",
@@ -6923,6 +7329,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Engine Compartment Abrasion Wrapping",
       "application": "Engineered for engine compartment abrasion wrapping applications requiring polyester fleece / pet non-woven cloth and high performance acrylic.",
+      "price": "$2.29 / roll",
       "specs": {
         "Backing material": "Polyester Fleece / PET Non-Woven Cloth",
         "Adhesive type": "Acrylic",
@@ -6940,6 +7347,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Noise Dampening (Class C / D Sound Level)",
       "application": "Engineered for noise dampening (class c / d sound level) applications requiring polyester fleece / pet non-woven cloth and high performance synthetic rubber (low voc, low odor).",
+      "price": "$3.03 / roll",
       "specs": {
         "Backing material": "Polyester Fleece / PET Non-Woven Cloth",
         "Adhesive type": "Synthetic Rubber (Low VOC, Low Odor)",
@@ -6957,6 +7365,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Cockpit Wire Harnessing",
       "application": "Engineered for automotive cockpit wire harnessing applications requiring polyester fleece / pet non-woven cloth and high performance acrylic.",
+      "price": "$2.60 / roll",
       "specs": {
         "Backing material": "Polyester Fleece / PET Non-Woven Cloth",
         "Adhesive type": "Acrylic",
@@ -6974,6 +7383,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Engine Compartment Abrasion Wrapping",
       "application": "Engineered for engine compartment abrasion wrapping applications requiring polyester fleece / pet non-woven cloth and high performance synthetic rubber (low voc, low odor).",
+      "price": "$1.82 / roll",
       "specs": {
         "Backing material": "Polyester Fleece / PET Non-Woven Cloth",
         "Adhesive type": "Synthetic Rubber (Low VOC, Low Odor)",
@@ -6991,6 +7401,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Noise Dampening (Class C / D Sound Level)",
       "application": "Engineered for noise dampening (class c / d sound level) applications requiring polyester fleece / pet non-woven cloth and high performance acrylic.",
+      "price": "$3.33 / roll",
       "specs": {
         "Backing material": "Polyester Fleece / PET Non-Woven Cloth",
         "Adhesive type": "Acrylic",
@@ -7008,6 +7419,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Cockpit Wire Harnessing",
       "application": "Engineered for automotive cockpit wire harnessing applications requiring polyester fleece / pet non-woven cloth and high performance synthetic rubber (low voc, low odor).",
+      "price": "$5.56 / roll",
       "specs": {
         "Backing material": "Polyester Fleece / PET Non-Woven Cloth",
         "Adhesive type": "Synthetic Rubber (Low VOC, Low Odor)",
@@ -7025,6 +7437,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Engine Compartment Abrasion Wrapping",
       "application": "Engineered for engine compartment abrasion wrapping applications requiring polyester fleece / pet non-woven cloth and high performance acrylic.",
+      "price": "$2.74 / roll",
       "specs": {
         "Backing material": "Polyester Fleece / PET Non-Woven Cloth",
         "Adhesive type": "Acrylic",
@@ -7042,6 +7455,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Noise Dampening (Class C / D Sound Level)",
       "application": "Engineered for noise dampening (class c / d sound level) applications requiring polyester fleece / pet non-woven cloth and high performance synthetic rubber (low voc, low odor).",
+      "price": "$1.42 / roll",
       "specs": {
         "Backing material": "Polyester Fleece / PET Non-Woven Cloth",
         "Adhesive type": "Synthetic Rubber (Low VOC, Low Odor)",
@@ -7059,6 +7473,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Cockpit Wire Harnessing",
       "application": "Engineered for automotive cockpit wire harnessing applications requiring polyester fleece / pet non-woven cloth and high performance acrylic.",
+      "price": "$2.45 / roll",
       "specs": {
         "Backing material": "Polyester Fleece / PET Non-Woven Cloth",
         "Adhesive type": "Acrylic",
@@ -7076,6 +7491,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Chassis Cable Routing",
       "application": "Engineered for automotive chassis cable routing applications requiring lead-free flame retardant plasticized pvc and high performance cross-linked rubber resin.",
+      "price": "$1.86 / roll",
       "specs": {
         "Backing material": "Lead-Free Flame Retardant Plasticized PVC",
         "Adhesive type": "Cross-Linked Rubber Resin",
@@ -7093,6 +7509,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Commercial Vehicle Harnessing",
       "application": "Engineered for heavy commercial vehicle harnessing applications requiring lead-free flame retardant plasticized pvc and high performance cross-linked rubber resin.",
+      "price": "$1.70 / roll",
       "specs": {
         "Backing material": "Lead-Free Flame Retardant Plasticized PVC",
         "Adhesive type": "Cross-Linked Rubber Resin",
@@ -7110,6 +7527,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Switchgear Control Wiring",
       "application": "Engineered for switchgear control wiring applications requiring lead-free flame retardant plasticized pvc and high performance cross-linked rubber resin.",
+      "price": "$4.34 / roll",
       "specs": {
         "Backing material": "Lead-Free Flame Retardant Plasticized PVC",
         "Adhesive type": "Cross-Linked Rubber Resin",
@@ -7127,6 +7545,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Chassis Cable Routing",
       "application": "Engineered for automotive chassis cable routing applications requiring lead-free flame retardant plasticized pvc and high performance cross-linked rubber resin.",
+      "price": "$5.33 / roll",
       "specs": {
         "Backing material": "Lead-Free Flame Retardant Plasticized PVC",
         "Adhesive type": "Cross-Linked Rubber Resin",
@@ -7144,6 +7563,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Commercial Vehicle Harnessing",
       "application": "Engineered for heavy commercial vehicle harnessing applications requiring lead-free flame retardant plasticized pvc and high performance cross-linked rubber resin.",
+      "price": "$2.00 / roll",
       "specs": {
         "Backing material": "Lead-Free Flame Retardant Plasticized PVC",
         "Adhesive type": "Cross-Linked Rubber Resin",
@@ -7161,6 +7581,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Switchgear Control Wiring",
       "application": "Engineered for switchgear control wiring applications requiring lead-free flame retardant plasticized pvc and high performance cross-linked rubber resin.",
+      "price": "$2.91 / roll",
       "specs": {
         "Backing material": "Lead-Free Flame Retardant Plasticized PVC",
         "Adhesive type": "Cross-Linked Rubber Resin",
@@ -7178,6 +7599,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Chassis Cable Routing",
       "application": "Engineered for automotive chassis cable routing applications requiring lead-free flame retardant plasticized pvc and high performance cross-linked rubber resin.",
+      "price": "$3.80 / roll",
       "specs": {
         "Backing material": "Lead-Free Flame Retardant Plasticized PVC",
         "Adhesive type": "Cross-Linked Rubber Resin",
@@ -7195,6 +7617,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Commercial Vehicle Harnessing",
       "application": "Engineered for heavy commercial vehicle harnessing applications requiring lead-free flame retardant plasticized pvc and high performance cross-linked rubber resin.",
+      "price": "$2.33 / roll",
       "specs": {
         "Backing material": "Lead-Free Flame Retardant Plasticized PVC",
         "Adhesive type": "Cross-Linked Rubber Resin",
@@ -7212,6 +7635,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Switchgear Control Wiring",
       "application": "Engineered for switchgear control wiring applications requiring lead-free flame retardant plasticized pvc and high performance cross-linked rubber resin.",
+      "price": "$3.50 / roll",
       "specs": {
         "Backing material": "Lead-Free Flame Retardant Plasticized PVC",
         "Adhesive type": "Cross-Linked Rubber Resin",
@@ -7229,6 +7653,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Chassis Cable Routing",
       "application": "Engineered for automotive chassis cable routing applications requiring lead-free flame retardant plasticized pvc and high performance cross-linked rubber resin.",
+      "price": "$3.42 / roll",
       "specs": {
         "Backing material": "Lead-Free Flame Retardant Plasticized PVC",
         "Adhesive type": "Cross-Linked Rubber Resin",
@@ -7246,6 +7671,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Turbocharger & Exhaust Pipe Shielding",
       "application": "Engineered for automotive turbocharger & exhaust pipe shielding applications requiring reflective aluminum foil laminated to e-glass woven fabric and high performance flame retardant high temp acrylic.",
+      "price": "$1.52 / roll",
       "specs": {
         "Backing material": "Reflective Aluminum Foil Laminated to E-Glass Woven Fabric",
         "Adhesive type": "Flame Retardant High Temp Acrylic",
@@ -7263,6 +7689,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace Firewall Cable Harnesses",
       "application": "Engineered for aerospace firewall cable harnesses applications requiring reflective aluminum foil laminated to e-glass woven fabric and high performance silicone.",
+      "price": "$3.13 / roll",
       "specs": {
         "Backing material": "Reflective Aluminum Foil Laminated to E-Glass Woven Fabric",
         "Adhesive type": "Silicone",
@@ -7280,6 +7707,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Furnace Wiring Protection",
       "application": "Engineered for industrial furnace wiring protection applications requiring reflective aluminum foil laminated to e-glass woven fabric and high performance flame retardant high temp acrylic.",
+      "price": "$1.34 / roll",
       "specs": {
         "Backing material": "Reflective Aluminum Foil Laminated to E-Glass Woven Fabric",
         "Adhesive type": "Flame Retardant High Temp Acrylic",
@@ -7297,6 +7725,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Turbocharger & Exhaust Pipe Shielding",
       "application": "Engineered for automotive turbocharger & exhaust pipe shielding applications requiring reflective aluminum foil laminated to e-glass woven fabric and high performance silicone.",
+      "price": "$3.51 / roll",
       "specs": {
         "Backing material": "Reflective Aluminum Foil Laminated to E-Glass Woven Fabric",
         "Adhesive type": "Silicone",
@@ -7314,6 +7743,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace Firewall Cable Harnesses",
       "application": "Engineered for aerospace firewall cable harnesses applications requiring reflective aluminum foil laminated to e-glass woven fabric and high performance flame retardant high temp acrylic.",
+      "price": "$5.19 / roll",
       "specs": {
         "Backing material": "Reflective Aluminum Foil Laminated to E-Glass Woven Fabric",
         "Adhesive type": "Flame Retardant High Temp Acrylic",
@@ -7331,6 +7761,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Furnace Wiring Protection",
       "application": "Engineered for industrial furnace wiring protection applications requiring reflective aluminum foil laminated to e-glass woven fabric and high performance silicone.",
+      "price": "$2.51 / roll",
       "specs": {
         "Backing material": "Reflective Aluminum Foil Laminated to E-Glass Woven Fabric",
         "Adhesive type": "Silicone",
@@ -7348,6 +7779,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Turbocharger & Exhaust Pipe Shielding",
       "application": "Engineered for automotive turbocharger & exhaust pipe shielding applications requiring reflective aluminum foil laminated to e-glass woven fabric and high performance flame retardant high temp acrylic.",
+      "price": "$3.24 / roll",
       "specs": {
         "Backing material": "Reflective Aluminum Foil Laminated to E-Glass Woven Fabric",
         "Adhesive type": "Flame Retardant High Temp Acrylic",
@@ -7365,6 +7797,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace Firewall Cable Harnesses",
       "application": "Engineered for aerospace firewall cable harnesses applications requiring reflective aluminum foil laminated to e-glass woven fabric and high performance silicone.",
+      "price": "$3.36 / roll",
       "specs": {
         "Backing material": "Reflective Aluminum Foil Laminated to E-Glass Woven Fabric",
         "Adhesive type": "Silicone",
@@ -7382,6 +7815,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Furnace Wiring Protection",
       "application": "Engineered for industrial furnace wiring protection applications requiring reflective aluminum foil laminated to e-glass woven fabric and high performance flame retardant high temp acrylic.",
+      "price": "$5.03 / roll",
       "specs": {
         "Backing material": "Reflective Aluminum Foil Laminated to E-Glass Woven Fabric",
         "Adhesive type": "Flame Retardant High Temp Acrylic",
@@ -7399,6 +7833,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Turbocharger & Exhaust Pipe Shielding",
       "application": "Engineered for automotive turbocharger & exhaust pipe shielding applications requiring reflective aluminum foil laminated to e-glass woven fabric and high performance silicone.",
+      "price": "$5.18 / roll",
       "specs": {
         "Backing material": "Reflective Aluminum Foil Laminated to E-Glass Woven Fabric",
         "Adhesive type": "Silicone",
@@ -7416,6 +7851,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Car Door Panel BSR (Buzz, Squeak, Rattle) Prevention",
       "application": "Engineered for car door panel bsr (buzz, squeak, rattle) prevention applications requiring high density needle-punched polyester felt and high performance solvent acrylic (high initial tack).",
+      "price": "$1.93 / roll",
       "specs": {
         "Backing material": "High Density Needle-Punched Polyester Felt",
         "Adhesive type": "Solvent Acrylic (High Initial Tack)",
@@ -7433,6 +7869,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC Flap Door Air Sealing",
       "application": "Engineered for hvac flap door air sealing applications requiring high density needle-punched polyester felt and high performance solvent acrylic (high initial tack).",
+      "price": "$1.98 / roll",
       "specs": {
         "Backing material": "High Density Needle-Punched Polyester Felt",
         "Adhesive type": "Solvent Acrylic (High Initial Tack)",
@@ -7450,6 +7887,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Glovebox & Center Console Damping",
       "application": "Engineered for glovebox & center console damping applications requiring high density needle-punched polyester felt and high performance solvent acrylic (high initial tack).",
+      "price": "$4.74 / roll",
       "specs": {
         "Backing material": "High Density Needle-Punched Polyester Felt",
         "Adhesive type": "Solvent Acrylic (High Initial Tack)",
@@ -7467,6 +7905,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Car Door Panel BSR (Buzz, Squeak, Rattle) Prevention",
       "application": "Engineered for car door panel bsr (buzz, squeak, rattle) prevention applications requiring high density needle-punched polyester felt and high performance solvent acrylic (high initial tack).",
+      "price": "$1.41 / roll",
       "specs": {
         "Backing material": "High Density Needle-Punched Polyester Felt",
         "Adhesive type": "Solvent Acrylic (High Initial Tack)",
@@ -7484,6 +7923,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC Flap Door Air Sealing",
       "application": "Engineered for hvac flap door air sealing applications requiring high density needle-punched polyester felt and high performance solvent acrylic (high initial tack).",
+      "price": "$1.57 / roll",
       "specs": {
         "Backing material": "High Density Needle-Punched Polyester Felt",
         "Adhesive type": "Solvent Acrylic (High Initial Tack)",
@@ -7501,6 +7941,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Glovebox & Center Console Damping",
       "application": "Engineered for glovebox & center console damping applications requiring high density needle-punched polyester felt and high performance solvent acrylic (high initial tack).",
+      "price": "$2.64 / roll",
       "specs": {
         "Backing material": "High Density Needle-Punched Polyester Felt",
         "Adhesive type": "Solvent Acrylic (High Initial Tack)",
@@ -7518,6 +7959,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Car Door Panel BSR (Buzz, Squeak, Rattle) Prevention",
       "application": "Engineered for car door panel bsr (buzz, squeak, rattle) prevention applications requiring high density needle-punched polyester felt and high performance solvent acrylic (high initial tack).",
+      "price": "$3.24 / roll",
       "specs": {
         "Backing material": "High Density Needle-Punched Polyester Felt",
         "Adhesive type": "Solvent Acrylic (High Initial Tack)",
@@ -7535,6 +7977,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC Flap Door Air Sealing",
       "application": "Engineered for hvac flap door air sealing applications requiring high density needle-punched polyester felt and high performance solvent acrylic (high initial tack).",
+      "price": "$4.04 / roll",
       "specs": {
         "Backing material": "High Density Needle-Punched Polyester Felt",
         "Adhesive type": "Solvent Acrylic (High Initial Tack)",
@@ -7552,6 +7995,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Glovebox & Center Console Damping",
       "application": "Engineered for glovebox & center console damping applications requiring high density needle-punched polyester felt and high performance solvent acrylic (high initial tack).",
+      "price": "$3.42 / roll",
       "specs": {
         "Backing material": "High Density Needle-Punched Polyester Felt",
         "Adhesive type": "Solvent Acrylic (High Initial Tack)",
@@ -7569,6 +8013,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Car Door Panel BSR (Buzz, Squeak, Rattle) Prevention",
       "application": "Engineered for car door panel bsr (buzz, squeak, rattle) prevention applications requiring high density needle-punched polyester felt and high performance solvent acrylic (high initial tack).",
+      "price": "$1.67 / roll",
       "specs": {
         "Backing material": "High Density Needle-Punched Polyester Felt",
         "Adhesive type": "Solvent Acrylic (High Initial Tack)",
@@ -7588,6 +8033,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Buried Oil & Gas Steel Transmission Pipelines",
       "application": "Engineered for buried oil & gas steel transmission pipelines applications requiring stabilized polyethylene (pe) carrier film and high performance butyl rubber & synthetic elastomer compound.",
+      "price": "$4.73 / roll",
       "specs": {
         "Backing material": "Stabilized Polyethylene (PE) Carrier Film",
         "Adhesive type": "Butyl Rubber & Synthetic Elastomer Compound",
@@ -7605,6 +8051,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Water & Wastewater Utility Infrastructure",
       "application": "Engineered for water & wastewater utility infrastructure applications requiring stabilized polyethylene (pe) carrier film and high performance butyl rubber & synthetic elastomer compound.",
+      "price": "$2.14 / roll",
       "specs": {
         "Backing material": "Stabilized Polyethylene (PE) Carrier Film",
         "Adhesive type": "Butyl Rubber & Synthetic Elastomer Compound",
@@ -7622,6 +8069,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Horizontal Directional Drilling (HDD) Sleeves",
       "application": "Engineered for horizontal directional drilling (hdd) sleeves applications requiring stabilized polyethylene (pe) carrier film and high performance butyl rubber & synthetic elastomer compound.",
+      "price": "$4.92 / roll",
       "specs": {
         "Backing material": "Stabilized Polyethylene (PE) Carrier Film",
         "Adhesive type": "Butyl Rubber & Synthetic Elastomer Compound",
@@ -7639,6 +8087,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Buried Oil & Gas Steel Transmission Pipelines",
       "application": "Engineered for buried oil & gas steel transmission pipelines applications requiring stabilized polyethylene (pe) carrier film and high performance butyl rubber & synthetic elastomer compound.",
+      "price": "$1.41 / roll",
       "specs": {
         "Backing material": "Stabilized Polyethylene (PE) Carrier Film",
         "Adhesive type": "Butyl Rubber & Synthetic Elastomer Compound",
@@ -7656,6 +8105,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Water & Wastewater Utility Infrastructure",
       "application": "Engineered for water & wastewater utility infrastructure applications requiring stabilized polyethylene (pe) carrier film and high performance butyl rubber & synthetic elastomer compound.",
+      "price": "$5.14 / roll",
       "specs": {
         "Backing material": "Stabilized Polyethylene (PE) Carrier Film",
         "Adhesive type": "Butyl Rubber & Synthetic Elastomer Compound",
@@ -7673,6 +8123,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Horizontal Directional Drilling (HDD) Sleeves",
       "application": "Engineered for horizontal directional drilling (hdd) sleeves applications requiring stabilized polyethylene (pe) carrier film and high performance butyl rubber & synthetic elastomer compound.",
+      "price": "$4.01 / roll",
       "specs": {
         "Backing material": "Stabilized Polyethylene (PE) Carrier Film",
         "Adhesive type": "Butyl Rubber & Synthetic Elastomer Compound",
@@ -7690,6 +8141,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Buried Oil & Gas Steel Transmission Pipelines",
       "application": "Engineered for buried oil & gas steel transmission pipelines applications requiring stabilized polyethylene (pe) carrier film and high performance butyl rubber & synthetic elastomer compound.",
+      "price": "$1.64 / roll",
       "specs": {
         "Backing material": "Stabilized Polyethylene (PE) Carrier Film",
         "Adhesive type": "Butyl Rubber & Synthetic Elastomer Compound",
@@ -7707,6 +8159,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Water & Wastewater Utility Infrastructure",
       "application": "Engineered for water & wastewater utility infrastructure applications requiring stabilized polyethylene (pe) carrier film and high performance butyl rubber & synthetic elastomer compound.",
+      "price": "$1.81 / roll",
       "specs": {
         "Backing material": "Stabilized Polyethylene (PE) Carrier Film",
         "Adhesive type": "Butyl Rubber & Synthetic Elastomer Compound",
@@ -7724,6 +8177,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Horizontal Directional Drilling (HDD) Sleeves",
       "application": "Engineered for horizontal directional drilling (hdd) sleeves applications requiring stabilized polyethylene (pe) carrier film and high performance butyl rubber & synthetic elastomer compound.",
+      "price": "$4.57 / roll",
       "specs": {
         "Backing material": "Stabilized Polyethylene (PE) Carrier Film",
         "Adhesive type": "Butyl Rubber & Synthetic Elastomer Compound",
@@ -7741,6 +8195,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Buried Oil & Gas Steel Transmission Pipelines",
       "application": "Engineered for buried oil & gas steel transmission pipelines applications requiring stabilized polyethylene (pe) carrier film and high performance butyl rubber & synthetic elastomer compound.",
+      "price": "$2.83 / roll",
       "specs": {
         "Backing material": "Stabilized Polyethylene (PE) Carrier Film",
         "Adhesive type": "Butyl Rubber & Synthetic Elastomer Compound",
@@ -7758,6 +8213,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Pipeline Mechanical Shielding against Rocky Soil",
       "application": "Engineered for pipeline mechanical shielding against rocky soil applications requiring high molecular weight polyethylene film (white / black) and high performance high shear butyl rubber matrix.",
+      "price": "$4.35 / roll",
       "specs": {
         "Backing material": "High Molecular Weight Polyethylene Film (White / Black)",
         "Adhesive type": "High Shear Butyl Rubber Matrix",
@@ -7775,6 +8231,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Subsea Pipeline Girth Joint Coating",
       "application": "Engineered for subsea pipeline girth joint coating applications requiring high molecular weight polyethylene film (white / black) and high performance high shear butyl rubber matrix.",
+      "price": "$1.58 / roll",
       "specs": {
         "Backing material": "High Molecular Weight Polyethylene Film (White / Black)",
         "Adhesive type": "High Shear Butyl Rubber Matrix",
@@ -7792,6 +8249,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Refinery Tank Field Pipe Wrapping",
       "application": "Engineered for refinery tank field pipe wrapping applications requiring high molecular weight polyethylene film (white / black) and high performance high shear butyl rubber matrix.",
+      "price": "$1.43 / roll",
       "specs": {
         "Backing material": "High Molecular Weight Polyethylene Film (White / Black)",
         "Adhesive type": "High Shear Butyl Rubber Matrix",
@@ -7809,6 +8267,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Pipeline Mechanical Shielding against Rocky Soil",
       "application": "Engineered for pipeline mechanical shielding against rocky soil applications requiring high molecular weight polyethylene film (white / black) and high performance high shear butyl rubber matrix.",
+      "price": "$2.34 / roll",
       "specs": {
         "Backing material": "High Molecular Weight Polyethylene Film (White / Black)",
         "Adhesive type": "High Shear Butyl Rubber Matrix",
@@ -7826,6 +8285,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Subsea Pipeline Girth Joint Coating",
       "application": "Engineered for subsea pipeline girth joint coating applications requiring high molecular weight polyethylene film (white / black) and high performance high shear butyl rubber matrix.",
+      "price": "$3.29 / roll",
       "specs": {
         "Backing material": "High Molecular Weight Polyethylene Film (White / Black)",
         "Adhesive type": "High Shear Butyl Rubber Matrix",
@@ -7843,6 +8303,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Refinery Tank Field Pipe Wrapping",
       "application": "Engineered for refinery tank field pipe wrapping applications requiring high molecular weight polyethylene film (white / black) and high performance high shear butyl rubber matrix.",
+      "price": "$5.09 / roll",
       "specs": {
         "Backing material": "High Molecular Weight Polyethylene Film (White / Black)",
         "Adhesive type": "High Shear Butyl Rubber Matrix",
@@ -7860,6 +8321,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Pipeline Mechanical Shielding against Rocky Soil",
       "application": "Engineered for pipeline mechanical shielding against rocky soil applications requiring high molecular weight polyethylene film (white / black) and high performance high shear butyl rubber matrix.",
+      "price": "$3.42 / roll",
       "specs": {
         "Backing material": "High Molecular Weight Polyethylene Film (White / Black)",
         "Adhesive type": "High Shear Butyl Rubber Matrix",
@@ -7877,6 +8339,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Subsea Pipeline Girth Joint Coating",
       "application": "Engineered for subsea pipeline girth joint coating applications requiring high molecular weight polyethylene film (white / black) and high performance high shear butyl rubber matrix.",
+      "price": "$3.41 / roll",
       "specs": {
         "Backing material": "High Molecular Weight Polyethylene Film (White / Black)",
         "Adhesive type": "High Shear Butyl Rubber Matrix",
@@ -7894,6 +8357,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Refinery Tank Field Pipe Wrapping",
       "application": "Engineered for refinery tank field pipe wrapping applications requiring high molecular weight polyethylene film (white / black) and high performance high shear butyl rubber matrix.",
+      "price": "$5.17 / roll",
       "specs": {
         "Backing material": "High Molecular Weight Polyethylene Film (White / Black)",
         "Adhesive type": "High Shear Butyl Rubber Matrix",
@@ -7911,6 +8375,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Pipeline Mechanical Shielding against Rocky Soil",
       "application": "Engineered for pipeline mechanical shielding against rocky soil applications requiring high molecular weight polyethylene film (white / black) and high performance high shear butyl rubber matrix.",
+      "price": "$3.32 / roll",
       "specs": {
         "Backing material": "High Molecular Weight Polyethylene Film (White / Black)",
         "Adhesive type": "High Shear Butyl Rubber Matrix",
@@ -7928,6 +8393,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Facade & Window Frame Waterproofing",
       "application": "Engineered for building facade & window frame waterproofing applications requiring reinforced aluminum foil / cross-laminated film and high performance self-healing butyl rubber polymer.",
+      "price": "$3.05 / roll",
       "specs": {
         "Backing material": "Reinforced Aluminum Foil / Cross-Laminated Film",
         "Adhesive type": "Self-Healing Butyl Rubber Polymer",
@@ -7945,6 +8411,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Metal Roof Ridge & Valley Sealing",
       "application": "Engineered for metal roof ridge & valley sealing applications requiring reinforced aluminum foil / cross-laminated film and high performance self-healing butyl rubber polymer.",
+      "price": "$1.58 / roll",
       "specs": {
         "Backing material": "Reinforced Aluminum Foil / Cross-Laminated Film",
         "Adhesive type": "Self-Healing Butyl Rubber Polymer",
@@ -7962,6 +8429,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Prefabricated Modular Container Joint Sealing",
       "application": "Engineered for prefabricated modular container joint sealing applications requiring reinforced aluminum foil / cross-laminated film and high performance self-healing butyl rubber polymer.",
+      "price": "$2.31 / roll",
       "specs": {
         "Backing material": "Reinforced Aluminum Foil / Cross-Laminated Film",
         "Adhesive type": "Self-Healing Butyl Rubber Polymer",
@@ -7979,6 +8447,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Facade & Window Frame Waterproofing",
       "application": "Engineered for building facade & window frame waterproofing applications requiring reinforced aluminum foil / cross-laminated film and high performance self-healing butyl rubber polymer.",
+      "price": "$2.42 / roll",
       "specs": {
         "Backing material": "Reinforced Aluminum Foil / Cross-Laminated Film",
         "Adhesive type": "Self-Healing Butyl Rubber Polymer",
@@ -7996,6 +8465,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Metal Roof Ridge & Valley Sealing",
       "application": "Engineered for metal roof ridge & valley sealing applications requiring reinforced aluminum foil / cross-laminated film and high performance self-healing butyl rubber polymer.",
+      "price": "$3.28 / roll",
       "specs": {
         "Backing material": "Reinforced Aluminum Foil / Cross-Laminated Film",
         "Adhesive type": "Self-Healing Butyl Rubber Polymer",
@@ -8013,6 +8483,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Prefabricated Modular Container Joint Sealing",
       "application": "Engineered for prefabricated modular container joint sealing applications requiring reinforced aluminum foil / cross-laminated film and high performance self-healing butyl rubber polymer.",
+      "price": "$1.34 / roll",
       "specs": {
         "Backing material": "Reinforced Aluminum Foil / Cross-Laminated Film",
         "Adhesive type": "Self-Healing Butyl Rubber Polymer",
@@ -8030,6 +8501,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Facade & Window Frame Waterproofing",
       "application": "Engineered for building facade & window frame waterproofing applications requiring reinforced aluminum foil / cross-laminated film and high performance self-healing butyl rubber polymer.",
+      "price": "$3.52 / roll",
       "specs": {
         "Backing material": "Reinforced Aluminum Foil / Cross-Laminated Film",
         "Adhesive type": "Self-Healing Butyl Rubber Polymer",
@@ -8047,6 +8519,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Metal Roof Ridge & Valley Sealing",
       "application": "Engineered for metal roof ridge & valley sealing applications requiring reinforced aluminum foil / cross-laminated film and high performance self-healing butyl rubber polymer.",
+      "price": "$3.97 / roll",
       "specs": {
         "Backing material": "Reinforced Aluminum Foil / Cross-Laminated Film",
         "Adhesive type": "Self-Healing Butyl Rubber Polymer",
@@ -8064,6 +8537,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Municipal Gas Distribution Network Wrapping",
       "application": "Engineered for municipal gas distribution network wrapping applications requiring woven polypropylene / synthetic geotextile and high performance polymer modified bitumen elastomer.",
+      "price": "$1.83 / roll",
       "specs": {
         "Backing material": "Woven Polypropylene / Synthetic Geotextile",
         "Adhesive type": "Polymer Modified Bitumen Elastomer",
@@ -8081,6 +8555,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cast Iron & Ductile Iron Pipe Reconditioning",
       "application": "Engineered for cast iron & ductile iron pipe reconditioning applications requiring woven polypropylene / synthetic geotextile and high performance polymer modified bitumen elastomer.",
+      "price": "$3.89 / roll",
       "specs": {
         "Backing material": "Woven Polypropylene / Synthetic Geotextile",
         "Adhesive type": "Polymer Modified Bitumen Elastomer",
@@ -8098,6 +8573,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "District Cooling Chilled Water Pipes",
       "application": "Engineered for district cooling chilled water pipes applications requiring woven polypropylene / synthetic geotextile and high performance polymer modified bitumen elastomer.",
+      "price": "$1.98 / roll",
       "specs": {
         "Backing material": "Woven Polypropylene / Synthetic Geotextile",
         "Adhesive type": "Polymer Modified Bitumen Elastomer",
@@ -8115,6 +8591,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Municipal Gas Distribution Network Wrapping",
       "application": "Engineered for municipal gas distribution network wrapping applications requiring woven polypropylene / synthetic geotextile and high performance polymer modified bitumen elastomer.",
+      "price": "$3.91 / roll",
       "specs": {
         "Backing material": "Woven Polypropylene / Synthetic Geotextile",
         "Adhesive type": "Polymer Modified Bitumen Elastomer",
@@ -8132,6 +8609,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Cast Iron & Ductile Iron Pipe Reconditioning",
       "application": "Engineered for cast iron & ductile iron pipe reconditioning applications requiring woven polypropylene / synthetic geotextile and high performance polymer modified bitumen elastomer.",
+      "price": "$4.48 / roll",
       "specs": {
         "Backing material": "Woven Polypropylene / Synthetic Geotextile",
         "Adhesive type": "Polymer Modified Bitumen Elastomer",
@@ -8149,6 +8627,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "District Cooling Chilled Water Pipes",
       "application": "Engineered for district cooling chilled water pipes applications requiring woven polypropylene / synthetic geotextile and high performance polymer modified bitumen elastomer.",
+      "price": "$2.08 / roll",
       "specs": {
         "Backing material": "Woven Polypropylene / Synthetic Geotextile",
         "Adhesive type": "Polymer Modified Bitumen Elastomer",
@@ -8166,6 +8645,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Municipal Gas Distribution Network Wrapping",
       "application": "Engineered for municipal gas distribution network wrapping applications requiring woven polypropylene / synthetic geotextile and high performance polymer modified bitumen elastomer.",
+      "price": "$2.51 / roll",
       "specs": {
         "Backing material": "Woven Polypropylene / Synthetic Geotextile",
         "Adhesive type": "Polymer Modified Bitumen Elastomer",
@@ -8185,6 +8665,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Powder Coating & Anodizing Masking",
       "application": "Engineered for powder coating & anodizing masking applications requiring polyester (pet) film (green / blue / clear) and high performance high temperature silicone.",
+      "price": "$4.93 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film (Green / Blue / Clear)",
         "Adhesive type": "High Temperature Silicone",
@@ -8202,6 +8683,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "PCB Gold Finger Plating Protection",
       "application": "Engineered for pcb gold finger plating protection applications requiring polyester (pet) film (green / blue / clear) and high performance high temperature silicone.",
+      "price": "$4.61 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film (Green / Blue / Clear)",
         "Adhesive type": "High Temperature Silicone",
@@ -8219,6 +8701,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Composite Autoclave Bag Sealing",
       "application": "Engineered for composite autoclave bag sealing applications requiring polyester (pet) film (green / blue / clear) and high performance high temperature silicone.",
+      "price": "$1.67 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film (Green / Blue / Clear)",
         "Adhesive type": "High Temperature Silicone",
@@ -8236,6 +8719,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Powder Coating & Anodizing Masking",
       "application": "Engineered for powder coating & anodizing masking applications requiring polyester (pet) film (green / blue / clear) and high performance high temperature silicone.",
+      "price": "$4.81 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film (Green / Blue / Clear)",
         "Adhesive type": "High Temperature Silicone",
@@ -8253,6 +8737,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "PCB Gold Finger Plating Protection",
       "application": "Engineered for pcb gold finger plating protection applications requiring polyester (pet) film (green / blue / clear) and high performance high temperature silicone.",
+      "price": "$4.80 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film (Green / Blue / Clear)",
         "Adhesive type": "High Temperature Silicone",
@@ -8270,6 +8755,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Composite Autoclave Bag Sealing",
       "application": "Engineered for composite autoclave bag sealing applications requiring polyester (pet) film (green / blue / clear) and high performance high temperature silicone.",
+      "price": "$4.30 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film (Green / Blue / Clear)",
         "Adhesive type": "High Temperature Silicone",
@@ -8287,6 +8773,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Powder Coating & Anodizing Masking",
       "application": "Engineered for powder coating & anodizing masking applications requiring polyester (pet) film (green / blue / clear) and high performance high temperature silicone.",
+      "price": "$1.84 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film (Green / Blue / Clear)",
         "Adhesive type": "High Temperature Silicone",
@@ -8304,6 +8791,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "PCB Gold Finger Plating Protection",
       "application": "Engineered for pcb gold finger plating protection applications requiring polyester (pet) film (green / blue / clear) and high performance high temperature silicone.",
+      "price": "$5.66 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film (Green / Blue / Clear)",
         "Adhesive type": "High Temperature Silicone",
@@ -8321,6 +8809,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Composite Autoclave Bag Sealing",
       "application": "Engineered for composite autoclave bag sealing applications requiring polyester (pet) film (green / blue / clear) and high performance high temperature silicone.",
+      "price": "$4.02 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film (Green / Blue / Clear)",
         "Adhesive type": "High Temperature Silicone",
@@ -8338,6 +8827,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Powder Coating & Anodizing Masking",
       "application": "Engineered for powder coating & anodizing masking applications requiring polyester (pet) film (green / blue / clear) and high performance high temperature silicone.",
+      "price": "$1.74 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film (Green / Blue / Clear)",
         "Adhesive type": "High Temperature Silicone",
@@ -8355,6 +8845,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Printed Circuit Board Chemical Etching",
       "application": "Engineered for printed circuit board chemical etching applications requiring polyester film (blue translucent) and high performance specialty crosslinked rubber / silicone.",
+      "price": "$4.76 / roll",
       "specs": {
         "Backing material": "Polyester Film (Blue Translucent)",
         "Adhesive type": "Specialty Crosslinked Rubber / Silicone",
@@ -8372,6 +8863,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Deep Draw Metal Stamping Protection",
       "application": "Engineered for deep draw metal stamping protection applications requiring polyester film (blue translucent) and high performance specialty crosslinked rubber / silicone.",
+      "price": "$2.78 / roll",
       "specs": {
         "Backing material": "Polyester Film (Blue Translucent)",
         "Adhesive type": "Specialty Crosslinked Rubber / Silicone",
@@ -8389,6 +8881,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Glass Sandblasting Stencil Masking",
       "application": "Engineered for glass sandblasting stencil masking applications requiring polyester film (blue translucent) and high performance specialty crosslinked rubber / silicone.",
+      "price": "$4.73 / roll",
       "specs": {
         "Backing material": "Polyester Film (Blue Translucent)",
         "Adhesive type": "Specialty Crosslinked Rubber / Silicone",
@@ -8406,6 +8899,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Printed Circuit Board Chemical Etching",
       "application": "Engineered for printed circuit board chemical etching applications requiring polyester film (blue translucent) and high performance specialty crosslinked rubber / silicone.",
+      "price": "$2.49 / roll",
       "specs": {
         "Backing material": "Polyester Film (Blue Translucent)",
         "Adhesive type": "Specialty Crosslinked Rubber / Silicone",
@@ -8423,6 +8917,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Deep Draw Metal Stamping Protection",
       "application": "Engineered for deep draw metal stamping protection applications requiring polyester film (blue translucent) and high performance specialty crosslinked rubber / silicone.",
+      "price": "$1.29 / roll",
       "specs": {
         "Backing material": "Polyester Film (Blue Translucent)",
         "Adhesive type": "Specialty Crosslinked Rubber / Silicone",
@@ -8440,6 +8935,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Glass Sandblasting Stencil Masking",
       "application": "Engineered for glass sandblasting stencil masking applications requiring polyester film (blue translucent) and high performance specialty crosslinked rubber / silicone.",
+      "price": "$5.47 / roll",
       "specs": {
         "Backing material": "Polyester Film (Blue Translucent)",
         "Adhesive type": "Specialty Crosslinked Rubber / Silicone",
@@ -8457,6 +8953,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Printed Circuit Board Chemical Etching",
       "application": "Engineered for printed circuit board chemical etching applications requiring polyester film (blue translucent) and high performance specialty crosslinked rubber / silicone.",
+      "price": "$2.37 / roll",
       "specs": {
         "Backing material": "Polyester Film (Blue Translucent)",
         "Adhesive type": "Specialty Crosslinked Rubber / Silicone",
@@ -8474,6 +8971,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Deep Draw Metal Stamping Protection",
       "application": "Engineered for deep draw metal stamping protection applications requiring polyester film (blue translucent) and high performance specialty crosslinked rubber / silicone.",
+      "price": "$1.27 / roll",
       "specs": {
         "Backing material": "Polyester Film (Blue Translucent)",
         "Adhesive type": "Specialty Crosslinked Rubber / Silicone",
@@ -8491,6 +8989,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Glass Sandblasting Stencil Masking",
       "application": "Engineered for glass sandblasting stencil masking applications requiring polyester film (blue translucent) and high performance specialty crosslinked rubber / silicone.",
+      "price": "$5.03 / roll",
       "specs": {
         "Backing material": "Polyester Film (Blue Translucent)",
         "Adhesive type": "Specialty Crosslinked Rubber / Silicone",
@@ -8508,6 +9007,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Printed Circuit Board Chemical Etching",
       "application": "Engineered for printed circuit board chemical etching applications requiring polyester film (blue translucent) and high performance specialty crosslinked rubber / silicone.",
+      "price": "$5.52 / roll",
       "specs": {
         "Backing material": "Polyester Film (Blue Translucent)",
         "Adhesive type": "Specialty Crosslinked Rubber / Silicone",
@@ -8525,6 +9025,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Silicone Coated Release Paper/Film Splicing",
       "application": "Engineered for silicone coated release paper/film splicing applications requiring polyester film / polyimide film and high performance extreme tack silicone adhesive.",
+      "price": "$5.64 / roll",
       "specs": {
         "Backing material": "Polyester Film / Polyimide Film",
         "Adhesive type": "Extreme Tack Silicone Adhesive",
@@ -8542,6 +9043,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Continuous Coil Coating Line Splices",
       "application": "Engineered for continuous coil coating line splices applications requiring polyester film / polyimide film and high performance extreme tack silicone adhesive.",
+      "price": "$4.57 / roll",
       "specs": {
         "Backing material": "Polyester Film / Polyimide Film",
         "Adhesive type": "Extreme Tack Silicone Adhesive",
@@ -8559,6 +9061,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Speed Converting Web Flying Splices",
       "application": "Engineered for high speed converting web flying splices applications requiring polyester film / polyimide film and high performance extreme tack silicone adhesive.",
+      "price": "$4.59 / roll",
       "specs": {
         "Backing material": "Polyester Film / Polyimide Film",
         "Adhesive type": "Extreme Tack Silicone Adhesive",
@@ -8576,6 +9079,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Silicone Coated Release Paper/Film Splicing",
       "application": "Engineered for silicone coated release paper/film splicing applications requiring polyester film / polyimide film and high performance extreme tack silicone adhesive.",
+      "price": "$3.05 / roll",
       "specs": {
         "Backing material": "Polyester Film / Polyimide Film",
         "Adhesive type": "Extreme Tack Silicone Adhesive",
@@ -8593,6 +9097,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Continuous Coil Coating Line Splices",
       "application": "Engineered for continuous coil coating line splices applications requiring polyester film / polyimide film and high performance extreme tack silicone adhesive.",
+      "price": "$5.29 / roll",
       "specs": {
         "Backing material": "Polyester Film / Polyimide Film",
         "Adhesive type": "Extreme Tack Silicone Adhesive",
@@ -8610,6 +9115,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Speed Converting Web Flying Splices",
       "application": "Engineered for high speed converting web flying splices applications requiring polyester film / polyimide film and high performance extreme tack silicone adhesive.",
+      "price": "$5.34 / roll",
       "specs": {
         "Backing material": "Polyester Film / Polyimide Film",
         "Adhesive type": "Extreme Tack Silicone Adhesive",
@@ -8627,6 +9133,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Silicone Coated Release Paper/Film Splicing",
       "application": "Engineered for silicone coated release paper/film splicing applications requiring polyester film / polyimide film and high performance extreme tack silicone adhesive.",
+      "price": "$1.55 / roll",
       "specs": {
         "Backing material": "Polyester Film / Polyimide Film",
         "Adhesive type": "Extreme Tack Silicone Adhesive",
@@ -8644,6 +9151,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Continuous Coil Coating Line Splices",
       "application": "Engineered for continuous coil coating line splices applications requiring polyester film / polyimide film and high performance extreme tack silicone adhesive.",
+      "price": "$5.51 / roll",
       "specs": {
         "Backing material": "Polyester Film / Polyimide Film",
         "Adhesive type": "Extreme Tack Silicone Adhesive",
@@ -8661,6 +9169,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "LED Strip Heatsink Mounting",
       "application": "Engineered for led strip heatsink mounting applications requiring thermally conductive ceramic filled polymer / fiberglass and high performance high tack thermally conductive acrylic.",
+      "price": "$4.61 / roll",
       "specs": {
         "Backing material": "Thermally Conductive Ceramic Filled Polymer / Fiberglass",
         "Adhesive type": "High Tack Thermally Conductive Acrylic",
@@ -8678,6 +9187,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Memory Module Thermal Pad Fixing",
       "application": "Engineered for memory module thermal pad fixing applications requiring thermally conductive ceramic filled polymer / fiberglass and high performance high tack thermally conductive acrylic.",
+      "price": "$5.67 / roll",
       "specs": {
         "Backing material": "Thermally Conductive Ceramic Filled Polymer / Fiberglass",
         "Adhesive type": "High Tack Thermally Conductive Acrylic",
@@ -8695,6 +9205,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power Supply Transistor Heat Sinks",
       "application": "Engineered for power supply transistor heat sinks applications requiring thermally conductive ceramic filled polymer / fiberglass and high performance high tack thermally conductive acrylic.",
+      "price": "$4.06 / roll",
       "specs": {
         "Backing material": "Thermally Conductive Ceramic Filled Polymer / Fiberglass",
         "Adhesive type": "High Tack Thermally Conductive Acrylic",
@@ -8712,6 +9223,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "LED Strip Heatsink Mounting",
       "application": "Engineered for led strip heatsink mounting applications requiring thermally conductive ceramic filled polymer / fiberglass and high performance high tack thermally conductive acrylic.",
+      "price": "$5.43 / roll",
       "specs": {
         "Backing material": "Thermally Conductive Ceramic Filled Polymer / Fiberglass",
         "Adhesive type": "High Tack Thermally Conductive Acrylic",
@@ -8729,6 +9241,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Memory Module Thermal Pad Fixing",
       "application": "Engineered for memory module thermal pad fixing applications requiring thermally conductive ceramic filled polymer / fiberglass and high performance high tack thermally conductive acrylic.",
+      "price": "$4.84 / roll",
       "specs": {
         "Backing material": "Thermally Conductive Ceramic Filled Polymer / Fiberglass",
         "Adhesive type": "High Tack Thermally Conductive Acrylic",
@@ -8746,6 +9259,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power Supply Transistor Heat Sinks",
       "application": "Engineered for power supply transistor heat sinks applications requiring thermally conductive ceramic filled polymer / fiberglass and high performance high tack thermally conductive acrylic.",
+      "price": "$5.66 / roll",
       "specs": {
         "Backing material": "Thermally Conductive Ceramic Filled Polymer / Fiberglass",
         "Adhesive type": "High Tack Thermally Conductive Acrylic",
@@ -8763,6 +9277,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "LED Strip Heatsink Mounting",
       "application": "Engineered for led strip heatsink mounting applications requiring thermally conductive ceramic filled polymer / fiberglass and high performance high tack thermally conductive acrylic.",
+      "price": "$4.12 / roll",
       "specs": {
         "Backing material": "Thermally Conductive Ceramic Filled Polymer / Fiberglass",
         "Adhesive type": "High Tack Thermally Conductive Acrylic",
@@ -8782,6 +9297,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Steel Coil & Tube Bundling",
       "application": "Engineered for heavy steel coil & tube bundling applications requiring bopp / pet film with continuous longitudinal glass fibers and high performance synthetic rubber resin (high shear).",
+      "price": "$1.60 / roll",
       "specs": {
         "Backing material": "BOPP / PET Film with Continuous Longitudinal Glass Fibers",
         "Adhesive type": "Synthetic Rubber Resin (High Shear)",
@@ -8799,6 +9315,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Appliance Moving Parts Tape",
       "application": "Engineered for appliance moving parts tape applications requiring bopp / pet film with continuous longitudinal glass fibers and high performance synthetic rubber resin (high shear).",
+      "price": "$2.84 / roll",
       "specs": {
         "Backing material": "BOPP / PET Film with Continuous Longitudinal Glass Fibers",
         "Adhesive type": "Synthetic Rubber Resin (High Shear)",
@@ -8816,6 +9333,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Tensile Pallet Unitizing",
       "application": "Engineered for high tensile pallet unitizing applications requiring bopp / pet film with continuous longitudinal glass fibers and high performance synthetic rubber resin (high shear).",
+      "price": "$1.31 / roll",
       "specs": {
         "Backing material": "BOPP / PET Film with Continuous Longitudinal Glass Fibers",
         "Adhesive type": "Synthetic Rubber Resin (High Shear)",
@@ -8833,6 +9351,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Steel Coil & Tube Bundling",
       "application": "Engineered for heavy steel coil & tube bundling applications requiring bopp / pet film with continuous longitudinal glass fibers and high performance synthetic rubber resin (high shear).",
+      "price": "$3.65 / roll",
       "specs": {
         "Backing material": "BOPP / PET Film with Continuous Longitudinal Glass Fibers",
         "Adhesive type": "Synthetic Rubber Resin (High Shear)",
@@ -8850,6 +9369,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Appliance Moving Parts Tape",
       "application": "Engineered for appliance moving parts tape applications requiring bopp / pet film with continuous longitudinal glass fibers and high performance synthetic rubber resin (high shear).",
+      "price": "$2.83 / roll",
       "specs": {
         "Backing material": "BOPP / PET Film with Continuous Longitudinal Glass Fibers",
         "Adhesive type": "Synthetic Rubber Resin (High Shear)",
@@ -8867,6 +9387,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Tensile Pallet Unitizing",
       "application": "Engineered for high tensile pallet unitizing applications requiring bopp / pet film with continuous longitudinal glass fibers and high performance synthetic rubber resin (high shear).",
+      "price": "$5.37 / roll",
       "specs": {
         "Backing material": "BOPP / PET Film with Continuous Longitudinal Glass Fibers",
         "Adhesive type": "Synthetic Rubber Resin (High Shear)",
@@ -8884,6 +9405,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Steel Coil & Tube Bundling",
       "application": "Engineered for heavy steel coil & tube bundling applications requiring bopp / pet film with continuous longitudinal glass fibers and high performance synthetic rubber resin (high shear).",
+      "price": "$4.79 / roll",
       "specs": {
         "Backing material": "BOPP / PET Film with Continuous Longitudinal Glass Fibers",
         "Adhesive type": "Synthetic Rubber Resin (High Shear)",
@@ -8901,6 +9423,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Appliance Moving Parts Tape",
       "application": "Engineered for appliance moving parts tape applications requiring bopp / pet film with continuous longitudinal glass fibers and high performance synthetic rubber resin (high shear).",
+      "price": "$4.44 / roll",
       "specs": {
         "Backing material": "BOPP / PET Film with Continuous Longitudinal Glass Fibers",
         "Adhesive type": "Synthetic Rubber Resin (High Shear)",
@@ -8918,6 +9441,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Tensile Pallet Unitizing",
       "application": "Engineered for high tensile pallet unitizing applications requiring bopp / pet film with continuous longitudinal glass fibers and high performance synthetic rubber resin (high shear).",
+      "price": "$2.10 / roll",
       "specs": {
         "Backing material": "BOPP / PET Film with Continuous Longitudinal Glass Fibers",
         "Adhesive type": "Synthetic Rubber Resin (High Shear)",
@@ -8935,6 +9459,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Steel Coil & Tube Bundling",
       "application": "Engineered for heavy steel coil & tube bundling applications requiring bopp / pet film with continuous longitudinal glass fibers and high performance synthetic rubber resin (high shear).",
+      "price": "$4.67 / roll",
       "specs": {
         "Backing material": "BOPP / PET Film with Continuous Longitudinal Glass Fibers",
         "Adhesive type": "Synthetic Rubber Resin (High Shear)",
@@ -8952,6 +9477,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Duty Hazardous Material Carton Sealing",
       "application": "Engineered for heavy duty hazardous material carton sealing applications requiring pet film with diamond / grid cross-weave fiberglass and high performance heavy duty synthetic rubber.",
+      "price": "$3.18 / roll",
       "specs": {
         "Backing material": "PET Film with Diamond / Grid Cross-Weave Fiberglass",
         "Adhesive type": "Heavy Duty Synthetic Rubber",
@@ -8969,6 +9495,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Transformer High Stress Ring Binding",
       "application": "Engineered for transformer high stress ring binding applications requiring pet film with diamond / grid cross-weave fiberglass and high performance heavy duty synthetic rubber.",
+      "price": "$4.53 / roll",
       "specs": {
         "Backing material": "PET Film with Diamond / Grid Cross-Weave Fiberglass",
         "Adhesive type": "Heavy Duty Synthetic Rubber",
@@ -8986,6 +9513,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Air Cargo Container Pallet Securing",
       "application": "Engineered for air cargo container pallet securing applications requiring pet film with diamond / grid cross-weave fiberglass and high performance heavy duty synthetic rubber.",
+      "price": "$3.89 / roll",
       "specs": {
         "Backing material": "PET Film with Diamond / Grid Cross-Weave Fiberglass",
         "Adhesive type": "Heavy Duty Synthetic Rubber",
@@ -9003,6 +9531,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Duty Hazardous Material Carton Sealing",
       "application": "Engineered for heavy duty hazardous material carton sealing applications requiring pet film with diamond / grid cross-weave fiberglass and high performance heavy duty synthetic rubber.",
+      "price": "$4.08 / roll",
       "specs": {
         "Backing material": "PET Film with Diamond / Grid Cross-Weave Fiberglass",
         "Adhesive type": "Heavy Duty Synthetic Rubber",
@@ -9020,6 +9549,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Transformer High Stress Ring Binding",
       "application": "Engineered for transformer high stress ring binding applications requiring pet film with diamond / grid cross-weave fiberglass and high performance heavy duty synthetic rubber.",
+      "price": "$3.54 / roll",
       "specs": {
         "Backing material": "PET Film with Diamond / Grid Cross-Weave Fiberglass",
         "Adhesive type": "Heavy Duty Synthetic Rubber",
@@ -9037,6 +9567,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Air Cargo Container Pallet Securing",
       "application": "Engineered for air cargo container pallet securing applications requiring pet film with diamond / grid cross-weave fiberglass and high performance heavy duty synthetic rubber.",
+      "price": "$5.37 / roll",
       "specs": {
         "Backing material": "PET Film with Diamond / Grid Cross-Weave Fiberglass",
         "Adhesive type": "Heavy Duty Synthetic Rubber",
@@ -9054,6 +9585,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Duty Hazardous Material Carton Sealing",
       "application": "Engineered for heavy duty hazardous material carton sealing applications requiring pet film with diamond / grid cross-weave fiberglass and high performance heavy duty synthetic rubber.",
+      "price": "$5.65 / roll",
       "specs": {
         "Backing material": "PET Film with Diamond / Grid Cross-Weave Fiberglass",
         "Adhesive type": "Heavy Duty Synthetic Rubber",
@@ -9071,6 +9603,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Transformer High Stress Ring Binding",
       "application": "Engineered for transformer high stress ring binding applications requiring pet film with diamond / grid cross-weave fiberglass and high performance heavy duty synthetic rubber.",
+      "price": "$5.69 / roll",
       "specs": {
         "Backing material": "PET Film with Diamond / Grid Cross-Weave Fiberglass",
         "Adhesive type": "Heavy Duty Synthetic Rubber",
@@ -9088,6 +9621,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Air Cargo Container Pallet Securing",
       "application": "Engineered for air cargo container pallet securing applications requiring pet film with diamond / grid cross-weave fiberglass and high performance heavy duty synthetic rubber.",
+      "price": "$4.47 / roll",
       "specs": {
         "Backing material": "PET Film with Diamond / Grid Cross-Weave Fiberglass",
         "Adhesive type": "Heavy Duty Synthetic Rubber",
@@ -9105,6 +9639,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Duty Hazardous Material Carton Sealing",
       "application": "Engineered for heavy duty hazardous material carton sealing applications requiring pet film with diamond / grid cross-weave fiberglass and high performance heavy duty synthetic rubber.",
+      "price": "$1.55 / roll",
       "specs": {
         "Backing material": "PET Film with Diamond / Grid Cross-Weave Fiberglass",
         "Adhesive type": "Heavy Duty Synthetic Rubber",
@@ -9122,6 +9657,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Pharma & High Value Electronics Logistics",
       "application": "Engineered for pharma & high value electronics logistics applications requiring glossy pet film with hidden tamper pattern and high performance high security destructive acrylic.",
+      "price": "$1.36 / roll",
       "specs": {
         "Backing material": "Glossy PET Film with Hidden Tamper Pattern",
         "Adhesive type": "High Security Destructive Acrylic",
@@ -9139,6 +9675,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Bank Security Cash Bags & Evidence Bags",
       "application": "Engineered for bank security cash bags & evidence bags applications requiring glossy pet film with hidden tamper pattern and high performance high security destructive acrylic.",
+      "price": "$2.32 / roll",
       "specs": {
         "Backing material": "Glossy PET Film with Hidden Tamper Pattern",
         "Adhesive type": "High Security Destructive Acrylic",
@@ -9156,6 +9693,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Confidential Document Envelope Sealing",
       "application": "Engineered for confidential document envelope sealing applications requiring glossy pet film with hidden tamper pattern and high performance high security destructive acrylic.",
+      "price": "$3.23 / roll",
       "specs": {
         "Backing material": "Glossy PET Film with Hidden Tamper Pattern",
         "Adhesive type": "High Security Destructive Acrylic",
@@ -9173,6 +9711,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Pharma & High Value Electronics Logistics",
       "application": "Engineered for pharma & high value electronics logistics applications requiring glossy pet film with hidden tamper pattern and high performance high security destructive acrylic.",
+      "price": "$5.23 / roll",
       "specs": {
         "Backing material": "Glossy PET Film with Hidden Tamper Pattern",
         "Adhesive type": "High Security Destructive Acrylic",
@@ -9190,6 +9729,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Bank Security Cash Bags & Evidence Bags",
       "application": "Engineered for bank security cash bags & evidence bags applications requiring glossy pet film with hidden tamper pattern and high performance high security destructive acrylic.",
+      "price": "$2.18 / roll",
       "specs": {
         "Backing material": "Glossy PET Film with Hidden Tamper Pattern",
         "Adhesive type": "High Security Destructive Acrylic",
@@ -9207,6 +9747,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Confidential Document Envelope Sealing",
       "application": "Engineered for confidential document envelope sealing applications requiring glossy pet film with hidden tamper pattern and high performance high security destructive acrylic.",
+      "price": "$5.28 / roll",
       "specs": {
         "Backing material": "Glossy PET Film with Hidden Tamper Pattern",
         "Adhesive type": "High Security Destructive Acrylic",
@@ -9224,6 +9765,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Pharma & High Value Electronics Logistics",
       "application": "Engineered for pharma & high value electronics logistics applications requiring glossy pet film with hidden tamper pattern and high performance high security destructive acrylic.",
+      "price": "$2.90 / roll",
       "specs": {
         "Backing material": "Glossy PET Film with Hidden Tamper Pattern",
         "Adhesive type": "High Security Destructive Acrylic",
@@ -9241,6 +9783,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Bank Security Cash Bags & Evidence Bags",
       "application": "Engineered for bank security cash bags & evidence bags applications requiring glossy pet film with hidden tamper pattern and high performance high security destructive acrylic.",
+      "price": "$5.52 / roll",
       "specs": {
         "Backing material": "Glossy PET Film with Hidden Tamper Pattern",
         "Adhesive type": "High Security Destructive Acrylic",
@@ -9258,6 +9801,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Refrigerator Shelf & Glass Tray Shipping Hold",
       "application": "Engineered for refrigerator shelf & glass tray shipping hold applications requiring mopp (tensilized polypropylene) film and high performance natural rubber clean peel adhesive.",
+      "price": "$2.85 / roll",
       "specs": {
         "Backing material": "MOPP (Tensilized Polypropylene) Film",
         "Adhesive type": "Natural Rubber Clean Peel Adhesive",
@@ -9275,6 +9819,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Washing Machine Drum Transit Restraint",
       "application": "Engineered for washing machine drum transit restraint applications requiring mopp (tensilized polypropylene) film and high performance natural rubber clean peel adhesive.",
+      "price": "$4.65 / roll",
       "specs": {
         "Backing material": "MOPP (Tensilized Polypropylene) Film",
         "Adhesive type": "Natural Rubber Clean Peel Adhesive",
@@ -9292,6 +9837,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Printer & Copier Mechanism Lock",
       "application": "Engineered for printer & copier mechanism lock applications requiring mopp (tensilized polypropylene) film and high performance natural rubber clean peel adhesive.",
+      "price": "$1.92 / roll",
       "specs": {
         "Backing material": "MOPP (Tensilized Polypropylene) Film",
         "Adhesive type": "Natural Rubber Clean Peel Adhesive",
@@ -9309,6 +9855,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Refrigerator Shelf & Glass Tray Shipping Hold",
       "application": "Engineered for refrigerator shelf & glass tray shipping hold applications requiring mopp (tensilized polypropylene) film and high performance natural rubber clean peel adhesive.",
+      "price": "$5.25 / roll",
       "specs": {
         "Backing material": "MOPP (Tensilized Polypropylene) Film",
         "Adhesive type": "Natural Rubber Clean Peel Adhesive",
@@ -9326,6 +9873,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Washing Machine Drum Transit Restraint",
       "application": "Engineered for washing machine drum transit restraint applications requiring mopp (tensilized polypropylene) film and high performance natural rubber clean peel adhesive.",
+      "price": "$3.40 / roll",
       "specs": {
         "Backing material": "MOPP (Tensilized Polypropylene) Film",
         "Adhesive type": "Natural Rubber Clean Peel Adhesive",
@@ -9343,6 +9891,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Printer & Copier Mechanism Lock",
       "application": "Engineered for printer & copier mechanism lock applications requiring mopp (tensilized polypropylene) film and high performance natural rubber clean peel adhesive.",
+      "price": "$1.80 / roll",
       "specs": {
         "Backing material": "MOPP (Tensilized Polypropylene) Film",
         "Adhesive type": "Natural Rubber Clean Peel Adhesive",
@@ -9360,6 +9909,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Refrigerator Shelf & Glass Tray Shipping Hold",
       "application": "Engineered for refrigerator shelf & glass tray shipping hold applications requiring mopp (tensilized polypropylene) film and high performance natural rubber clean peel adhesive.",
+      "price": "$5.13 / roll",
       "specs": {
         "Backing material": "MOPP (Tensilized Polypropylene) Film",
         "Adhesive type": "Natural Rubber Clean Peel Adhesive",
@@ -9379,6 +9929,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Commercial Building Curtain Wall Glazing",
       "application": "Engineered for commercial building curtain wall glazing applications requiring high density closed-cell radiation cross-linked pe foam and high performance pure solvent acrylic (uv & weather proof).",
+      "price": "$2.69 / roll",
       "specs": {
         "Backing material": "High Density Closed-Cell Radiation Cross-Linked PE Foam",
         "Adhesive type": "Pure Solvent Acrylic (UV & Weather Proof)",
@@ -9396,6 +9947,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar Panel Frame Sealing & Shock Absorption",
       "application": "Engineered for solar panel frame sealing & shock absorption applications requiring high density closed-cell radiation cross-linked pe foam and high performance pure solvent acrylic (uv & weather proof).",
+      "price": "$2.46 / roll",
       "specs": {
         "Backing material": "High Density Closed-Cell Radiation Cross-Linked PE Foam",
         "Adhesive type": "Pure Solvent Acrylic (UV & Weather Proof)",
@@ -9413,6 +9965,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Window Glass Pre-Attachment",
       "application": "Engineered for automotive window glass pre-attachment applications requiring high density closed-cell radiation cross-linked pe foam and high performance pure solvent acrylic (uv & weather proof).",
+      "price": "$4.20 / roll",
       "specs": {
         "Backing material": "High Density Closed-Cell Radiation Cross-Linked PE Foam",
         "Adhesive type": "Pure Solvent Acrylic (UV & Weather Proof)",
@@ -9430,6 +9983,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Commercial Building Curtain Wall Glazing",
       "application": "Engineered for commercial building curtain wall glazing applications requiring high density closed-cell radiation cross-linked pe foam and high performance pure solvent acrylic (uv & weather proof).",
+      "price": "$4.09 / roll",
       "specs": {
         "Backing material": "High Density Closed-Cell Radiation Cross-Linked PE Foam",
         "Adhesive type": "Pure Solvent Acrylic (UV & Weather Proof)",
@@ -9447,6 +10001,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar Panel Frame Sealing & Shock Absorption",
       "application": "Engineered for solar panel frame sealing & shock absorption applications requiring high density closed-cell radiation cross-linked pe foam and high performance pure solvent acrylic (uv & weather proof).",
+      "price": "$5.63 / roll",
       "specs": {
         "Backing material": "High Density Closed-Cell Radiation Cross-Linked PE Foam",
         "Adhesive type": "Pure Solvent Acrylic (UV & Weather Proof)",
@@ -9464,6 +10019,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Window Glass Pre-Attachment",
       "application": "Engineered for automotive window glass pre-attachment applications requiring high density closed-cell radiation cross-linked pe foam and high performance pure solvent acrylic (uv & weather proof).",
+      "price": "$2.67 / roll",
       "specs": {
         "Backing material": "High Density Closed-Cell Radiation Cross-Linked PE Foam",
         "Adhesive type": "Pure Solvent Acrylic (UV & Weather Proof)",
@@ -9481,6 +10037,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Commercial Building Curtain Wall Glazing",
       "application": "Engineered for commercial building curtain wall glazing applications requiring high density closed-cell radiation cross-linked pe foam and high performance pure solvent acrylic (uv & weather proof).",
+      "price": "$3.76 / roll",
       "specs": {
         "Backing material": "High Density Closed-Cell Radiation Cross-Linked PE Foam",
         "Adhesive type": "Pure Solvent Acrylic (UV & Weather Proof)",
@@ -9498,6 +10055,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Solar Panel Frame Sealing & Shock Absorption",
       "application": "Engineered for solar panel frame sealing & shock absorption applications requiring high density closed-cell radiation cross-linked pe foam and high performance pure solvent acrylic (uv & weather proof).",
+      "price": "$2.88 / roll",
       "specs": {
         "Backing material": "High Density Closed-Cell Radiation Cross-Linked PE Foam",
         "Adhesive type": "Pure Solvent Acrylic (UV & Weather Proof)",
@@ -9515,6 +10073,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Window Glass Pre-Attachment",
       "application": "Engineered for automotive window glass pre-attachment applications requiring high density closed-cell radiation cross-linked pe foam and high performance pure solvent acrylic (uv & weather proof).",
+      "price": "$1.57 / roll",
       "specs": {
         "Backing material": "High Density Closed-Cell Radiation Cross-Linked PE Foam",
         "Adhesive type": "Pure Solvent Acrylic (UV & Weather Proof)",
@@ -9532,6 +10091,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Commercial Building Curtain Wall Glazing",
       "application": "Engineered for commercial building curtain wall glazing applications requiring high density closed-cell radiation cross-linked pe foam and high performance pure solvent acrylic (uv & weather proof).",
+      "price": "$3.21 / roll",
       "specs": {
         "Backing material": "High Density Closed-Cell Radiation Cross-Linked PE Foam",
         "Adhesive type": "Pure Solvent Acrylic (UV & Weather Proof)",
@@ -9549,6 +10109,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Chrome Badges & Nameplates",
       "application": "Engineered for automotive chrome badges & nameplates applications requiring viscoelastic acrylic foam matrix (gray / black) and high performance automotive oem grade acrylic.",
+      "price": "$1.24 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam Matrix (Gray / Black)",
         "Adhesive type": "Automotive OEM Grade Acrylic",
@@ -9566,6 +10127,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Wheel Arch Protectors & Rocker Panels",
       "application": "Engineered for wheel arch protectors & rocker panels applications requiring viscoelastic acrylic foam matrix (gray / black) and high performance automotive oem grade acrylic.",
+      "price": "$4.33 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam Matrix (Gray / Black)",
         "Adhesive type": "Automotive OEM Grade Acrylic",
@@ -9583,6 +10145,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Roof Spoiler & Antenna Bonding",
       "application": "Engineered for roof spoiler & antenna bonding applications requiring viscoelastic acrylic foam matrix (gray / black) and high performance automotive oem grade acrylic.",
+      "price": "$2.09 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam Matrix (Gray / Black)",
         "Adhesive type": "Automotive OEM Grade Acrylic",
@@ -9600,6 +10163,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Chrome Badges & Nameplates",
       "application": "Engineered for automotive chrome badges & nameplates applications requiring viscoelastic acrylic foam matrix (gray / black) and high performance automotive oem grade acrylic.",
+      "price": "$2.38 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam Matrix (Gray / Black)",
         "Adhesive type": "Automotive OEM Grade Acrylic",
@@ -9617,6 +10181,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Wheel Arch Protectors & Rocker Panels",
       "application": "Engineered for wheel arch protectors & rocker panels applications requiring viscoelastic acrylic foam matrix (gray / black) and high performance automotive oem grade acrylic.",
+      "price": "$1.60 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam Matrix (Gray / Black)",
         "Adhesive type": "Automotive OEM Grade Acrylic",
@@ -9634,6 +10199,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Roof Spoiler & Antenna Bonding",
       "application": "Engineered for roof spoiler & antenna bonding applications requiring viscoelastic acrylic foam matrix (gray / black) and high performance automotive oem grade acrylic.",
+      "price": "$4.67 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam Matrix (Gray / Black)",
         "Adhesive type": "Automotive OEM Grade Acrylic",
@@ -9651,6 +10217,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Chrome Badges & Nameplates",
       "application": "Engineered for automotive chrome badges & nameplates applications requiring viscoelastic acrylic foam matrix (gray / black) and high performance automotive oem grade acrylic.",
+      "price": "$2.70 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam Matrix (Gray / Black)",
         "Adhesive type": "Automotive OEM Grade Acrylic",
@@ -9668,6 +10235,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Wheel Arch Protectors & Rocker Panels",
       "application": "Engineered for wheel arch protectors & rocker panels applications requiring viscoelastic acrylic foam matrix (gray / black) and high performance automotive oem grade acrylic.",
+      "price": "$4.93 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam Matrix (Gray / Black)",
         "Adhesive type": "Automotive OEM Grade Acrylic",
@@ -9685,6 +10253,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Roof Spoiler & Antenna Bonding",
       "application": "Engineered for roof spoiler & antenna bonding applications requiring viscoelastic acrylic foam matrix (gray / black) and high performance automotive oem grade acrylic.",
+      "price": "$4.75 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam Matrix (Gray / Black)",
         "Adhesive type": "Automotive OEM Grade Acrylic",
@@ -9702,6 +10271,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Chrome Badges & Nameplates",
       "application": "Engineered for automotive chrome badges & nameplates applications requiring viscoelastic acrylic foam matrix (gray / black) and high performance automotive oem grade acrylic.",
+      "price": "$2.64 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam Matrix (Gray / Black)",
         "Adhesive type": "Automotive OEM Grade Acrylic",
@@ -9719,6 +10289,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Picture Frame Mounting & Wall Hooks",
       "application": "Engineered for picture frame mounting & wall hooks applications requiring high flexibility eva sponge foam and high performance hot melt rubber / water acrylic.",
+      "price": "$2.02 / roll",
       "specs": {
         "Backing material": "High Flexibility EVA Sponge Foam",
         "Adhesive type": "Hot Melt Rubber / Water Acrylic",
@@ -9736,6 +10307,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "POP Signage & Retail Displays",
       "application": "Engineered for pop signage & retail displays applications requiring high flexibility eva sponge foam and high performance hot melt rubber / water acrylic.",
+      "price": "$1.91 / roll",
       "specs": {
         "Backing material": "High Flexibility EVA Sponge Foam",
         "Adhesive type": "Hot Melt Rubber / Water Acrylic",
@@ -9753,6 +10325,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Stationery & Craft Fabrication",
       "application": "Engineered for stationery & craft fabrication applications requiring high flexibility eva sponge foam and high performance hot melt rubber / water acrylic.",
+      "price": "$3.69 / roll",
       "specs": {
         "Backing material": "High Flexibility EVA Sponge Foam",
         "Adhesive type": "Hot Melt Rubber / Water Acrylic",
@@ -9770,6 +10343,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Picture Frame Mounting & Wall Hooks",
       "application": "Engineered for picture frame mounting & wall hooks applications requiring high flexibility eva sponge foam and high performance hot melt rubber / water acrylic.",
+      "price": "$1.40 / roll",
       "specs": {
         "Backing material": "High Flexibility EVA Sponge Foam",
         "Adhesive type": "Hot Melt Rubber / Water Acrylic",
@@ -9787,6 +10361,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "POP Signage & Retail Displays",
       "application": "Engineered for pop signage & retail displays applications requiring high flexibility eva sponge foam and high performance hot melt rubber / water acrylic.",
+      "price": "$5.64 / roll",
       "specs": {
         "Backing material": "High Flexibility EVA Sponge Foam",
         "Adhesive type": "Hot Melt Rubber / Water Acrylic",
@@ -9804,6 +10379,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Stationery & Craft Fabrication",
       "application": "Engineered for stationery & craft fabrication applications requiring high flexibility eva sponge foam and high performance hot melt rubber / water acrylic.",
+      "price": "$4.55 / roll",
       "specs": {
         "Backing material": "High Flexibility EVA Sponge Foam",
         "Adhesive type": "Hot Melt Rubber / Water Acrylic",
@@ -9821,6 +10397,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Picture Frame Mounting & Wall Hooks",
       "application": "Engineered for picture frame mounting & wall hooks applications requiring high flexibility eva sponge foam and high performance hot melt rubber / water acrylic.",
+      "price": "$3.25 / roll",
       "specs": {
         "Backing material": "High Flexibility EVA Sponge Foam",
         "Adhesive type": "Hot Melt Rubber / Water Acrylic",
@@ -9838,6 +10415,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "POP Signage & Retail Displays",
       "application": "Engineered for pop signage & retail displays applications requiring high flexibility eva sponge foam and high performance hot melt rubber / water acrylic.",
+      "price": "$5.46 / roll",
       "specs": {
         "Backing material": "High Flexibility EVA Sponge Foam",
         "Adhesive type": "Hot Melt Rubber / Water Acrylic",
@@ -9855,6 +10433,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC Air Handling Unit Hatch Gaskets",
       "application": "Engineered for hvac air handling unit hatch gaskets applications requiring closed-cell epdm / neoprene sponge blend and high performance fiber-reinforced pressure sensitive acrylic.",
+      "price": "$4.62 / roll",
       "specs": {
         "Backing material": "Closed-Cell EPDM / Neoprene Sponge Blend",
         "Adhesive type": "Fiber-Reinforced Pressure Sensitive Acrylic",
@@ -9872,6 +10451,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical Cabinet IP65 Water & Dust Enclosures",
       "application": "Engineered for electrical cabinet ip65 water & dust enclosures applications requiring closed-cell epdm / neoprene sponge blend and high performance fiber-reinforced pressure sensitive acrylic.",
+      "price": "$5.63 / roll",
       "specs": {
         "Backing material": "Closed-Cell EPDM / Neoprene Sponge Blend",
         "Adhesive type": "Fiber-Reinforced Pressure Sensitive Acrylic",
@@ -9889,6 +10469,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Marine Hatch Weatherstripping",
       "application": "Engineered for marine hatch weatherstripping applications requiring closed-cell epdm / neoprene sponge blend and high performance fiber-reinforced pressure sensitive acrylic.",
+      "price": "$1.75 / roll",
       "specs": {
         "Backing material": "Closed-Cell EPDM / Neoprene Sponge Blend",
         "Adhesive type": "Fiber-Reinforced Pressure Sensitive Acrylic",
@@ -9906,6 +10487,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC Air Handling Unit Hatch Gaskets",
       "application": "Engineered for hvac air handling unit hatch gaskets applications requiring closed-cell epdm / neoprene sponge blend and high performance fiber-reinforced pressure sensitive acrylic.",
+      "price": "$2.27 / roll",
       "specs": {
         "Backing material": "Closed-Cell EPDM / Neoprene Sponge Blend",
         "Adhesive type": "Fiber-Reinforced Pressure Sensitive Acrylic",
@@ -9923,6 +10505,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical Cabinet IP65 Water & Dust Enclosures",
       "application": "Engineered for electrical cabinet ip65 water & dust enclosures applications requiring closed-cell epdm / neoprene sponge blend and high performance fiber-reinforced pressure sensitive acrylic.",
+      "price": "$3.69 / roll",
       "specs": {
         "Backing material": "Closed-Cell EPDM / Neoprene Sponge Blend",
         "Adhesive type": "Fiber-Reinforced Pressure Sensitive Acrylic",
@@ -9940,6 +10523,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Marine Hatch Weatherstripping",
       "application": "Engineered for marine hatch weatherstripping applications requiring closed-cell epdm / neoprene sponge blend and high performance fiber-reinforced pressure sensitive acrylic.",
+      "price": "$2.91 / roll",
       "specs": {
         "Backing material": "Closed-Cell EPDM / Neoprene Sponge Blend",
         "Adhesive type": "Fiber-Reinforced Pressure Sensitive Acrylic",
@@ -9957,6 +10541,7 @@ export const CHINESE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]>
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC Air Handling Unit Hatch Gaskets",
       "application": "Engineered for hvac air handling unit hatch gaskets applications requiring closed-cell epdm / neoprene sponge blend and high performance fiber-reinforced pressure sensitive acrylic.",
+      "price": "$5.18 / roll",
       "specs": {
         "Backing material": "Closed-Cell EPDM / Neoprene Sponge Blend",
         "Adhesive type": "Fiber-Reinforced Pressure Sensitive Acrylic",

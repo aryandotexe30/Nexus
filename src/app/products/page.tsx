@@ -27,6 +27,7 @@ interface ExtractedProduct {
   market?: string;
   application?: string;
   specs?: Record<string, string>;
+  price?: string;
   imageUrl?: string;
   productUrl?: string;
   createdAt: string;
@@ -99,7 +100,7 @@ export default function ProductsPage() {
       if (thicknessFilter && thicknessFilter !== "ALL") params.append("thickness", thicknessFilter);
       if (tempRangeFilter && tempRangeFilter !== "ALL") params.append("tempRange", tempRangeFilter);
       if (searchTerm) params.append("search", searchTerm);
-      params.append("limit", "1000");
+      params.append("limit", "5000");
 
       const res = await fetch(`/api/products/list?${params.toString()}`);
       const data = await res.json();
@@ -716,8 +717,15 @@ export default function ProductsPage() {
                               </div>
                             )}
                             <div className="min-w-0 flex-1">
-                              <div className="font-bold text-sm text-slate-900 dark:text-white leading-tight">
-                                {p.name}
+                              <div className="flex flex-wrap items-center gap-1.5">
+                                <span className="font-bold text-sm text-slate-900 dark:text-white leading-tight">
+                                  {p.name}
+                                </span>
+                                {(p.price || (p.specs && (p.specs['Indicative Price'] || p.specs['Price']))) && (
+                                  <span className="inline-flex items-center font-bold text-[11px] px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 rounded-md border border-emerald-200 dark:border-emerald-800 shadow-2xs">
+                                    {p.price || (p.specs && (p.specs['Indicative Price'] || p.specs['Price']))}
+                                  </span>
+                                )}
                               </div>
                               <div className="text-[11px] text-slate-400 font-normal mt-0.5 truncate">
                                 {p.industry || 'Specialty Industrial Solutions'}

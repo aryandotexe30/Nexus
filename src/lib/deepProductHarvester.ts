@@ -16,6 +16,7 @@ export interface ExtractedProductItem {
   market?: string;
   application?: string;
   specs?: Record<string, string>;
+  price?: string;
   imageUrl?: string;
   productUrl?: string;
   rawMaterials?: string[];

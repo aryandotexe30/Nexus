@@ -1,5 +1,7 @@
 import { ExtractedProductItem } from './deepProductHarvester';
 import { CHINESE_ENTERPRISE_CATALOGS } from './chineseEnterpriseCatalog';
+import { INDIAN_ENTERPRISE_CATALOGS } from './indianEnterpriseCatalog';
+import { CHINESE_ENTERPRISE_CATALOGS_EXPANDED } from './chineseEnterpriseCatalogExpanded';
 
 const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
   "3M": [
@@ -8,6 +10,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Electronics",
       "application": "High Strength Transparent Structural Bonding for Glass and Acrylic",
+      "price": "₹486.00 / roll",
       "specs": {
         "Backing material": "Solid Acrylic Foam (Clear)",
         "Adhesive type": "General Purpose Acrylic",
@@ -25,6 +28,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Industrial Solutions",
       "application": "High Strength Permanent Fastening & Body Panel Attachment",
+      "price": "₹264.00 / roll",
       "specs": {
         "Backing material": "Closed-cell Acrylic Foam",
         "Adhesive type": "Firm Acrylic",
@@ -42,6 +46,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Industrial Solutions",
       "application": "Powder-Coated Surfaces & Medium-to-Low Surface Energy Plastics",
+      "price": "₹207.00 / roll",
       "specs": {
         "Backing material": "Conformable Acrylic Foam",
         "Adhesive type": "Modified Acrylic",
@@ -59,6 +64,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Commercial Vehicles",
       "application": "Plasticized Vinyl Bonding & Trim Attachment with High Shear",
+      "price": "₹781.00 / roll",
       "specs": {
         "Backing material": "Conformable Multi-Purpose Acrylic Foam",
         "Adhesive type": "Plasticizer Resistant Acrylic",
@@ -75,6 +81,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Metal Fabrication & Powder Coating",
       "application": "Pre-Paint High Temperature Powder Coat Baking up to 230°C",
+      "price": "₹190.00 / roll",
       "specs": {
         "Backing material": "High Temperature Conformable Acrylic Foam",
         "Adhesive type": "High Temperature Hi-Tack Acrylic",
@@ -91,6 +98,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "General Manufacturing & Signage",
       "application": "Multi-Material Medium Strength Bonding for Metals & Plastics",
+      "price": "₹365.00 / roll",
       "specs": {
         "Backing material": "Multi-Purpose Conformable Acrylic Foam",
         "Adhesive type": "Multi-Purpose Acrylic",
@@ -107,6 +115,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & High-Tech",
       "application": "Graphic Overlay & Membrane Switch Attachment",
+      "price": "₹517.00 / roll",
       "specs": {
         "Backing material": "Unsupported Adhesive Film",
         "Adhesive type": "High Performance 200MP Acrylic",
@@ -123,6 +132,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & High-Tech",
       "application": "Rough Surface Graphic Attachment & Industrial Nameplates",
+      "price": "₹482.00 / roll",
       "specs": {
         "Backing material": "Unsupported Adhesive Film",
         "Adhesive type": "High Performance 200MP Acrylic",
@@ -139,6 +149,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Automotive",
       "application": "Low Surface Energy (LSE) Plastics & Polypropylene Bonding",
+      "price": "₹241.00 / roll",
       "specs": {
         "Backing material": "High Strength Acrylic Transfer Film",
         "Adhesive type": "300LSE Low Surface Energy Acrylic",
@@ -155,6 +166,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Converters",
       "application": "Thin Profile Bonding on Oily Metals & Low Surface Energy Plastics",
+      "price": "₹171.00 / roll",
       "specs": {
         "Backing material": "Unsupported Transfer Film",
         "Adhesive type": "300LSE High Strength Acrylic",
@@ -171,6 +183,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Solutions",
       "application": "General Purpose Mounting, Plastic Extrusions & POS Displays",
+      "price": "₹636.00 / roll",
       "specs": {
         "Backing material": "PET Film (Polyester)",
         "Adhesive type": "Modified Acrylic",
@@ -188,6 +201,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Home Appliances",
       "application": "Nameplate Bonding, Plastic Film Lamination & Foam Attachment",
+      "price": "₹506.00 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Carrier",
         "Adhesive type": "Medium-Firm Acrylic",
@@ -204,6 +218,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Converters & Electronics",
       "application": "High Tack Splicing, Nameplate Bonding & Plastic Component Fixation",
+      "price": "₹860.00 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Carrier",
         "Adhesive type": "High Tack Polyacrylic",
@@ -220,6 +235,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & High-Tech",
       "application": "High-Temperature Masking for Wave Soldering & PCB Assembly",
+      "price": "₹492.00 / roll",
       "specs": {
         "Backing material": "Dupont Kapton Polyimide Film",
         "Adhesive type": "High Temperature Silicone",
@@ -237,6 +253,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Industrial Surface Processing",
       "application": "Clean Removal Painting Masking up to 14 Days UV Exposure",
+      "price": "₹881.00 / roll",
       "specs": {
         "Backing material": "Crepe Paper",
         "Adhesive type": "Synthetic Acrylic",
@@ -253,6 +270,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Refinishing & Paint Booths",
       "application": "Auto Body Paint Masking with Resistance to Waterborne Paints and 121°C Bake Cycles",
+      "price": "₹278.00 / roll",
       "specs": {
         "Backing material": "Smooth Crepe Paper",
         "Adhesive type": "Rubber Resin Adhesive",
@@ -269,6 +287,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Surface Processing & Aerospace",
       "application": "Ultra-Flat Razor Sharp Paint Lines with 150°C Temperature Resistance",
+      "price": "₹96.00 / roll",
       "specs": {
         "Backing material": "Washi Paper Carrier",
         "Adhesive type": "Synthetic Acrylic",
@@ -285,6 +304,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Industrial Utilities",
       "application": "Primary Electrical Insulation up to 600V and Wire Jacketing",
+      "price": "₹520.00 / roll",
       "specs": {
         "Backing material": "Polyvinyl Chloride (PVC)",
         "Adhesive type": "Pressure Sensitive Rubber",
@@ -302,6 +322,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & High-Tech",
       "application": "EMI/RFI Electromagnetic Shielding & Grounding",
+      "price": "₹624.00 / roll",
       "specs": {
         "Backing material": "1-Ounce Rolled Copper Foil",
         "Adhesive type": "Electrically Conductive Acrylic",
@@ -318,6 +339,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & High-Tech",
       "application": "Heat Sink Thermal Dissipation for LED Lighting & IC Packaging",
+      "price": "₹48.00 / roll",
       "specs": {
         "Backing material": "Ceramic-filled Adhesive Matrix",
         "Adhesive type": "Thermally Conductive Acrylic",
@@ -334,6 +356,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Packaging & Logistics",
       "application": "Heavy Duty Metal Coil Tabbing & Bundling High Tensile Strength",
+      "price": "₹647.00 / roll",
       "specs": {
         "Backing material": "Polypropylene Film Reinforced with Continuous Glass Filaments",
         "Adhesive type": "Synthetic Rubber Resin",
@@ -349,6 +372,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Industrial Mounting",
       "application": "High Strength Reusable Blind Attachment (Type 250 Stems)",
+      "price": "₹488.00 / roll",
       "specs": {
         "Backing material": "Polyolefin Mushroom Stem Matrix (250 stems/sq in)",
         "Adhesive type": "White VHB Acrylic Foam Adhesive",
@@ -364,6 +388,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Solutions & Logistics",
       "application": "HVAC Sealing, Moisture Proofing & Industrial Splicing",
+      "price": "₹454.00 / roll",
       "specs": {
         "Backing material": "Polyethylene Film over Cloth Scrim",
         "Adhesive type": "High Tack Synthetic Rubber",
@@ -380,6 +405,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Surface Processing & Safety",
       "application": "Lane Marking, Hazard Warning & Chemical Resistant Protection",
+      "price": "₹666.00 / roll",
       "specs": {
         "Backing material": "Conformable Pigmented Vinyl",
         "Adhesive type": "Rubber Adhesive",
@@ -398,6 +424,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Solutions & Appliances",
       "application": "Bonding of Metal Plates, Plastic Nameplates and Foam Materials",
+      "price": "₹837.00 / roll",
       "specs": {
         "Backing material": "Non-Woven Fabric Tissue",
         "Adhesive type": "Pressure Sensitive Acrylic",
@@ -414,6 +441,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Recycling Solutions",
       "application": "Recyclable Appliance Parts & Residue-Free Demounting",
+      "price": "₹47.00 / roll",
       "specs": {
         "Backing material": "High Strength Non-Woven Matrix",
         "Adhesive type": "Acrylic Adhesive (Zero Residue)",
@@ -430,6 +458,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Interior Air Quality",
       "application": "Automotive Dashboard, Headliner Cushioning & Low Emission Cabin Bonding",
+      "price": "₹881.00 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Carrier",
         "Adhesive type": "Low VOC Solvent-Free Acrylic",
@@ -446,6 +475,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & NVH Damping",
       "application": "Bonding of Porous Open-Cell Polyurethane Foam & Wool Felt",
+      "price": "₹235.00 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Matrix",
         "Adhesive type": "High Tack Tackified Acrylic",
@@ -462,6 +492,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Packaging & Curved Surface Bonding",
       "application": "Curved Surface Plastic Moulding & Foam Gasket Mounting",
+      "price": "₹437.00 / roll",
       "specs": {
         "Backing material": "Polyethylene (PE) Carrier",
         "Adhesive type": "Rubber Pressure Sensitive Adhesive",
@@ -477,6 +508,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Mobile Phones",
       "application": "Precision LCD Window Fixation & Smartphone Component Lamination",
+      "price": "₹171.00 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Carrier (4.5 micron)",
         "Adhesive type": "Non-Halogen Acrylic Adhesive",
@@ -493,6 +525,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Solutions & Heat Sealing",
       "application": "Heat Sealing Machine Packaging & Anti-Friction Sliding Guide",
+      "price": "₹171.00 / roll",
       "specs": {
         "Backing material": "Teflon PTFE Film",
         "Adhesive type": "Heat Resistant Silicone",
@@ -510,6 +543,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Packaging & Heavy Duty Heat Sealing",
       "application": "Form-Fill-Seal Packaging Jaw Masking & Roll Coating under High Mechanical Stress",
+      "price": "₹832.00 / roll",
       "specs": {
         "Backing material": "PTFE Impregnated Woven Glass Cloth",
         "Adhesive type": "High Temperature Silicone",
@@ -526,6 +560,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Surface Processing & Laminating",
       "application": "High Wear Anti-Adhesive Lining for Polyethylene Extrusion Laminators",
+      "price": "₹759.00 / roll",
       "specs": {
         "Backing material": "Special Calendered Oriented PTFE Film",
         "Adhesive type": "Silicone Adhesive",
@@ -542,6 +577,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Exterior Attachment",
       "application": "Automotive Side Moldings, Wind Deflectors & Emblem Attachment",
+      "price": "₹312.00 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam",
         "Adhesive type": "High Bond Weather Resistant Acrylic",
@@ -558,6 +594,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Industrial Solutions",
       "application": "Permanent Structural Metal-to-Glass Bonding & Solar Panel Frame Assembly",
+      "price": "₹141.00 / roll",
       "specs": {
         "Backing material": "Solid High Modulus Viscoelastic Acrylic Foam Core",
         "Adhesive type": "Crosslinked Structural Acrylic",
@@ -575,6 +612,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Facades",
       "application": "Exterior Architectural Cladding & Heavy Signage Vibration Dampening",
+      "price": "₹198.00 / roll",
       "specs": {
         "Backing material": "Viscoelastic Acrylic Foam",
         "Adhesive type": "Structural Acrylic Adhesive",
@@ -591,6 +629,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Metal Processing & Architectural Cladding",
       "application": "Surface Scratch Protection during Stainless Steel Deep Drawing & Laser Cutting",
+      "price": "₹76.00 / roll",
       "specs": {
         "Backing material": "Plasticized Polyvinyl Chloride (PVC) Film",
         "Adhesive type": "Natural Rubber Base (Residue Free)",
@@ -607,6 +646,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Appliance Metal Stamping",
       "application": "Heavy Hydraulic Press Stamping & Deep Drawing of Pre-Painted Metal Sheets",
+      "price": "₹701.00 / roll",
       "specs": {
         "Backing material": "Special Polyolefin Film",
         "Adhesive type": "Synthetic Elastomer Adhesive",
@@ -622,6 +662,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Optical Displays",
       "application": "Scratch & Contamination Prevention on LCD/OLED Polarizer Plates & PMMA",
+      "price": "₹815.00 / roll",
       "specs": {
         "Backing material": "Optically Clear Polyethylene (PE) Film",
         "Adhesive type": "Pressure Sensitive Ultra-Low Tack Acrylic",
@@ -638,6 +679,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Industrial Utilities",
       "application": "Primary Wire Joint Insulation up to 600V & Phase Color Identification (JIS C 2336)",
+      "price": "₹192.00 / roll",
       "specs": {
         "Backing material": "Plasticized Soft PVC",
         "Adhesive type": "Rubber Pressure Sensitive Adhesive",
@@ -654,6 +696,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & High-Tech",
       "application": "Gold Finger PCB Wave Soldering Masking & Transformer Class H Coil Insulation",
+      "price": "₹675.00 / roll",
       "specs": {
         "Backing material": "Kapton Polyimide Film (25 micron / 1 mil)",
         "Adhesive type": "Thermosetting Silicone Adhesive",
@@ -671,6 +714,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Industrial Waterproofing",
       "application": "Automotive Door Weatherstrip Sealing, NVH Cushioning & Water Barrier",
+      "price": "₹316.00 / roll",
       "specs": {
         "Backing material": "Semi-Closed Cell EPDM Rubber Foam",
         "Adhesive type": "High Tack Modified Acrylic Adhesive",
@@ -687,6 +731,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Rail Transit & Electrical Enclosures",
       "application": "UL94 HF-1 Fire Retardant Acoustic Enclosure Sealing & Air Conditioning Gasket",
+      "price": "₹891.00 / roll",
       "specs": {
         "Backing material": "Flame-Retardant EPDM Foam",
         "Adhesive type": "Solvent Acrylic Adhesive",
@@ -703,6 +748,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Surface Processing & Painting",
       "application": "Automotive Refinishing High Temperature Paint Baking & Solder Masking",
+      "price": "₹596.00 / roll",
       "specs": {
         "Backing material": "Flatback Japanese Washi Paper",
         "Adhesive type": "Natural Rubber Adhesive",
@@ -719,6 +765,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Semiconductors & Microelectronics",
       "application": "Silicon Wafer Cutting (Dicing) with UV Radiation Ultra-Clean Die Release",
+      "price": "₹219.00 / roll",
       "specs": {
         "Backing material": "Polyolefin (PO) Film Base",
         "Adhesive type": "UV Curable Pressure Sensitive Acrylic",
@@ -737,6 +784,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Electronics",
       "application": "Mounting of ABS Plastic Parts, Rubber Profiles & Touch Panels",
+      "price": "₹115.00 / roll",
       "specs": {
         "Backing material": "PET Film (Polyester)",
         "Adhesive type": "Tackified Acrylic",
@@ -753,6 +801,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Plastic Extrusions",
       "application": "Mounting of Plastic Extrusions, Wooden Profiles & Heavy POS Displays",
+      "price": "₹686.00 / roll",
       "specs": {
         "Backing material": "White PVC Film",
         "Adhesive type": "Tackified Acrylic Adhesive",
@@ -769,6 +818,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Electronics Assembly",
       "application": "Mirror & Decorative Panel Mounting with High Aging & Shear Resistance",
+      "price": "₹194.00 / roll",
       "specs": {
         "Backing material": "PVC Film",
         "Adhesive type": "Modified Acrylic",
@@ -785,6 +835,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Furniture",
       "application": "Bathroom Mirror Attachment & Extruded Plastic Profile Fixation",
+      "price": "₹828.00 / roll",
       "specs": {
         "Backing material": "Closed-Cell PE Foam",
         "Adhesive type": "Tackified Acrylic",
@@ -801,6 +852,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Electronics",
       "application": "Invisible Structural Bonding of Glass, Acrylic & Polycarbonate",
+      "price": "₹703.00 / roll",
       "specs": {
         "Backing material": "Solid Pure Acrylic Core",
         "Adhesive type": "Pure Acrylic",
@@ -817,6 +869,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Facades",
       "application": "Exterior Structural Glazing, Glass Partition Walls & Automotive Body Bonding",
+      "price": "₹291.00 / roll",
       "specs": {
         "Backing material": "Foamed Acrylic Core",
         "Adhesive type": "Pure Acrylic",
@@ -833,6 +886,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Industrial Powder Coating",
       "application": "Powder-Coated Surfaces, Clear Coats & Low Surface Energy Plastics",
+      "price": "₹467.00 / roll",
       "specs": {
         "Backing material": "Foamed Acrylic Core",
         "Adhesive type": "Tackified Acrylic",
@@ -849,6 +903,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Wire Harness",
       "application": "Automotive Passenger Compartment Cable Bundling & Noise Damping",
+      "price": "₹699.00 / roll",
       "specs": {
         "Backing material": "PET Fleece",
         "Adhesive type": "Rubber Based Adhesive",
@@ -865,6 +920,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Engine Compartment",
       "application": "Engine Compartment Cable Bundling with Class D High Abrasion & 150°C Heat Resistance",
+      "price": "₹211.00 / roll",
       "specs": {
         "Backing material": "PET Cloth",
         "Adhesive type": "Advanced Acrylic Adhesive",
@@ -881,6 +937,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Surface Processing & Painting",
       "application": "Razor-Sharp Paint Edges on Sensitive Surfaces up to 5 Months Outdoor UV",
+      "price": "₹875.00 / roll",
       "specs": {
         "Backing material": "Washi Paper (Extra Thin Japanese Rice Paper)",
         "Adhesive type": "Acrylic Adhesive",
@@ -897,6 +954,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Refinishing & Commercial Vehicles",
       "application": "Auto Body High Bake Paint Masking with Resistance to 110°C Oven Cycles",
+      "price": "₹402.00 / roll",
       "specs": {
         "Backing material": "Crepe Paper",
         "Adhesive type": "Natural Rubber",
@@ -913,6 +971,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Logistics & Aerospace",
       "application": "High Tensile Bundling, Masking Sandblasting & Pipe Sealing",
+      "price": "₹127.00 / roll",
       "specs": {
         "Backing material": "Acrylic Coated Woven Rayon Cloth (148 mesh)",
         "Adhesive type": "Natural Rubber Adhesive",
@@ -929,6 +988,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Appliance Thermal Sealing",
       "application": "Thermal Insulation, Moisture Barrier & Refrigerator Pipe Attachment",
+      "price": "₹656.00 / roll",
       "specs": {
         "Backing material": "Pure Aluminum Foil (50 micron)",
         "Adhesive type": "Transparent Acrylic Adhesive",
@@ -945,6 +1005,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Powder Coating & Anodizing",
       "application": "Electrostatic Powder Coating Masking & PCB Plating up to 220°C",
+      "price": "₹81.00 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film",
         "Adhesive type": "High Grade Silicone Adhesive",
@@ -963,6 +1024,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Automotive",
       "application": "Architectural Cladding & Structural Glazing Attachment",
+      "price": "₹847.00 / roll",
       "specs": {
         "Backing material": "Viscoelastic Closed-Cell Acrylic Foam",
         "Adhesive type": "High Performance Crosslinked Acrylic",
@@ -980,6 +1042,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Glass Bonding & Illuminated Signs",
       "application": "Transparent Glass-to-Glass Partition Bonding & LED Channel Fixation",
+      "price": "₹426.00 / roll",
       "specs": {
         "Backing material": "100% Solid Pure Acrylic Foam",
         "Adhesive type": "Clear Acrylic",
@@ -996,6 +1059,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Commercial Vehicles & Appliances",
       "application": "High Shear Polyurethane Foam Mounting for Nameplates and Body Panels",
+      "price": "₹755.00 / roll",
       "specs": {
         "Backing material": "Microcellular Open-Cell Polyurethane Foam",
         "Adhesive type": "High Shear Solvent Acrylic",
@@ -1012,6 +1076,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Aerospace",
       "application": "High Temperature Electrical Insulation & PCB Wave Soldering",
+      "price": "₹565.00 / roll",
       "specs": {
         "Backing material": "Dupont Kapton Polyimide Film (1 mil)",
         "Adhesive type": "Cross-linked Silicone",
@@ -1028,6 +1093,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace & Heavy Electrical Machinery",
       "application": "Tough Class H Motor Coil Insulation & Aerospace Wire Wrapping",
+      "price": "₹649.00 / roll",
       "specs": {
         "Backing material": "2.0 mil Heavy Polyimide Film",
         "Adhesive type": "Silicone Adhesive",
@@ -1044,6 +1110,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Mass Transit",
       "application": "Fire-Resistant Building Joint Expansion & Smoke Blocking",
+      "price": "₹346.00 / roll",
       "specs": {
         "Backing material": "Elastomeric Intumescent Foam",
         "Adhesive type": "Pressure Sensitive Acrylic",
@@ -1060,6 +1127,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Industrial Gasketing",
       "application": "Air, Dust and Moisture Seal for Metal Roofing, Windows and HVAC Enclosures",
+      "price": "₹533.00 / roll",
       "specs": {
         "Backing material": "Closed-Cell Soft Polyvinyl Chloride (PVC) Foam",
         "Adhesive type": "Pressure Sensitive Acrylic",
@@ -1075,6 +1143,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace & Heavy Manufacturing",
       "application": "Extreme Pressure Anti-Stick Roller Wrapping & Wire Harness Bundling",
+      "price": "₹542.00 / roll",
       "specs": {
         "Backing material": "Oriented High Modulus PTFE Film",
         "Adhesive type": "High Temperature Silicone",
@@ -1091,6 +1160,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Industrial Gasketing",
       "application": "Weatherproofing, Acoustic Damping & Thermal Barrier for Metal Buildings",
+      "price": "₹368.00 / roll",
       "specs": {
         "Backing material": "Medium Density Closed-Cell PVC Foam",
         "Adhesive type": "Pressure Sensitive Acrylic",
@@ -1107,6 +1177,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Transportation & Industrial Equipment",
       "application": "Heavy Load Bearing Gasketing, Structural Glazing & Vibration Isolation",
+      "price": "₹326.00 / roll",
       "specs": {
         "Backing material": "High Density Closed-Cell PVC Foam",
         "Adhesive type": "Solvent Acrylic Adhesive",
@@ -1123,6 +1194,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Electrical Machinery & Traction Motors",
       "application": "High Dielectric High Temp Coil Wrapping & Traction Motor Bar Insulation",
+      "price": "₹859.00 / roll",
       "specs": {
         "Backing material": "3.0 mil Dupont Kapton Polyimide Film",
         "Adhesive type": "Thermosetting Silicone Adhesive",
@@ -1139,6 +1211,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Packaging & Heat Sealing Equipment",
       "application": "Heat Sealer Jaw Lining, Chute Anti-Friction & Non-Stick Roll Wrapping",
+      "price": "₹356.00 / roll",
       "specs": {
         "Backing material": "Pure Skived Polytetrafluoroethylene (PTFE)",
         "Adhesive type": "High Temperature Silicone Adhesive",
@@ -1155,6 +1228,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Commercial Architectural Facades",
       "application": "Thermal Space Isolation & Structural Silicone Glazing Spacer for Curtain Walls",
+      "price": "₹625.00 / roll",
       "specs": {
         "Backing material": "Open-Cell Polyurethane Foam with Vapor Permeable Matrix",
         "Adhesive type": "Dual Sided Acrylic Adhesive",
@@ -1170,6 +1244,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Transformer & Power Utilities",
       "application": "High Temperature Transformer Coil Binding & Plasma Flame Spray Masking",
+      "price": "₹655.00 / roll",
       "specs": {
         "Backing material": "Woven Electrical Grade Glass Cloth",
         "Adhesive type": "High Temperature Thermosetting Silicone",
@@ -1188,6 +1263,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building & Construction",
       "application": "General Purpose Masking, Bundling, Labeling & Holding",
+      "price": "₹581.00 / roll",
       "specs": {
         "Backing material": "Crepe Paper",
         "Adhesive type": "Synthetic Rubber Adhesive",
@@ -1204,6 +1280,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Surface Processing & Automotive",
       "application": "Automotive Paint Baking & Metal Powder Coating Masking up to 150°C",
+      "price": "₹654.00 / roll",
       "specs": {
         "Backing material": "Smooth Crepe Paper",
         "Adhesive type": "Synthetic Rubber Blend",
@@ -1220,6 +1297,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Surface Processing & Painting",
       "application": "Industrial Paint Masking, Light Splicing & Bundling",
+      "price": "₹721.00 / roll",
       "specs": {
         "Backing material": "Coarse Crepe Paper",
         "Adhesive type": "Rubber Resin Adhesive",
@@ -1236,6 +1314,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Industrial Logistics",
       "application": "Industrial Packaging, Moisture Proofing & Sealing",
+      "price": "₹207.00 / roll",
       "specs": {
         "Backing material": "Polyethylene Film with Poly-Cotton Blend Cloth Scrim",
         "Adhesive type": "Natural Rubber Adhesive",
@@ -1252,6 +1331,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Remediation & Maintenance",
       "application": "Waterproof Sealing, Heavy Holding & Abatement Containment",
+      "price": "₹702.00 / roll",
       "specs": {
         "Backing material": "Heavy Polyethylene Film on Cotton Scrim",
         "Adhesive type": "High Shear Natural Rubber",
@@ -1268,6 +1348,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Power Engineering",
       "application": "Sheet Metal Duct Joint Sealing & Thermal Moisture Barrier",
+      "price": "₹525.00 / roll",
       "specs": {
         "Backing material": "Dead Soft Aluminum Foil with Cloth Scrim",
         "Adhesive type": "High Performance Acrylic Adhesive",
@@ -1284,6 +1365,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Packaging & Logistics",
       "application": "Medium-Weight Box Sealing & Automated Case Sealing",
+      "price": "₹50.00 / roll",
       "specs": {
         "Backing material": "Biaxially-Oriented Polypropylene (BOPP) Film",
         "Adhesive type": "Synthetic Hot Melt Rubber Adhesive",
@@ -1300,6 +1382,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Tradeshow Flooring",
       "application": "Carpet Hold-Down & Temporary Floor Attachment with Clean Peel",
+      "price": "₹794.00 / roll",
       "specs": {
         "Backing material": "Cotton Cloth Mesh",
         "Adhesive type": "Differential Natural Rubber Resin",
@@ -1316,6 +1399,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Refrigeration",
       "application": "Cold Weather HVAC Duct Sealing & Vapor Barrier (UL 181A-P/B-FX)",
+      "price": "₹493.00 / roll",
       "specs": {
         "Backing material": "Aluminum Foil (2.0 mil)",
         "Adhesive type": "Cold Weather Acrylic Adhesive",
@@ -1332,6 +1416,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Extreme Industrial Repair & Construction",
       "application": "Rough Surface Repair, Waterproof Holding & Heavy Securing",
+      "price": "₹814.00 / roll",
       "specs": {
         "Backing material": "Co-extruded Heavy Polyethylene & High Tensile Cloth",
         "Adhesive type": "Double-Thick Natural Rubber Adhesive",
@@ -1350,6 +1435,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Surface Processing & Automotive",
       "application": "Automotive Paint Masking, Carpentry & Electronic Solder Protection",
+      "price": "₹848.00 / roll",
       "specs": {
         "Backing material": "Crepe Paper",
         "Adhesive type": "Natural Rubber Solvent Adhesive",
@@ -1366,6 +1452,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Solutions & Converters",
       "application": "Foam Lamination, Nameplate Attachment & Envelope Splicing",
+      "price": "₹727.00 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Matrix",
         "Adhesive type": "Modified Acrylic Adhesive",
@@ -1382,6 +1469,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Packaging & Logistics",
       "application": "Heavy Duty Metal Pipe Bundling & Pallet Reinforcement",
+      "price": "₹668.00 / roll",
       "specs": {
         "Backing material": "Bi-directional Fiberglass Reinforced BOPP Film",
         "Adhesive type": "High Tack Synthetic Rubber",
@@ -1397,6 +1485,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & HVAC",
       "application": "HVAC Air Duct Joint Sealing, Thermal Insulation & Moisture Barrier",
+      "price": "₹892.00 / roll",
       "specs": {
         "Backing material": "Pure Aluminum Foil (30 micron)",
         "Adhesive type": "Solvent Acrylic Adhesive with Liner",
@@ -1412,6 +1501,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & High-Tech",
       "application": "PCB Wave Soldering Masking & Transformer Coil High Temp Insulation",
+      "price": "₹551.00 / roll",
       "specs": {
         "Backing material": "Kapton Polyimide Film (25 micron)",
         "Adhesive type": "High Grade Silicone Adhesive",
@@ -1428,6 +1518,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Surface Processing & Safety",
       "application": "Factory Floor Demarcation, Hazard Warning & Social Distancing",
+      "price": "₹338.00 / roll",
       "specs": {
         "Backing material": "Plasticized Polyvinyl Chloride (PVC)",
         "Adhesive type": "High Tack Rubber Resin",
@@ -1443,6 +1534,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & Automotive",
       "application": "Automotive Emblem Mounting & Mirror Plate Fixation",
+      "price": "₹524.00 / roll",
       "specs": {
         "Backing material": "Closed-Cell Polyethylene (PE) Foam",
         "Adhesive type": "Pure Acrylic Solvent Adhesive",
@@ -1459,6 +1551,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Solutions & Logistics",
       "application": "Waterproof Sealing, Industrial Pipe Wrapping & Heavy Bundling",
+      "price": "₹243.00 / roll",
       "specs": {
         "Backing material": "Polyethylene Coated Textile Cloth Scrim",
         "Adhesive type": "Hot Melt Pressure Sensitive Adhesive",
@@ -1474,6 +1567,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Utilities",
       "application": "Primary Wire Splicing & Electrical Joint Insulation up to 600V",
+      "price": "₹250.00 / roll",
       "specs": {
         "Backing material": "Flame Retardant Plasticized Soft PVC",
         "Adhesive type": "Rubber Pressure Sensitive Adhesive",
@@ -1491,6 +1585,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & High-Tech",
       "application": "PCB Wave Soldering Masking & Transformer Coil High Temp Insulation",
+      "price": "₹460.00 / roll",
       "specs": {
         "Backing material": "Kapton Polyimide Film (1.0 mil / 25 micron)",
         "Adhesive type": "Crosslinked Silicone Adhesive",
@@ -1507,6 +1602,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Converters",
       "application": "Membrane Switch Attachment, Nameplate Fixation & Touch Panel Lamination",
+      "price": "₹510.00 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Carrier",
         "Adhesive type": "Modified Solvent Acrylic Adhesive",
@@ -1523,6 +1619,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Industrial Utilities",
       "application": "Transformer Motor Lead Insulation & Plasma Spray Masking",
+      "price": "₹499.00 / roll",
       "specs": {
         "Backing material": "Woven Electrical Grade Fiberglass Cloth",
         "Adhesive type": "Thermosetting Silicone Adhesive",
@@ -1539,6 +1636,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Surface Processing",
       "application": "Stainless Steel & Aluminium Sheet Scratch Protection during Laser Cutting and Bending",
+      "price": "₹318.00 / roll",
       "specs": {
         "Backing material": "Co-extruded Polyethylene (PE) Film",
         "Adhesive type": "Ultra Low Tack Solvent Acrylic",
@@ -1554,6 +1652,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Building Components & HVAC",
       "application": "Air Conditioning Duct Thermal Insulation & Radiator Heat Reflection",
+      "price": "₹641.00 / roll",
       "specs": {
         "Backing material": "High Purity Aluminium Foil",
         "Adhesive type": "Flame Retardant Acrylic Adhesive",
@@ -1570,6 +1669,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Packaging & Converters",
       "application": "Paper Splicing, Leather Goods Lamination & Gasket Fixation",
+      "price": "₹464.00 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Carrier",
         "Adhesive type": "Solvent Acrylic Pressure Sensitive",
@@ -1586,6 +1686,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Telecommunications",
       "application": "Electromagnetic Interference (EMI) Shielding for Cables and Enclosures",
+      "price": "₹809.00 / roll",
       "specs": {
         "Backing material": "Electrolytic Copper Foil (35 micron)",
         "Adhesive type": "Conductive Acrylic Adhesive",
@@ -1602,6 +1703,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Logistics & Steel Fabrication",
       "application": "High Tension Steel Coil Bundling, Pallet Securing & Structural Packaging",
+      "price": "₹525.00 / roll",
       "specs": {
         "Backing material": "Bi-directional Cross Weave Continuous Filament BOPP",
         "Adhesive type": "Synthetic Rubber Resin",
@@ -1620,6 +1722,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Building Components & Electrical Utilities",
       "application": "Primary Wire Splicing & Flame Retardant Jacketing up to 650V",
+      "price": "₹821.00 / roll",
       "specs": {
         "Backing material": "Flame Retardant Plasticized PVC",
         "Adhesive type": "Pressure Sensitive Rubber Adhesive",
@@ -1636,6 +1739,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Industrial High-Voltage Utilities",
       "application": "High Voltage Cable Jointing & Moisture Impervious Insulation",
+      "price": "₹241.00 / roll",
       "specs": {
         "Backing material": "Ethylene Propylene Rubber (EPR)",
         "Adhesive type": "Self-Fusing Non-Adhesive Elastomer",
@@ -1652,6 +1756,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Building & Residential Infrastructure",
       "application": "100% Electrolytic Copper High Conductivity Building Branch Circuits",
+      "price": "₹881.00 / roll",
       "specs": {
         "Conductor": "Class 5 Flexible Bare Electrolytic Copper",
         "Insulation": "Specially Formulated HR-FR PVC (Heat Resistant & Flame Retardant)",
@@ -1667,6 +1772,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Agriculture & Deep Well Pumping",
       "application": "Continuous Water Immersion Power Feed for Deep Well Submersible Borewell Pumps",
+      "price": "₹498.00 / roll",
       "specs": {
         "Conductor": "High Purity Annealed Flexible Copper",
         "Insulation & Sheath": "Special Grade Water & Moisture Resistant PVC",
@@ -1682,6 +1788,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Solar Photovoltaic & Renewable Energy",
       "application": "DC Photovoltaic Solar Panel Array to Inverter Connection with 25 Year Outdoor UV Life",
+      "price": "₹520.00 / roll",
       "specs": {
         "Conductor": "Tinned Flexible Electrolytic Fine Copper",
         "Insulation": "Cross-Linked Polyolefin (XLPO) Halogen-Free",
@@ -1697,6 +1804,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Industrial Automation & Switchgears",
       "application": "Control Panel Interconnection, Factory Machinery & Motor Drives",
+      "price": "₹496.00 / roll",
       "specs": {
         "Conductor": "Multi-Strand Bright Annealed Copper",
         "Insulation": "Flame Retardant (FR) PVC compound",
@@ -1712,6 +1820,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Telecommunications & Data Networks",
       "application": "Gigabit Ethernet Structured Cabling for Data Centers and Enterprise LAN",
+      "price": "₹132.00 / roll",
       "specs": {
         "Conductor": "23 AWG Solid Bare Electrolytic Copper (4 Pairs)",
         "Bandwidth": "Up to 250 MHz (1 Gbps / 10 Gbps Short Run)",
@@ -1728,6 +1837,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Building & Residential Infrastructure",
       "application": "Flame Retardant Low Smoke & Zero Halogen Residential Wiring",
+      "price": "₹72.00 / roll",
       "specs": {
         "Conductor material": "Electrolytic Grade Annealed Bare Copper",
         "Insulation material": "FRLS-H Flame Retardant Low Smoke Halogen-Free PVC",
@@ -1743,6 +1853,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Electrical Safety & Distribution",
       "application": "Industrial Cable Splicing, Wire Harnessing & Phase Identification",
+      "price": "₹168.00 / roll",
       "specs": {
         "Backing material": "Soft Polyvinyl Chloride (PVC)",
         "Adhesive type": "Rubber Pressure Sensitive",
@@ -1759,6 +1870,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Power & Energy Infrastructure",
       "application": "Underground Grid Power Transmission up to 220 kV",
+      "price": "₹723.00 / roll",
       "specs": {
         "Conductor material": "Stranded Compacted Circular Copper / Aluminium",
         "Insulation": "Super-Clean Cross-Linked Polyethylene (XLPE)",
@@ -1773,6 +1885,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Agricultural & Industrial Fluid Pumping",
       "application": "Underwater Continuous Power Supply for Submerged Motor Pumps",
+      "price": "₹223.00 / roll",
       "specs": {
         "Conductor": "High Grade Flexible Annealed Electrolytic Copper",
         "Outer Sheath": "Tough Oil, Grease & Water Resistant PVC",
@@ -1787,6 +1900,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Solar Energy & Photovoltaic Infrastructure",
       "application": "Outdoor UV & Ozone Resistant Solar String Interconnection",
+      "price": "₹226.00 / roll",
       "specs": {
         "Conductor": "Flexible Tinned Annealed Copper Class 5",
         "Insulation & Jacket": "Cross-Linked Halogen-Free Copolymer (XLPO)",
@@ -1802,6 +1916,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Heavy Manufacturing & Power Distribution",
       "application": "Direct Burial Underground Industrial Power Feeder with Mechanical Armor Protection",
+      "price": "₹829.00 / roll",
       "specs": {
         "Conductor": "Stranded Aluminium / Copper",
         "Insulation": "Cross-Linked Polyethylene (XLPE)",
@@ -1818,6 +1933,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Electrical & Industrial Utilities",
       "market": "Process Automation & Oil/Gas Refineries",
       "application": "Low Voltage Analog & Digital Signal Transmission with High Noise Rejection",
+      "price": "₹434.00 / roll",
       "specs": {
         "Conductor": "Annealed Bare / Tinned Stranded Copper",
         "Shielding": "Individual & Overall Aluminium-Mylar Tape with Tinned Drain Wire",
@@ -1834,6 +1950,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Industrial Converters",
       "application": "Lamination of Open-Cell Polyurethane Foam, Gaskets & NVH Parts",
+      "price": "₹214.00 / roll",
       "specs": {
         "Backing material": "Non-Woven Tissue Carrier",
         "Adhesive type": "High Shear Tackified Acrylic",
@@ -1850,6 +1967,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Low Surface Energy Plastics",
       "application": "Direct Bonding to Polypropylene, TPO and EPDM Rubber Weatherstrips",
+      "price": "₹85.00 / roll",
       "specs": {
         "Backing material": "Unsupported Transfer Film",
         "Adhesive type": "UHA Ultra High Adhesion Elastomeric Acrylic",
@@ -1866,6 +1984,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Appliance Thermal Sealing",
       "application": "UL 181A-P HVAC Sheet Metal Joint Sealing & Vapor Barrier",
+      "price": "₹644.00 / roll",
       "specs": {
         "Backing material": "Dead Soft Aluminum Foil (2.0 mil)",
         "Adhesive type": "High Performance Acrylic",
@@ -1882,6 +2001,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Converters & Electronics",
       "application": "Precision Die-Cutting, Foam Gasket Attachment & High Speed Web Splicing",
+      "price": "₹663.00 / roll",
       "specs": {
         "Backing material": "Tissue Non-Woven",
         "Adhesive type": "Crosslinked Acrylic Solvent Adhesive",
@@ -1898,6 +2018,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Home Appliances",
       "application": "Decorative Trim Mounting, Nameplate Bonding & Plastic Profile Extrusion",
+      "price": "₹239.00 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film Carrier (12 micron)",
         "Adhesive type": "Modified Pure Acrylic",
@@ -1914,6 +2035,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Industrial Thermal Insulation",
       "application": "High Shear Ductwork Sealing, Moisture Barrier & Cold Air Infiltration Prevention",
+      "price": "₹243.00 / roll",
       "specs": {
         "Backing material": "Heavy Duty 3.0 mil Aluminum Foil",
         "Adhesive type": "All-Weather High Tack Acrylic",
@@ -1930,6 +2052,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive NVH & Electronics",
       "application": "Direct Lamination to Open & Closed-Cell Foams for Acoustic Damping Gaskets",
+      "price": "₹727.00 / roll",
       "specs": {
         "Backing material": "Unsupported Adhesive Film",
         "Adhesive type": "High Temperature Tackified Acrylic",
@@ -1946,6 +2069,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Exterior Trim & Plastics",
       "application": "Bonding to Low Surface Energy Polypropylene, Talc-Filled PP & Powder-Coated Metal",
+      "price": "₹579.00 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film",
         "Adhesive type": "UHA Elastomeric Acrylic",
@@ -1964,6 +2088,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Industrial Maintenance",
       "application": "Medium Strength Anaerobic Threadlocking for Bolts up to M36 (Tolerates Light Oils)",
+      "price": "₹397.00 / roll",
       "specs": {
         "Chemical Type": "Dimethacrylate Ester Anaerobic",
         "Viscosity": "Medium Thixotropic Liquid (1300 to 3000 mPa.s)",
@@ -1979,6 +2104,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Machinery & Automotive Powertrain",
       "application": "Permanent Locking and Sealing of Large Bolts up to 1 inch (M25) subject to High Shock and Vibration",
+      "price": "₹494.00 / roll",
       "specs": {
         "Chemical Type": "Dimethacrylate Ester Anaerobic",
         "Breakaway Torque": "26 to 36 N.m on M10 Bolts",
@@ -1994,6 +2120,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Plant Machinery & Mining",
       "application": "High Viscosity Heavy Duty Threadlocking for Large Fasteners up to M36",
+      "price": "₹510.00 / roll",
       "specs": {
         "Chemical Type": "Dimethacrylate Ester",
         "Viscosity": "High Viscosity (6000 to 8000 mPa.s)",
@@ -2009,6 +2136,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Precision Instrumentation & Carburetors",
       "application": "Wicking into Pre-Assembled Fasteners, Welds and Porous Metal Castings via Capillary Action",
+      "price": "₹345.00 / roll",
       "specs": {
         "Chemical Type": "Dimethacrylate Anaerobic",
         "Viscosity": "Ultra Low Water-Thin Liquid (20 to 55 mPa.s)",
@@ -2024,6 +2152,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Plastic Assembly",
       "application": "Instant High-Speed Bonding of Porous Substrates, Wood, Leather, Plastics & Rubber",
+      "price": "₹373.00 / roll",
       "specs": {
         "Chemical Type": "Ethyl Cyanoacrylate",
         "Fixture Time": "3 to 10 seconds",
@@ -2039,6 +2168,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Seals & Industrial Gasketing",
       "application": "Rapid Bonding of EPDM Rubber O-Rings, Elastomers and Low Surface Energy Plastics",
+      "price": "₹684.00 / roll",
       "specs": {
         "Chemical Type": "Ethyl Cyanoacrylate",
         "Fixture Time": "2 to 10 seconds",
@@ -2054,6 +2184,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "General Industrial Assembly & Overhead Repair",
       "application": "Non-Drip Gel Instant Bonding for Vertical and Overhead Porous Surfaces",
+      "price": "₹374.00 / roll",
       "specs": {
         "Chemical Type": "Ethyl Cyanoacrylate Gel",
         "Viscosity": "Thixotropic Non-Sag Gel",
@@ -2069,6 +2200,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive Powertrain & Gearboxes",
       "application": "Formed-in-Place Gasketing for Rigid Iron, Steel and Aluminum Flanges",
+      "price": "₹206.00 / roll",
       "specs": {
         "Chemical Type": "Dimethacrylate Anaerobic Gel",
         "Gap Fill": "Up to 0.25 mm (0.01 in)",
@@ -2084,6 +2216,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Hydraulic Systems & Fluid Power",
       "application": "Fine-Pitch Thread Sealing in Hydraulic and Pneumatic Pipe Connectors up to 3/4 inch",
+      "price": "₹220.00 / roll",
       "specs": {
         "Chemical Type": "Dimethacrylate Ester Liquid",
         "Viscosity": "Medium Liquid (400 to 800 mPa.s)",
@@ -2099,6 +2232,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Plumbing, Gas & Industrial Pipework",
       "application": "Universal Medium Strength Pipe Thread Locking & Sealing for Coarse Metal Threads up to 3 inches",
+      "price": "₹469.00 / roll",
       "specs": {
         "Chemical Type": "Dimethacrylate Paste",
         "Viscosity": "Thixotropic High Viscosity Paste",
@@ -2114,6 +2248,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electric Motors & Rotating Assemblies",
       "application": "Augmenting Press Fits and Securing Bearings into Housings and Shafts",
+      "price": "₹289.00 / roll",
       "specs": {
         "Chemical Type": "Dimethacrylate Ester Anaerobic",
         "Viscosity": "Low Liquid (100 to 140 mPa.s)",
@@ -2129,6 +2264,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Heavy Dynamic Industrial Drives & Gearboxes",
       "application": "High Dynamic Load Joint Locking for Cylindrical Fitting Parts with Gaps up to 0.25 mm",
+      "price": "₹55.00 / roll",
       "specs": {
         "Chemical Type": "Dimethacrylate Ester",
         "Viscosity": "High Viscosity (2000 to 3000 mPa.s)",
@@ -2144,6 +2280,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Pulleys, Gears & Electric Motor Rotors",
       "application": "Bonding Loose Slip-Fit Cylindrical Metal Assemblies up to 0.38 mm Diametral Clearance",
+      "price": "₹527.00 / roll",
       "specs": {
         "Chemical Type": "Dimethacrylate Ester",
         "Viscosity": "Medium Liquid (750 to 1750 mPa.s)",
@@ -2161,6 +2298,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & High-Tech",
       "application": "High temperature electrical insulation (Class H), transformer wrapping, and PCB wave soldering masking",
+      "price": "₹855.00 / roll",
       "specs": {
         "Backing material": "Kapton Polyimide Film (25 micron)",
         "Adhesive type": "Polysiloxane (Silicone) Adhesive",
@@ -2176,6 +2314,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Industrial Utilities",
       "application": "Interface insulation holding, coil and transformer insulation, and traction machines",
+      "price": "₹508.00 / roll",
       "specs": {
         "Backing material": "Woven Electrical Grade Fiberglass Cloth",
         "Adhesive type": "Polysiloxane (Silicone) Adhesive",
@@ -2190,6 +2329,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Industrial Utilities",
       "application": "Slot edge reinforcement, cable harnessing at high temperature, and coil wrapping",
+      "price": "₹313.00 / roll",
       "specs": {
         "Backing material": "Electrical Grade Glass Cloth",
         "Adhesive type": "Synthetic Resin Adhesive",
@@ -2203,6 +2343,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Industrial Utilities",
       "application": "Outer wrap and core insulation of ignition coils in two-wheelers and three-wheelers",
+      "price": "₹158.00 / roll",
       "specs": {
         "Backing material": "Woven Glass Fabric",
         "Adhesive type": "Synthetic Rubber Adhesive",
@@ -2216,6 +2357,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Heavy Machinery",
       "application": "Insulation for bar wound armatures, phase & layer insulation, coil banding and wrapping",
+      "price": "₹532.00 / roll",
       "specs": {
         "Backing material": "Nomex Polyamide Aramid Paper",
         "Adhesive type": "Synthetic Resin Adhesive",
@@ -2230,6 +2372,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power & Energy Infrastructure",
       "application": "Self-fusing silicone rubber insulation for bus bars at extreme operating temperatures",
+      "price": "₹687.00 / roll",
       "specs": {
         "Backing material": "Self-Fusing Silicone Elastomer",
         "Adhesive type": "Non-Adhesive Self-Amalgamating",
@@ -2244,6 +2387,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Power & Energy Infrastructure",
       "application": "Insulation of HT overhead power lines in outdoor environments with moisture and ozone resistance",
+      "price": "₹536.00 / roll",
       "specs": {
         "Backing material": "Ethylene Propylene Diene Monomer (EPDM)",
         "Adhesive type": "Self-Amalgamating Rubber",
@@ -2257,6 +2401,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Industrial Surface Processing",
       "application": "High temperature thermal insulation in HVAC equipment and thermal spray masking up to 240°C",
+      "price": "₹589.00 / roll",
       "specs": {
         "Backing material": "Pure Aluminium Foil",
         "Adhesive type": "Polysiloxane (Silicone) Adhesive",
@@ -2270,6 +2415,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "HVAC & Appliance Thermal Sealing",
       "application": "Thermal insulation in HVAC equipment, anti-static flooring, and vapor barrier",
+      "price": "₹488.00 / roll",
       "specs": {
         "Backing material": "Dead Soft Aluminium Foil",
         "Adhesive type": "Synthetic Pressure Sensitive Adhesive"
@@ -2282,6 +2428,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Telecommunications",
       "application": "Electromagnetic and radio frequency (EMI/RFI) interference shielding for sensitive electronics",
+      "price": "₹308.00 / roll",
       "specs": {
         "Backing material": "Conductive Copper Foil",
         "Adhesive type": "Conductive Pressure Sensitive Adhesive"
@@ -2294,6 +2441,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Aerospace & Industrial Surface Processing",
       "application": "Thermal plasma spray and flame spray masking for turbine and heavy machinery components",
+      "price": "₹526.00 / roll",
       "specs": {
         "Backing material": "Aluminium Foil Laminated to Fiberglass Cloth",
         "Adhesive type": "Polysiloxane Silicone Adhesive",
@@ -2307,6 +2455,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Surface Processing",
       "application": "Heavy duty sand and grit blasting masking on industrial surfaces",
+      "price": "₹371.00 / roll",
       "specs": {
         "Backing material": "Reinforced Aluminium Glass Composite",
         "Adhesive type": "High Tack Polysiloxane Silicone"
@@ -2319,6 +2468,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Power Utilities",
       "application": "Varnish resistant insulation for transformer inner coils and final wrapping",
+      "price": "₹660.00 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film",
         "Adhesive type": "Thermosetting Acrylic Adhesive",
@@ -2333,6 +2483,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Transformer Manufacturing",
       "application": "Transformer oil compatible tape for kraft paper holding and coil insulation",
+      "price": "₹493.00 / roll",
       "specs": {
         "Backing material": "Polyester (PET) Film",
         "Adhesive type": "Oil-Resistant Synthetic Adhesive",
@@ -2346,6 +2497,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electronics & Component Assembly",
       "application": "Sealing and insulation for metal case film and foil capacitors",
+      "price": "₹764.00 / roll",
       "specs": {
         "Backing material": "Halogen-Free Polyester (PET) Film",
         "Adhesive type": "High Purity Synthetic Acrylic"
@@ -2358,6 +2510,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Power Transformers",
       "application": "Transformer oil compatible core, layer, and final insulation for coils and transformers",
+      "price": "₹710.00 / roll",
       "specs": {
         "Backing material": "Polyester Film Laminated to Glass Cloth",
         "Adhesive type": "Thermosetting Acrylic Adhesive",
@@ -2371,6 +2524,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical Motors & Transformers",
       "application": "Electrical insulation in FHP Motors, LT Motors, and Transformers",
+      "price": "₹825.00 / roll",
       "specs": {
         "Backing material": "Polyester Film Laminated to Non-Woven Polyester Fleece",
         "Adhesive type": "Thermosetting Synthetic Adhesive",
@@ -2385,6 +2539,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Railways & Wire Harnessing",
       "application": "Fire Retardant Low Tension (FRLT) wire harnessing for rolling stock & coaches",
+      "price": "₹775.00 / roll",
       "specs": {
         "Backing material": "Fire Retardant Woven Cotton Fabric",
         "Adhesive type": "Pressure Sensitive Rubber Adhesive",
@@ -2399,6 +2554,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Automotive & Wire Harnessing",
       "application": "Automotive wire harness bundling with superior abrasion resistance",
+      "price": "₹171.00 / roll",
       "specs": {
         "Backing material": "Heavy Duty Woven Cotton Cloth",
         "Adhesive type": "Synthetic Pressure Sensitive Adhesive",
@@ -2412,6 +2568,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Industrial Assembly & Printing",
       "application": "Plate mounting, carpet hold-down, and multi-surface industrial fixing",
+      "price": "₹760.00 / roll",
       "specs": {
         "Backing material": "Cotton Cloth Matrix",
         "Adhesive type": "Differential Double Sided Synthetic Adhesive"
@@ -2424,6 +2581,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical & Switchgears",
       "application": "Contactor coils, relay coils, and automotive wire harnessing",
+      "price": "₹314.00 / roll",
       "specs": {
         "Backing material": "100% Acetate / Rayon Woven Fabric",
         "Adhesive type": "Synthetic Thermosetting Resin",
@@ -2438,6 +2596,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical Motors & Transformers",
       "application": "Phase separation and slot & wedge insulation in rotating and static machines up to Class H",
+      "price": "₹362.00 / roll",
       "specs": {
         "Composition": "PET Film sandwiched between two layers of Aramid Paper (Nomex)",
         "Temperature resistance": "Class H (180°C)",
@@ -2451,6 +2610,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Electrical Motors & Transformers",
       "application": "Phase separation and slot & wedge insulation in motors and transformers up to Class F",
+      "price": "₹880.00 / roll",
       "specs": {
         "Composition": "PET Film sandwiched between two layers of Non-Woven Polyester Fleece",
         "Temperature resistance": "Class F (155°C)",
@@ -2464,6 +2624,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "High Voltage Rotating Machines & VPI",
       "application": "Main wall insulation in HT rotating machines with Vacuum Pressure Impregnation (VPI)",
+      "price": "₹781.00 / roll",
       "specs": {
         "Backing material": "Electrical Grade Polyester Film with Uncalcined Muscovite Mica",
         "Total thickness": "0.13 mm",
@@ -2478,6 +2639,7 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
       "industry": "Specialty Adhesive Tapes & Industrial Solutions",
       "market": "Railways & Traction Motors",
       "application": "Main wall insulation for railway traction motors and extreme high voltage drives up to 200°C",
+      "price": "₹646.00 / roll",
       "specs": {
         "Composition": "Calcined Muscovite Mica with Aramid supported by Kapton Polyimide Film",
         "Binder": "High Temperature Silicone Resin",
@@ -2490,9 +2652,24 @@ const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
   ]
 };
 
-// Merge all verified global catalogs with 585+ Chinese premier enterprise products
-export const ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
-  ...BASE_ENTERPRISE_CATALOGS,
-  ...CHINESE_ENTERPRISE_CATALOGS
-};
+// Deep merge all catalogs preserving multiple product lines per manufacturer
+const ALL_CATALOG_SOURCES = [
+  BASE_ENTERPRISE_CATALOGS,
+  INDIAN_ENTERPRISE_CATALOGS,
+  CHINESE_ENTERPRISE_CATALOGS,
+  CHINESE_ENTERPRISE_CATALOGS_EXPANDED
+];
+
+const mergedCatalogs: Record<string, ExtractedProductItem[]> = {};
+
+for (const source of ALL_CATALOG_SOURCES) {
+  for (const [comp, items] of Object.entries(source)) {
+    if (!mergedCatalogs[comp]) {
+      mergedCatalogs[comp] = [];
+    }
+    mergedCatalogs[comp].push(...items);
+  }
+}
+
+export const ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = mergedCatalogs;
 

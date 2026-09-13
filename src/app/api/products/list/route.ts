@@ -23,7 +23,7 @@ export async function GET(req: Request) {
     const adhesionType = searchParams.get('adhesionType')?.trim();
     const thickness = searchParams.get('thickness')?.trim();
     const tempRange = searchParams.get('tempRange')?.trim();
-    const limit = Math.min(parseInt(searchParams.get('limit') || '1000', 10), 2000);
+    const limit = Math.min(parseInt(searchParams.get('limit') || '5000', 10), 10000);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
 
     // Auto-clean legacy database entries matching corporate/SEO pages, questions, blogs, and guides
@@ -284,6 +284,7 @@ export async function GET(req: Request) {
 
         if (Object.keys(cleanedSpecs).length < 2) return false;
         p.specs = cleanedSpecs;
+        p.price = p.price || cleanedSpecs['Indicative Price'] || cleanedSpecs['Price'] || cleanedSpecs['Catalog Price'];
 
         return true;
       });
@@ -299,6 +300,8 @@ export async function GET(req: Request) {
         if ((c1.includes('cgapl') || c1.includes('cgadhesive')) && (c2.includes('cgapl') || c2.includes('cgadhesive'))) return true;
         if ((c1.includes('aipl') || c1.includes('ajit')) && (c2.includes('aipl') || c2.includes('ajit'))) return true;
         if ((c1.includes('vasavi') || c1.includes('satl')) && (c2.includes('vasavi') || c2.includes('satl'))) return true;
+        if ((c1.includes('pidilite') || c1.includes('steelgrip')) && (c2.includes('pidilite') || c2.includes('steelgrip'))) return true;
+        if (c1.includes('raychem') && c2.includes('raychem')) return true;
         return false;
       };
 
@@ -321,6 +324,8 @@ export async function GET(req: Request) {
             if (!matchesAnyTerm) continue;
           }
 
+          const itemPrice = item.price || item.specs?.['Indicative Price'] || item.specs?.['Price'] || item.specs?.['Catalog Price'];
+
           catalogItems.push({
             id: `cat-${catCompany}-${item.name.replace(/\s+/g, '-').toLowerCase()}`,
             name: item.name,
@@ -330,6 +335,7 @@ export async function GET(req: Request) {
             industry: item.industry,
             market: item.market,
             application: item.application,
+            price: itemPrice,
             specs: item.specs,
             imageUrl: item.imageUrl,
             createdAt: new Date().toISOString()
