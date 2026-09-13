@@ -80,6 +80,11 @@ export function canonicalizeCompanyName(raw: string): string {
   if (clean.includes('bagla')) return 'Bagla Group';
   if (clean.includes('advance tape') || clean.includes('advancetapes')) return 'Advance Tapes';
   if (clean.includes('cosmos')) return 'Cosmos Tapes';
+  if (clean.includes('yongguan') || clean.includes('ygtape')) return 'Shanghai Yongguan Adhesive (Yongguan Tape)';
+  if (clean.includes('naikos')) return 'Xiamen Naikos New Materials (Naikos Tape)';
+  if (clean.includes('yousan') || clean.includes('you san')) return 'Shenzhen YouSan Technology (YouSan Tape)';
+  if (clean.includes('cyg') || clean.includes('changtong')) return 'CYG Changtong New Material (CYG Tape)';
+  if (clean.includes('camat') || clean.includes('wanghao')) return 'Guangdong Wanghao New Material (Camat Tape)';
 
   return clean
     .split(/\s+/)
@@ -235,6 +240,11 @@ export async function harvestCompanyProducts(
       else if (lower.includes('bagla')) targetUrl = 'https://bagla-group.com';
       else if (lower.includes('advance tape') || lower.includes('advancetapes')) targetUrl = 'https://advancetapes.com';
       else if (lower.includes('cgapl') || lower.includes('cg adhesive')) targetUrl = 'https://cgapl.com';
+      else if (lower.includes('yongguan') || lower.includes('ygtape')) targetUrl = 'http://www.ygtape.com';
+      else if (lower.includes('naikos')) targetUrl = 'https://www.naikostape.com';
+      else if (lower.includes('yousan') || lower.includes('you san')) targetUrl = 'https://www.yousantape.com';
+      else if (lower.includes('cyg') || lower.includes('changtong')) targetUrl = 'http://www.cygct.com';
+      else if (lower.includes('camat') || lower.includes('wanghao')) targetUrl = 'https://www.camat.cn';
       else {
         const brand = lower.replace(/[^a-z0-9]/g, '');
         targetUrl = `https://www.${brand}.com`;
