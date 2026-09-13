@@ -357,35 +357,26 @@ ${historyPrompt}`;
       }
     };
 
-    let data;
-    try {
-      data = await generateStructuredAIResponse(fullPrompt, schemaProps, ["type", "text", "options"]);
-    } catch (aiErr: any) {
-      console.error("[Copilot] AI Generation fallback:", aiErr);
-      const repStandard = topStandards[0] || clusteredTarasaiStandards[0];
-      return NextResponse.json({
-        success: true,
-        text: `Based on **${userCompany}**'s inquiry regarding **${latestUserMessage}**, please specify your physical requirements below (thickness, temperature range, and application) so we can assign the exact Tarasai standard:`,
-        options: [
-          "0.05mm Silicone 260°C (PCB Wave Solder)",
-          "0.07mm Class H 180°C (Transformer Insulation)",
-          "0.06mm Flame-Retardant (Battery Tab Wrap)",
-          "0.09mm High-Bake 300°C (Powder Coating)"
-        ],
-        recommendations: repStandard ? [{
-          serialCode: repStandard.serialCode,
-          name: repStandard.name,
-          companyName: "Tarasai Verified Consortium",
-          price: repStandard.price,
-          application: repStandard.application,
-          specs: repStandard.specs,
-          pros: ["Unified specification verified across network", "Complies with ISO 9001 & RoHS industrial standards"],
-          cons: ["Confirm substrate compatibility for non-polar plastics"],
-          verdict: `Standard benchmark specification ${repStandard.serialCode}.`,
-          underlyingManufacturers: repStandard.underlyingManufacturers || []
-        }] : [],
-        creditsRemaining: user.role === 'ADMIN' || user.plan === 'ENTERPRISE' ? 'Unlimited' : Math.max(0, user.credits - 1)
-      });
+    let data: any = null;
+    const { evaluateMaterialsConversation } = await import('@/lib/materialsReasoningEngine');
+
+    // Attempt AI Generation if LLM credentials are configured
+    if (process.env.GEMINI_API_KEY || process.env.GROQ_API_KEY || process.env.OLLAMA_BASE_URL) {
+      try {
+        data = await generateStructuredAIResponse(fullPrompt, schemaProps, ["type", "text", "options"]);
+      } catch (aiErr: any) {
+        console.warn("[Copilot] LLM generation failed, switching to deterministic engineering engine:", aiErr.message);
+      }
+    }
+
+    // If LLM was not used or failed, run the deterministic Materials Application Reasoning Engine
+    if (!data || !data.text) {
+      data = evaluateMaterialsConversation(
+        messages,
+        userCompany,
+        userIndustry,
+        clusteredTarasaiStandards
+      );
     }
 
     // Deduct 1 credit for non-admin, non-enterprise users
@@ -420,7 +411,7 @@ ${historyPrompt}`;
         ...rec,
         serialCode: rec.serialCode || matchedStd?.serialCode || `TAR-${(rec.name || 'SPEC').substring(0, 3).toUpperCase()}`,
         companyName: "Tarasai Verified Consortium",
-        price: rec.price || matchedStd?.price || "₹320.00 / roll ($4.00)",
+        price: rec.price || matchedStd?.price || "₹340.00 / roll ($4.20)",
         underlyingManufacturers: matchedStd?.underlyingManufacturers || []
       };
     });
@@ -428,7 +419,7 @@ ${historyPrompt}`;
     return NextResponse.json({
       success: true,
       text: data.text || "Here are the engineering parameters and matching Tarasai standards:",
-      options: data.options || ["Request Confidential RFQ", "Check Temperature Specs", "Custom Width Slitting", "Other"],
+      options: data.options || ["Request Confidential Volume RFQ", "Request 1-Roll Verification Sample", "Inquire Custom Roll Width Slitting", "Other"],
       recommendations: finalRecs,
       creditsRemaining: remainingCredits
     });
