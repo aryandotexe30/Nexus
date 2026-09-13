@@ -39,6 +39,7 @@ import { useSession } from "next-auth/react";
 
 interface ExtractedProduct {
   id: string;
+  serialCode?: string;
   name: string;
   companyName: string;
   companyUrl?: string;
@@ -47,7 +48,9 @@ interface ExtractedProduct {
   market?: string;
   application?: string;
   specs?: Record<string, string>;
+  price?: string;
   imageUrl?: string;
+  underlyingManufacturers?: any[];
   classification?: {
     productType: string;
     sideType: string;
@@ -154,10 +157,11 @@ export default function FinderPage() {
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const [isSendingEnquiry, setIsSendingEnquiry] = useState(false);
   const [formQty, setFormQty] = useState("");
-  const [formUnit, setFormUnit] = useState("Rolls / Sq. Meters");
-  const [formPurpose, setFormPurpose] = useState("Industrial Production");
+  const [formUnit, setFormUnit] = useState("Rolls");
+  const [formPurpose, setFormPurpose] = useState("Industrial Manufacturing");
   const [formDetails, setFormDetails] = useState("");
   const [enquirySuccess, setEnquirySuccess] = useState(false);
+  const [rfqSuccessRef, setRfqSuccessRef] = useState("");
 
   // AI Copilot Chat State
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -218,7 +222,8 @@ export default function FinderPage() {
       if (selectedAdhesionType !== "ALL") params.append("adhesionType", selectedAdhesionType);
       if (selectedThickness !== "ALL") params.append("thickness", selectedThickness);
       if (selectedTempRange !== "ALL") params.append("tempRange", selectedTempRange);
-      params.append("limit", "100");
+      params.append("viewMode", "grouped");
+      params.append("limit", "500");
 
       const res = await fetch(`/api/products/list?${params.toString()}`);
       const data = await res.json();
@@ -327,9 +332,12 @@ export default function FinderPage() {
 
   const openEnquiry = (prod: any) => {
     setSelectedProduct(prod);
-    setFormQty("");
+    setFormQty("500");
+    setFormUnit("Rolls");
+    setFormPurpose("Within 30 Days");
     setFormDetails("");
     setEnquirySuccess(false);
+    setRfqSuccessRef("");
     setIsEnquiryModalOpen(true);
   };
 
@@ -339,28 +347,30 @@ export default function FinderPage() {
 
     setIsSendingEnquiry(true);
     try {
-      const res = await fetch("/api/marketplace/create", {
+      const res = await fetch("/api/products/rfq-broadcast", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: `Procurement RFQ: ${selectedProduct.name} (${selectedProduct.companyName})`,
-          description: `Target Product: ${selectedProduct.name}\nManufacturer: ${selectedProduct.companyName}\nRequired Quantity: ${formQty} ${formUnit}\nUsage Application: ${formPurpose}\n\nTechnical Specifications Required:\n${JSON.stringify(selectedProduct.specs || {}, null, 2)}\n\nBuyer Notes:\n${formDetails || 'Please provide quotation with TDS certification.'}`,
-          type: "REQUEST",
-          budget: "Negotiable / Factory Direct",
-          isAnonymous: true
+          serialCode: selectedProduct.serialCode || selectedProduct.id,
+          productName: selectedProduct.name,
+          quantity: formQty,
+          unit: formUnit,
+          targetDeliveryDate: formPurpose || "Within 30 Days",
+          applicationNotes: formDetails || "Standard Technical Specification compliance",
+          underlyingManufacturers: selectedProduct.underlyingManufacturers || []
         })
       });
 
       const data = await res.json();
       if (data.success) {
+        setRfqSuccessRef(data.rfqReference || `RFQ-${selectedProduct.serialCode || selectedProduct.id}`);
         setEnquirySuccess(true);
-        setTimeout(() => {
-          setIsEnquiryModalOpen(false);
-          setEnquirySuccess(false);
-        }, 2000);
+      } else {
+        alert("Failed to broadcast RFQ: " + (data.error || "Unknown error"));
       }
     } catch (err) {
-      console.warn("Failed to create RFQ", err);
+      console.warn("Failed to broadcast RFQ", err);
+      alert("Network error while dispatching RFQ.");
     } finally {
       setIsSendingEnquiry(false);
     }
@@ -742,10 +752,9 @@ export default function FinderPage() {
                 onChange={(e) => setSelectedLocation(e.target.value)}
                 className="px-2 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-semibold text-slate-800 dark:text-slate-200 outline-none"
               >
-                <option value="ALL">All Locations</option>
-                {(filterOptions.locations?.filter((l: string) => ['India', 'China'].includes(l)) || ['India', 'China']).map((loc: string) => (
-                  <option key={loc} value={loc}>{getLocationBadge(loc) || loc}</option>
-                ))}
+                <option value="ALL">All Origins</option>
+                <option value="India">🇮🇳 India</option>
+                <option value="China">🇨🇳 China</option>
               </select>
 
               {/* Backing Filter */}
@@ -760,16 +769,16 @@ export default function FinderPage() {
                 ))}
               </select>
 
-              {/* Company Filter */}
+              {/* Side Format Filter */}
               <select
-                value={selectedCompany}
-                onChange={(e) => setSelectedCompany(e.target.value)}
+                value={selectedSideType}
+                onChange={(e) => setSelectedSideType(e.target.value)}
                 className="px-2 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-semibold text-slate-800 dark:text-slate-200 outline-none"
               >
-                <option value="ALL">All Companies</option>
-                {companies.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
+                <option value="ALL">All Sides</option>
+                <option value="Single-Sided">Single-Sided</option>
+                <option value="Double-Sided">Double-Sided</option>
+                <option value="Transfer (Unsupported)">Transfer Film</option>
               </select>
             </div>
           </div>
@@ -779,35 +788,35 @@ export default function FinderPage() {
             {loadingCatalog ? (
               <div className="py-20 text-center text-slate-400 flex flex-col items-center justify-center gap-2">
                 <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
-                <p className="text-xs font-semibold">Filtering catalog database...</p>
+                <p className="text-xs font-semibold">Clustering specification catalog...</p>
               </div>
             ) : products.length === 0 ? (
               <div className="py-20 text-center text-slate-400 text-xs">
-                No products matched the current filters.
+                No specification clusters matched the current filters.
               </div>
             ) : (
               products.map((prod) => (
                 <div key={prod.id} className="bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60 rounded-2xl p-3.5 space-y-2 hover:border-blue-400 transition-colors">
                   <div className="flex items-start justify-between gap-2">
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-[9px] font-black uppercase px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-md">
-                          {prod.companyName}
+                        <span className="text-[10px] font-mono font-extrabold uppercase px-2 py-0.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded tracking-wider shadow-2xs">
+                          {prod.serialCode || prod.id}
                         </span>
+                        {prod.price && (
+                          <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 rounded border border-emerald-200 dark:border-emerald-800 shadow-2xs">
+                            {prod.price}
+                          </span>
+                        )}
                         {prod.classification?.location && (
                           <span className="text-[9px] font-bold px-1.5 py-0.5 bg-slate-200/70 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-md">
                             {getLocationBadge(prod.classification.location)}
                           </span>
                         )}
                       </div>
-                      <h4 className="text-xs font-black text-slate-900 dark:text-white mt-1">{prod.name}</h4>
-                      <p className="text-[11px] text-slate-400 line-clamp-1">{prod.application}</p>
+                      <h4 className="text-xs font-black text-slate-900 dark:text-white mt-1.5 leading-snug">{prod.name}</h4>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">{prod.application}</p>
                     </div>
-                    {prod.productUrl && (
-                      <a href={prod.productUrl} target="_blank" rel="noreferrer" className="p-1 bg-white dark:bg-slate-800 text-slate-400 hover:text-blue-600 rounded-md">
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
-                    )}
                   </div>
 
                   {/* Attribute Badges */}
@@ -823,6 +832,11 @@ export default function FinderPage() {
                           {prod.classification.backingType}
                         </span>
                       )}
+                      {prod.classification.adhesionType && prod.classification.adhesionType !== 'Other / Unspecified' && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 rounded">
+                          {prod.classification.adhesionType}
+                        </span>
+                      )}
                       {prod.classification.tempRange && prod.classification.tempRange !== 'Standard (< 80°C)' && (
                         <span className="text-[9px] font-bold px-1.5 py-0.5 bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 rounded">
                           {prod.classification.tempRange}
@@ -831,131 +845,152 @@ export default function FinderPage() {
                     </div>
                   )}
 
-                    {/* Actions */}
-                    <div className="flex items-center gap-2 pt-1 border-t border-slate-200/50 dark:border-slate-700/50">
-                      <button
-                        onClick={() => handleSendMessage(`Tell me about ${prod.name} from ${prod.companyName} and compare it with alternatives.`)}
-                        className="flex-1 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-700 dark:text-slate-300 font-bold text-[11px] rounded-xl border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center gap-1"
-                      >
-                        <Bot className="w-3 h-3 text-blue-600" /> Ask Copilot
-                      </button>
-                      <button
-                        onClick={() => openEnquiry(prod)}
-                        className="py-1.5 px-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] rounded-xl transition-all"
-                      >
-                        RFQ
-                      </button>
-                    </div>
+                  {/* Actions */}
+                  <div className="flex items-center gap-2 pt-1 border-t border-slate-200/50 dark:border-slate-700/50">
+                    <button
+                      onClick={() => handleSendMessage(`Tell me about the technical specifications of ${prod.name} (${prod.serialCode || prod.id}) and its standard industrial applications.`)}
+                      className="flex-1 py-1.5 bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-700 dark:text-slate-300 font-bold text-[11px] rounded-xl border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center gap-1"
+                    >
+                      <Bot className="w-3 h-3 text-blue-600" /> Ask Copilot
+                    </button>
+                    <button
+                      onClick={() => openEnquiry(prod)}
+                      className="py-1.5 px-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] rounded-xl transition-all flex items-center gap-1 shadow-xs"
+                    >
+                      <Send className="w-3 h-3" /> RFQ
+                    </button>
                   </div>
-                ))
-              )}
-            </div>
-          </motion.div>
-        )}
-      </div>
-
-      {/* RFQ Enquiry Modal */}
-      <AnimatePresence>
-        {isEnquiryModalOpen && selectedProduct && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl space-y-6 relative"
-            >
-              <button
-                onClick={() => setIsEnquiryModalOpen(false)}
-                className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              {enquirySuccess ? (
-                <div className="py-8 text-center space-y-3">
-                  <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto">
-                    <CheckCircle2 className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">Anonymous RFQ Dispatched</h3>
-                  <p className="text-xs text-slate-500">Your requirement has been listed on the marketplace for certified distributors.</p>
                 </div>
-              ) : (
-                <form onSubmit={submitEnquiry} className="space-y-4">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-md">
-                      {selectedProduct.companyName}
+              ))
+            )}
+          </div>
+        </motion.div>
+      )}
+    </div>
+
+    {/* Anonymous RFQ Modal */}
+    <AnimatePresence>
+      {isEnquiryModalOpen && selectedProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl space-y-6 relative"
+          >
+            <button
+              onClick={() => setIsEnquiryModalOpen(false)}
+              className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-xl"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {enquirySuccess ? (
+              <div className="py-8 text-center space-y-3">
+                <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">Confidential RFQ Broadcasted</h3>
+                <div className="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-mono font-bold text-blue-600 dark:text-blue-400">
+                  {rfqSuccessRef || `RFQ-${selectedProduct.serialCode || selectedProduct.id}`}
+                </div>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                  Your confidential procurement requirement for SKU <strong className="text-slate-700 dark:text-slate-300">{selectedProduct.serialCode || selectedProduct.id}</strong> has been anonymously dispatched to qualified manufacturing partners. Direct competitive quotations will be available in your support inbox.
+                </p>
+                <div className="pt-2">
+                  <button
+                    onClick={() => setIsEnquiryModalOpen(false)}
+                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-blue-500/20"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={submitEnquiry} className="space-y-4">
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <span className="text-[10px] font-mono font-extrabold uppercase px-2 py-0.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded tracking-wider shadow-2xs">
+                      {selectedProduct.serialCode || selectedProduct.id}
                     </span>
-                    <h3 className="text-lg font-black text-slate-900 dark:text-white mt-1">{selectedProduct.name}</h3>
-                    <p className="text-xs text-slate-400 mt-0.5">Publish an anonymous procurement request to certified suppliers.</p>
+                    {selectedProduct.price && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 rounded border border-emerald-200 dark:border-emerald-800">
+                        {selectedProduct.price}
+                      </span>
+                    )}
                   </div>
+                  <h3 className="text-base font-black text-slate-900 dark:text-white mt-1">{selectedProduct.name}</h3>
+                  <p className="text-xs text-slate-400 mt-0.5">Submit an anonymous volume RFQ across verified manufacturing network.</p>
+                </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Required Quantity</label>
-                      <input
-                        type="text"
-                        required
-                        value={formQty}
-                        onChange={(e) => setFormQty(e.target.value)}
-                        placeholder="e.g. 500, 2000"
-                        className="w-full mt-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Unit</label>
-                      <input
-                        type="text"
-                        value={formUnit}
-                        onChange={(e) => setFormUnit(e.target.value)}
-                        className="w-full mt-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500"
-                      />
-                    </div>
-                  </div>
-
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Application Purpose</label>
+                    <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Required Quantity</label>
                     <input
                       type="text"
-                      value={formPurpose}
-                      onChange={(e) => setFormPurpose(e.target.value)}
+                      required
+                      value={formQty}
+                      onChange={(e) => setFormQty(e.target.value)}
+                      placeholder="e.g. 500, 2000"
                       className="w-full mt-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500"
                     />
                   </div>
-
                   <div>
-                    <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Additional Notes / Custom Widths</label>
-                    <textarea
-                      rows={2}
-                      value={formDetails}
-                      onChange={(e) => setFormDetails(e.target.value)}
-                      placeholder="e.g. 24mm width rolls, batch test certificate required..."
-                      className="w-full mt-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500 resize-none"
+                    <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Unit</label>
+                    <input
+                      type="text"
+                      value={formUnit}
+                      onChange={(e) => setFormUnit(e.target.value)}
+                      className="w-full mt-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500"
                     />
                   </div>
+                </div>
 
-                  <div className="flex items-center gap-3 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setIsEnquiryModalOpen(false)}
-                      className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-xs"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSendingEnquiry}
-                      className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20"
-                    >
-                      {isSendingEnquiry ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-                      <span>Dispatch RFQ</span>
-                    </button>
-                  </div>
-                </form>
-              )}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+                <div>
+                  <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Target Delivery Timeline</label>
+                  <input
+                    type="text"
+                    value={formPurpose}
+                    onChange={(e) => setFormPurpose(e.target.value)}
+                    placeholder="e.g. Within 30 Days / Urgent"
+                    className="w-full mt-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Technical Specifications & Custom Width Notes</label>
+                  <textarea
+                    rows={3}
+                    value={formDetails}
+                    onChange={(e) => setFormDetails(e.target.value)}
+                    placeholder="e.g. 24mm width custom roll width, TDS compliance, flame retardancy standard..."
+                    className="w-full mt-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:border-blue-500 resize-none"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsEnquiryModalOpen(false)}
+                    className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-xs"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSendingEnquiry}
+                    className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20"
+                  >
+                    {isSendingEnquiry ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                    <span>Broadcast Confidential RFQ</span>
+                  </button>
+                </div>
+              </form>
+            )}
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
     </div>
   );
 }

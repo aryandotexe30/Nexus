@@ -25,7 +25,7 @@ export async function GET(req: Request) {
     const tempRange = searchParams.get('tempRange')?.trim();
     const limit = Math.min(parseInt(searchParams.get('limit') || '5000', 10), 10000);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
-    const viewMode = searchParams.get('view')?.trim() || 'grouped';
+    const viewMode = searchParams.get('view')?.trim() || searchParams.get('viewMode')?.trim() || 'raw';
 
     // Auto-clean legacy database entries matching corporate/SEO pages, questions, blogs, and guides
     try {
