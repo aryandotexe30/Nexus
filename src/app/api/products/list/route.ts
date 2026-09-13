@@ -25,6 +25,7 @@ export async function GET(req: Request) {
     const tempRange = searchParams.get('tempRange')?.trim();
     const limit = Math.min(parseInt(searchParams.get('limit') || '5000', 10), 10000);
     const offset = parseInt(searchParams.get('offset') || '0', 10);
+    const viewMode = searchParams.get('view')?.trim() || 'grouped';
 
     // Auto-clean legacy database entries matching corporate/SEO pages, questions, blogs, and guides
     try {
@@ -423,8 +424,15 @@ export async function GET(req: Request) {
         });
       }
 
-      products = filtered.slice(0, limit);
-      total = filtered.length;
+      if (viewMode === 'grouped') {
+        const { clusterProducts } = await import('@/lib/productClusterEngine');
+        const grouped = clusterProducts(filtered);
+        products = grouped.slice(0, limit);
+        total = grouped.length;
+      } else {
+        products = filtered.slice(0, limit);
+        total = filtered.length;
+      }
 
       // Compute dynamic available facets across all discovered products
       const facetCounts = {
