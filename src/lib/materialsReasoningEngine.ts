@@ -10,6 +10,281 @@ export interface EngineeringResponse {
   recommendations: any[];
 }
 
+interface ParsedQueryCriteria {
+  categoryCode?: string;
+  colorCode?: string;
+  adhCode?: string;
+  thickMicrons?: number;
+  tempRating?: number;
+  applicationTerms: string[];
+  isRfq: boolean;
+  isSample: boolean;
+  isSlitting: boolean;
+  isCompare: boolean;
+  isTechnicalInquiry: boolean;
+  isSpecificProductChosen: boolean;
+}
+
+/**
+ * Parses user input and context to extract all engineering variables
+ */
+function parseUserCriteria(latestText: string, allUserText: string): ParsedQueryCriteria {
+  const latest = latestText.toLowerCase();
+  const all = (allUserText + ' ' + latest).toLowerCase();
+
+  // Intent classification
+  const isRfq = 
+    latest.includes('rfq') || 
+    latest.includes('quote') || 
+    latest.includes('quotation') || 
+    latest.includes('price') || 
+    latest.includes('cost') || 
+    latest.includes('how much') || 
+    latest.includes('bulk') || 
+    latest.includes('volume') || 
+    latest.includes('order') || 
+    latest.includes('moq') || 
+    latest.includes('rolls') || 
+    latest.includes('purchase') || 
+    latest.includes('buy') || 
+    latest.includes('rate');
+
+  const isSample = 
+    latest.includes('sample') || 
+    latest.includes('test roll') || 
+    latest.includes('trial') || 
+    latest.includes('testing') || 
+    latest.includes('1 roll') || 
+    latest.includes('evaluation');
+
+  const isSlitting = 
+    latest.includes('slit') || 
+    latest.includes('slitting') || 
+    latest.includes('width') || 
+    latest.includes('custom roll') || 
+    latest.includes('die cut') || 
+    latest.includes('die-cut') || 
+    latest.includes('kiss cut') || 
+    latest.includes('log roll') || 
+    latest.includes('discs') || 
+    latest.includes('12mm') || 
+    latest.includes('19mm') || 
+    latest.includes('24mm') || 
+    latest.includes('25mm') || 
+    latest.includes('48mm');
+
+  const isCompare = 
+    latest.includes('compare') || 
+    latest.includes('difference') || 
+    latest.includes('versus') || 
+    latest.includes('vs') || 
+    latest.includes('alternative') || 
+    latest.includes('which is better');
+
+  const isTechnicalInquiry = 
+    latest.includes('temperature') || 
+    latest.includes('temp') || 
+    latest.includes('dielectric') || 
+    latest.includes('peel') || 
+    latest.includes('adhesion') || 
+    latest.includes('tensile') || 
+    latest.includes('thickness') || 
+    latest.includes('datasheet') || 
+    latest.includes('tds') || 
+    latest.includes('specification') || 
+    latest.includes('flame') || 
+    latest.includes('ul94');
+
+  // Category Detection
+  let categoryCode: string | undefined;
+  if (all.includes('kapton') || all.includes('polyimide') || all.includes('gold finger') || all.includes('wave solder') || all.includes('k104') || all.includes('5413')) {
+    categoryCode = 'KAP';
+  } else if (all.includes('vhb') || all.includes('acrylic foam') || all.includes('structural foam') || all.includes('4910') || all.includes('4950') || all.includes('5952') || all.includes('7055') || all.includes('7074') || all.includes('a7300') || all.includes('a7200')) {
+    categoryCode = 'VHB';
+  } else if (all.includes('pe foam') || all.includes('eva foam') || all.includes('ixpe') || all.includes('gasket foam')) {
+    categoryCode = 'PEF';
+  } else if (all.includes('masking') || all.includes('crepe') || all.includes('painter') || all.includes('washi') || all.includes('4334') || all.includes('2090') || all.includes('abro')) {
+    categoryCode = 'MSK';
+  } else if (all.includes('foil') || all.includes('aluminum') || all.includes('aluminium') || all.includes('copper') || all.includes('hvac duct') || all.includes('emi') || all.includes('shielding')) {
+    categoryCode = all.includes('copper') ? 'COP' : 'ALU';
+  } else if (all.includes('glass cloth') || all.includes('fiberglass') || all.includes('mica') || all.includes('transformer') || all.includes('g569') || all.includes('69 tape')) {
+    categoryCode = all.includes('mica') ? 'MIC' : 'GLS';
+  } else if (all.includes('ptfe') || all.includes('teflon') || all.includes('skived') || all.includes('heat seal')) {
+    categoryCode = 'PTF';
+  } else if (all.includes('pvc') || all.includes('wire harness') || all.includes('steelgrip') || all.includes('super 33')) {
+    categoryCode = 'PVC';
+  } else if (all.includes('tissue') || all.includes('transfer') || all.includes('468mp') || all.includes('467mp') || all.includes('9088') || all.includes('double sided') || all.includes('double-sided')) {
+    categoryCode = all.includes('transfer') ? 'TRF' : (all.includes('foam') ? 'VHB' : 'DST');
+  } else if (all.includes('filament') || all.includes('strapping') || all.includes('cross weave')) {
+    categoryCode = 'FIL';
+  }
+
+  // Color Detection
+  let colorCode: string | undefined;
+  if (all.includes('clear') || all.includes('transparent') || all.includes('transparency') || all.includes('invisible') || all.includes('glass clear')) {
+    colorCode = 'CLR';
+  } else if (all.includes('black') || all.includes('dark black') || all.includes('matte black') || all.includes('anthracite')) {
+    colorCode = 'BLK';
+  } else if (all.includes('grey') || all.includes('gray') || all.includes('dark gray')) {
+    colorCode = 'GRY';
+  } else if (all.includes('white')) {
+    colorCode = 'WHT';
+  } else if (all.includes('amber') || all.includes('tawny') || all.includes('gold') || all.includes('brown')) {
+    colorCode = 'AMB';
+  } else if (all.includes('blue')) {
+    colorCode = 'BLU';
+  } else if (all.includes('green')) {
+    colorCode = 'GRN';
+  } else if (all.includes('red')) {
+    colorCode = 'RED';
+  } else if (all.includes('yellow')) {
+    colorCode = 'YEL';
+  }
+
+  // Adhesive Chemistry Detection
+  let adhCode: string | undefined;
+  if (all.includes('silicone') || all.includes('polysiloxane')) {
+    adhCode = 'SIL';
+  } else if (all.includes('acrylic') || all.includes('pure acrylic') || all.includes('solvent acrylic')) {
+    adhCode = 'ACR';
+  } else if (all.includes('rubber') || all.includes('natural rubber') || all.includes('synthetic rubber')) {
+    adhCode = 'RUB';
+  } else if (all.includes('epoxy')) {
+    adhCode = 'EPO';
+  }
+
+  // Thickness Detection
+  let thickMicrons: number | undefined;
+  const thickMatch = all.match(/(\d+(?:\.\d+)?)\s*(?:mm|µm|um|micron|mil)/i);
+  if (thickMatch) {
+    const val = parseFloat(thickMatch[1]);
+    if (/µm|um|micron/i.test(thickMatch[0])) {
+      thickMicrons = Math.round(val);
+    } else if (/mil/i.test(thickMatch[0])) {
+      thickMicrons = Math.round(val * 25.4);
+    } else {
+      thickMicrons = Math.round(val * 1000);
+    }
+  } else if (all.includes('0.05') || all.includes('50µm') || all.includes('2 mil')) {
+    thickMicrons = 50;
+  } else if (all.includes('0.07') || all.includes('70µm') || all.includes('3 mil')) {
+    thickMicrons = 75;
+  } else if (all.includes('0.10') || all.includes('100µm') || all.includes('4 mil')) {
+    thickMicrons = 100;
+  } else if (all.includes('1.0') || all.includes('1.1') || all.includes('1.1mm')) {
+    thickMicrons = 1000;
+  } else if (all.includes('0.5') || all.includes('0.5mm')) {
+    thickMicrons = 500;
+  } else if (all.includes('1.6') || all.includes('1.6mm')) {
+    thickMicrons = 1500;
+  }
+
+  // Temperature Rating Detection
+  let tempRating: number | undefined;
+  const tempMatch = all.match(/(\d+)\s*°?c/i);
+  if (tempMatch) {
+    tempRating = parseInt(tempMatch[1], 10);
+  } else if (all.includes('260') || all.includes('wave solder')) {
+    tempRating = 260;
+  } else if (all.includes('180') || all.includes('class h')) {
+    tempRating = 180;
+  } else if (all.includes('150') || all.includes('powder coating')) {
+    tempRating = 150;
+  } else if (all.includes('110') || all.includes('paint bake')) {
+    tempRating = 110;
+  } else if (all.includes('80')) {
+    tempRating = 80;
+  }
+
+  // Application keywords
+  const applicationTerms: string[] = [];
+  ['pcb', 'solder', 'transformer', 'battery', 'powder coating', 'hvac', 'automotive', 'glazing', 'facade', 'emblem', 'mounting', 'clean removal', 'insulation'].forEach(t => {
+    if (all.includes(t)) applicationTerms.push(t);
+  });
+
+  // Check if a specific product specification is established
+  const isSpecificProductChosen = Boolean(
+    categoryCode || colorCode || adhCode || thickMicrons || tempRating || applicationTerms.length > 0
+  );
+
+  return {
+    categoryCode,
+    colorCode,
+    adhCode,
+    thickMicrons,
+    tempRating,
+    applicationTerms,
+    isRfq,
+    isSample,
+    isSlitting,
+    isCompare,
+    isTechnicalInquiry,
+    isSpecificProductChosen
+  };
+}
+
+/**
+ * Searches and ranks clustered standards based on parsed criteria
+ */
+function findMatchingStandards(criteria: ParsedQueryCriteria, clusteredStandards: any[]): any[] {
+  if (!clusteredStandards || clusteredStandards.length === 0) return [];
+
+  const scored = clusteredStandards.map(std => {
+    let score = 0;
+    const serial = (std.serialCode || '').toUpperCase();
+    const name = (std.name || '').toLowerCase();
+    const specs = std.specs || {};
+    const specsStr = JSON.stringify(specs).toLowerCase();
+
+    // 1. Category match
+    if (criteria.categoryCode) {
+      if (serial.includes(criteria.categoryCode)) score += 80;
+    }
+
+    // 2. Color match
+    if (criteria.colorCode) {
+      if (serial.includes(`-${criteria.colorCode}-`)) score += 60;
+      if (specs['Color / Appearance']?.toLowerCase().includes(criteria.colorCode.toLowerCase())) score += 40;
+    }
+
+    // 3. Adhesive match
+    if (criteria.adhCode) {
+      if (serial.includes(`-${criteria.adhCode}-`)) score += 40;
+      if (specs['Adhesive type']?.toLowerCase().includes(criteria.adhCode.toLowerCase())) score += 30;
+    }
+
+    // 4. Thickness match
+    if (criteria.thickMicrons) {
+      const targetStr = String(criteria.thickMicrons).padStart(4, '0');
+      if (serial.includes(`-${targetStr}-`)) score += 50;
+      const thickMm = (criteria.thickMicrons / 1000).toFixed(2);
+      if (name.includes(thickMm) || specsStr.includes(thickMm)) score += 30;
+    }
+
+    // 5. Temperature match
+    if (criteria.tempRating) {
+      if (criteria.tempRating >= 250 && serial.includes('T260')) score += 40;
+      else if (criteria.tempRating >= 180 && serial.includes('T200')) score += 40;
+      else if (criteria.tempRating >= 140 && serial.includes('T150')) score += 40;
+      else if (criteria.tempRating >= 100 && serial.includes('T110')) score += 40;
+      else if (criteria.tempRating >= 75 && serial.includes('T080')) score += 40;
+      else if (serial.includes('T060')) score += 20;
+    }
+
+    // 6. Application terms match
+    for (const app of criteria.applicationTerms) {
+      if (name.includes(app) || specsStr.includes(app) || (std.application || '').toLowerCase().includes(app)) {
+        score += 25;
+      }
+    }
+
+    return { std, score };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.filter(s => s.score > 0).map(s => s.std);
+}
+
 export function evaluateMaterialsConversation(
   messages: Array<{ role: string; text: string }>,
   userCompany: string = 'Industrial Enterprise',
@@ -20,421 +295,182 @@ export function evaluateMaterialsConversation(
   const allUserText = messages
     .filter(m => m.role === 'user')
     .map(m => m.text)
-    .join(' ')
-    .toLowerCase();
+    .join(' ');
 
-  const latestLower = latestMessage.toLowerCase().trim();
-
-  // 1. Detect Intent / Stage
-  const isRfqIntent = 
-    latestLower.includes('rfq') || 
-    latestLower.includes('volume') || 
-    latestLower.includes('quotation') || 
-    latestLower.includes('quote') || 
-    latestLower.includes('bulk') || 
-    latestLower.includes('price') || 
-    latestLower.includes('cost') || 
-    latestLower.includes('moq');
-
-  const isSampleIntent = 
-    latestLower.includes('sample') || 
-    latestLower.includes('test roll') || 
-    latestLower.includes('1 roll') || 
-    latestLower.includes('trial') || 
-    latestLower.includes('testing');
-
-  const isSlittingIntent = 
-    latestLower.includes('slitting') || 
-    latestLower.includes('slit') || 
-    latestLower.includes('width') || 
-    latestLower.includes('die cut') || 
-    latestLower.includes('die-cut') || 
-    latestLower.includes('custom roll') || 
-    latestLower.includes('cut to size') || 
-    latestLower.includes('kiss cut');
-
-  // 2. Detect Specific Parameters in thread or latest message
-  const hasThicknessParam = 
-    allUserText.includes('0.05') || 
-    allUserText.includes('50') || 
-    allUserText.includes('2 mil') || 
-    allUserText.includes('0.06') || 
-    allUserText.includes('0.07') || 
-    allUserText.includes('3 mil') || 
-    allUserText.includes('0.09') || 
-    allUserText.includes('0.10') || 
-    allUserText.includes('0.12') || 
-    allUserText.includes('0.14') || 
-    allUserText.includes('0.5mm') || 
-    allUserText.includes('0.8mm') || 
-    allUserText.includes('1.1mm') || 
-    allUserText.includes('1.2mm') || 
-    allUserText.includes('1.6mm');
-
-  const hasTempParam = 
-    allUserText.includes('260') || 
-    allUserText.includes('180') || 
-    allUserText.includes('300') || 
-    allUserText.includes('150') || 
-    allUserText.includes('120') || 
-    allUserText.includes('110') || 
-    allUserText.includes('80°') || 
-    allUserText.includes('wave solder') || 
-    allUserText.includes('class h');
-
-  const hasApplicationParam = 
-    allUserText.includes('pcb') || 
-    allUserText.includes('solder') || 
-    allUserText.includes('transformer') || 
-    allUserText.includes('battery') || 
-    allUserText.includes('powder coating') || 
-    allUserText.includes('emblem') || 
-    allUserText.includes('hvac') || 
-    allUserText.includes('clean removal') || 
-    allUserText.includes('automotive') || 
-    allUserText.includes('mounting') || 
-    allUserText.includes('insulation');
-
-  // Detect Material Domain
-  let materialDomain = 'kapton';
-  if (allUserText.includes('vhb') || allUserText.includes('acrylic foam') || allUserText.includes('foam')) {
-    materialDomain = 'vhb';
-  } else if (allUserText.includes('masking') || allUserText.includes('crepe') || allUserText.includes('painter')) {
-    materialDomain = 'masking';
-  } else if (allUserText.includes('foil') || allUserText.includes('aluminum') || allUserText.includes('aluminium') || allUserText.includes('copper')) {
-    materialDomain = 'foil';
-  } else if (allUserText.includes('glass cloth') || allUserText.includes('fiberglass') || allUserText.includes('mica')) {
-    materialDomain = 'glass_cloth';
-  } else if (allUserText.includes('ptfe') || allUserText.includes('teflon')) {
-    materialDomain = 'ptfe';
-  } else if (allUserText.includes('pvc') || allUserText.includes('wire harness')) {
-    materialDomain = 'pvc';
-  } else if (allUserText.includes('tissue') || allUserText.includes('transfer') || (allUserText.includes('double') && !allUserText.includes('foam'))) {
-    materialDomain = 'double_sided';
-  } else if (allUserText.includes('filament') || allUserText.includes('strapping')) {
-    materialDomain = 'filament';
-  }
-
-  // Helper to find standard from clustered list
-  const findStandard = (matcher: (s: any) => boolean, fallbackPrefix: string) => {
-    return clusteredStandards.find(matcher) || clusteredStandards.find(s => (s.serialCode || '').includes(fallbackPrefix)) || clusteredStandards[0] || {
-      serialCode: 'TAR-KAP-AMB-SIL-0050-T260-G841',
-      name: 'High-Temperature Amber Polyimide (Kapton) Tape (0.05 mm / Amber / Silicone / 260°C)',
-      companyName: 'Tarasai Verified Consortium',
-      price: '₹340.00 / roll ($4.20)',
-      application: 'PCB wave solder masking & gold finger protection',
-      specs: {
-        'Backing material': 'Polyimide (Kapton) Film',
-        'Color / Appearance': 'Amber / Tawny',
-        'Adhesive type': 'High-Temp Cross-Linked Silicone',
-        'Total thickness': '0.05 mm (50 µm)',
-        'Temperature resistance': '-73°C to 260°C',
-        'Dielectric Breakdown': '6.5 kV',
-        'Adhesion to Steel': '28.0 N/25mm'
-      },
-      pros: ['Zero adhesive residue post 260°C wave solder bath', 'UL-94 V-0 flame retardancy', 'Class H electrical insulation'],
-      cons: ['Requires clean, degreased substrate for maximum initial tack'],
-      verdict: 'Industry standard benchmark specification for electronics wave soldering and high-temperature masking.'
-    };
+  const criteria = parseUserCriteria(latestMessage, allUserText);
+  const matchedStandards = findMatchingStandards(criteria, clusteredStandards);
+  const primaryStandard = matchedStandards[0] || clusteredStandards[0] || {
+    serialCode: 'TAR-KAP-AMB-SIL-0050-T260-G841',
+    name: 'High-Temperature Amber Polyimide (Kapton) Tape (0.05 mm / Amber / Silicone / 260°C)',
+    companyName: 'Tarasai Verified Consortium',
+    price: '₹340.00 / roll ($4.20)',
+    application: 'PCB wave solder masking & gold finger protection',
+    specs: {
+      'Backing material': 'Polyimide (Kapton) Film',
+      'Color / Appearance': 'Amber / Tawny',
+      'Adhesive type': 'High-Temp Cross-Linked Silicone',
+      'Total thickness': '0.05 mm (50 µm)',
+      'Temperature resistance': '-73°C to 260°C',
+      'Dielectric Breakdown': '6.5 kV',
+      'Adhesion to Steel': '28.0 N/25mm'
+    },
+    pros: ['Zero adhesive residue post 260°C wave solder bath', 'UL-94 V-0 flame retardancy', 'Class H electrical insulation'],
+    cons: ['Requires clean, degreased substrate for maximum initial tack'],
+    verdict: 'Industry standard benchmark specification for electronics wave soldering and high-temperature masking.'
   };
 
   // ==========================================
-  // STAGE: RFQ / PRICING / PROCUREMENT INTENT
+  // SCENARIO 1: COMPARISON REQUEST
   // ==========================================
-  if (isRfqIntent) {
-    const activeStd = findStandard(
-      s => (s.serialCode || '').toLowerCase().includes(materialDomain.substring(0, 3)),
-      'TAR-'
-    );
+  if (criteria.isCompare && matchedStandards.length >= 2) {
+    const stdA = matchedStandards[0];
+    const stdB = matchedStandards[1];
 
     return {
       type: 'recommendation',
-      text: `### 📋 Confidential Volume RFQ & Wholesale Procurement Protocol\n\n` +
-        `For **${userCompany}**'s procurement operations in **${userIndustry}**, here is our standardized volume supply schedule for **${activeStd.name}** (\`${activeStd.serialCode}\`):\n\n` +
-        `#### 📦 Standard Packaging & Tiered Commercials\n` +
+      text: `### ⚖️ Engineering Technical Specification Comparison\n\n` +
+        `Here is the side-by-side technical evaluation for **${userCompany}** between our standard specifications:\n\n` +
+        `| Engineering Parameter | **${stdA.serialCode}** | **${stdB.serialCode}** |\n` +
+        `| :--- | :--- | :--- |\n` +
+        `| **Specification Title** | ${stdA.name} | ${stdB.name} |\n` +
+        `| **Carrier / Backing** | ${stdA.specs?.['Backing material'] || 'Specialty Carrier'} | ${stdB.specs?.['Backing material'] || 'Specialty Carrier'} |\n` +
+        `| **Adhesive Chemistry** | ${stdA.specs?.['Adhesive type'] || 'Pressure Sensitive'} | ${stdB.specs?.['Adhesive type'] || 'Pressure Sensitive'} |\n` +
+        `| **Color / Appearance** | ${stdA.specs?.['Color / Appearance'] || 'Standard'} | ${stdB.specs?.['Color / Appearance'] || 'Standard'} |\n` +
+        `| **Total Caliper** | ${stdA.specs?.['Total thickness'] || 'Standard'} | ${stdB.specs?.['Total thickness'] || 'Standard'} |\n` +
+        `| **Thermal Limit** | ${stdA.specs?.['Temperature resistance'] || 'Industrial Grade'} | ${stdB.specs?.['Temperature resistance'] || 'Industrial Grade'} |\n` +
+        `| **Wholesale Benchmark** | ${stdA.price || 'Market Rate'} | ${stdB.price || 'Market Rate'} |\n\n` +
+        `#### 💡 Engineering Verdict\n` +
+        `* **Choose ${stdA.serialCode}** if your process demands primary focus on ${stdA.specs?.['Color / Appearance'] || 'standard'} optical profile and high initial tack.\n` +
+        `* **Choose ${stdB.serialCode}** if your priority is high thermal endurance and specialized substrate bonding.`,
+      options: [
+        `Select ${stdA.serialCode} (${stdA.specs?.['Color / Appearance'] || 'Standard'})`,
+        `Select ${stdB.serialCode} (${stdB.specs?.['Color / Appearance'] || 'Standard'})`,
+        'Request Confidential Volume RFQ',
+        'Request 1-Roll Verification Sample Kit'
+      ],
+      recommendations: [stdA, stdB]
+    };
+  }
+
+  // ==========================================
+  // SCENARIO 2: RFQ / COMMERCIAL / PRICING REQUEST
+  // ==========================================
+  if (criteria.isRfq && primaryStandard) {
+    return {
+      type: 'recommendation',
+      text: `### 📋 Confidential Volume RFQ & Wholesale Commercial Schedule\n\n` +
+        `For **${userCompany}**'s procurement operations in **${userIndustry}**, here is the commercial breakdown for **${primaryStandard.name}** (\`${primaryStandard.serialCode}\`):\n\n` +
+        `#### 📦 Master Packaging & Volume Discount Tiers\n` +
         `* **Master Packaging**: 36 Rolls / Master Carton (for 25mm / 1-inch width) | 72 Rolls / Carton (for 12mm width).\n` +
-        `* **Standard Minimum Order Quantity (MOQ)**: 50 Rolls.\n` +
-        `* **Volume Tier 1 (100 - 499 Rolls)**: ₹340.00 / roll ($4.20 USD) — Standard Wholesale.\n` +
-        `* **Volume Tier 2 (500 - 1,999 Rolls)**: ₹295.00 / roll ($3.65 USD) — **13% Tier Discount**.\n` +
-        `* **Enterprise Tier 3 (2,000+ Rolls)**: ₹260.00 / roll ($3.20 USD) — Dedicated Master Log Conversion Contract.\n\n` +
-        `#### 🛡️ Confidential RFQ Routing\n` +
-        `Clicking **"Quick RFQ"** below routes your inquiry anonymously to our certified ISO 9001 / IATF 16949 consortium manufacturing partners simultaneously. You will receive certified bids within **4 business hours** without exposing your sourcing identity.`,
+        `* **Standard MOQ**: 50 Rolls.\n` +
+        `* **Volume Tier 1 (50 - 499 Rolls)**: ${primaryStandard.price || '₹340.00 / roll'} — Standard Wholesale.\n` +
+        `* **Volume Tier 2 (500 - 1,999 Rolls)**: 12% Discount off catalog benchmark — Tier 2 Enterprise.\n` +
+        `* **Volume Tier 3 (2,000+ Rolls)**: 22% Dedicated Master Log Conversion Contract.\n\n` +
+        `#### 🛡️ Anonymous RFQ Dispatch\n` +
+        `Click **"Quick RFQ"** on the specification card below to route your required quantity anonymously to all certified ISO 9001 consortium manufacturing partners simultaneously. You will receive certified bids within **4 business hours**.`,
       options: [
         'Request 1-Roll Verification Sample',
         'Inquire Custom Roll Width Slitting (3mm - 1000mm)',
         'Request Die-Cut Gaskets / Kiss-Cut Discs',
-        'Explore Alternative Temperature Standards'
+        'Explore Alternative Specification Standards'
       ],
-      recommendations: [activeStd]
+      recommendations: [primaryStandard]
     };
   }
 
   // ==========================================
-  // STAGE: SAMPLE REQUEST INTENT
+  // SCENARIO 3: SAMPLE REQUEST
   // ==========================================
-  if (isSampleIntent) {
-    const activeStd = findStandard(
-      s => (s.serialCode || '').toLowerCase().includes(materialDomain.substring(0, 3)),
-      'TAR-'
-    );
-
+  if (criteria.isSample && primaryStandard) {
     return {
       type: 'recommendation',
       text: `### 🧪 Material Verification Sample Program\n\n` +
-        `We provide pre-production sample rolls for **${userCompany}**'s laboratory qualification and pilot production line trials:\n\n` +
-        `* **Sample Unit**: 1 Standard Test Roll (19mm or 25mm x 33m) of **${activeStd.name}** (\`${activeStd.serialCode}\`).\n` +
-        `* **Documentation Included**: Full Factory **Certificate of Analysis (CoA)**, Dielectric Breakdown Test Report, RoHS 3 & REACH SVHC Compliance Statements, and TDS.\n` +
-        `* **Dispatch Timeline**: Ships within **24 to 48 hours** via express courier.\n` +
-        `* **Pilot Line Support**: Zero adhesive residue guarantee at peak thermal exposure.\n\n` +
+        `We provide pre-production sample rolls for **${userCompany}**'s laboratory qualification and pilot line trials:\n\n` +
+        `* **Sample Unit**: 1 Standard Test Roll (19mm or 25mm x 33m) of **${primaryStandard.name}** (\`${primaryStandard.serialCode}\`).\n` +
+        `* **Included Documentation**: Full Factory **Certificate of Analysis (CoA)**, Dielectric Breakdown Test Report, RoHS 3 & REACH SVHC Compliance Statements, and TDS.\n` +
+        `* **Dispatch Timeline**: Ships within **24 to 48 hours** via express courier.\n\n` +
         `To dispatch your test sample, click **"Quick RFQ"** below and specify "1-Roll Test Sample" in the requirement details.`,
       options: [
         'Request Confidential Volume RFQ',
         'Inquire Custom Roll Width Slitting',
-        'Check Dielectric Breakdown & Peel Specs',
-        'Compare with Class H 180°C Alternative'
+        'Check Dielectric & Peel Adhesion Specs',
+        'Compare with Alternative Specification'
       ],
-      recommendations: [activeStd]
+      recommendations: [primaryStandard]
     };
   }
 
   // ==========================================
-  // STAGE: SLITTING & CUSTOM SIZING INTENT
+  // SCENARIO 4: CUSTOM SLITTING & DIE-CUTTING
   // ==========================================
-  if (isSlittingIntent) {
-    const activeStd = findStandard(
-      s => (s.serialCode || '').toLowerCase().includes(materialDomain.substring(0, 3)),
-      'TAR-'
-    );
-
+  if (criteria.isSlitting && primaryStandard) {
     return {
       type: 'recommendation',
       text: `### ✂️ Precision Log Slitting & Custom Conversion Specifications\n\n` +
-        `All Tarasai specification standards are converted from master log rolls with aerospace-grade slitting equipment:\n\n` +
+        `All Tarasai specification standards are converted from master log rolls with aerospace-grade slitting equipment for **${userCompany}**:\n\n` +
         `* **Available Slit Widths**: **3.0 mm to 1000.0 mm** (Custom slit to your exact tolerance of **±0.2 mm**).\n` +
         `* **Standard Master Log Lengths**: 33 meters, 66 meters, and 100 meters.\n` +
         `* **Core Configurations**: Standard 3-inch (76 mm) plastic/paper cores or 1-inch (25 mm) cores for automated SMT tape dispensers.\n` +
-        `* **Rotary Die-Cutting**: Pre-cut circular discs (e.g., 6mm, 10mm, 15mm gold finger masking discs with extended release liners / pull-tabs) and custom stamped geometry gaskets.\n\n` +
+        `* **Rotary Die-Cutting**: Pre-cut circular discs (e.g., 6mm, 10mm, 15mm gold finger masking discs with extended pull-tabs) and custom stamped geometry gaskets.\n\n` +
         `Click **"Quick RFQ"** below to submit your required slit width, length, and monthly roll demand.`,
       options: [
         'Request Confidential Volume RFQ',
         'Request 1-Roll Sample in Custom Width',
-        'Check Dielectric Breakdown Specs',
+        'Check Full Technical Matrix',
         'Explore Other Material Standards'
       ],
-      recommendations: [activeStd]
+      recommendations: [primaryStandard]
     };
   }
 
   // ==========================================
-  // STAGE: SPECIFICATION SELECTED / DETAILED REQUIREMENTS PROVIDED
+  // SCENARIO 5: SPECIFIC PRODUCT OR PARAMETERS IDENTIFIED
   // ==========================================
-  const isDirectOptionSelection = 
-    messages.length > 1 || 
-    hasThicknessParam || 
-    hasTempParam || 
-    hasApplicationParam;
+  if (criteria.isSpecificProductChosen || matchedStandards.length > 0) {
+    const std = primaryStandard;
+    const colorLabel = std.specs?.['Color / Appearance'] || 'Standard';
+    const adhLabel = std.specs?.['Adhesive type'] || 'Engineered Adhesive';
+    const backingLabel = std.specs?.['Backing material'] || 'Specialty Carrier';
+    const thickLabel = std.specs?.['Total thickness'] || 'Standard Caliper';
+    const tempLabel = std.specs?.['Temperature resistance'] || 'Industrial Grade';
 
-  if (isDirectOptionSelection) {
-    if (materialDomain === 'kapton') {
-      const isClassH = allUserText.includes('180') || allUserText.includes('transformer');
-      const isHighBake = allUserText.includes('300') || allUserText.includes('0.09') || allUserText.includes('powder coating');
-      const isBattery = allUserText.includes('battery') || allUserText.includes('0.06') || allUserText.includes('flame');
-
-      let selectedStd: any;
-      if (isClassH) {
-        selectedStd = findStandard(s => (s.serialCode || '').includes('KAP') && (s.serialCode || '').includes('T180'), 'TAR-KAP');
-      } else if (isHighBake) {
-        selectedStd = findStandard(s => (s.serialCode || '').includes('KAP') && (s.serialCode || '').includes('0070'), 'TAR-KAP');
-      } else {
-        selectedStd = findStandard(s => (s.serialCode || '').includes('KAP') && (s.serialCode || '').includes('0050'), 'TAR-KAP');
-      }
-
-      return {
-        type: 'recommendation',
-        text: `### 🎯 Technical Specification Standard: \`${selectedStd.serialCode}\`\n\n` +
-          `Based on your requirements for **${userCompany}** (${latestMessage}), we have assigned the matching Tarasai specification standard:\n\n` +
-          `#### 🔬 Materials & Engineering Architecture\n` +
-          `* **Film Carrier**: 25 µm (1.0 mil) DuPont-grade Polyimide (Kapton) Film.\n` +
-          `* **Adhesive System**: 25 µm High-Temperature Cross-Linked Polysiloxane (Silicone) Adhesive (Total Caliper: **0.05 mm / 50 µm**).\n` +
-          `* **Thermal Endurance**: Continuous rating of **-73°C to +260°C** with intermittent peak survival up to **300°C** for wave solder immersion.\n` +
-          `* **Dielectric Breakdown**: **6.5 kV (6,500 Volts)** — Exceeds IPC-TM-650 Class 3 dielectric standards.\n` +
-          `* **Adhesion & Clean Removal**: 180° Peel Adhesion of **28.0 N/25mm** to polished copper/FR4; **100% zero ghosting / silicone residue** post wave soldering wash.\n` +
-          `* **Flame Retardancy**: Meets UL-94 V-0 and Class H electrical insulation parameters.\n\n` +
-          `#### 💡 Recommended Next Actions\n` +
-          `Use the action buttons below or click **"Quick RFQ"** on the specification card to broadcast your demand anonymously to certified consortium suppliers.`,
-        options: [
-          'Request Confidential Volume RFQ',
-          'Request 1-Roll Verification Sample',
-          'Inquire Custom Roll Width Slitting (3mm - 1000mm)',
-          'Compare with 0.07mm Class H 180°C Standard'
-        ],
-        recommendations: [selectedStd]
-      };
-    }
-
-    if (materialDomain === 'vhb') {
-      const selectedStd = findStandard(s => (s.serialCode || '').includes('VHB') || (s.serialCode || '').includes('PEF'), 'TAR-VHB');
-      return {
-        type: 'recommendation',
-        text: `### 🎯 Technical Specification Standard: \`${selectedStd.serialCode}\`\n\n` +
-          `Based on your mounting & structural bonding requirements for **${userCompany}** (${latestMessage}), we have assigned the following standard:\n\n` +
-          `#### 🔬 Materials & Viscoelastic Architecture\n` +
-          `* **Core Carrier**: 1.1 mm (43 mil) 100% Solid Closed-Cell Viscoelastic Acrylic Polymer Foam.\n` +
-          `* **Adhesive System**: High-performance pure acrylic adhesive on both sides with red PE film release liner.\n` +
-          `* **Dynamic Shear Strength**: **550 kPa** (80 psi) — Replaces rivets, screws, spot welds, and liquid adhesives.\n` +
-          `* **Thermal & Weathering Endurance**: Continuous **-40°C to +90°C**, short-term peak up to **150°C**. Fully resistant to UV radiation, thermal expansion cycles, moisture, and plasticizer migration.\n` +
-          `* **Stress Distribution**: 100% closed-cell foam absorbs shock, vibration, and dampens mechanical noise.\n\n` +
-          `#### 💡 Recommended Next Actions`,
-        options: [
-          'Request Confidential Volume RFQ',
-          'Request 1-Roll Verification Sample',
-          'Inquire Custom Slit Widths / Die-Cut Shapes',
-          'Compare with Thin Double-Sided PET'
-        ],
-        recommendations: [selectedStd]
-      };
-    }
-
-    if (materialDomain === 'masking') {
-      const selectedStd = findStandard(s => (s.serialCode || '').includes('MSK'), 'TAR-MSK');
-      return {
-        type: 'recommendation',
-        text: `### 🎯 Technical Specification Standard: \`${selectedStd.serialCode}\`\n\n` +
-          `Based on your industrial masking requirements for **${userCompany}** (${latestMessage}), here is the verified standard:\n\n` +
-          `#### 🔬 Materials & Processing Architecture\n` +
-          `* **Paper Carrier**: Saturated, high-conformability crepe paper backing (0.14 mm total thickness).\n` +
-          `* **Adhesive System**: Cross-linked natural rubber / synthetic resin with balanced high initial tack.\n` +
-          `* **Thermal Rating**: **110°C Continuous** (Bake cycles up to 45 minutes in industrial powder coating / paint baking ovens).\n` +
-          `* **Peel Characteristics**: Clean single-piece removal without tearing, splintering, or adhesive ghosting on automotive clearcoats, metal, and plastic.\n\n` +
-          `#### 💡 Recommended Next Actions`,
-        options: [
-          'Request Confidential Volume RFQ',
-          'Request 1-Roll Verification Sample',
-          'Inquire Custom Width Slitting (12mm, 18mm, 24mm, 48mm)',
-          'Explore Ultra-High Temp 150°C Crepe Standard'
-        ],
-        recommendations: [selectedStd]
-      };
-    }
-
-    if (materialDomain === 'foil') {
-      const selectedStd = findStandard(s => (s.serialCode || '').includes('ALU') || (s.serialCode || '').includes('COP'), 'TAR-ALU');
-      return {
-        type: 'recommendation',
-        text: `### 🎯 Technical Specification Standard: \`${selectedStd.serialCode}\`\n\n` +
-          `Based on your HVAC / EMI shielding requirements for **${userCompany}** (${latestMessage}), here is the verified standard:\n\n` +
-          `#### 🔬 Materials & Barrier Architecture\n` +
-          `* **Foil Carrier**: 30 µm Dead-soft pure aluminum foil backing (Total thickness: **0.065 mm / 65 µm**).\n` +
-          `* **Adhesive System**: Cold-weather solvent acrylic adhesive with siliconized paper liner.\n` +
-          `* **Thermal Rating**: **-30°C to +120°C** continuous.\n` +
-          `* **Vapor & EMI Barrier**: Class 0 fire rating, zero moisture vapor transmission, high thermal conductivity for HVAC duct sealing and electrical reflection.\n\n` +
-          `#### 💡 Recommended Next Actions`,
-        options: [
-          'Request Confidential Volume RFQ',
-          'Request 1-Roll Verification Sample',
-          'Inquire Custom Widths (48mm / 72mm / 96mm)',
-          'Compare with Conductive Copper Foil'
-        ],
-        recommendations: [selectedStd]
-      };
-    }
-
-    // Default general fallback for other specified criteria
-    const topStd = clusteredStandards[0] || findStandard(() => true, 'TAR-');
     return {
       type: 'recommendation',
-      text: `### 🎯 Technical Specification Standard: \`${topStd.serialCode}\`\n\n` +
-        `Based on your technical criteria for **${userCompany}** (${latestMessage}), we have matched the following consortium standard:\n\n` +
-        `* **Standard Name**: ${topStd.name}\n` +
-        `* **Benchmark Wholesale Price**: ${topStd.price}\n` +
-        `* **Application**: ${topStd.application || 'Industrial Engineering'}\n` +
-        `* **Carrier / Adhesive**: ${topStd.specs?.['Backing material'] || 'Specialty Film'} with ${topStd.specs?.['Adhesive type'] || 'Engineered Adhesive'}.\n` +
-        `* **Caliper & Thermal Limit**: ${topStd.specs?.['Total thickness'] || 'Standard'} | ${topStd.specs?.['Temperature resistance'] || 'Industrial Grade'}.\n\n` +
-        `#### 💡 Recommended Next Actions`,
+      text: `### 🎯 Verified Specification Standard: \`${std.serialCode}\`\n\n` +
+        `Based on your requirements for **${userCompany}** in **${userIndustry}** ("${latestMessage}"), we have matched the following Tarasai consortium standard:\n\n` +
+        `#### 🔬 Technical Architecture & Materials Matrix\n` +
+        `* **Carrier / Backing**: ${backingLabel}\n` +
+        `* **Color / Optical Clarity**: **${colorLabel}**\n` +
+        `* **Adhesive Chemistry**: ${adhLabel}\n` +
+        `* **Total Caliper / Thickness**: ${thickLabel}\n` +
+        `* **Thermal Endurance**: ${tempLabel}\n` +
+        `* **Adhesion to Steel**: ${std.specs?.['Adhesion to Steel'] || '28.0 N/25mm'}\n` +
+        `* **Wholesale Benchmark Price**: **${std.price || 'Market Rate'}**\n\n` +
+        `#### 💡 Recommended Next Actions\n` +
+        `Select an action below or click **"Quick RFQ"** on the card to broadcast an anonymous bid request to qualified consortium manufacturers.`,
       options: [
         'Request Confidential Volume RFQ',
         'Request 1-Roll Verification Sample',
-        'Inquire Custom Roll Width Slitting',
-        'Explore Alternative Specifications'
+        'Inquire Custom Roll Width Slitting (3mm - 1000mm)',
+        'Compare with Alternative Specification'
       ],
-      recommendations: [topStd]
+      recommendations: matchedStandards.length > 0 ? matchedStandards.slice(0, 3) : [primaryStandard]
     };
   }
 
   // ==========================================
-  // STAGE 1: INITIAL / BROAD INQUIRY (GATHER REQUIREMENTS)
+  // SCENARIO 6: INITIAL BROAD CATEGORY INQUIRY (GATHER PARAMETERS)
   // ==========================================
-  if (materialDomain === 'kapton') {
-    const repStd = findStandard(s => (s.serialCode || '').includes('KAP'), 'TAR-KAP');
-    return {
-      type: 'inquiry',
-      text: `### 🔬 High-Temperature Polyimide (Kapton) Tape Selection Guide\n\n` +
-        `Welcome **${userCompany}**. Polyimide tapes operate across extreme thermal environments (-73°C to +300°C) and provide superior Class H dielectric isolation. To assign the exact Tarasai specification standard for your application in **${userIndustry}**, please select your engineering parameters below:\n\n` +
-        `#### 📐 Critical Governing Parameters:\n` +
-        `1. **Caliper / Film Thickness**: Standard 0.05 mm (1.0 mil film + 1.0 mil silicone) for PCB wave solder masking vs 0.07 mm (2.0 mil film) for high-voltage dielectric isolation.\n` +
-        `2. **Thermal Process**: 260°C Wave Solder Bath vs 180°C Continuous Class H Motor/Transformer Insulation vs 300°C High-Bake Reflow.\n` +
-        `3. **Adhesive Chemistry**: Cross-linked Silicone (zero residue on hot peel) vs Solvent Acrylic (higher chemical/solvent resistance).\n` +
-        `4. **Application**: PCB Gold Finger Masking, EV Lithium Battery Tab Insulation, or Powder Coating Masking.`,
-      options: [
-        '0.05mm Silicone 260°C (PCB Wave Solder)',
-        '0.07mm Class H 180°C (Transformer Insulation)',
-        '0.06mm Flame-Retardant (Battery Tab Wrap)',
-        '0.09mm High-Bake 300°C (Powder Coating)'
-      ],
-      recommendations: [repStd]
-    };
-  }
-
-  if (materialDomain === 'vhb') {
-    const repStd = findStandard(s => (s.serialCode || '').includes('VHB'), 'TAR-VHB');
-    return {
-      type: 'inquiry',
-      text: `### 🔬 Double-Sided Acrylic Foam (VHB) Tape Selection Guide\n\n` +
-        `Welcome **${userCompany}**. Closed-cell viscoelastic acrylic foam tapes replace mechanical fasteners (rivets, screws, spot welds) by providing permanent structural bonding and dynamic stress dissipation. Please select your required thickness and bonding substrate:\n\n` +
-        `#### 📐 Critical Governing Parameters:\n` +
-        `1. **Foam Thickness / Caliper**: 0.5 mm (Thin Metal-to-Metal), 1.1 mm (Standard Structural Assembly), or 1.6 mm (Rough / Uneven Substrates).\n` +
-        `2. **Core Chemistry**: All-Acrylic Viscoelastic Foam (150°C high-temp resistance) vs PE Foam (General Mounting).\n` +
-        `3. **Substrate Energy**: High Surface Energy (HSE metals/glass) vs Low Surface Energy (LSE plastics/powder coats).`,
-      options: [
-        '1.1mm Clear Acrylic Foam 150°C (Glass/Metal)',
-        '1.1mm Grey Structural VHB (Automotive Panels)',
-        '0.5mm Ultra-Thin Foam (Electronics Enclosures)',
-        '1.6mm Conformable Foam (Powder-Coated Surfaces)'
-      ],
-      recommendations: [repStd]
-    };
-  }
-
-  if (materialDomain === 'masking') {
-    const repStd = findStandard(s => (s.serialCode || '').includes('MSK'), 'TAR-MSK');
-    return {
-      type: 'inquiry',
-      text: `### 🔬 Industrial Crepe & High-Temperature Masking Tape Guide\n\n` +
-        `Welcome **${userCompany}**. Industrial masking performance is defined by adhesive heat resistance, sharp paint line definition, and 100% clean single-piece removal without ghosting. Please select your process parameters below:\n\n` +
-        `#### 📐 Critical Governing Parameters:\n` +
-        `1. **Oven Temperature**: 80°C General Industrial Paint vs 110°C Automotive Bake vs 150°C Powder Coating.\n` +
-        `2. **Substrate Compatibility**: Clean removal from metal, plastics, rubber trim, and anodized aluminum.\n` +
-        `3. **Adhesion System**: High initial tack natural rubber for instant hold vs synthetic acrylic.`,
-      options: [
-        '0.14mm Rubber 110°C (Automotive Paint Bake)',
-        '0.16mm High-Bake 150°C (Powder Coating Masking)',
-        '0.12mm General Industrial 80°C (Assembly & Bundling)',
-        '0.13mm Washi Precision Edge (Clean Removal)'
-      ],
-      recommendations: [repStd]
-    };
-  }
-
-  // Generic Initial Inquiry
-  const repStd = clusteredStandards[0] || findStandard(() => true, 'TAR-');
+  const repStd = primaryStandard || clusteredStandards[0];
   return {
     type: 'inquiry',
-    text: `### 🔬 TarasAI Materials Specification Engineering\n\n` +
-      `Welcome **${userCompany}**. Our database contains 750+ unified industrial tape and adhesive standards. To deliver the exact specification and benchmark pricing for **${userIndustry}**, please select your target category below:`,
+    text: `### 🔬 Industrial Tape & Materials Selection Guide\n\n` +
+      `Welcome **${userCompany}**. To assign the exact Tarasai specification standard and wholesale pricing for your operations in **${userIndustry}**, please select your target specification from our master catalog:`,
     options: [
-      'Class H High Temp Polyimide (260°C)',
-      'Double-Sided Acrylic Foam VHB (1.1mm)',
-      'Crepe Masking Tape (110°C Clean Removal)',
+      'High-Temp Polyimide Kapton (260°C Amber)',
+      'Clear Acrylic Foam VHB (1.0mm Transparent)',
+      'Black High-Resistance VHB Foam (1.0mm Black)',
+      'Crepe Precision Masking (110°C Clean Removal)',
       'Aluminum Foil HVAC & EMI Shielding (65µm)'
     ],
     recommendations: [repStd]

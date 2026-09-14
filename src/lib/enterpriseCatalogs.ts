@@ -1,4 +1,4 @@
-import { ExtractedProductItem } from './deepProductHarvester';
+import type { ExtractedProductItem } from './deepProductHarvester';
 import { CHINESE_ENTERPRISE_CATALOGS } from './chineseEnterpriseCatalog';
 import { INDIAN_ENTERPRISE_CATALOGS } from './indianEnterpriseCatalog';
 import { CHINESE_ENTERPRISE_CATALOGS_EXPANDED } from './chineseEnterpriseCatalogExpanded';
