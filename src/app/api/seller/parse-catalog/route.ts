@@ -31,9 +31,10 @@ export async function POST(req: Request) {
           // Normalize spreadsheet rows with AI or heuristic mapping
           if (process.env.GEMINI_API_KEY) {
             const prompt = `
-You are an expert industrial materials and adhesive specifications classifier.
-A tape manufacturer named "${companyName}" uploaded a spreadsheet catalog.
+You are an expert industrial materials and specifications engineer.
+A manufacturer/supplier named "${companyName}" uploaded a spreadsheet catalog.
 Convert and normalize the following spreadsheet rows into an array of standardized products matching our Master Products database schema.
+The seller can supply tapes, adhesives, sealants, foams, gaskets, thermal interface materials, insulation, shielding, optical films, abrasives, or fasteners.
 
 RAW ROWS:
 ${JSON.stringify(rawRows.slice(0, 100), null, 2)}
@@ -41,13 +42,14 @@ ${JSON.stringify(rawRows.slice(0, 100), null, 2)}
 Return strictly a valid JSON array of objects with this schema:
 [
   {
-    "name": "Product Model Name (e.g. High-Temp Polyimide Tape 50µm)",
-    "productType": "Tape" | "Adhesive" | "Film" | "Foam" | "Die-Cut",
-    "sideType": "Single-Sided" | "Double-Sided" | "Transfer",
-    "backing": "Carrier/Backing Material (e.g. Polyimide, Acrylic Foam, PVC, Aluminum Foil, Fiberglass, PET)",
-    "adhesionType": "Adhesive System (e.g. Silicone, Acrylic, Rubber, Synthetic Resin)",
-    "thickness": "Total thickness/caliper (e.g. 0.05 mm, 1.1 mm, 0.13 mm)",
-    "tempRange": "Temperature rating (e.g. 260°C, 150°C, 80°C)",
+    "name": "Product Model Name (e.g. 50µm Polyimide Masking Film or RTV Silicone Gasket Sealant)",
+    "category": "Adhesive Tapes & Transfer Films" | "Liquid Adhesives & Structural Sealants" | "Foams, Gaskets & Cushioning" | "Thermal Interface Materials (TIM)" | "Electrical & High-Dielectric Insulation" | "Optical, Display & Barrier Films" | "EMI / RFI Shielding & Conductive Foils" | "Protective Films & Surface Protection" | "Specialty Industrial Packaging & Strapping" | "Custom Precision Die-Cut Components" | "Abrasives, Polishing & Surface Finishing" | "Industrial Fasteners & Reclosables" | "Specialty Polymers, Resins & Raw Compounds" | "Other Industrial Materials & Consumables",
+    "productType": "Tape" | "Adhesive" | "Film" | "Foam" | "Die-Cut" | "Sealant" | "Thermal Pad" | "Liquid" | "Abrasive" | "Fastener",
+    "sideType": "Single-Sided" | "Double-Sided" | "Transfer" | "N/A (Liquid / Non-Adhesive)",
+    "backing": "Carrier/Substrate/Backing Material (e.g. Polyimide, Acrylic Foam, EPDM, Aluminum Foil, Fiberglass, PET, Crepe, None / Bulk Resin)",
+    "adhesionType": "Adhesive / Chemical System (e.g. Silicone, Pure Acrylic, Epoxy, Polyurethane, Synthetic Rubber)",
+    "thickness": "Total thickness / caliper / viscosity (e.g. 0.05 mm, 1.1 mm, 0.5 mm, 120 cP)",
+    "tempRange": "Temperature resistance rating (e.g. 260°C, 180°C, 150°C, 80°C)",
     "application": "Primary industrial engineering applications",
     "price": "Wholesale benchmark price or MOQ (e.g. ₹350 / roll, $4.50)",
     "specs": {
@@ -84,16 +86,17 @@ Return strictly a valid JSON array of objects with this schema:
               };
 
               const name = getVal(['name', 'product', 'item', 'model', 'title', 'sku', 'code']) || `Material Specification #${i + 1}`;
-              const backing = getVal(['backing', 'carrier', 'substrate', 'material', 'base']) || 'Specialty Carrier';
-              const adhesion = getVal(['adhesive', 'glue', 'adhesion', 'polymer', 'resin']) || 'Pressure Sensitive';
-              const thickness = getVal(['thickness', 'caliper', 'gauge', 'micron', 'mil']) || 'Standard';
+              const backing = getVal(['backing', 'carrier', 'substrate', 'material', 'base']) || 'Specialty Substrate';
+              const adhesion = getVal(['adhesive', 'glue', 'adhesion', 'polymer', 'resin', 'chemistry']) || 'Standard Polymer';
+              const thickness = getVal(['thickness', 'caliper', 'gauge', 'micron', 'mil', 'size']) || 'Standard';
               const temp = getVal(['temp', 'temperature', 'heat', 'thermal']) || 'Industrial Grade';
-              const side = getVal(['side', 'coated', 'coating']) || (name.toLowerCase().includes('double') ? 'Double-Sided' : 'Single-Sided');
-              const app = getVal(['app', 'application', 'usage', 'industry', 'use']) || 'Industrial manufacturing & bonding';
+              const side = getVal(['side', 'coated', 'coating', 'format']) || (name.toLowerCase().includes('double') ? 'Double-Sided' : 'Single-Sided');
+              const app = getVal(['app', 'application', 'usage', 'industry', 'use']) || 'Industrial manufacturing & engineering';
               const price = getVal(['price', 'rate', 'cost', 'inr', 'usd', 'moq']) || 'Inquire on Request';
 
               return {
                 name,
+                category: 'Adhesive Tapes & Transfer Films',
                 productType: 'Tape',
                 sideType: side.toLowerCase().includes('double') ? 'Double-Sided' : (side.toLowerCase().includes('transfer') ? 'Transfer' : 'Single-Sided'),
                 backing,
@@ -126,20 +129,21 @@ Return strictly a valid JSON array of objects with this schema:
         const mimeType = file.type || (fileName.endsWith('.pdf') ? 'application/pdf' : 'image/jpeg');
 
         const prompt = `
-You are an expert materials scientist and industrial tape engineer.
-A manufacturer named "${companyName}" uploaded their technical brochure/catalog document.
-Extract all distinct tape, adhesive, film, and foam materials listed in this document.
-Extract every product's specifications and normalize into our standard Master Products catalog format.
+You are an expert industrial materials scientist and technical procurement engineer.
+A manufacturer/supplier named "${companyName}" uploaded their technical brochure/catalog.
+Extract all distinct industrial materials, products, tapes, adhesives, sealants, foams, gaskets, thermal pads, films, shielding, or fasteners listed in this document.
+Extract every product's specifications and normalize into our standard Master Products catalog schema.
 
 Return strictly a valid JSON array of objects with this schema:
 [
   {
     "name": "Full Product Name & Model Code",
-    "productType": "Tape" | "Adhesive" | "Film" | "Foam" | "Die-Cut",
-    "sideType": "Single-Sided" | "Double-Sided" | "Transfer",
-    "backing": "Backing / Carrier Material (e.g. Polyimide Film, PVC, Acrylic Foam, Aluminum Foil, Fiberglass, Glass Cloth, PET, Crepe Paper)",
-    "adhesionType": "Adhesive Polymer (e.g. Cross-Linked Silicone, Pure Solvent Acrylic, Natural Rubber, Synthetic Resin)",
-    "thickness": "Total thickness/caliper (e.g. 0.05 mm, 0.07 mm, 1.1 mm, 0.15 mm)",
+    "category": "Adhesive Tapes & Transfer Films" | "Liquid Adhesives & Structural Sealants" | "Foams, Gaskets & Cushioning" | "Thermal Interface Materials (TIM)" | "Electrical & High-Dielectric Insulation" | "Optical, Display & Barrier Films" | "EMI / RFI Shielding & Conductive Foils" | "Protective Films & Surface Protection" | "Specialty Industrial Packaging & Strapping" | "Custom Precision Die-Cut Components" | "Abrasives, Polishing & Surface Finishing" | "Industrial Fasteners & Reclosables" | "Specialty Polymers, Resins & Raw Compounds" | "Other Industrial Materials & Consumables",
+    "productType": "Tape" | "Adhesive" | "Film" | "Foam" | "Die-Cut" | "Sealant" | "Thermal Pad" | "Liquid" | "Abrasive" | "Fastener",
+    "sideType": "Single-Sided" | "Double-Sided" | "Transfer" | "N/A (Liquid / Non-Adhesive)",
+    "backing": "Backing / Carrier / Substrate (e.g. Polyimide Film, PVC, Acrylic Foam, Aluminum Foil, Fiberglass, Glass Cloth, PET, EPDM, None)",
+    "adhesionType": "Adhesive / Polymer Chemistry (e.g. Cross-Linked Silicone, Pure Solvent Acrylic, Epoxy, Polyurethane, Natural Rubber)",
+    "thickness": "Total thickness / caliper / gauge (e.g. 0.05 mm, 0.07 mm, 1.1 mm, 0.5 mm)",
     "tempRange": "Temperature rating (e.g. 260°C, 180°C, 150°C, 90°C)",
     "application": "Key industrial engineering use cases and applications",
     "price": "Estimated benchmark unit price or MOQ (e.g. ₹320.00 / roll, $4.20)",
@@ -148,7 +152,6 @@ Return strictly a valid JSON array of objects with this schema:
       "Adhesive type": "...",
       "Total thickness": "...",
       "Temperature resistance": "...",
-      "Adhesion to Steel": "...",
       "Tensile Strength": "..."
     }
   }

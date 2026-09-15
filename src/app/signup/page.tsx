@@ -22,13 +22,31 @@ import {
   CheckCircle2, 
   Layers, 
   FileSpreadsheet,
-  AlertCircle
+  Tag
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
+export const PRODUCT_CATEGORIES = [
+  "Adhesive Tapes & Transfer Films",
+  "Liquid Adhesives & Structural Sealants",
+  "Foams, Gaskets & Cushioning",
+  "Thermal Interface Materials (TIM)",
+  "Electrical & High-Dielectric Insulation",
+  "Optical, Display & Barrier Films",
+  "EMI / RFI Shielding & Conductive Foils",
+  "Protective Films & Surface Protection",
+  "Specialty Industrial Packaging & Strapping",
+  "Custom Precision Die-Cut Components",
+  "Abrasives, Polishing & Surface Finishing",
+  "Industrial Fasteners & Reclosables",
+  "Specialty Polymers, Resins & Raw Compounds",
+  "Other Industrial Materials & Consumables"
+] as const;
+
 interface SellerProductItem {
   name: string;
+  category: string;
   productType: string;
   sideType: string;
   backing: string;
@@ -68,6 +86,7 @@ export default function Signup() {
   const [sellerProducts, setSellerProducts] = useState<SellerProductItem[]>([
     {
       name: "",
+      category: "Adhesive Tapes & Transfer Films",
       productType: "Tape",
       sideType: "Single-Sided",
       backing: "Polyimide Film",
@@ -140,13 +159,14 @@ export default function Signup() {
       ...sellerProducts,
       {
         name: "",
+        category: "Adhesive Tapes & Transfer Films",
         productType: "Tape",
         sideType: "Single-Sided",
         backing: "Polyimide Film",
         adhesionType: "Silicone",
         thickness: "0.05 mm (50 µm)",
         tempRange: "260°C",
-        application: "Industrial bonding and masking",
+        application: "Industrial engineering application",
         price: ""
       }
     ]);
@@ -157,6 +177,7 @@ export default function Signup() {
     if (sellerProducts.length === 1) {
       setSellerProducts([{
         name: "",
+        category: "Adhesive Tapes & Transfer Films",
         productType: "Tape",
         sideType: "Single-Sided",
         backing: "Polyimide Film",
@@ -204,8 +225,22 @@ export default function Signup() {
       }
 
       if (Array.isArray(data.products) && data.products.length > 0) {
-        setSellerProducts(data.products);
-        setParseSuccessMsg(`✨ AI successfully extracted ${data.products.length} materials from ${file.name}! Review below.`);
+        const normalized = data.products.map((p: any) => ({
+          name: p.name || "",
+          category: p.category || "Adhesive Tapes & Transfer Films",
+          productType: p.productType || "Tape",
+          sideType: p.sideType || "Single-Sided",
+          backing: p.backing || "Specialty Substrate",
+          adhesionType: p.adhesionType || "Polymer Adhesive",
+          thickness: p.thickness || "Standard",
+          tempRange: p.tempRange || "Industrial Grade",
+          application: p.application || "Industrial engineering",
+          price: p.price || "",
+          specs: p.specs
+        }));
+
+        setSellerProducts(normalized);
+        setParseSuccessMsg(`✨ AI successfully extracted ${normalized.length} products across categories from ${file.name}! Review below.`);
         setIngestionMode("manual"); // Switch to view extracted rows
       } else {
         throw new Error("No products found in file.");
@@ -237,7 +272,7 @@ export default function Signup() {
       const payload = {
         ...formData,
         accountType,
-        industry: formData.industry || (accountType === "SELLER" ? "Tape & Adhesive Manufacturing" : "Industrial Manufacturing"),
+        industry: formData.industry || (accountType === "SELLER" ? "Industrial Materials & Adhesive Manufacturing" : "Industrial Manufacturing"),
         products: validProducts
       };
 
@@ -311,7 +346,7 @@ export default function Signup() {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             {step === 1 && (accountType === "SELLER" ? "Seller Registration" : "Create Buyer Account")}
             {step === 2 && "Company & Tax Details"}
-            {step === 3 && (accountType === "SELLER" ? "Materials & Products Ingestion" : "Identity Verification")}
+            {step === 3 && (accountType === "SELLER" ? "Products & Materials Ingestion" : "Identity Verification")}
             {step === 4 && "Terms & Final Verification"}
           </h1>
 
@@ -319,7 +354,7 @@ export default function Signup() {
             {step === 1 && "Step 1: Setup your credentials and company login."}
             {step === 2 && "Step 2: Basic corporate and manufacturing details."}
             {step === 3 && (accountType === "SELLER" 
-              ? "Step 3: Add your manufactured materials manually or upload a technical brochure." 
+              ? "Step 3: Add your catalog across any category manually or upload a brochure/excel." 
               : "Step 3: Complete verification and account setup.")}
             {step === 4 && "Step 4: Review compliance and finalize seller listing."}
           </p>
@@ -368,7 +403,7 @@ export default function Signup() {
               >
                 <div>
                   <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider">
-                    {accountType === "SELLER" ? "Manufacturer Work Email (Login)" : "Company Work Email (Login)"}
+                    {accountType === "SELLER" ? "Manufacturer / Supplier Work Email (Login)" : "Company Work Email (Login)"}
                   </label>
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
@@ -423,7 +458,7 @@ export default function Signup() {
               >
                 <div>
                   <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
-                    {accountType === "SELLER" ? "Manufacturing Plant / Company Name" : "Registered Company Name"}
+                    {accountType === "SELLER" ? "Manufacturing Plant / Supplier Name" : "Registered Company Name"}
                   </label>
                   <div className="relative">
                     <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
@@ -469,7 +504,7 @@ export default function Signup() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Industry Sector</label>
+                  <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Primary Manufacturing Domain</label>
                   <div className="relative">
                     <Factory className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                     <select 
@@ -477,13 +512,15 @@ export default function Signup() {
                       onChange={e => setFormData({...formData, industry: e.target.value})}
                       className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
                     >
-                      <option value="Tape & Adhesive Manufacturing">Tape & Adhesive Manufacturing</option>
-                      <option value="Polymer & Film Converting">Polymer & Film Converting</option>
+                      <option value="Tape & Adhesive Manufacturing">Specialty Tapes & Adhesives</option>
+                      <option value="Polymer, Foam & Gasket Converting">Polymer, Foam & Gasket Converting</option>
+                      <option value="Thermal Interface & Insulation Materials">Thermal Interface & Insulation Materials</option>
+                      <option value="Optical & Barrier Films">Optical & Barrier Films</option>
+                      <option value="Abrasives & Surface Finishing">Abrasives & Surface Finishing</option>
+                      <option value="Industrial Packaging & Fasteners">Industrial Packaging & Fasteners</option>
                       <option value="Automotive & Transportation OEM">Automotive & Transportation OEM</option>
-                      <option value="Electronics & Semiconductor">Electronics & Semiconductor</option>
-                      <option value="Industrial Electrical & Power">Industrial Electrical & Power</option>
-                      <option value="Aerospace & Defense">Aerospace & Defense</option>
-                      <option value="General Industrial Manufacturing">General Industrial Manufacturing</option>
+                      <option value="Electronics & Semiconductor Materials">Electronics & Semiconductor Materials</option>
+                      <option value="General Industrial Materials">General Industrial Materials</option>
                     </select>
                   </div>
                 </div>
@@ -523,7 +560,7 @@ export default function Signup() {
             )}
 
             {/* ========================================================= */}
-            {/* STEP 3 (FOR SELLER): MATERIALS & PRODUCT CATALOG INGESTION */}
+            {/* STEP 3 (FOR SELLER): PRODUCTS & MATERIALS INGESTION       */}
             {/* ========================================================= */}
             {step === 3 && accountType === "SELLER" && (
               <motion.div 
@@ -535,13 +572,13 @@ export default function Signup() {
                 className="space-y-6"
               >
                 {/* Ingestion Mode Toggle */}
-                <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-800 pb-4 gap-3">
                   <div>
                     <h3 className="font-extrabold text-white text-base flex items-center gap-2">
                       <Layers className="w-4 h-4 text-emerald-400" />
-                      Catalog Specifications ({sellerProducts.filter(p => p.name.trim()).length} Active)
+                      Product Catalog Specifications ({sellerProducts.filter(p => p.name.trim()).length} Active)
                     </h3>
-                    <p className="text-xs text-slate-400">Add products matching our 5-point chemical & thermal matrix.</p>
+                    <p className="text-xs text-slate-400">Select any industrial category and specify your technical parameters.</p>
                   </div>
 
                   <div className="flex items-center gap-2">
@@ -580,7 +617,7 @@ export default function Signup() {
                     <div className="space-y-1">
                       <h4 className="font-bold text-white text-sm">Upload Technical Brochure, Datasheet, or Excel</h4>
                       <p className="text-xs text-slate-400 max-w-md mx-auto">
-                        Supports <span className="text-emerald-300 font-mono">.xlsx</span>, <span className="text-emerald-300 font-mono">.csv</span>, <span className="text-emerald-300 font-mono">.pdf</span>, or images. Our AI automatically extracts models, backings, adhesives, calipers, and temp ratings into our Master Catalog schema.
+                        Supports all products: Tapes, Adhesives, Foams, Gaskets, Thermal Pads, Insulation, Films, Abrasives, Fasteners. Upload <span className="text-emerald-300 font-mono">.xlsx</span>, <span className="text-emerald-300 font-mono">.csv</span>, <span className="text-emerald-300 font-mono">.pdf</span>, or images.
                       </p>
                     </div>
 
@@ -603,7 +640,7 @@ export default function Signup() {
                         {isParsingFile ? (
                           <>
                             <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            AI Normalizing Specifications...
+                            AI Normalizing Multi-Category Specifications...
                           </>
                         ) : (
                           <>
@@ -617,27 +654,43 @@ export default function Signup() {
                 )}
 
                 {/* MODE 2: INTERACTIVE PRODUCT ROWS FORM */}
-                <div className="space-y-4 max-h-[380px] overflow-y-auto pr-1">
+                <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
                   {sellerProducts.map((product, idx) => (
                     <div 
                       key={idx}
                       className="p-4 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-3 relative group"
                     >
                       <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
-                        <span className="text-xs font-bold text-emerald-400 font-mono">
-                          Material #{idx + 1}
+                        <span className="text-xs font-bold text-emerald-400 font-mono flex items-center gap-1.5">
+                          <Tag className="w-3.5 h-3.5" /> Product Item #{idx + 1}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleRemoveProduct(idx)}
                           className="text-slate-500 hover:text-red-400 p-1 rounded transition-colors"
-                          title="Remove Material"
+                          title="Remove Product"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
 
-                      {/* Row 1: Name & Type */}
+                      {/* Row 1: CATEGORY DROPDOWN */}
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-400 mb-1">
+                          Product Category / Material Family *
+                        </label>
+                        <select
+                          value={product.category || PRODUCT_CATEGORIES[0]}
+                          onChange={e => handleUpdateProduct(idx, "category", e.target.value)}
+                          className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500 font-medium"
+                        >
+                          {PRODUCT_CATEGORIES.map(cat => (
+                            <option key={cat} value={cat}>{cat}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Row 2: Name & Format */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div className="sm:col-span-2">
                           <label className="block text-[11px] font-bold text-slate-400 mb-1">Product Model / Specification Title *</label>
@@ -646,12 +699,12 @@ export default function Signup() {
                             required
                             value={product.name}
                             onChange={e => handleUpdateProduct(idx, "name", e.target.value)}
-                            placeholder="e.g. Polyimide High-Temp SMT Tape 50µm"
+                            placeholder="e.g. Polyimide High-Temp Film or RTV Industrial Silicone Gasket"
                             className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Format</label>
+                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Format / Side Coating</label>
                           <select
                             value={product.sideType}
                             onChange={e => handleUpdateProduct(idx, "sideType", e.target.value)}
@@ -659,54 +712,55 @@ export default function Signup() {
                           >
                             <option value="Single-Sided">Single-Sided</option>
                             <option value="Double-Sided">Double-Sided</option>
-                            <option value="Transfer">Adhesive Transfer</option>
+                            <option value="Transfer">Adhesive Transfer Film</option>
+                            <option value="N/A (Liquid / Non-Adhesive)">N/A (Liquid / Non-Adhesive)</option>
                           </select>
                         </div>
                       </div>
 
-                      {/* Row 2: Carrier & Adhesive */}
+                      {/* Row 3: Substrate / Carrier & Chemistry */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Carrier / Backing Material</label>
+                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Substrate / Carrier / Base Material</label>
                           <input 
                             type="text"
                             value={product.backing}
                             onChange={e => handleUpdateProduct(idx, "backing", e.target.value)}
-                            placeholder="e.g. Polyimide Film / Acrylic Foam / PVC"
+                            placeholder="e.g. Polyimide / Acrylic Foam / EPDM / Glass Cloth / None"
                             className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Adhesive Chemistry</label>
+                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Adhesive / Chemical System</label>
                           <input 
                             type="text"
                             value={product.adhesionType}
                             onChange={e => handleUpdateProduct(idx, "adhesionType", e.target.value)}
-                            placeholder="e.g. Cross-Linked Silicone / Pure Acrylic"
+                            placeholder="e.g. Cross-Linked Silicone / Pure Acrylic / Epoxy / Rubber"
                             className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
                           />
                         </div>
                       </div>
 
-                      {/* Row 3: Caliper, Temp, Price */}
-                      <div className="grid grid-cols-3 gap-3">
+                      {/* Row 4: Caliper, Temp, Price */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Total Caliper</label>
+                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Total Caliper / Viscosity</label>
                           <input 
                             type="text"
                             value={product.thickness}
                             onChange={e => handleUpdateProduct(idx, "thickness", e.target.value)}
-                            placeholder="e.g. 0.05 mm"
+                            placeholder="e.g. 0.05 mm / 1.1 mm / 150 cP"
                             className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Temp Rating</label>
+                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Temperature Resistance</label>
                           <input 
                             type="text"
                             value={product.tempRange}
                             onChange={e => handleUpdateProduct(idx, "tempRange", e.target.value)}
-                            placeholder="e.g. 260°C"
+                            placeholder="e.g. 260°C / 180°C / -40°C to 120°C"
                             className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
                           />
                         </div>
@@ -716,10 +770,22 @@ export default function Signup() {
                             type="text"
                             value={product.price}
                             onChange={e => handleUpdateProduct(idx, "price", e.target.value)}
-                            placeholder="e.g. ₹320 / roll"
+                            placeholder="e.g. ₹320 / roll ($4.20) / MOQ 500 units"
                             className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
                           />
                         </div>
+                      </div>
+
+                      {/* Row 5: Application */}
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-400 mb-1">Primary Industrial Engineering Applications</label>
+                        <input 
+                          type="text"
+                          value={product.application}
+                          onChange={e => handleUpdateProduct(idx, "application", e.target.value)}
+                          placeholder="e.g. SMT wave solder masking, EV battery pack sealing, structural facade mounting"
+                          className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
+                        />
                       </div>
                     </div>
                   ))}
@@ -732,7 +798,7 @@ export default function Signup() {
                     className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold rounded-xl border border-slate-700 flex items-center gap-1.5 transition-all"
                   >
                     <Plus className="w-4 h-4" />
-                    Add Another Material
+                    Add Another Product / Material
                   </button>
                   <span className="text-xs font-mono text-slate-400">
                     {sellerProducts.filter(p => p.name.trim()).length} specifications configured
@@ -817,10 +883,10 @@ export default function Signup() {
                   <div className="p-4 bg-emerald-950/40 border border-emerald-800/60 rounded-2xl space-y-1 text-xs">
                     <div className="font-bold text-emerald-300 flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                      {sellerProducts.filter(p => p.name.trim()).length} Manufacturer Materials Ready for Ingestion
+                      {sellerProducts.filter(p => p.name.trim()).length} Products & Materials Ready for Ingestion
                     </div>
                     <p className="text-slate-400 text-[11px]">
-                      Your specifications will be normalized and published to the TarasAI Master Catalog upon approval.
+                      Your specifications across all selected categories will be normalized and published to the TarasAI Master Catalog upon registration.
                     </p>
                   </div>
                 )}
