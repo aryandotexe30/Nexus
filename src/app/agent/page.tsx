@@ -170,14 +170,14 @@ export default function FinderPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'ai',
-      text: `👋 **Welcome, ${companyName}!**\n\nI am your **AI Materials & Tape Sourcing Copilot**, trained on our **Master Database of 750+ verified industrial specifications** across premier global and Chinese manufacturers (3M, Tesa, CGAPL, Shanghai Yongguan, Xiamen Naikos, Shenzhen YouSan, CYG Changtong, Wanghao Camat, Jiangsu Crown, Shenzhen Kingzom, Zhejiang Furukawa China, Hebei Huaxia, Dongguan Haotian, Shandong Lianjie, Guangzhou Broadya, Nitto, AIPL, Sri Vasavi, Henkel Loctite, Shurtape, Saint-Gobain).\n\nBased on your manufacturing profile (**${userIndustry}**), tell me what application, region/origin, or technical parameters you are sourcing (e.g. *Indian Class H tapes, Chinese acrylic foam, German double-sided PET, temperature rating, substrate material*).`,
+      text: `👋 **Welcome, ${companyName}!**\n\nI am your **AI Materials & Tape Sourcing Copilot**, trained on our **Master Database of 1,800+ verified industrial specifications** across qualified domestic and global manufacturing standards.\n\nBased on your manufacturing profile (**${userIndustry}**), tell me what application, region/origin, or technical parameters you are sourcing (e.g. *Class H high-temp insulation, structural acrylic foam, double-sided PET, temperature rating, substrate material*).`,
       options: [
         "Class H High Temp Insulation (260°C)",
-        "Double-Sided Acrylic Foam VHB",
-        "Wave Solder Kapton Polyimide",
+        "Double-Sided Structural Acrylic Foam",
+        "High-Temp Polyimide SMT Masking",
         "Aluminium Foil HVAC & Shielding",
-        "Indian Manufacturers for Class H",
-        "Chinese VHB, Aerogel & Kapton Suppliers"
+        "Domestic High-Temp Electrical Insulation",
+        "Factory-Direct Acrylic Foam, Aerogel & Polyimide"
       ]
     }
   ]);
@@ -437,7 +437,7 @@ export default function FinderPage() {
             Intelligent Material & Tape Finder
           </h1>
           <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Grounded in verified manufacturer datasheets (3M, Tesa, CGAPL, Shanghai Yongguan, Xiamen Naikos, Nitto, AIPL, Sri Vasavi).
+            Grounded in verified industrial datasheets and international ASTM / ISO material standards.
           </p>
         </div>
 
@@ -489,8 +489,8 @@ export default function FinderPage() {
                     text: `👋 **Welcome back, ${companyName}!**\n\nWhat industrial tape or material specification are you looking for today?`,
                     options: [
                       "Class H High Temp Insulation (260°C)",
-                      "Double-Sided Acrylic Foam VHB",
-                      "Wave Solder Kapton Polyimide",
+                      "Double-Sided Structural Acrylic Foam",
+                      "High-Temp Polyimide SMT Masking",
                       "Aluminium Foil HVAC & Shielding",
                       "Automotive Wire Harnessing"
                     ]

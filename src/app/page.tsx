@@ -8,207 +8,25 @@ import {
   useTransform 
 } from "framer-motion";
 import { 
-  Search, 
-  Sparkles, 
   ShieldCheck, 
   Globe, 
   Database, 
   Cpu, 
   Layers, 
-  ChevronRight, 
   Zap, 
-  Bot, 
   CheckCircle2, 
   Activity, 
   Play, 
   Pause, 
   ArrowRight,
-  Factory
+  Factory,
+  Lock,
+  Sparkles,
+  Server,
+  FileCheck
 } from "lucide-react";
 
-// Preset instant search queries for the live demo widget
-const DEMO_PRESETS = [
-  { label: "🔥 Kapton 260°C", query: "Kapton polyimide silicone 260°c" },
-  { label: "📦 VHB Double Sided Foam", query: "Double sided acrylic foam VHB" },
-  { label: "⚡ AIPL PVC Electrical", query: "AIPL PVC electrical insulation tape" },
-  { label: "🇨🇳 Naikos NKS-101", query: "Naikos polyimide tape NKS-101" },
-  { label: "🛡️ 3M 468MP Transfer", query: "3M 468MP adhesive transfer tape" },
-  { label: "🏭 Vasavi Double Sided", query: "Sri Vasavi double sided tape" },
-  { label: "🚗 Yongguan Automotive", query: "Yongguan cloth wiring harness tape" }
-];
-
-const SAMPLE_MATCHES: Record<string, any[]> = {
-  default: [
-    {
-      name: "3M VHB Tape 4910",
-      company: "3M India",
-      location: "India",
-      badge: "🇮🇳 India",
-      type: "Tape",
-      side: "Double-Sided",
-      backing: "Foam (Acrylic / PE / PU)",
-      adhesion: "Acrylic (Solvent / Pure)",
-      thickness: "1.0 mm (Thick)",
-      temp: "Medium Temp (93°C - 149°C)",
-      app: "Structural bonding of clear plastics, glass, and metals without rivets."
-    },
-    {
-      name: "Naikos NKS-101 High Temp Polyimide Tape",
-      company: "Naikos",
-      location: "China",
-      badge: "🇨🇳 China",
-      type: "Tape",
-      side: "Single-Sided",
-      backing: "Polyimide / Kapton",
-      adhesion: "Silicone / Polysiloxane",
-      thickness: "0.06 mm (Ultra-Thin)",
-      temp: "Ultra-High Temp (≥ 260°C)",
-      app: "SMT PCB wave soldering masking, transformer winding insulation."
-    },
-    {
-      name: "AIPL ABRO 5010 PVC Electrical Tape",
-      company: "Ajit Industries (AIPL)",
-      location: "India",
-      badge: "🇮🇳 India",
-      type: "Tape",
-      side: "Single-Sided",
-      backing: "PVC / Vinyl",
-      adhesion: "Rubber / Synthetic Resin",
-      thickness: "0.125 mm (Standard)",
-      temp: "Standard (80°C / 600V)",
-      app: "Primary electrical wire harness wrapping and industrial phase marking."
-    }
-  ],
-  kapton: [
-    {
-      name: "3M Polyimide Film Tape 5413",
-      company: "3M India",
-      location: "India",
-      badge: "🇮🇳 India",
-      type: "Tape",
-      side: "Single-Sided",
-      backing: "Polyimide / Kapton (Dupont)",
-      adhesion: "Silicone / Polysiloxane",
-      thickness: "0.07 mm (Ultra-Thin)",
-      temp: "Ultra-High Temp (260°C peak)",
-      app: "High-temperature masking in wave solder and PCB gold finger protection."
-    },
-    {
-      name: "Naikos NKS-101 High Temp Polyimide Tape",
-      company: "Naikos",
-      location: "China",
-      badge: "🇨🇳 China",
-      type: "Tape",
-      side: "Single-Sided",
-      backing: "Polyimide / Kapton",
-      adhesion: "Silicone / Polysiloxane",
-      thickness: "0.06 mm (Ultra-Thin)",
-      temp: "Ultra-High Temp (≥ 260°C)",
-      app: "SMT PCB wave soldering masking, transformer winding insulation."
-    },
-    {
-      name: "YouSan YS-PI260 Polyimide Tape",
-      company: "YouSan",
-      location: "China",
-      badge: "🇨🇳 China",
-      type: "Tape",
-      side: "Single-Sided",
-      backing: "Polyimide / Kapton",
-      adhesion: "Silicone / Polysiloxane",
-      thickness: "0.05 mm (Ultra-Thin)",
-      temp: "Ultra-High Temp (260°C)",
-      app: "Lithium battery insulation, BGA masking, automotive sensor wrapping."
-    }
-  ],
-  vhb: [
-    {
-      name: "3M VHB Tape 4910",
-      company: "3M India",
-      location: "India",
-      badge: "🇮🇳 India",
-      type: "Tape",
-      side: "Double-Sided",
-      backing: "Foam (Acrylic / PE / PU)",
-      adhesion: "Acrylic (Solvent / Pure)",
-      thickness: "1.0 mm (Thick)",
-      temp: "Medium Temp (93°C - 149°C)",
-      app: "Structural bonding of clear plastics, glass, and metals without rivets."
-    },
-    {
-      name: "tesa ACXplus 7055",
-      company: "tesa Tapes",
-      location: "India",
-      badge: "🇮🇳 India",
-      type: "Tape",
-      side: "Double-Sided",
-      backing: "Foam (Acrylic / PE / PU)",
-      adhesion: "Acrylic (Solvent / Pure)",
-      thickness: "1.0 mm (Thick)",
-      temp: "High Temp (150°C)",
-      app: "High-transparency acrylic core tape for architectural glass facades and elevator panels."
-    },
-    {
-      name: "Naikos NKS-VHB High Bond Acrylic Foam Tape",
-      company: "Naikos",
-      location: "China",
-      badge: "🇨🇳 China",
-      type: "Tape",
-      side: "Double-Sided",
-      backing: "Foam (Acrylic / PE / PU)",
-      adhesion: "Acrylic (Solvent / Pure)",
-      thickness: "1.1 mm (Thick)",
-      temp: "High Temp (160°C)",
-      app: "Solar panel mounting, automotive body exterior trim, electronics casing."
-    }
-  ],
-  pvc: [
-    {
-      name: "AIPL ABRO 5010 PVC Electrical Tape",
-      company: "Ajit Industries (AIPL)",
-      location: "India",
-      badge: "🇮🇳 India",
-      type: "Tape",
-      side: "Single-Sided",
-      backing: "PVC / Vinyl",
-      adhesion: "Rubber / Synthetic Resin",
-      thickness: "0.125 mm (Standard)",
-      temp: "Standard (80°C / 600V)",
-      app: "Primary electrical wire harness wrapping and industrial phase marking."
-    },
-    {
-      name: "Havells Reo FR PVC Electrical Tape",
-      company: "Havells India",
-      location: "India",
-      badge: "🇮🇳 India",
-      type: "Tape",
-      side: "Single-Sided",
-      backing: "PVC / Vinyl",
-      adhesion: "Rubber / Synthetic Resin",
-      thickness: "0.13 mm (Standard)",
-      temp: "Standard (90°C Flame Retardant)",
-      app: "Flame retardant wire splicing, household and industrial power cabling."
-    },
-    {
-      name: "Yongguan YG-PVC Industrial Grade Electrical Tape",
-      company: "Yongguan",
-      location: "China",
-      badge: "🇨🇳 China",
-      type: "Tape",
-      side: "Single-Sided",
-      backing: "PVC / Vinyl",
-      adhesion: "Rubber / Synthetic Resin",
-      thickness: "0.15 mm (Standard)",
-      temp: "Medium Temp (105°C)",
-      app: "Automotive high-voltage battery harness bundling and electrical insulation."
-    }
-  ]
-};
-
 export default function LandingPage() {
-  const [searchPrompt, setSearchPrompt] = useState("");
-  const [activeResults, setActiveResults] = useState(SAMPLE_MATCHES.default);
-  const [isSearching, setIsSearching] = useState(false);
-  
   // Video & Background Controls
   const [isPlaying, setIsPlaying] = useState(true);
   const [dimLevel, setDimLevel] = useState<"light" | "medium" | "deep">("medium");
@@ -221,25 +39,6 @@ export default function LandingPage() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0.2]);
   const heroScale = useTransform(scrollYProgress, [0, 0.25], [1, 0.96]);
 
-  // Handle Search Input Change
-  const handleSearch = (term: string) => {
-    setSearchPrompt(term);
-    setIsSearching(true);
-    setTimeout(() => {
-      const lower = term.toLowerCase();
-      if (lower.includes("kapton") || lower.includes("polyimide") || lower.includes("260")) {
-        setActiveResults(SAMPLE_MATCHES.kapton);
-      } else if (lower.includes("vhb") || lower.includes("foam") || lower.includes("acrylic") || lower.includes("double")) {
-        setActiveResults(SAMPLE_MATCHES.vhb);
-      } else if (lower.includes("pvc") || lower.includes("electrical") || lower.includes("wire") || lower.includes("cable")) {
-        setActiveResults(SAMPLE_MATCHES.pvc);
-      } else {
-        setActiveResults(SAMPLE_MATCHES.default);
-      }
-      setIsSearching(false);
-    }, 250);
-  };
-
   const toggleVideoPlay = () => {
     if (!videoRef.current) return;
     if (videoRef.current.paused) {
@@ -251,7 +50,7 @@ export default function LandingPage() {
     }
   };
 
-  // Subtle Interactive Particle Canvas Overlay
+  // Interactive Particle Canvas Overlay
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -333,7 +132,6 @@ export default function LandingPage() {
     };
   }, []);
 
-  // Dim overlay styling based on selector
   const dimClasses = {
     light: "bg-slate-950/60",
     medium: "bg-slate-950/80",
@@ -349,7 +147,6 @@ export default function LandingPage() {
       {/* 1. CINEMATIC BACKGROUND VIDEO WITH DIMMED ATMOSPHERIC OVERLAY */}
       {/* ============================================================ */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        {/* Background Video Element */}
         <video
           ref={videoRef}
           autoPlay
@@ -359,21 +156,20 @@ export default function LandingPage() {
           className="absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000"
           poster="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80"
         >
-          {/* High quality industrial robotics and precision manufacturing video loop */}
           <source 
             src="https://upload.wikimedia.org/wikipedia/commons/8/85/Chainsaw_robot_carves_the_7Xstool_by_tom_pawlofsky_-_tibor_weissmahr.webm" 
             type="video/webm" 
           />
         </video>
 
-        {/* Primary Dynamic Dimming Layer */}
+        {/* Dynamic Dimming Layer */}
         <div className={`absolute inset-0 transition-colors duration-500 ${dimClasses}`} />
 
         {/* Gradient Vignette & Radial Atmospheric Lighting */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/90" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-slate-950/90" />
         
-        {/* Subtle Cyber Grid Texture */}
+        {/* Cyber Grid Texture */}
         <div 
           className="absolute inset-0 opacity-[0.07]"
           style={{
@@ -434,18 +230,22 @@ export default function LandingPage() {
           </Link>
 
           <div className="hidden lg:flex items-center gap-6 text-xs font-semibold text-slate-300">
-            <Link href="/products" className="hover:text-blue-400 transition-colors flex items-center gap-1.5">
-              <Database className="w-3.5 h-3.5 text-blue-400" />
-              1,800+ SKUs Catalog
-            </Link>
-            <Link href="/agent" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
-              <Bot className="w-3.5 h-3.5 text-cyan-400" />
-              AI Copilot
-            </Link>
-            <Link href="/dashboard" className="hover:text-indigo-400 transition-colors flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-indigo-400" />
-              Intelligence Dashboard
-            </Link>
+            <a href="#features" className="hover:text-blue-400 transition-colors flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-blue-400" />
+              Features
+            </a>
+            <a href="#architecture" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+              <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+              Engine Architecture
+            </a>
+            <a href="#standards" className="hover:text-indigo-400 transition-colors flex items-center gap-1.5">
+              <Database className="w-3.5 h-3.5 text-indigo-400" />
+              Standardized Specs
+            </a>
+            <a href="#security" className="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              Anonymous RFQ
+            </a>
           </div>
 
           <div className="flex items-center gap-3">
@@ -456,19 +256,19 @@ export default function LandingPage() {
               Sign In
             </Link>
             <Link
-              href="/agent"
+              href="/signup"
               className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-extrabold rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Launch Copilot</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+              <span>Sign Up</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </nav>
       </header>
 
       {/* ============================================================ */}
-      {/* 3. HERO SECTION WITH INTERACTIVE AI SEARCH WIDGET           */}
+      {/* 3. HERO SECTION                                              */}
       {/* ============================================================ */}
       <main className="relative z-10 pt-32 md:pt-40 pb-24">
         <motion.div 
@@ -478,151 +278,107 @@ export default function LandingPage() {
           {/* Live Status Pill */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-blue-500/30 text-blue-300 text-xs font-bold backdrop-blur-md shadow-lg shadow-blue-950/50">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Autonomous Industrial Tape & Sourcing Intelligence</span>
+            <span>Autonomous Industrial Materials Intelligence & Procurement</span>
             <span className="text-slate-600">•</span>
-            <span className="text-slate-400 font-mono">1,800+ Physical SKUs</span>
+            <span className="text-slate-400 font-mono">1,800+ Standardized Specifications</span>
           </div>
 
           {/* Master Headline */}
           <div className="space-y-4 max-w-4xl mx-auto">
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white leading-[1.08]">
-              Procure Any Industrial Tape & Adhesive with{" "}
+              Procure High-Performance Industrial Materials with{" "}
               <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-indigo-300 bg-clip-text text-transparent">
-                Zero Friction.
+                Zero Spec Ambiguity.
               </span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-slate-300 font-normal max-w-2xl mx-auto leading-relaxed">
-              Instant AI cross-referencing across <strong className="text-white">1,200+ Indian domestic manufacturing plant models</strong> and <strong className="text-white">585+ Tier-1 Chinese factory-direct SKUs</strong>. Automated spec extraction, alternative discovery, and anonymous RFQ dispatch.
+              Unified cross-referencing across <strong className="text-white">1,800+ physical engineering standards</strong>. Automated parametric extraction, specification clustering, and confidential multi-plant RFQ dispatch.
             </p>
           </div>
 
-          {/* Quick CTA Actions */}
+          {/* Clean Auth CTA Actions */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link
-              href="/products"
-              className="flex items-center gap-2 px-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-sm rounded-xl shadow-xl shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-[1.02] transition-all"
+              href="/signup"
+              className="flex items-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-sm rounded-xl shadow-xl shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-[1.02] transition-all"
             >
-              <Database className="w-4 h-4" />
-              <span>Explore 1,800+ Products Catalog</span>
+              <span>Sign Up for Access</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              href="/agent"
-              className="flex items-center gap-2 px-6 py-3.5 bg-slate-900/90 hover:bg-slate-800 text-slate-100 font-extrabold text-sm rounded-xl border border-slate-700/80 backdrop-blur-md hover:scale-[1.02] transition-all"
+              href="/login"
+              className="flex items-center gap-2 px-8 py-3.5 bg-slate-900/90 hover:bg-slate-800 text-slate-100 font-extrabold text-sm rounded-xl border border-slate-700/80 backdrop-blur-md hover:scale-[1.02] transition-all"
             >
-              <Bot className="w-4 h-4 text-cyan-400" />
-              <span>Try Live AI Technical Copilot</span>
+              <Lock className="w-4 h-4 text-cyan-400" />
+              <span>Sign In to Platform</span>
             </Link>
           </div>
 
           {/* ============================================================ */}
-          {/* 4. LIVE INTERACTIVE FINDER DEMO ON HERO                      */}
+          {/* 4. PLATFORM ARCHITECTURE & PIPELINE VISUALIZATION (NO DEMO)  */}
           {/* ============================================================ */}
-          <div className="pt-8 max-w-4xl mx-auto text-left">
-            <div className="bg-slate-900/85 backdrop-blur-2xl border border-slate-800 rounded-3xl p-5 md:p-7 shadow-2xl shadow-black/80 space-y-5">
+          <div id="architecture" className="pt-8 max-w-4xl mx-auto text-left">
+            <div className="bg-slate-900/85 backdrop-blur-2xl border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl shadow-black/80 space-y-6">
               <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-green-500/80" />
-                  <span className="text-xs font-mono font-bold text-slate-400 ml-2 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-                    Live Copilot Search Engine Demo
+                  <div className="w-3 h-3 rounded-full bg-blue-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-indigo-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-cyan-500/80" />
+                  <span className="text-xs font-mono font-bold text-slate-300 ml-2 flex items-center gap-1.5">
+                    <Cpu className="w-3.5 h-3.5 text-blue-400" />
+                    TarasAI Autonomous Procurement Architecture
                   </span>
                 </div>
                 <span className="text-[11px] font-mono text-emerald-400 font-semibold flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                  ONLINE
+                  SYSTEM ACTIVE
                 </span>
               </div>
 
-              {/* Search Bar Input */}
-              <div className="relative">
-                <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-blue-400" />
-                <input
-                  type="text"
-                  value={searchPrompt}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  placeholder="Type any model, substrate, temp rating, or spec (e.g. Kapton 260°C, VHB Acrylic Foam, AIPL PVC)..."
-                  className="w-full pl-12 pr-28 py-3.5 bg-slate-950/80 border border-slate-700/80 rounded-2xl text-sm font-medium text-white placeholder-slate-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all shadow-inner"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleSearch(searchPrompt)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow-md"
-                >
-                  {isSearching ? "Matching..." : "Search"}
-                </button>
-              </div>
-
-              {/* Preset Chips */}
-              <div className="space-y-1.5">
-                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  Quick Query Prompts:
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {DEMO_PRESETS.map((preset) => (
-                    <button
-                      key={preset.label}
-                      type="button"
-                      onClick={() => handleSearch(preset.query)}
-                      className="text-xs px-3 py-1.5 bg-slate-800/80 hover:bg-blue-900/40 hover:text-blue-300 text-slate-300 rounded-xl border border-slate-700/60 hover:border-blue-500/40 transition-all font-medium"
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Matched Product Cards Preview */}
-              <div className="space-y-2.5 pt-2">
-                <div className="text-xs font-bold text-slate-400 flex items-center justify-between">
-                  <span>Matched Enterprise SKUs ({activeResults.length})</span>
-                  <Link href="/products" className="text-blue-400 hover:underline flex items-center gap-1 text-[11px]">
-                    View all 1,800+ in Master Catalog <ArrowRight className="w-3 h-3" />
-                  </Link>
+              {/* 4-Stage Autonomous Dataflow */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {/* Stage 1 */}
+                <div className="p-4 bg-slate-950/70 border border-slate-800 rounded-2xl space-y-2">
+                  <div className="w-8 h-8 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                    <FileCheck className="w-4 h-4" />
+                  </div>
+                  <div className="text-xs font-bold text-white">1. Spec Ingestion</div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    Input raw engineering requirements: thermal, caliper, carrier & adhesive chemistry.
+                  </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  {activeResults.map((item, idx) => (
-                    <motion.div
-                      key={item.name + idx}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2, delay: idx * 0.05 }}
-                      className="p-3.5 bg-slate-950/70 border border-slate-800 hover:border-blue-500/40 rounded-2xl space-y-2 transition-all group"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-800 text-slate-300 rounded-md border border-slate-700">
-                            {item.badge}
-                          </span>
-                          <span className="text-[10px] font-semibold text-slate-400 ml-1.5 truncate">
-                            {item.company}
-                          </span>
-                        </div>
-                        <span className="text-[9px] font-bold px-1.5 py-0.5 bg-blue-950 text-blue-300 rounded border border-blue-800/50">
-                          {item.side}
-                        </span>
-                      </div>
+                {/* Stage 2 */}
+                <div className="p-4 bg-slate-950/70 border border-slate-800 rounded-2xl space-y-2">
+                  <div className="w-8 h-8 rounded-xl bg-cyan-600/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                    <Cpu className="w-4 h-4" />
+                  </div>
+                  <div className="text-xs font-bold text-white">2. 5D Classification</div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    Parametric clustering cross-references against 1,800+ physical standard specifications.
+                  </p>
+                </div>
 
-                      <h4 className="font-extrabold text-xs text-white group-hover:text-blue-400 transition-colors line-clamp-1">
-                        {item.name}
-                      </h4>
+                {/* Stage 3 */}
+                <div className="p-4 bg-slate-950/70 border border-slate-800 rounded-2xl space-y-2">
+                  <div className="w-8 h-8 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                    <Database className="w-4 h-4" />
+                  </div>
+                  <div className="text-xs font-bold text-white">3. Standard Unified Code</div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    Generates unified TarasAI Standard ID (e.g. <span className="font-mono text-cyan-300">TAR-KAP-SIL-0050</span>) with pricing benchmarks.
+                  </p>
+                </div>
 
-                      <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
-                        {item.app}
-                      </p>
-
-                      <div className="pt-2 border-t border-slate-800/60 flex flex-wrap gap-1 text-[10px] text-slate-300 font-medium">
-                        <span className="px-1.5 py-0.5 bg-slate-900 rounded text-purple-300 border border-purple-900/30">
-                          {item.backing}
-                        </span>
-                        <span className="px-1.5 py-0.5 bg-slate-900 rounded text-rose-300 border border-rose-900/30">
-                          {item.temp}
-                        </span>
-                      </div>
-                    </motion.div>
-                  ))}
+                {/* Stage 4 */}
+                <div className="p-4 bg-slate-950/70 border border-slate-800 rounded-2xl space-y-2">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div className="text-xs font-bold text-white">4. Anonymous RFQ</div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">
+                    Direct automated multi-plant dispatch without leaking buyer identity or volume leverage.
+                  </p>
                 </div>
               </div>
             </div>
@@ -635,10 +391,10 @@ export default function LandingPage() {
         <section className="mt-24 max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { label: "Verified Physical Models", value: "1,800+", detail: "Zero dummy data or blogs", icon: Database, color: "text-blue-400" },
-              { label: "Domestic Indian Plants", value: "1,200+", detail: "AIPL, Vasavi, 3M, Havells, CGAPL", icon: Factory, color: "text-emerald-400" },
-              { label: "Chinese Factory Direct SKUs", value: "585", detail: "Yongguan, Naikos, YouSan, Camat", icon: Globe, color: "text-cyan-400" },
-              { label: "Spec Extraction & Match", value: "< 3.2s", detail: "5-point chemical & thermal matrix", icon: Cpu, color: "text-indigo-400" }
+              { label: "Verified Physical Models", value: "1,800+", detail: "Zero dummy data or synthetic placeholders", icon: Database, color: "text-blue-400" },
+              { label: "Domestic Plant Network", value: "1,200+", detail: "Unified standard taxonomy & classification", icon: Factory, color: "text-emerald-400" },
+              { label: "Global Factory Formulations", value: "585+", detail: "Calibrated thickness & adhesive systems", icon: Globe, color: "text-cyan-400" },
+              { label: "Spec Extraction & Match", value: "< 3.2s", detail: "5-point chemical & thermal classification", icon: Cpu, color: "text-indigo-400" }
             ].map((stat, i) => (
               <div 
                 key={i}
@@ -656,13 +412,13 @@ export default function LandingPage() {
         {/* ============================================================ */}
         {/* 6. BENTO GRID: ENTERPRISE CORE CAPABILITIES                 */}
         {/* ============================================================ */}
-        <section className="mt-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
+        <section id="features" className="mt-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <span className="text-xs font-extrabold uppercase tracking-wider text-blue-400 px-3 py-1 bg-blue-500/10 rounded-full border border-blue-500/20">
-              Engine Architecture
+              Platform Features
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
-              Designed for Industrial Procurement & Plant Engineering
+              Engineered for Industrial Procurement & Plant Operations
             </h2>
             <p className="text-sm sm:text-base text-slate-400">
               Transform unstructured technical specification sheets, distributor PDFs, and fragmented catalogs into queryable intelligence.
@@ -670,20 +426,20 @@ export default function LandingPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Bento Card 1: Autonomous Harvester */}
+            {/* Bento Card 1: Autonomous Catalog Harvester */}
             <div className="md:col-span-2 p-8 bg-gradient-to-br from-slate-900/90 to-slate-950/90 backdrop-blur-2xl border border-slate-800 rounded-3xl space-y-5 relative overflow-hidden group hover:border-blue-500/40 transition-all shadow-xl">
               <div className="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
                 <Database className="w-6 h-6" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-white">Autonomous Catalog Harvester</h3>
+                <h3 className="text-2xl font-bold text-white">Autonomous Catalog Normalization</h3>
                 <p className="text-sm text-slate-400 leading-relaxed max-w-xl">
-                  Provide any manufacturer website URL or company name. The deep crawler crawls subdomains, catalogs, tables, and product matrices, automatically normalizing technical specifications and filtering out corporate fluff.
+                  Deep specification extraction automatically processes catalogs, technical datasheets, tables, and product matrices, standardizing adhesive chemistry, dielectric strength, and thermal thresholds.
                 </p>
               </div>
               <div className="p-4 bg-slate-950/80 rounded-2xl border border-slate-800 font-mono text-xs text-slate-300 space-y-1.5">
                 <div className="text-emerald-400 font-bold flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4" /> [HARVESTER] 585 Chinese Models + 1,200 Indian SKUs Ingested
+                  <CheckCircle2 className="w-4 h-4" /> [HARVESTER] 1,800+ Physical Specifications Ingested & Classified
                 </div>
                 <div className="text-slate-400">→ Carrier: Polyimide, Fiberglass, Aluminum, EPDM, PVC, Foam</div>
                 <div className="text-slate-400">→ Adhesive: Pure Acrylic, Silicone Polysiloxane, Synthetic Resin</div>
@@ -691,7 +447,7 @@ export default function LandingPage() {
             </div>
 
             {/* Bento Card 2: 5D Spec Classifier */}
-            <div className="p-8 bg-gradient-to-br from-slate-900/90 to-slate-950/90 backdrop-blur-2xl border border-slate-800 rounded-3xl space-y-5 hover:border-cyan-500/40 transition-all shadow-xl">
+            <div id="engine" className="p-8 bg-gradient-to-br from-slate-900/90 to-slate-950/90 backdrop-blur-2xl border border-slate-800 rounded-3xl space-y-5 hover:border-cyan-500/40 transition-all shadow-xl">
               <div className="w-12 h-12 rounded-2xl bg-cyan-600/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
                 <Layers className="w-6 h-6" />
               </div>
@@ -711,60 +467,60 @@ export default function LandingPage() {
             </div>
 
             {/* Bento Card 3: Anonymous RFQ Broker */}
-            <div className="p-8 bg-gradient-to-br from-slate-900/90 to-slate-950/90 backdrop-blur-2xl border border-slate-800 rounded-3xl space-y-5 hover:border-emerald-500/40 transition-all shadow-xl">
+            <div id="security" className="p-8 bg-gradient-to-br from-slate-900/90 to-slate-950/90 backdrop-blur-2xl border border-slate-800 rounded-3xl space-y-5 hover:border-emerald-500/40 transition-all shadow-xl">
               <div className="w-12 h-12 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <div className="space-y-2">
                 <h3 className="text-xl font-bold text-white">Anonymous RFQ Broker</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Broadcast bulk requirements and custom slit roll specs to authorized regional distributors without revealing your identity or pricing leverage.
+                  Broadcast bulk requirements and custom slit roll specs to authorized regional plants and converters without revealing your identity or pricing leverage.
                 </p>
               </div>
               <div className="pt-2">
                 <span className="text-[11px] font-bold px-2.5 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20">
-                  Zero Buyer Price Compromise
+                  Zero Buyer Identity Compromise
                 </span>
               </div>
             </div>
 
-            {/* Bento Card 4: Cross-Manufacturer Equivalency */}
+            {/* Bento Card 4: Unified Parametric Equivalency */}
             <div className="md:col-span-2 p-8 bg-gradient-to-br from-slate-900/90 to-slate-950/90 backdrop-blur-2xl border border-slate-800 rounded-3xl space-y-5 hover:border-indigo-500/40 transition-all shadow-xl">
               <div className="w-12 h-12 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
-                <Bot className="w-6 h-6" />
+                <Server className="w-6 h-6" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-2xl font-bold text-white">Cross-Manufacturer Equivalent Engine</h3>
+                <h3 className="text-2xl font-bold text-white">Unified Parametric Equivalency Engine</h3>
                 <p className="text-sm text-slate-400 leading-relaxed max-w-xl">
-                  Ask the Copilot to find direct alternatives between premium Western brands (3M, tesa, Saint-Gobain), domestic Indian market leaders (Vasavi, AIPL, Havells, CGAPL), and high-volume Chinese manufacturing plants (Naikos, Yongguan, YouSan).
+                  Automatically match equivalent physical specifications across domestic and global manufacturing hubs based purely on chemical formulation, dielectric resistance, and shear performance.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 text-xs font-mono">
-                <span className="px-2.5 py-1 bg-slate-950 text-blue-300 rounded-lg border border-slate-800">3M 4910 VHB</span>
+                <span className="px-2.5 py-1 bg-slate-950 text-blue-300 rounded-lg border border-slate-800">TAR-AFM-110</span>
                 <span className="text-slate-500 self-center">⇄</span>
-                <span className="px-2.5 py-1 bg-slate-950 text-emerald-300 rounded-lg border border-slate-800">tesa 7055 ACXplus</span>
+                <span className="px-2.5 py-1 bg-slate-950 text-emerald-300 rounded-lg border border-slate-800">TAR-AFM-080</span>
                 <span className="text-slate-500 self-center">⇄</span>
-                <span className="px-2.5 py-1 bg-slate-950 text-cyan-300 rounded-lg border border-slate-800">Naikos NKS-VHB</span>
+                <span className="px-2.5 py-1 bg-slate-950 text-cyan-300 rounded-lg border border-slate-800">TAR-AFM-150</span>
                 <span className="text-slate-500 self-center">⇄</span>
-                <span className="px-2.5 py-1 bg-slate-950 text-indigo-300 rounded-lg border border-slate-800">Vasavi SV-202</span>
+                <span className="px-2.5 py-1 bg-slate-950 text-indigo-300 rounded-lg border border-slate-800">TAR-AFM-200</span>
               </div>
             </div>
           </div>
         </section>
 
         {/* ============================================================ */}
-        {/* 7. CROSS-ORIGIN COMPARISON MATRIX (INDIA vs CHINA SOURCING)  */}
+        {/* 7. SPECIFICATION STANDARDS MATRIX                            */}
         {/* ============================================================ */}
-        <section className="mt-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
+        <section id="standards" className="mt-28 max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
           <div className="text-center max-w-3xl mx-auto space-y-2">
             <span className="text-xs font-extrabold uppercase tracking-wider text-cyan-400 px-3 py-1 bg-cyan-500/10 rounded-full border border-cyan-500/20">
-              Sourcing Optimization
+              Standardized Specifications
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Compare Sourcing from India & China Manufacturing Plants
+              Industrial Tape & Material Specification Standards
             </h2>
             <p className="text-sm text-slate-400">
-              Filter by plant location to balance domestic JIT delivery with factory-direct volume pricing.
+              Browse standard engineering categories standardized under the TarasAI physical classification taxonomy.
             </p>
           </div>
 
@@ -773,36 +529,36 @@ export default function LandingPage() {
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-slate-950/80 border-b border-slate-800 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th className="py-4 px-6">Product Category</th>
-                    <th className="py-4 px-6">🇮🇳 Domestic Indian Plant Models</th>
-                    <th className="py-4 px-6">🇨🇳 Chinese Factory-Direct Models</th>
-                    <th className="py-4 px-6">Primary Industrial Use Cases</th>
+                    <th className="py-4 px-6">Specification Category</th>
+                    <th className="py-4 px-6">TarasAI Standard Code Series</th>
+                    <th className="py-4 px-6">Key Engineering Parameters</th>
+                    <th className="py-4 px-6">Primary Industrial Applications</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/60 font-medium">
                   <tr className="hover:bg-slate-800/30 transition-colors">
-                    <td className="py-4 px-6 font-bold text-white">Polyimide / Kapton (260°C)</td>
-                    <td className="py-4 px-6 text-blue-300">CG-PPI 7011 / 3M 5413 / Vasavi PI</td>
-                    <td className="py-4 px-6 text-cyan-300">Naikos NKS-101 / YouSan YS-PI260 / Camat PI</td>
+                    <td className="py-4 px-6 font-bold text-white">High-Temperature Polyimide Film</td>
+                    <td className="py-4 px-6 font-mono text-cyan-300">TAR-KAP-SERIES</td>
+                    <td className="py-4 px-6 text-slate-300">260°C continuous, silicone adhesive, 25µm - 100µm</td>
                     <td className="py-4 px-6 text-slate-400">SMT Soldering, EV Battery Insulation, Aerospace</td>
                   </tr>
                   <tr className="hover:bg-slate-800/30 transition-colors">
-                    <td className="py-4 px-6 font-bold text-white">Structural Acrylic VHB Foam</td>
-                    <td className="py-4 px-6 text-blue-300">3M VHB 4910, 4950 / tesa ACXplus / Vasavi SV-201</td>
-                    <td className="py-4 px-6 text-cyan-300">Naikos NKS-VHB / YouSan YS-VHB / Crown Foam</td>
-                    <td className="py-4 px-6 text-slate-400">Architectural Cladding, Solar Frames, Automobile Emblems</td>
+                    <td className="py-4 px-6 font-bold text-white">Structural Acrylic Foam Bonding</td>
+                    <td className="py-4 px-6 font-mono text-cyan-300">TAR-AFM-SERIES</td>
+                    <td className="py-4 px-6 text-slate-300">Viscoelastic acrylic core, 0.5mm - 2.0mm, UV/solvent resistant</td>
+                    <td className="py-4 px-6 text-slate-400">Architectural Cladding, Solar Frames, Transportation</td>
                   </tr>
                   <tr className="hover:bg-slate-800/30 transition-colors">
-                    <td className="py-4 px-6 font-bold text-white">Fiberglass Cloth & Mica Tape</td>
-                    <td className="py-4 px-6 text-blue-300">CG-PPI 8415 / 3M 69 / Saint-Gobain 2975</td>
-                    <td className="py-4 px-6 text-cyan-300">Naikos NKS-GC / CYG Changtong Mica / Huate Glass</td>
-                    <td className="py-4 px-6 text-slate-400">Class H Motor Rewinding, Generator Coils, Heavy Power Cables</td>
+                    <td className="py-4 px-6 font-bold text-white">High-Dielectric Fiberglass & Mica</td>
+                    <td className="py-4 px-6 font-mono text-cyan-300">TAR-GLS-SERIES</td>
+                    <td className="py-4 px-6 text-slate-300">Class H (180°C - 200°C), flame-retardant, high tensile</td>
+                    <td className="py-4 px-6 text-slate-400">Class H Motors, Generator Coils, High-Voltage Cables</td>
                   </tr>
                   <tr className="hover:bg-slate-800/30 transition-colors">
-                    <td className="py-4 px-6 font-bold text-white">PVC & Wire Harness Bundling</td>
-                    <td className="py-4 px-6 text-blue-300">AIPL 5010 / Havells Reo FR / Polycab PVC</td>
-                    <td className="py-4 px-6 text-cyan-300">Yongguan YG-PVC / Haotian PVC / Broadya Tape</td>
-                    <td className="py-4 px-6 text-slate-400">Automotive Engine Compartment, Switchgears, Wire Splicing</td>
+                    <td className="py-4 px-6 font-bold text-white">Industrial Heavy-Duty PVC</td>
+                    <td className="py-4 px-6 font-mono text-cyan-300">TAR-PVC-SERIES</td>
+                    <td className="py-4 px-6 text-slate-300">600V dielectric, flame retardant, cold-weather stretch</td>
+                    <td className="py-4 px-6 text-slate-400">Automotive Engine Harness, Switchgears, Wire Splicing</td>
                   </tr>
                 </tbody>
               </table>
@@ -817,26 +573,27 @@ export default function LandingPage() {
           <div className="bg-gradient-to-r from-blue-900/40 via-indigo-900/40 to-cyan-900/40 border border-blue-500/30 backdrop-blur-2xl rounded-3xl p-8 sm:p-12 text-center space-y-6 shadow-2xl relative overflow-hidden">
             <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-300 text-xs font-bold rounded-full border border-blue-500/30">
-              <Sparkles className="w-3.5 h-3.5" /> Start Exploring Instantly
+              <Sparkles className="w-3.5 h-3.5" /> Enterprise Onboarding
             </div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
               Ready to Accelerate Your Industrial Sourcing?
             </h2>
             <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
-              Query the 1,800+ products database, analyze competitor equivalents, or publish an anonymous RFQ in under 60 seconds.
+              Access 1,800+ standardized physical specifications, verify parametric equivalencies, and publish encrypted RFQs with zero friction.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
               <Link
-                href="/products"
-                className="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-black text-sm rounded-xl shadow-lg shadow-blue-600/40 hover:scale-[1.02] transition-all"
+                href="/signup"
+                className="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-black text-sm rounded-xl shadow-lg shadow-blue-600/40 hover:scale-[1.02] transition-all flex items-center gap-2"
               >
-                Browse Master Catalog
+                <span>Create Enterprise Account</span>
+                <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                href="/signup"
+                href="/login"
                 className="px-8 py-3.5 bg-slate-900/90 hover:bg-slate-800 text-white font-black text-sm rounded-xl border border-slate-700 hover:scale-[1.02] transition-all"
               >
-                Create Enterprise Account
+                Sign In
               </Link>
             </div>
           </div>
@@ -857,15 +614,17 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-6">
-            <Link href="/products" className="hover:text-white transition-colors">Catalog</Link>
-            <Link href="/agent" className="hover:text-white transition-colors">AI Copilot</Link>
-            <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
+            <a href="#features" className="hover:text-white transition-colors">Features</a>
+            <a href="#architecture" className="hover:text-white transition-colors">Architecture</a>
+            <a href="#standards" className="hover:text-white transition-colors">Standards</a>
             <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy</Link>
+            <Link href="/login" className="hover:text-white transition-colors">Sign In</Link>
+            <Link href="/signup" className="hover:text-white transition-colors">Sign Up</Link>
           </div>
 
           <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>1,800+ SKUs • India & China Manufacturing Plants</span>
+            <span>1,800+ Standardized Specifications Active</span>
           </div>
         </div>
       </footer>
