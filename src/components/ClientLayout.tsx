@@ -43,14 +43,27 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     return () => { isMounted = false; };
   }, [session, pathname]);
 
+  // Client-side authentication guard
+  useEffect(() => {
+    if (status === "unauthenticated" && !isPublicPage) {
+      router.push("/login");
+    }
+  }, [status, isPublicPage, router]);
+
   if (status === "loading") {
     return <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 flex items-center justify-center">
       <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
     </div>;
   }
 
-  if (!session || isPublicPage) {
+  if (isPublicPage) {
     return <>{children}</>;
+  }
+
+  if (!session) {
+    return <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>;
   }
 
   const user = session?.user as any;
