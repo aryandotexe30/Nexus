@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { 
   motion, 
@@ -15,9 +15,6 @@ import {
   Layers, 
   Zap, 
   CheckCircle2, 
-  Activity, 
-  Play, 
-  Pause, 
   ArrowRight,
   Factory,
   Lock,
@@ -27,9 +24,6 @@ import {
 } from "lucide-react";
 
 export default function LandingPage() {
-  // Video & Background Controls
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [dimLevel, setDimLevel] = useState<"light" | "medium" | "deep">("medium");
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -38,17 +32,6 @@ export default function LandingPage() {
   const { scrollYProgress } = useScroll({ target: containerRef });
   const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0.2]);
   const heroScale = useTransform(scrollYProgress, [0, 0.25], [1, 0.96]);
-
-  const toggleVideoPlay = () => {
-    if (!videoRef.current) return;
-    if (videoRef.current.paused) {
-      videoRef.current.play();
-      setIsPlaying(true);
-    } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
-    }
-  };
 
   // Interactive Particle Canvas Overlay
   useEffect(() => {
@@ -132,12 +115,6 @@ export default function LandingPage() {
     };
   }, []);
 
-  const dimClasses = {
-    light: "bg-slate-950/60",
-    medium: "bg-slate-950/80",
-    deep: "bg-slate-950/92"
-  }[dimLevel];
-
   return (
     <div 
       ref={containerRef}
@@ -153,7 +130,7 @@ export default function LandingPage() {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover scale-105 transition-opacity duration-1000"
+          className="absolute inset-0 w-full h-full object-cover scale-105"
           poster="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80"
         >
           <source 
@@ -162,8 +139,8 @@ export default function LandingPage() {
           />
         </video>
 
-        {/* Dynamic Dimming Layer */}
-        <div className={`absolute inset-0 transition-colors duration-500 ${dimClasses}`} />
+        {/* High-Contrast Dark Dimming Layer */}
+        <div className="absolute inset-0 bg-slate-950/85" />
 
         {/* Gradient Vignette & Radial Atmospheric Lighting */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/90" />
@@ -182,34 +159,6 @@ export default function LandingPage() {
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
       </div>
 
-      {/* Floating Dimmer & Video Control Widget */}
-      <div className="fixed bottom-5 right-5 z-40 flex items-center gap-2 bg-slate-900/80 backdrop-blur-md border border-slate-800/80 rounded-full px-3 py-1.5 shadow-2xl text-xs text-slate-300">
-        <button
-          onClick={toggleVideoPlay}
-          title={isPlaying ? "Pause background video" : "Play background video"}
-          className="p-1 hover:text-blue-400 transition-colors"
-        >
-          {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 text-emerald-400" />}
-        </button>
-        <span className="w-px h-3 bg-slate-700" />
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] uppercase font-bold text-slate-400">Dim:</span>
-          {(["light", "medium", "deep"] as const).map((lvl) => (
-            <button
-              key={lvl}
-              onClick={() => setDimLevel(lvl)}
-              className={`px-2 py-0.5 rounded-full text-[10px] font-bold capitalize transition-all ${
-                dimLevel === lvl
-                  ? "bg-blue-600 text-white shadow-xs"
-                  : "text-slate-400 hover:text-white"
-              }`}
-            >
-              {lvl}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* ============================================================ */}
       {/* 2. FLOATING GLASSMORPHIC NAVIGATION BAR                      */}
       {/* ============================================================ */}
@@ -222,9 +171,6 @@ export default function LandingPage() {
             <div>
               <span className="text-xl font-extrabold tracking-tight text-white flex items-center gap-1.5">
                 TarasAI
-                <span className="text-[10px] font-bold px-1.5 py-0.2 bg-blue-500/20 text-blue-400 rounded-md border border-blue-500/30">
-                  NEXUS
-                </span>
               </span>
             </div>
           </Link>
@@ -609,7 +555,7 @@ export default function LandingPage() {
             <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">
               <Zap className="w-4 h-4" />
             </div>
-            <span className="font-extrabold text-white text-sm">TarasAI Nexus</span>
+            <span className="font-extrabold text-white text-sm">TarasAI</span>
             <span>© {new Date().getFullYear()} All rights reserved.</span>
           </div>
 

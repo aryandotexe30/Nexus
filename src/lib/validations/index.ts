@@ -4,13 +4,15 @@ export const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, "Password must be at least 8 characters"),
   companyName: z.string().min(2),
-  gstNumber: z.string().min(15, "Invalid GST"),
-  cinNumber: z.string().min(21, "Invalid CIN"),
-  personalEmail: z.string().email(),
-  companyPhone: z.string().min(10),
-  personalPhone: z.string().min(10),
+  gstNumber: z.string().min(10, "Invalid GST / Tax ID"),
+  cinNumber: z.string().optional(),
+  personalEmail: z.string().email().optional(),
+  companyPhone: z.string().min(8, "Invalid phone number"),
+  personalPhone: z.string().optional(),
   industry: z.string().optional(),
   udyamNumber: z.string().optional(),
+  accountType: z.enum(["BUYER", "SELLER"]).optional(),
+  products: z.array(z.any()).optional(),
 });
 
 export const enquirySchema = z.object({

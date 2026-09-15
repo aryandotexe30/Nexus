@@ -17,7 +17,8 @@ export async function POST(req: Request) {
 
     const { 
       email, password, companyName, gstNumber, industry, 
-      udyamNumber, cinNumber, personalEmail, companyPhone, personalPhone 
+      udyamNumber, cinNumber, personalEmail, companyPhone, personalPhone,
+      accountType, products
     } = validation.data;
 
     // Extract domain from email (e.g., aryan@tata.com -> tata.com)
@@ -43,27 +44,58 @@ export async function POST(req: Request) {
         companyName,
         gstNumber,
         udyamNumber: udyamNumber || null,
-        cinNumber,
-        personalEmail,
+        cinNumber: cinNumber || null,
+        personalEmail: personalEmail || null,
         companyPhone,
-        personalPhone,
-        industry,
+        personalPhone: personalPhone || null,
+        industry: industry || (accountType === 'SELLER' ? 'Tape & Adhesive Manufacturing' : 'Industrial Manufacturing'),
         domain,
         isVerified: false,
         role: "USER", // Default role
-        credits: 3    // Free tier gets 3 credits
+        credits: accountType === 'SELLER' ? 10 : 3
       }
     });
+
+    // Ingest Seller Catalog Products directly into Master Products database
+    if (Array.isArray(products) && products.length > 0) {
+      try {
+        const productInserts = products.map((p: any) => ({
+          companyName: companyName,
+          name: p.name || 'Industrial Material Specification',
+          industry: industry || 'Specialty Adhesive Tapes & Industrial Solutions',
+          market: 'Automotive, Electronics & Industrial Manufacturing',
+          application: p.application || 'Industrial bonding, masking & thermal insulation',
+          price: p.price || null,
+          specs: p.specs || {
+            'Backing material': p.backing || 'Specialty Carrier',
+            'Adhesive type': p.adhesionType || 'Pressure Sensitive',
+            'Total thickness': p.thickness || 'Standard',
+            'Temperature resistance': p.tempRange || 'Industrial Grade',
+            'Side format': p.sideType || 'Single-Sided'
+          },
+          imageUrl: p.imageUrl || null,
+          productUrl: p.productUrl || null,
+        }));
+
+        await prisma.extractedProduct.createMany({
+          data: productInserts
+        });
+      } catch (prodErr) {
+        console.error("Failed to batch insert seller products during signup:", prodErr);
+      }
+    }
 
     // Send the Welcome Email via Nodemailer/Outlook
     try {
       await sendWelcomeEmail(email, companyName);
     } catch (emailError) {
       console.error("Failed to send welcome email:", emailError);
-      // We don't fail the registration if the email fails, just log it.
     }
 
-    return NextResponse.json({ message: "Account created successfully" }, { status: 201 });
+    return NextResponse.json({ 
+      message: "Account created successfully",
+      productsAdded: Array.isArray(products) ? products.length : 0 
+    }, { status: 201 });
 
   } catch (error) {
     console.error("Registration error:", error);

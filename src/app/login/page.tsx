@@ -125,12 +125,20 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="mt-8 text-center text-slate-400 text-sm">
-          Don't have an account?{' '}
-          <Link href="/signup" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
-            Create business account
-          </Link>
-        </p>
+        <div className="mt-8 pt-6 border-t border-slate-800 text-center space-y-3 text-sm">
+          <p className="text-slate-400">
+            Don't have an account?{' '}
+            <Link href="/signup" className="text-blue-400 hover:text-blue-300 font-bold transition-colors">
+              Sign Up as Buyer
+            </Link>
+          </p>
+          <p className="text-xs text-slate-400">
+            Are you a material manufacturer or converter?{' '}
+            <Link href="/signup?role=seller" className="text-emerald-400 hover:text-emerald-300 font-bold transition-colors">
+              Sign in as a Seller →
+            </Link>
+          </p>
+        </div>
       </motion.div>
     </div>
   );

@@ -54,7 +54,7 @@ Procurement Requirement:
 - Target Timeline: ${targetDeliveryDate || 'Immediate'}
 - Application / Notes: ${applicationNotes || 'Standard Technical Specification compliance'}
 
-Please submit your confidential competitive quotation directly to the Nexus B2B Procurement Desk referencing ${rfqRef}.
+Please submit your confidential competitive quotation directly to the TarasAI B2B Procurement Desk referencing ${rfqRef}.
       `.trim();
 
       broadcastResults.push({

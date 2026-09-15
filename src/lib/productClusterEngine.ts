@@ -401,7 +401,7 @@ export function clusterProducts(products: any[]): UnifiedGroupProduct[] {
       id: groupSerialCode,
       serialCode: groupSerialCode,
       name: unifiedTitle,
-      companyName: "Nexus Direct Procurement Consortium",
+      companyName: "TarasAI Procurement Consortium",
       companyUrl: rep.companyUrl,
       productUrl: rep.productUrl,
       industry: rep.industry || "Specialty Adhesive Tapes & Industrial Solutions",
