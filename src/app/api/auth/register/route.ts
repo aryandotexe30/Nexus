@@ -67,8 +67,9 @@ export async function POST(req: Request) {
           application: p.application || 'Industrial bonding, masking & thermal insulation',
           price: p.price || null,
           specs: p.specs || {
-            'Backing material': p.backing || 'Specialty Carrier',
-            'Adhesive type': p.adhesionType || 'Pressure Sensitive',
+            'Category': p.category || 'Adhesive Tapes & Transfer Films',
+            'Backing material': p.backing || 'Specialty Carrier / Substrate',
+            'Adhesive type': p.adhesionType || 'Polymer System',
             'Total thickness': p.thickness || 'Standard',
             'Temperature resistance': p.tempRange || 'Industrial Grade',
             'Side format': p.sideType || 'Single-Sided'
