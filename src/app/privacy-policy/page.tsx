@@ -36,7 +36,6 @@ export default function PrivacyPolicy() {
             <p className="mb-2">To provide advanced AI and real-time capabilities, we share encrypted, necessary data with trusted third-party providers:</p>
             <ul className="list-disc pl-5 space-y-2 text-slate-600">
               <li><strong className="text-slate-900">Google (Gemini AI):</strong> Used for generating business plans, moderation, and data enrichment.</li>
-              <li><strong className="text-slate-900">SignalHire:</strong> Used for extracting verified business contacts.</li>
               <li><strong className="text-slate-900">Tavily:</strong> Used for real-time web search and market intelligence.</li>
               <li><strong className="text-slate-900">Razorpay:</strong> Used for secure payment processing. We do not store raw credit card numbers.</li>
               <li><strong className="text-slate-900">Pusher:</strong> Used for real-time websocket messaging.</li>
