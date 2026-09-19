@@ -2,6 +2,7 @@ import type { ExtractedProductItem } from './deepProductHarvester';
 import { CHINESE_ENTERPRISE_CATALOGS } from './chineseEnterpriseCatalog';
 import { INDIAN_ENTERPRISE_CATALOGS } from './indianEnterpriseCatalog';
 import { CHINESE_ENTERPRISE_CATALOGS_EXPANDED } from './chineseEnterpriseCatalogExpanded';
+import { IEEMA_ENTERPRISE_CATALOG } from './ieemaEnterpriseCatalog';
 
 const BASE_ENTERPRISE_CATALOGS: Record<string, ExtractedProductItem[]> = {
   "3M": [
@@ -2657,7 +2658,8 @@ const ALL_CATALOG_SOURCES = [
   BASE_ENTERPRISE_CATALOGS,
   INDIAN_ENTERPRISE_CATALOGS,
   CHINESE_ENTERPRISE_CATALOGS,
-  CHINESE_ENTERPRISE_CATALOGS_EXPANDED
+  CHINESE_ENTERPRISE_CATALOGS_EXPANDED,
+  IEEMA_ENTERPRISE_CATALOG
 ];
 
 const mergedCatalogs: Record<string, ExtractedProductItem[]> = {};
