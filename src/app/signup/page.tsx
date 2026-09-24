@@ -32,13 +32,10 @@ import {
   Tv,
   Building,
   HeartPulse,
-  Package,
   Wrench,
-  Globe,
   MapPin,
-  TrendingDown,
-  Clock,
-  Award
+  Award,
+  Check
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -594,36 +591,42 @@ export default function Signup() {
   const IndustryIcon = currentIndustryConfig.icon;
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden py-12 selection:bg-blue-600/40">
-      {/* Background Decorative Ambient Gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-600/10 blur-3xl pointer-events-none" />
-      {accountType === "SELLER" && (
-        <div className="absolute top-[20%] right-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-600/10 blur-3xl pointer-events-none transition-all duration-700" />
-      )}
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center py-12 px-4 sm:px-6 relative overflow-hidden font-sans selection:bg-[#0B4FDF] selection:text-white">
+      
+      {/* Top Brand Logo Banner */}
+      <div className="mb-6 flex flex-col items-center">
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="px-4 py-1.5 bg-[#0B4FDF] rounded-md text-white font-black italic tracking-tighter text-2xl shadow-sm flex items-center">
+            Taras<span className="text-[#FF9E00] font-bold ml-0.5">AI</span>
+          </div>
+          <span className="text-xs uppercase font-extrabold tracking-widest text-slate-600 border-l border-slate-300 pl-3">
+            Materials Intelligence
+          </span>
+        </Link>
+      </div>
 
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`w-full ${(step === 2 && accountType === "BUYER") || (step === 3 && accountType === "SELLER") ? "max-w-4xl" : "max-w-2xl"} bg-slate-900/80 backdrop-blur-2xl border border-slate-800 p-6 sm:p-10 rounded-3xl shadow-2xl relative z-10 transition-all duration-300`}
+        className={`w-full ${(step === 2 && accountType === "BUYER") || (step === 3 && accountType === "SELLER") ? "max-w-4xl" : "max-w-2xl"} bg-white border border-slate-200 p-6 sm:p-10 rounded-2xl shadow-xl relative z-10 transition-all duration-300`}
       >
         {/* ========================================================= */}
         {/* TOP DUAL-TAB ROLE SELECTOR                                */}
         {/* ========================================================= */}
-        <div className="grid grid-cols-2 p-1.5 bg-slate-950/90 border border-slate-800/90 rounded-2xl mb-8 gap-1.5 shadow-inner">
+        <div className="grid grid-cols-2 p-1.5 bg-slate-100 border border-slate-200 rounded-xl mb-8 gap-1.5 shadow-inner">
           {/* TAB 1: BUYER */}
           <button
             type="button"
             onClick={() => { setAccountType("BUYER"); setStep(1); setError(""); }}
-            className={`py-3 px-4 rounded-xl text-left transition-all relative flex flex-col justify-center ${
+            className={`py-3 px-4 rounded-lg text-left transition-all relative flex flex-col justify-center ${
               accountType === "BUYER"
-                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30 ring-1 ring-white/20"
-                : "text-slate-400 hover:text-white hover:bg-slate-900"
+                ? "bg-[#0B4FDF] text-white shadow-md shadow-blue-600/20"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
             }`}
           >
             <div className="flex items-center gap-2 mb-0.5">
-              <ShoppingCart className={`w-4 h-4 ${accountType === "BUYER" ? "text-white" : "text-blue-400"}`} />
-              <span className="text-xs sm:text-sm font-extrabold tracking-tight">Sign up as a Buyer</span>
+              <ShoppingCart className={`w-4 h-4 ${accountType === "BUYER" ? "text-[#FF9E00]" : "text-slate-500"}`} />
+              <span className="text-xs sm:text-sm font-black tracking-tight">Sign up as a Buyer</span>
             </div>
             <p className={`text-[11px] leading-tight line-clamp-1 ${accountType === "BUYER" ? "text-blue-100" : "text-slate-500"}`}>
               Source materials, launch RFQs & compare specs
@@ -634,15 +637,15 @@ export default function Signup() {
           <button
             type="button"
             onClick={() => { setAccountType("SELLER"); setStep(1); setError(""); }}
-            className={`py-3 px-4 rounded-xl text-left transition-all relative flex flex-col justify-center ${
+            className={`py-3 px-4 rounded-lg text-left transition-all relative flex flex-col justify-center ${
               accountType === "SELLER"
-                ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-600/30 ring-1 ring-white/20"
-                : "text-slate-400 hover:text-white hover:bg-slate-900"
+                ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
             }`}
           >
             <div className="flex items-center gap-2 mb-0.5">
-              <Factory className={`w-4 h-4 ${accountType === "SELLER" ? "text-white" : "text-emerald-400"}`} />
-              <span className="text-xs sm:text-sm font-extrabold tracking-tight">Sign up as a Seller</span>
+              <Factory className={`w-4 h-4 ${accountType === "SELLER" ? "text-emerald-200" : "text-slate-500"}`} />
+              <span className="text-xs sm:text-sm font-black tracking-tight">Sign up as a Seller</span>
             </div>
             <p className={`text-[11px] leading-tight line-clamp-1 ${accountType === "SELLER" ? "text-emerald-100" : "text-slate-500"}`}>
               List product catalogs & receive RFQs
@@ -652,14 +655,14 @@ export default function Signup() {
 
         {/* Step Header & Indicator */}
         <div className="text-center mb-8">
-          <div className={`w-14 h-14 ${accountType === "SELLER" ? "bg-gradient-to-tr from-emerald-600 to-teal-500 shadow-emerald-500/20" : "bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-blue-500/20"} rounded-2xl mx-auto flex items-center justify-center mb-3 shadow-lg transition-colors`}>
-            {step === 1 && <User className="w-7 h-7 text-white" />}
-            {step === 2 && (accountType === "BUYER" ? <IndustryIcon className="w-7 h-7 text-white" /> : <Briefcase className="w-7 h-7 text-white" />)}
-            {step === 3 && (accountType === "SELLER" ? <Layers className="w-7 h-7 text-white" /> : <ShieldCheck className="w-7 h-7 text-white" />)}
-            {step === 4 && <ShieldCheck className="w-7 h-7 text-white" />}
+          <div className={`w-12 h-12 ${accountType === "SELLER" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-[#0B4FDF]"} rounded-xl mx-auto flex items-center justify-center mb-3 shadow-xs transition-colors`}>
+            {step === 1 && <User className="w-6 h-6" />}
+            {step === 2 && (accountType === "BUYER" ? <IndustryIcon className="w-6 h-6" /> : <Briefcase className="w-6 h-6" />)}
+            {step === 3 && (accountType === "SELLER" ? <Layers className="w-6 h-6" /> : <ShieldCheck className="w-6 h-6" />)}
+            {step === 4 && <ShieldCheck className="w-6 h-6" />}
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
             {accountType === "BUYER" ? (
               <>
                 {step === 1 && "Enterprise Buyer Setup"}
@@ -676,7 +679,7 @@ export default function Signup() {
             )}
           </h1>
 
-          <p className="text-slate-400 text-xs sm:text-sm mt-1 max-w-md mx-auto">
+          <p className="text-slate-600 text-xs sm:text-sm mt-1 max-w-md mx-auto">
             {accountType === "BUYER" ? (
               <>
                 {step === 1 && "Step 1: Your corporate work identity & credentials."}
@@ -699,8 +702,8 @@ export default function Signup() {
                 key={i} 
                 className={`h-1.5 w-12 rounded-full transition-all duration-300 ${
                   step >= i + 1 
-                    ? (accountType === "SELLER" ? "bg-emerald-500" : "bg-blue-500") 
-                    : "bg-slate-800"
+                    ? (accountType === "SELLER" ? "bg-emerald-600" : "bg-[#0B4FDF]") 
+                    : "bg-slate-200"
                 }`} 
               />
             ))}
@@ -708,16 +711,16 @@ export default function Signup() {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/40 rounded-2xl flex items-start gap-3">
-            <ShieldAlert className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-            <p className="text-xs sm:text-sm text-red-400 font-medium">{error}</p>
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
+            <ShieldAlert className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+            <p className="text-xs sm:text-sm text-red-700 font-medium">{error}</p>
           </div>
         )}
 
         {parseSuccessMsg && (
-          <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/40 rounded-2xl flex items-start gap-3">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-            <p className="text-xs sm:text-sm text-emerald-300 font-medium">{parseSuccessMsg}</p>
+          <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-3">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+            <p className="text-xs sm:text-sm text-emerald-800 font-medium">{parseSuccessMsg}</p>
           </div>
         )}
 
@@ -729,43 +732,43 @@ export default function Signup() {
             {step === 1 && (
               <motion.div 
                 key="step1"
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
                 className="space-y-5"
               >
                 {accountType === "BUYER" && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
                         Full Name / Contact Person *
                       </label>
                       <div className="relative">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <input 
                           type="text"
                           required
                           value={formData.fullName}
                           onChange={e => setFormData({...formData, fullName: e.target.value})}
-                          className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-600"
+                          className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-[#0B4FDF] transition-all placeholder:text-slate-400"
                           placeholder="e.g. Rajesh Sharma"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                      <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
                         Official Designation / Role *
                       </label>
                       <div className="relative">
-                        <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                        <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <input 
                           type="text"
                           required
                           value={formData.designation}
                           onChange={e => setFormData({...formData, designation: e.target.value})}
-                          className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-600"
+                          className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-[#0B4FDF] transition-all placeholder:text-slate-400"
                           placeholder="e.g. Sourcing Head / Procurement Manager"
                         />
                       </div>
@@ -774,17 +777,17 @@ export default function Signup() {
                 )}
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
                     {accountType === "BUYER" ? "Corporate Work Email (Login) *" : "Manufacturer / Supplier Work Email (Login) *"}
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input 
                       type="email"
                       required
                       value={formData.email}
                       onChange={e => setFormData({...formData, email: e.target.value})}
-                      className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3.5 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-600 font-medium"
+                      className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-[#0B4FDF] transition-all placeholder:text-slate-400 font-medium"
                       placeholder={accountType === "BUYER" ? "procurement@enterprise.com" : "sales@manufacturer.com"}
                     />
                   </div>
@@ -792,15 +795,15 @@ export default function Signup() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Password *</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Password *</label>
                   <div className="relative">
-                    <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                    <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input 
                       type="password"
                       required
                       value={formData.password}
                       onChange={e => setFormData({...formData, password: e.target.value})}
-                      className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3.5 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-600"
+                      className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-[#0B4FDF] transition-all placeholder:text-slate-400"
                       placeholder="••••••••"
                     />
                   </div>
@@ -809,7 +812,7 @@ export default function Signup() {
 
                 <button 
                   type="submit" 
-                  className={`w-full ${accountType === "SELLER" ? "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/30" : "bg-blue-600 hover:bg-blue-500 shadow-blue-600/30"} text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 group text-sm mt-2`}
+                  className={`w-full ${accountType === "SELLER" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-[#0B4FDF] hover:bg-blue-700"} text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 group text-sm mt-2`}
                 >
                   {accountType === "BUYER" ? "Continue to Industry Sourcing Profile" : "Continue to Company Details"}
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -823,43 +826,43 @@ export default function Signup() {
             {step === 2 && accountType === "BUYER" && (
               <motion.div 
                 key="step2-buyer"
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
                 className="space-y-6"
               >
                 {/* Company & GST Details */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
                       Company / OEM Name *
                     </label>
                     <div className="relative">
-                      <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <input 
                         type="text"
                         required
                         value={formData.companyName}
                         onChange={e => setFormData({...formData, companyName: e.target.value})}
-                        className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-600"
+                        className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-[#0B4FDF] transition-all placeholder:text-slate-400"
                         placeholder="e.g. Mahindra Auto / Havells / Tata Electronics"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
                       GSTIN / Corporate Tax ID *
                     </label>
                     <div className="relative">
-                      <FileText className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <FileText className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <input 
                         type="text"
                         required
                         value={formData.gstNumber}
                         onChange={e => setFormData({...formData, gstNumber: e.target.value})}
-                        className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-600 uppercase font-mono"
+                        className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-[#0B4FDF] transition-all placeholder:text-slate-400 uppercase font-mono"
                         placeholder="27AAAAA0000A1Z5"
                       />
                     </div>
@@ -868,12 +871,12 @@ export default function Signup() {
 
                 {/* Dynamic Industry Selector */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider flex items-center justify-between">
+                  <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider flex items-center justify-between">
                     <span>Select Primary Manufacturing Vertical / Industry *</span>
-                    <span className="text-blue-400 text-[11px] font-normal">Adapts sourcing catalog</span>
+                    <span className="text-[#0B4FDF] text-[11px] font-bold">Adapts sourcing catalog</span>
                   </label>
                   
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-[190px] overflow-y-auto pr-1">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-[220px] overflow-y-auto pr-1">
                     {BUYER_INDUSTRIES.map(ind => {
                       const IconComponent = ind.icon;
                       const isSelected = formData.selectedIndustryId === ind.id;
@@ -882,15 +885,15 @@ export default function Signup() {
                           key={ind.id}
                           type="button"
                           onClick={() => handleIndustryChange(ind.id)}
-                          className={`p-3 rounded-2xl border text-left transition-all flex flex-col justify-between ${
+                          className={`p-3 rounded-xl border text-left transition-all flex flex-col justify-between ${
                             isSelected
-                              ? "bg-blue-600/20 border-blue-500 text-white ring-1 ring-blue-500/50 shadow-md"
-                              : "bg-slate-950/60 border-slate-800/90 text-slate-400 hover:text-white hover:border-slate-700"
+                              ? "bg-blue-50 border-[#0B4FDF] text-[#0B4FDF] ring-1 ring-[#0B4FDF] shadow-xs"
+                              : "bg-slate-50 border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-white hover:border-slate-300"
                           }`}
                         >
                           <div className="flex items-center justify-between mb-2">
-                            <IconComponent className={`w-5 h-5 ${isSelected ? "text-blue-400" : "text-slate-500"}`} />
-                            {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-blue-400" />}
+                            <IconComponent className={`w-5 h-5 ${isSelected ? "text-[#0B4FDF]" : "text-slate-500"}`} />
+                            {isSelected && <CheckCircle2 className="w-4 h-4 text-[#0B4FDF]" />}
                           </div>
                           <span className="text-xs font-bold leading-tight">{ind.name}</span>
                         </button>
@@ -900,13 +903,13 @@ export default function Signup() {
                 </div>
 
                 {/* DYNAMIC SOURCING CATEGORIES (CHIPS) */}
-                <div className="p-4 bg-slate-950/70 border border-slate-800/90 rounded-2xl space-y-3">
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-white flex items-center gap-1.5 uppercase tracking-wider">
-                      <Tag className="w-3.5 h-3.5 text-blue-400" />
+                    <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5 uppercase tracking-wider">
+                      <Tag className="w-3.5 h-3.5 text-[#0B4FDF]" />
                       Materials & Components You Procure ({selectedBuyerCategories.length} selected)
                     </label>
-                    <span className="text-[11px] text-slate-400">Click to toggle</span>
+                    <span className="text-[11px] text-slate-500">Click to toggle</span>
                   </div>
 
                   <div className="flex flex-wrap gap-2">
@@ -917,13 +920,13 @@ export default function Signup() {
                           key={cat}
                           type="button"
                           onClick={() => toggleBuyerCategory(cat)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 ${
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
                             isChecked
-                              ? "bg-blue-600 text-white shadow-md shadow-blue-600/20 font-bold"
-                              : "bg-slate-900 text-slate-400 border border-slate-800 hover:text-slate-200"
+                              ? "bg-[#0B4FDF] text-white shadow-xs font-bold"
+                              : "bg-white text-slate-700 border border-slate-300 hover:border-slate-400"
                           }`}
                         >
-                          {isChecked ? <CheckCircle2 className="w-3.5 h-3.5 text-white" /> : <Plus className="w-3.5 h-3.5 text-slate-500" />}
+                          {isChecked ? <Check className="w-3.5 h-3.5 text-white" /> : <Plus className="w-3.5 h-3.5 text-slate-400" />}
                           {cat}
                         </button>
                       );
@@ -931,19 +934,19 @@ export default function Signup() {
                   </div>
 
                   {/* Add Custom Category Field */}
-                  <div className="flex items-center gap-2 pt-1 border-t border-slate-800/60">
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200">
                     <input 
                       type="text"
                       value={customCategoryInput}
                       onChange={e => setCustomCategoryInput(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomBuyerCategory(e); } }}
-                      placeholder="Add custom material or specification (e.g. 0.27mm CRGO, PTFE Skived Tape, RTV Gasket)..."
-                      className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-blue-500"
+                      placeholder="Add custom material / part number (e.g. 0.27mm CRGO, PTFE Skived Tape, RTV Gasket)..."
+                      className="flex-1 bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0B4FDF]"
                     />
                     <button
                       type="button"
                       onClick={addCustomBuyerCategory}
-                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-blue-400 text-xs font-bold rounded-xl transition-all"
+                      className="px-3.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-lg transition-all"
                     >
                       Add
                     </button>
@@ -953,13 +956,13 @@ export default function Signup() {
                 {/* Annual Spend & Factory Location */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
                       Estimated Annual Materials Spend
                     </label>
                     <select 
                       value={formData.annualSpend}
                       onChange={e => setFormData({...formData, annualSpend: e.target.value})}
-                      className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 px-3.5 text-xs focus:outline-none focus:border-blue-500 transition-all font-medium"
+                      className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 px-3.5 text-xs focus:outline-none focus:bg-white focus:border-[#0B4FDF] transition-all font-medium"
                     >
                       {ANNUAL_SPEND_OPTIONS.map(opt => (
                         <option key={opt.id} value={opt.label}>
@@ -970,16 +973,16 @@ export default function Signup() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
                       Plant / Delivery Locations
                     </label>
                     <div className="relative">
-                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <input 
                         type="text"
                         value={formData.deliveryLocations}
                         onChange={e => setFormData({...formData, deliveryLocations: e.target.value})}
-                        className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-600"
+                        className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-[#0B4FDF] transition-all placeholder:text-slate-400"
                         placeholder="e.g. Pune, Manesar, Bengaluru, Chennai"
                       />
                     </div>
@@ -990,13 +993,13 @@ export default function Signup() {
                   <button 
                     type="button" 
                     onClick={prevStep}
-                    className="px-5 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all"
+                    className="px-5 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all border border-slate-200"
                   >
                     <ArrowLeft className="w-5 h-5" />
                   </button>
                   <button 
                     type="submit" 
-                    className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-3.5 px-4 rounded-2xl transition-all flex items-center justify-center gap-2 group text-sm shadow-lg shadow-blue-600/30"
+                    className="flex-1 bg-[#0B4FDF] hover:bg-blue-700 text-white font-extrabold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 group text-sm shadow-md"
                   >
                     Proceed to Sourcing Goals & Access
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -1011,15 +1014,15 @@ export default function Signup() {
             {step === 3 && accountType === "BUYER" && (
               <motion.div 
                 key="step3-buyer"
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
                 className="space-y-5"
               >
                 {/* Dynamic Primary Procurement Goals */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-2 uppercase tracking-wider flex items-center justify-between">
+                  <label className="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider flex items-center justify-between">
                     <span>Primary Procurement Priorities</span>
                     <span className="text-slate-500 text-[11px] font-normal">Select all that apply</span>
                   </label>
@@ -1032,14 +1035,14 @@ export default function Signup() {
                           key={goal}
                           type="button"
                           onClick={() => toggleBuyerGoal(goal)}
-                          className={`p-3 rounded-2xl border text-left transition-all flex items-start gap-2.5 ${
+                          className={`p-3 rounded-xl border text-left transition-all flex items-start gap-2.5 ${
                             isChecked
-                              ? "bg-blue-600/20 border-blue-500 text-white ring-1 ring-blue-500/50"
-                              : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200"
+                              ? "bg-blue-50 border-[#0B4FDF] text-[#0B4FDF] ring-1 ring-[#0B4FDF]"
+                              : "bg-slate-50 border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-white"
                           }`}
                         >
-                          <div className={`w-4 h-4 rounded-md mt-0.5 flex items-center justify-center shrink-0 ${isChecked ? "bg-blue-500 text-white" : "border border-slate-700"}`}>
-                            {isChecked && <CheckCircle2 className="w-3.5 h-3.5" />}
+                          <div className={`w-4 h-4 rounded-md mt-0.5 flex items-center justify-center shrink-0 ${isChecked ? "bg-[#0B4FDF] text-white" : "border border-slate-400"}`}>
+                            {isChecked && <Check className="w-3.5 h-3.5" />}
                           </div>
                           <span className="text-xs font-medium leading-tight">{goal}</span>
                         </button>
@@ -1050,32 +1053,32 @@ export default function Signup() {
 
                 {/* Immediate Active Requirements or Part Numbers */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider flex items-center justify-between">
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider flex items-center justify-between">
                     <span>Active Sourcing Requirements / Part Numbers (Optional)</span>
-                    <span className="text-emerald-400 text-[11px]">Instant AI Match</span>
+                    <span className="text-[#FF5500] font-bold text-[11px]">Instant Direct Match</span>
                   </label>
                   <textarea 
                     rows={2}
                     value={formData.buyerRequirements}
                     onChange={e => setFormData({...formData, buyerRequirements: e.target.value})}
-                    placeholder="e.g. Looking for direct manufacturer alternates for 3M 4910, Kapton 5413 tape, 0.27mm CRGO core laminations, or Loctite 243 with bulk monthly dispatch..."
-                    className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl p-3 text-xs focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-600"
+                    placeholder="e.g. Looking for direct manufacturer alternates for high-temp polyimide tape, 0.27mm CRGO core laminations, or silicone RTV with bulk monthly dispatch..."
+                    className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl p-3 text-xs focus:outline-none focus:bg-white focus:border-[#0B4FDF] transition-all placeholder:text-slate-400"
                   />
                 </div>
 
                 {/* Authorized Contact Phone */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
                     Procurement Direct Phone / WhatsApp *
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input 
                       type="tel"
                       required
                       value={formData.companyPhone}
                       onChange={e => setFormData({...formData, companyPhone: e.target.value})}
-                      className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-blue-500 transition-all placeholder:text-slate-600"
+                      className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-[#0B4FDF] transition-all placeholder:text-slate-400"
                       placeholder="+91 98765 43210"
                     />
                   </div>
@@ -1083,11 +1086,11 @@ export default function Signup() {
                 </div>
 
                 {/* Free Instant Access Banner */}
-                <div className="p-3.5 bg-gradient-to-r from-blue-950/50 via-indigo-950/40 to-slate-950/80 border border-blue-800/60 rounded-2xl flex items-center gap-3">
-                  <Award className="w-6 h-6 text-blue-400 shrink-0" />
+                <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl flex items-center gap-3">
+                  <Award className="w-6 h-6 text-[#0B4FDF] shrink-0" />
                   <div className="text-xs">
-                    <div className="font-bold text-blue-200">Verified Enterprise Buyer Account</div>
-                    <div className="text-slate-400 text-[11px]">Includes 3 free AI Sourcing queries and immediate access to 1,084+ direct Indian manufacturer catalogs.</div>
+                    <div className="font-bold text-[#0B4FDF]">Verified Enterprise Buyer Account</div>
+                    <div className="text-slate-600 text-[11px]">Includes 3 free AI Sourcing queries and immediate access to 1,084+ direct domestic manufacturer catalogs.</div>
                   </div>
                 </div>
 
@@ -1098,12 +1101,12 @@ export default function Signup() {
                     id="terms-buyer" 
                     checked={formData.agreedToTerms}
                     onChange={e => setFormData({...formData, agreedToTerms: e.target.checked})}
-                    className="mt-1 w-4 h-4 bg-slate-900 border-slate-700 rounded text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-950 cursor-pointer" 
+                    className="mt-1 w-4 h-4 bg-white border-slate-300 rounded text-[#0B4FDF] focus:ring-[#0B4FDF] cursor-pointer" 
                   />
-                  <label htmlFor="terms-buyer" className="text-xs text-slate-400 leading-relaxed cursor-pointer">
+                  <label htmlFor="terms-buyer" className="text-xs text-slate-600 leading-relaxed cursor-pointer">
                     I agree to the{' '}
-                    <a href="/terms-of-service" target="_blank" className="text-blue-400 hover:underline">Terms of Service</a> and{' '}
-                    <a href="/privacy-policy" target="_blank" className="text-blue-400 hover:underline">Privacy Policy</a>.
+                    <a href="/terms-of-service" target="_blank" className="text-[#0B4FDF] hover:underline font-bold">Terms of Service</a> and{' '}
+                    <a href="/privacy-policy" target="_blank" className="text-[#0B4FDF] hover:underline font-bold">Privacy Policy</a>.
                   </label>
                 </div>
 
@@ -1111,14 +1114,14 @@ export default function Signup() {
                   <button 
                     type="button" 
                     onClick={prevStep}
-                    className="px-5 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all"
+                    className="px-5 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all border border-slate-200"
                   >
                     <ArrowLeft className="w-5 h-5" />
                   </button>
                   <button 
                     type="submit" 
                     disabled={loading}
-                    className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 text-sm"
+                    className="flex-1 bg-[#FF5500] hover:bg-[#E04800] text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 group disabled:opacity-70 text-sm"
                   >
                     {loading ? (
                       <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -1139,24 +1142,24 @@ export default function Signup() {
             {step === 2 && accountType === "SELLER" && (
               <motion.div 
                 key="step2-seller"
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
                 className="space-y-4"
               >
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
                     Manufacturing Plant / Supplier Name *
                   </label>
                   <div className="relative">
-                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input 
                       type="text"
                       required
                       value={formData.companyName}
                       onChange={e => setFormData({...formData, companyName: e.target.value})}
-                      className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-12 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600"
+                      className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-emerald-600 transition-all placeholder:text-slate-400"
                       placeholder="e.g. Apex Polymer Converting Ltd"
                     />
                   </div>
@@ -1164,28 +1167,28 @@ export default function Signup() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">GSTIN / Tax ID *</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">GSTIN / Tax ID *</label>
                     <div className="relative">
-                      <FileText className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <FileText className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <input 
                         type="text"
                         required
                         value={formData.gstNumber}
                         onChange={e => setFormData({...formData, gstNumber: e.target.value})}
-                        className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600 uppercase font-mono"
+                        className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-emerald-600 transition-all placeholder:text-slate-400 uppercase font-mono"
                         placeholder="22AAAAA0000A1Z5"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Corporate CIN (Optional)</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Corporate CIN (Optional)</label>
                     <div className="relative">
-                      <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <input 
                         type="text"
                         value={formData.cinNumber}
                         onChange={e => setFormData({...formData, cinNumber: e.target.value})}
-                        className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600"
+                        className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-emerald-600 transition-all placeholder:text-slate-400"
                         placeholder="U72900MH..."
                       />
                     </div>
@@ -1193,13 +1196,13 @@ export default function Signup() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Primary Manufacturing Domain</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Primary Manufacturing Domain</label>
                   <div className="relative">
-                    <Factory className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                    <Factory className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <select 
                       value={formData.industry}
                       onChange={e => setFormData({...formData, industry: e.target.value})}
-                      className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
+                      className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-emerald-600 transition-all font-medium"
                     >
                       <option value="Specialty Tapes & Adhesives Manufacturing">Specialty Tapes & Adhesives</option>
                       <option value="Electrical & Power Equipment (Transformers/Switchgear)">Electrical & Power Equipment (Transformers/Switchgear)</option>
@@ -1215,15 +1218,15 @@ export default function Signup() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Plant / Office Contact Phone *</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Plant / Office Contact Phone *</label>
                   <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input 
                       type="tel"
                       required
                       value={formData.companyPhone}
                       onChange={e => setFormData({...formData, companyPhone: e.target.value})}
-                      className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600"
+                      className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-emerald-600 transition-all placeholder:text-slate-400"
                       placeholder="+91 98765 43210"
                     />
                   </div>
@@ -1233,13 +1236,13 @@ export default function Signup() {
                   <button 
                     type="button" 
                     onClick={prevStep}
-                    className="px-5 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all"
+                    className="px-5 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all border border-slate-200"
                   >
                     <ArrowLeft className="w-5 h-5" />
                   </button>
                   <button 
                     type="submit" 
-                    className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3.5 px-4 rounded-2xl transition-all flex items-center justify-center gap-2 group text-sm shadow-lg shadow-emerald-600/30"
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 group text-sm shadow-md"
                   >
                     Proceed to Materials Ingestion
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -1254,30 +1257,30 @@ export default function Signup() {
             {step === 3 && accountType === "SELLER" && (
               <motion.div 
                 key="step3-seller"
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
                 className="space-y-6"
               >
                 {/* Ingestion Mode Toggle */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-800 pb-4 gap-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-200 pb-4 gap-3">
                   <div>
-                    <h3 className="font-extrabold text-white text-base flex items-center gap-2">
-                      <Layers className="w-4 h-4 text-emerald-400" />
+                    <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                      <Layers className="w-4 h-4 text-emerald-600" />
                       Product Catalog Specifications ({sellerProducts.filter(p => p.name.trim()).length} Active)
                     </h3>
-                    <p className="text-xs text-slate-400">Add materials across any industrial category or let AI parse your brochure.</p>
+                    <p className="text-xs text-slate-500">Add materials across any industrial category or let AI parse your brochure.</p>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => setIngestionMode("manual")}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                         ingestionMode === "manual" 
-                          ? "bg-emerald-600 text-white" 
-                          : "bg-slate-800 text-slate-300 hover:text-white"
+                          ? "bg-emerald-600 text-white shadow-xs" 
+                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                       }`}
                     >
                       Manual Entry
@@ -1285,13 +1288,13 @@ export default function Signup() {
                     <button
                       type="button"
                       onClick={() => setIngestionMode("upload")}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                         ingestionMode === "upload" 
-                          ? "bg-emerald-600 text-white" 
-                          : "bg-slate-800 text-slate-300 hover:text-white"
+                          ? "bg-emerald-600 text-white shadow-xs" 
+                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                       }`}
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                       AI Brochure / Excel Upload
                     </button>
                   </div>
@@ -1299,14 +1302,14 @@ export default function Signup() {
 
                 {/* AI FILE DROPZONE */}
                 {ingestionMode === "upload" && (
-                  <div className="p-6 bg-slate-950/80 border-2 border-dashed border-slate-700 hover:border-emerald-500/50 rounded-3xl text-center space-y-4 transition-all">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                  <div className="p-6 bg-slate-50 border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-2xl text-center space-y-4 transition-all">
+                    <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
                       <Upload className="w-6 h-6" />
                     </div>
                     <div className="space-y-1">
-                      <h4 className="font-bold text-white text-sm">Upload Technical Brochure, Datasheet, or Excel</h4>
-                      <p className="text-xs text-slate-400 max-w-md mx-auto">
-                        Supports all products: Tapes, Adhesives, Transformers, Switchgear, Foams, TIM Pads, Insulation, Cables. Upload <span className="text-emerald-300 font-mono">.xlsx</span>, <span className="text-emerald-300 font-mono">.csv</span>, <span className="text-emerald-300 font-mono">.pdf</span>, or images.
+                      <h4 className="font-bold text-slate-900 text-sm">Upload Technical Brochure, Datasheet, or Excel</h4>
+                      <p className="text-xs text-slate-500 max-w-md mx-auto">
+                        Supports all products: Tapes, Adhesives, Transformers, Switchgear, Foams, TIM Pads, Insulation, Cables. Upload <span className="text-emerald-600 font-mono font-bold">.xlsx</span>, <span className="text-emerald-600 font-mono font-bold">.csv</span>, <span className="text-emerald-600 font-mono font-bold">.pdf</span>, or images.
                       </p>
                     </div>
 
@@ -1324,7 +1327,7 @@ export default function Signup() {
                         type="button"
                         disabled={isParsingFile}
                         onClick={() => fileInputRef.current?.click()}
-                        className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold rounded-xl shadow-lg shadow-emerald-600/30 transition-all inline-flex items-center gap-2 disabled:opacity-50"
+                        className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold rounded-lg shadow-sm transition-all inline-flex items-center gap-2 disabled:opacity-50"
                       >
                         {isParsingFile ? (
                           <>
@@ -1347,16 +1350,16 @@ export default function Signup() {
                   {sellerProducts.map((product, idx) => (
                     <div 
                       key={idx}
-                      className="p-4 bg-slate-950/80 border border-slate-800 rounded-2xl space-y-3 relative group"
+                      className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3 relative group"
                     >
-                      <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
-                        <span className="text-xs font-bold text-emerald-400 font-mono flex items-center gap-1.5">
+                      <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                        <span className="text-xs font-bold text-emerald-700 font-mono flex items-center gap-1.5">
                           <Tag className="w-3.5 h-3.5" /> Product Item #{idx + 1}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleRemoveProduct(idx)}
-                          className="text-slate-500 hover:text-red-400 p-1 rounded transition-colors"
+                          className="text-slate-400 hover:text-red-600 p-1 rounded transition-colors"
                           title="Remove Product"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -1365,13 +1368,13 @@ export default function Signup() {
 
                       {/* Category Dropdown */}
                       <div>
-                        <label className="block text-[11px] font-bold text-slate-400 mb-1">
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
                           Product Category / Material Family *
                         </label>
                         <select
                           value={product.category || SELLER_PRODUCT_CATEGORIES[0]}
                           onChange={e => handleUpdateProduct(idx, "category", e.target.value)}
-                          className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500 font-medium"
+                          className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600 font-medium"
                         >
                           {SELLER_PRODUCT_CATEGORIES.map(cat => (
                             <option key={cat} value={cat}>{cat}</option>
@@ -1382,22 +1385,22 @@ export default function Signup() {
                       {/* Name & Format */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div className="sm:col-span-2">
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Product Model / Specification Title *</label>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Product Model / Specification Title *</label>
                           <input 
                             type="text"
                             required
                             value={product.name}
                             onChange={e => handleUpdateProduct(idx, "name", e.target.value)}
                             placeholder="e.g. Polyimide High-Temp Film or RTV Industrial Silicone Gasket"
-                            className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
+                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Format / Side Coating</label>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Format / Side Coating</label>
                           <select
                             value={product.sideType}
                             onChange={e => handleUpdateProduct(idx, "sideType", e.target.value)}
-                            className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
+                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
                           >
                             <option value="Single-Sided">Single-Sided</option>
                             <option value="Double-Sided">Double-Sided</option>
@@ -1410,23 +1413,23 @@ export default function Signup() {
                       {/* Substrate & Chemistry */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Substrate / Base Material</label>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Substrate / Base Material</label>
                           <input 
                             type="text"
                             value={product.backing}
                             onChange={e => handleUpdateProduct(idx, "backing", e.target.value)}
                             placeholder="e.g. Polyimide / CRGO Steel / EPDM / Glass Cloth / Copper"
-                            className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
+                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Adhesive / Coating System</label>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Adhesive / Coating System</label>
                           <input 
                             type="text"
                             value={product.adhesionType}
                             onChange={e => handleUpdateProduct(idx, "adhesionType", e.target.value)}
                             placeholder="e.g. Silicone / Epoxy Resin / Pure Acrylic / Enamel"
-                            className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
+                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
                           />
                         </div>
                       </div>
@@ -1434,46 +1437,46 @@ export default function Signup() {
                       {/* Caliper, Temp, Price */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Caliper / Rating / Size</label>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Caliper / Rating / Size</label>
                           <input 
                             type="text"
                             value={product.thickness}
                             onChange={e => handleUpdateProduct(idx, "thickness", e.target.value)}
                             placeholder="e.g. 0.05 mm / 33 kV / 150 cP"
-                            className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
+                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Temperature Resistance</label>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Temperature Resistance</label>
                           <input 
                             type="text"
                             value={product.tempRange}
                             onChange={e => handleUpdateProduct(idx, "tempRange", e.target.value)}
                             placeholder="e.g. 260°C / 180°C / -40°C to 150°C"
-                            className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
+                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
                           />
                         </div>
                         <div>
-                          <label className="block text-[11px] font-bold text-slate-400 mb-1">Price / MOQ</label>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Price / MOQ</label>
                           <input 
                             type="text"
                             value={product.price}
                             onChange={e => handleUpdateProduct(idx, "price", e.target.value)}
-                            placeholder="e.g. ₹320 / roll ($4.20) / MOQ 500 units"
-                            className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
+                            placeholder="e.g. ₹320 / roll / MOQ 500 units"
+                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
                           />
                         </div>
                       </div>
 
                       {/* Application */}
                       <div>
-                        <label className="block text-[11px] font-bold text-slate-400 mb-1">Primary Industrial Applications</label>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-1">Primary Industrial Applications</label>
                         <input 
                           type="text"
                           value={product.application}
                           onChange={e => handleUpdateProduct(idx, "application", e.target.value)}
                           placeholder="e.g. EV battery pack insulation, transformer core winding, wave solder masking"
-                          className="w-full bg-slate-900 border border-slate-700 text-white rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-emerald-500"
+                          className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
                         />
                       </div>
                     </div>
@@ -1484,12 +1487,12 @@ export default function Signup() {
                   <button
                     type="button"
                     onClick={handleAddProduct}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 text-xs font-bold rounded-xl border border-slate-700 flex items-center gap-1.5 transition-all"
+                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-emerald-700 text-xs font-bold rounded-lg border border-slate-200 flex items-center gap-1.5 transition-all"
                   >
                     <Plus className="w-4 h-4" />
                     Add Another Product / Material
                   </button>
-                  <span className="text-xs font-mono text-slate-400">
+                  <span className="text-xs font-mono text-slate-500">
                     {sellerProducts.filter(p => p.name.trim()).length} specifications configured
                   </span>
                 </div>
@@ -1498,13 +1501,13 @@ export default function Signup() {
                   <button 
                     type="button" 
                     onClick={prevStep}
-                    className="px-5 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all"
+                    className="px-5 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all border border-slate-200"
                   >
                     <ArrowLeft className="w-5 h-5" />
                   </button>
                   <button 
                     type="submit" 
-                    className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3.5 px-4 rounded-2xl transition-all flex items-center justify-center gap-2 group text-sm shadow-lg shadow-emerald-600/30"
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 group text-sm shadow-md"
                   >
                     Review & Complete Seller Verification
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -1519,21 +1522,21 @@ export default function Signup() {
             {step === 4 && accountType === "SELLER" && (
               <motion.div 
                 key="step4-seller"
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2 }}
                 className="space-y-4"
               >
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Authorized Officer Personal Email</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Authorized Officer Personal Email</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <input 
                       type="email"
                       value={formData.personalEmail}
                       onChange={e => setFormData({...formData, personalEmail: e.target.value})}
-                      className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600"
+                      className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-emerald-600 transition-all placeholder:text-slate-400"
                       placeholder="officer.personal@gmail.com"
                     />
                   </div>
@@ -1541,39 +1544,39 @@ export default function Signup() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Personal / Mobile Phone</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Personal / Mobile Phone</label>
                     <div className="relative">
-                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <input 
                         type="tel"
                         value={formData.personalPhone}
                         onChange={e => setFormData({...formData, personalPhone: e.target.value})}
-                        className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600"
+                        className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-emerald-600 transition-all placeholder:text-slate-400"
                         placeholder="+91..."
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Udyam Registration (Optional)</label>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">Udyam Registration (Optional)</label>
                     <div className="relative">
-                      <FileText className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <FileText className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <input 
                         type="text"
                         value={formData.udyamNumber}
                         onChange={e => setFormData({...formData, udyamNumber: e.target.value})}
-                        className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all placeholder:text-slate-600"
+                        className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:border-emerald-600 transition-all placeholder:text-slate-400"
                         placeholder="UDYAM-MH-00..."
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 bg-emerald-950/40 border border-emerald-800/60 rounded-2xl space-y-1 text-xs">
-                  <div className="font-bold text-emerald-300 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1 text-xs">
+                  <div className="font-bold text-emerald-800 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     {sellerProducts.filter(p => p.name.trim()).length} Products & Materials Configured for Ingestion
                   </div>
-                  <p className="text-slate-400 text-[11px]">
+                  <p className="text-slate-600 text-[11px]">
                     Your specifications will be normalized, indexed, and published to the TarasAI Master Catalog upon registration.
                   </p>
                 </div>
@@ -1584,12 +1587,12 @@ export default function Signup() {
                     id="terms-seller" 
                     checked={formData.agreedToTerms}
                     onChange={e => setFormData({...formData, agreedToTerms: e.target.checked})}
-                    className="mt-1 w-4 h-4 bg-slate-900 border-slate-700 rounded text-emerald-600 focus:ring-emerald-500 focus:ring-offset-slate-950 cursor-pointer" 
+                    className="mt-1 w-4 h-4 bg-white border-slate-300 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer" 
                   />
-                  <label htmlFor="terms-seller" className="text-xs text-slate-400 leading-relaxed cursor-pointer">
+                  <label htmlFor="terms-seller" className="text-xs text-slate-600 leading-relaxed cursor-pointer">
                     I attest that this information is accurate and I agree to the{' '}
-                    <a href="/terms-of-service" target="_blank" className="text-emerald-400 hover:underline">Terms of Service</a> and{' '}
-                    <a href="/privacy-policy" target="_blank" className="text-emerald-400 hover:underline">Privacy Policy</a>.
+                    <a href="/terms-of-service" target="_blank" className="text-emerald-700 hover:underline font-bold">Terms of Service</a> and{' '}
+                    <a href="/privacy-policy" target="_blank" className="text-emerald-700 hover:underline font-bold">Privacy Policy</a>.
                   </label>
                 </div>
 
@@ -1597,14 +1600,14 @@ export default function Signup() {
                   <button 
                     type="button" 
                     onClick={prevStep}
-                    className="px-5 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl transition-all"
+                    className="px-5 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all border border-slate-200"
                   >
                     <ArrowLeft className="w-5 h-5" />
                   </button>
                   <button 
                     type="submit" 
                     disabled={loading}
-                    className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 text-sm"
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 group disabled:opacity-70 text-sm"
                   >
                     {loading ? (
                       <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -1621,10 +1624,10 @@ export default function Signup() {
           </AnimatePresence>
         </form>
 
-        <p className="mt-8 text-center text-slate-400 text-xs sm:text-sm">
+        <p className="mt-8 text-center text-slate-500 text-xs sm:text-sm">
           Already registered on TarasAI?{' '}
-          <Link href="/login" className="text-blue-400 hover:text-blue-300 font-bold transition-colors">
-            Sign in
+          <Link href="/login" className="text-[#0B4FDF] hover:underline font-bold transition-colors">
+            Sign in to Portal
           </Link>
         </p>
       </motion.div>
