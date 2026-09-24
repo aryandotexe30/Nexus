@@ -60,7 +60,7 @@ const HERO_BROCHURE_SLIDES = [
     brochureTitle: "Technical Brochure: Precision Electronic Tapes & Dielectrics (PDF)",
     brochurePages: "16 Pages • 2026 Edition",
     bgImage: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=85",
-    cardBg: "bg-[#0082c8]", // tesa iconic cyan-blue
+    cardBg: "bg-[#0B4FDF]", // Electric Cobalt
     btnText: "EXPLORE ELECTRONICS SPECS",
     link: "/signup?role=buyer&search=Electronics"
   },
@@ -72,7 +72,7 @@ const HERO_BROCHURE_SLIDES = [
     brochureTitle: "Technical Brochure: EV Battery & Automotive Solutions (PDF)",
     brochurePages: "24 Pages • IATF 16949 Aligned",
     bgImage: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1920&q=85",
-    cardBg: "bg-[#0082c8]",
+    cardBg: "bg-[#0B4FDF]",
     btnText: "EXPLORE E-MOBILITY SPECS",
     link: "/signup?role=buyer&search=Automotive"
   },
@@ -84,7 +84,7 @@ const HERO_BROCHURE_SLIDES = [
     brochureTitle: "Technical Brochure: Power & Electrical Machinery Solutions (PDF)",
     brochurePages: "32 Pages • CPRI & IS/IEC Standards",
     bgImage: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1920&q=85",
-    cardBg: "bg-[#0082c8]",
+    cardBg: "bg-[#0B4FDF]",
     btnText: "EXPLORE POWER & TRANSFORMERS",
     link: "/signup?role=buyer&search=Transformer"
   },
@@ -96,25 +96,25 @@ const HERO_BROCHURE_SLIDES = [
     brochureTitle: "Technical Brochure: Appliance Bonding & Thermal Sealing (PDF)",
     brochurePages: "18 Pages • BEE Star Compliant",
     bgImage: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=85",
-    cardBg: "bg-[#0082c8]",
+    cardBg: "bg-[#0B4FDF]",
     btnText: "EXPLORE APPLIANCE SPECS",
     link: "/signup?role=buyer&search=Appliances"
   }
 ];
 
 // ============================================================================
-// INDUSTRIAL SOLUTIONS GRID (MATCHING TESA'S 3x2 GRID FROM IMAGE 2)
+// INDUSTRIAL SOLUTIONS GRID
 // ============================================================================
 const INDUSTRIAL_SOLUTIONS_GRID = [
   {
     id: "automotive",
-    title: "Automotive",
+    title: "Automotive & E-Mobility",
     image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80",
     link: "/signup?role=buyer&search=Automotive"
   },
   {
     id: "electronics",
-    title: "Electronics",
+    title: "Electronics & Semiconductors",
     image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80",
     link: "/signup?role=buyer&search=Electronics"
   },
@@ -132,20 +132,20 @@ const INDUSTRIAL_SOLUTIONS_GRID = [
   },
   {
     id: "appliances",
-    title: "Appliances",
+    title: "Appliances & White Goods",
     image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80",
     link: "/signup?role=buyer&search=Appliances"
   },
   {
     id: "power_energy",
-    title: "Power & Electrical",
+    title: "Power & Electrical Transmission",
     image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=800&q=80",
     link: "/signup?role=buyer&search=Electrical"
   }
 ];
 
 // ============================================================================
-// INDUSTRIAL ASSORTMENT BY PURPOSE (MATCHING TESA ASSORTMENT TABS)
+// INDUSTRIAL ASSORTMENT BY PURPOSE
 // ============================================================================
 const ASSORTMENT_CATEGORIES = [
   {
@@ -199,7 +199,7 @@ export default function LandingPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
 
-  // Mega Menu State (Hamburger Drawer matching Image 4)
+  // Mega Menu State
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [activeMenuTab, setActiveMenuTab] = useState<"industry" | "applications">("industry");
 
@@ -221,75 +221,76 @@ export default function LandingPage() {
   const slide = HERO_BROCHURE_SLIDES[currentSlide];
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-[#0082c8] selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-[#0B4FDF] selection:text-white overflow-x-hidden">
       
       {/* ============================================================ */}
-      {/* 1. TOP BRAND ACCENT BAR (RED & CYAN STRIPE - IMAGE 1)        */}
+      {/* 1. TOP BRAND ACCENT BAR (ELECTRIC COBALT & BLAZE ORANGE)     */}
       {/* ============================================================ */}
       <div className="w-full h-1.5 flex">
-        <div className="w-2/3 bg-[#e30613]" /> {/* Red Brand Accent */}
-        <div className="w-1/3 bg-[#0082c8]" /> {/* Cyan Brand Accent */}
+        <div className="w-3/4 bg-[#0B4FDF]" /> {/* Vibrant Electric Cobalt */}
+        <div className="w-1/4 bg-[#FF5500]" /> {/* High-Energy Blaze Orange */}
       </div>
 
       {/* ============================================================ */}
-      {/* 2. PRIMARY NAVIGATION HEADER (TESA STYLE - IMAGE 1)          */}
+      {/* 2. PRIMARY NAVIGATION HEADER (FULL-WIDTH EDGE-TO-EDGE)       */}
       {/* ============================================================ */}
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-6">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
+        <div className="w-full px-4 sm:px-8 lg:px-12 h-20 flex items-center justify-between gap-4 lg:gap-8">
           
-          <div className="flex items-center gap-6">
+          {/* Left Block: Hamburger + Brand Logo + Tagline */}
+          <div className="flex items-center gap-4 sm:gap-6 shrink-0">
             {/* Hamburger Menu Toggle Button */}
             <button
               type="button"
               onClick={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
-              className="p-2 -ml-2 text-slate-800 hover:text-[#0082c8] hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-2"
+              className="p-2 -ml-2 text-slate-800 hover:text-[#0B4FDF] hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-2"
               aria-label="Open Navigation Menu"
             >
-              {isMegaMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+              {isMegaMenuOpen ? <X className="w-7 h-7 text-[#0B4FDF]" /> : <Menu className="w-7 h-7" />}
             </button>
 
             {/* TarasAI Brand Emblem */}
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="px-3.5 py-1.5 bg-[#e30613] rounded-md text-white font-black italic tracking-tighter text-2xl shadow-sm flex items-center">
-                Taras<span className="text-cyan-300 font-bold ml-0.5">AI</span>
+              <div className="px-3.5 py-1.5 bg-[#0B4FDF] rounded-md text-white font-black italic tracking-tighter text-2xl shadow-sm flex items-center">
+                Taras<span className="text-[#FF9E00] font-bold ml-0.5">AI</span>
               </div>
-              <span className="hidden xl:inline text-[10px] uppercase font-bold tracking-widest text-slate-500 border-l border-slate-300 pl-3">
+              <span className="hidden xl:inline text-[10px] uppercase font-bold tracking-widest text-slate-500 border-l border-slate-200 pl-3">
                 Materials Intelligence
               </span>
             </Link>
-
-            {/* Direct Header Navigation Links */}
-            <nav className="hidden lg:flex items-center gap-6 text-sm font-bold text-slate-800">
-              <button 
-                type="button" 
-                onClick={() => { setIsMegaMenuOpen(true); setActiveMenuTab("industry"); }}
-                className="hover:text-[#0082c8] transition-colors py-2"
-              >
-                Industry
-              </button>
-              <button 
-                type="button" 
-                onClick={() => { setIsMegaMenuOpen(true); setActiveMenuTab("applications"); }}
-                className="hover:text-[#0082c8] transition-colors py-2"
-              >
-                Applications
-              </button>
-              <Link href="/products" className="hover:text-[#0082c8] transition-colors py-2">
-                Products Master
-              </Link>
-              <a href="#solutions" className="hover:text-[#0082c8] transition-colors py-2">
-                Engineering Assortment
-              </a>
-              <Link href="/pricing" className="hover:text-[#0082c8] transition-colors py-2">
-                Pricing & Consortia
-              </Link>
-            </nav>
           </div>
 
+          {/* Center Navigation Links (Spaced Out & Proportional) */}
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-sm font-bold text-slate-800">
+            <button 
+              type="button" 
+              onClick={() => { setIsMegaMenuOpen(true); setActiveMenuTab("industry"); }}
+              className="hover:text-[#0B4FDF] transition-colors py-2 flex items-center gap-1"
+            >
+              <span>Industry</span>
+            </button>
+            <button 
+              type="button" 
+              onClick={() => { setIsMegaMenuOpen(true); setActiveMenuTab("applications"); }}
+              className="hover:text-[#0B4FDF] transition-colors py-2 flex items-center gap-1"
+            >
+              <span>Applications</span>
+            </button>
+            <Link href="/products" className="hover:text-[#0B4FDF] transition-colors py-2">
+              Products Master
+            </Link>
+            <a href="#solutions" className="hover:text-[#0B4FDF] transition-colors py-2">
+              Engineering Assortment
+            </a>
+            <Link href="/pricing" className="hover:text-[#0B4FDF] transition-colors py-2">
+              Pricing & Consortia
+            </Link>
+          </nav>
+
           {/* Right Header CTAs */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
             {/* Quick Sourcing Search Trigger */}
-            <div className="relative hidden sm:block w-44 md:w-56">
+            <div className="relative hidden md:block w-48 lg:w-64">
               <input
                 type="text"
                 value={searchQuery}
@@ -299,15 +300,15 @@ export default function LandingPage() {
                     window.location.href = `/signup?role=buyer&search=${encodeURIComponent(searchQuery || 'Industrial')}`;
                   }
                 }}
-                placeholder="Search specs..."
-                className="w-full bg-slate-100 hover:bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-full py-2 pl-9 pr-3 focus:outline-none focus:border-[#0082c8] transition-all"
+                placeholder="Search specs, dielectric, TIM..."
+                className="w-full bg-slate-100/80 hover:bg-slate-50 focus:bg-white border border-slate-200 text-slate-800 text-xs rounded-full py-2 pl-9 pr-3 focus:outline-none focus:border-[#0B4FDF] focus:ring-2 focus:ring-blue-100 transition-all shadow-2xs"
               />
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
 
             <Link
               href="/signup?role=seller"
-              className="px-3.5 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-lg transition-colors hidden md:flex items-center gap-1.5"
+              className="px-3.5 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-lg transition-colors hidden sm:flex items-center gap-1.5"
             >
               <Factory className="w-3.5 h-3.5" />
               Sign in as a Seller
@@ -315,7 +316,7 @@ export default function LandingPage() {
 
             <Link
               href="/signup?role=buyer"
-              className="px-4 py-2 text-xs font-extrabold text-white bg-[#e30613] hover:bg-red-700 rounded-lg transition-colors shadow-sm flex items-center gap-1.5"
+              className="px-4 py-2 text-xs font-extrabold text-white bg-[#FF5500] hover:bg-[#E04800] rounded-lg transition-all shadow-sm hover:shadow flex items-center gap-1.5"
             >
               <ShoppingCart className="w-3.5 h-3.5" />
               Sign up as a Buyer
@@ -323,7 +324,7 @@ export default function LandingPage() {
 
             <Link
               href="/login"
-              className="px-3 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 transition-colors"
+              className="px-3 py-2 text-xs font-bold text-slate-700 hover:text-[#0B4FDF] transition-colors"
             >
               Sign In
             </Link>
@@ -332,7 +333,7 @@ export default function LandingPage() {
       </header>
 
       {/* ============================================================ */}
-      {/* 3. SLIDE-OUT MEGA MENU DRAWER (MATCHING IMAGE 4)             */}
+      {/* 3. SLIDE-OUT MEGA MENU DRAWER                                */}
       {/* ============================================================ */}
       <AnimatePresence>
         {isMegaMenuOpen && (
@@ -357,8 +358,8 @@ export default function LandingPage() {
               {/* Drawer Top Header */}
               <div className="p-6 border-b border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="px-3 py-1 bg-[#e30613] rounded-md text-white font-black italic text-xl">
-                    TarasAI
+                  <div className="px-3.5 py-1.5 bg-[#0B4FDF] rounded-md text-white font-black italic text-xl">
+                    Taras<span className="text-[#FF9E00]">AI</span>
                   </div>
                   <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Industrial Directory</span>
                 </div>
@@ -371,7 +372,7 @@ export default function LandingPage() {
                 </button>
               </div>
 
-              {/* Two-Column Navigation (Image 4 Style) */}
+              {/* Two-Column Navigation */}
               <div className="grid grid-cols-1 md:grid-cols-2 flex-1 divide-y md:divide-y-0 md:divide-x divide-slate-200">
                 {/* Left Column: Primary Sections */}
                 <div className="p-6 space-y-3">
@@ -380,10 +381,10 @@ export default function LandingPage() {
                   <Link 
                     href="/products" 
                     onClick={() => setIsMegaMenuOpen(false)}
-                    className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 text-slate-800 hover:text-[#0082c8] font-bold text-sm transition-colors group"
+                    className="flex items-center justify-between p-3 rounded-xl hover:bg-blue-50/50 text-slate-800 hover:text-[#0B4FDF] font-bold text-sm transition-colors group"
                   >
                     <span>Overview (All Catalogs)</span>
-                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform text-[#0B4FDF]" />
                   </Link>
 
                   {INDUSTRIAL_SOLUTIONS_GRID.map((item) => (
@@ -391,15 +392,15 @@ export default function LandingPage() {
                       key={item.id}
                       href={item.link}
                       onClick={() => setIsMegaMenuOpen(false)}
-                      className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 text-slate-800 hover:text-[#0082c8] font-bold text-sm transition-colors group"
+                      className="flex items-center justify-between p-3 rounded-xl hover:bg-blue-50/50 text-slate-800 hover:text-[#0B4FDF] font-bold text-sm transition-colors group"
                     >
                       <span>{item.title}</span>
-                      <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                      <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform group-hover:text-[#0B4FDF]" />
                     </Link>
                   ))}
                 </div>
 
-                {/* Right Column: Applications Submenu (Image 4 Style) */}
+                {/* Right Column: Applications Submenu */}
                 <div className="p-6 space-y-2">
                   <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Applications & Chemistries</h3>
                   
@@ -418,10 +419,10 @@ export default function LandingPage() {
                       key={i}
                       href={`/signup?role=buyer&search=${encodeURIComponent(app)}`}
                       onClick={() => setIsMegaMenuOpen(false)}
-                      className="flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-[#0082c8] text-sm font-medium transition-colors group"
+                      className="flex items-center justify-between p-2.5 rounded-lg hover:bg-blue-50/50 text-slate-700 hover:text-[#0B4FDF] text-sm font-medium transition-colors group"
                     >
                       <span>{app}</span>
-                      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0082c8] group-hover:translate-x-1 transition-transform" />
+                      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[#0B4FDF] group-hover:translate-x-1 transition-transform" />
                     </Link>
                   ))}
                 </div>
@@ -443,7 +444,7 @@ export default function LandingPage() {
                   <Link
                     href="/signup?role=buyer"
                     onClick={() => setIsMegaMenuOpen(false)}
-                    className="flex-1 sm:flex-none px-5 py-2 text-xs font-bold text-white bg-[#0082c8] rounded-lg text-center shadow-sm"
+                    className="flex-1 sm:flex-none px-5 py-2 text-xs font-bold text-white bg-[#FF5500] hover:bg-[#E04800] rounded-lg text-center shadow-sm"
                   >
                     Buyer Sign Up
                   </Link>
@@ -480,18 +481,18 @@ export default function LandingPage() {
           
           {/* Top Industry Label */}
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 bg-white/90 backdrop-blur-md rounded text-[11px] font-black uppercase tracking-wider text-slate-900 shadow-sm">
+            <span className="px-3.5 py-1 bg-white/95 backdrop-blur-md rounded text-[11px] font-black uppercase tracking-wider text-[#0B4FDF] shadow-sm">
               {slide.industry}
             </span>
           </div>
 
-          {/* Floating Hero Card Overlay (Image 1 Style: Bold Blue Card on Left) */}
+          {/* Floating Hero Card Overlay (Electric Cobalt Card on Left) */}
           <motion.div
             key={`card-${slide.id}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="max-w-xl p-8 sm:p-10 bg-[#0082c8] text-white rounded-none shadow-2xl space-y-6"
+            className="max-w-xl p-8 sm:p-10 bg-[#0B4FDF] text-white rounded-none shadow-2xl space-y-6"
           >
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-[1.15]">
               {slide.headline}
@@ -502,19 +503,19 @@ export default function LandingPage() {
             </p>
 
             {/* Brochure Badge */}
-            <div className="flex items-center gap-2 p-2.5 bg-white/10 rounded border border-white/20 text-xs">
-              <FileText className="w-4 h-4 text-cyan-200 shrink-0" />
+            <div className="flex items-center gap-2.5 p-3 bg-white/10 rounded border border-white/20 text-xs">
+              <FileText className="w-4 h-4 text-[#FF9E00] shrink-0" />
               <div className="truncate">
-                <span className="font-bold">{slide.brochureTitle}</span>
-                <span className="text-blue-100 text-[11px] block">{slide.brochurePages}</span>
+                <span className="font-bold text-white">{slide.brochureTitle}</span>
+                <span className="text-blue-200 text-[11px] block">{slide.brochurePages}</span>
               </div>
             </div>
 
-            {/* Read More / Action Button (Image 1 Red Button Style) */}
+            {/* Read More / Action Button (Radiant Blaze Orange Button) */}
             <div>
               <Link
                 href={slide.link}
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#e30613] hover:bg-red-700 text-white text-xs font-black uppercase tracking-wider transition-all shadow-md active:scale-95"
+                className="inline-flex items-center gap-2 px-8 py-3.5 bg-[#FF5500] hover:bg-[#E04800] text-white text-xs font-black uppercase tracking-wider transition-all shadow-md active:scale-95"
               >
                 <span>{slide.btnText}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -522,7 +523,7 @@ export default function LandingPage() {
             </div>
           </motion.div>
 
-          {/* Bottom Controls Bar (Image 1 Dash Indicators + Prev/Play/Next) */}
+          {/* Bottom Controls Bar */}
           <div className="self-end bg-white/95 backdrop-blur-md px-5 py-2.5 rounded-lg shadow-xl flex items-center gap-4 text-slate-800">
             {/* Dash Indicators */}
             <div className="flex items-center gap-2">
@@ -531,8 +532,8 @@ export default function LandingPage() {
                   key={idx}
                   type="button"
                   onClick={() => setCurrentSlide(idx)}
-                  className={`h-1 transition-all duration-300 rounded-full ${
-                    currentSlide === idx ? "w-8 bg-slate-900" : "w-4 bg-slate-300 hover:bg-slate-400"
+                  className={`h-1.5 transition-all duration-300 rounded-full ${
+                    currentSlide === idx ? "w-8 bg-[#0B4FDF]" : "w-4 bg-slate-300 hover:bg-slate-400"
                   }`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
@@ -546,7 +547,7 @@ export default function LandingPage() {
               <button
                 type="button"
                 onClick={() => setCurrentSlide((prev) => (prev - 1 + HERO_BROCHURE_SLIDES.length) % HERO_BROCHURE_SLIDES.length)}
-                className="p-1 hover:text-slate-900 hover:bg-slate-100 rounded transition-colors"
+                className="p-1 hover:text-[#0B4FDF] hover:bg-slate-100 rounded transition-colors"
                 aria-label="Previous Slide"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -555,7 +556,7 @@ export default function LandingPage() {
               <button
                 type="button"
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="p-1 hover:text-slate-900 hover:bg-slate-100 rounded transition-colors"
+                className="p-1 hover:text-[#0B4FDF] hover:bg-slate-100 rounded transition-colors"
                 aria-label={isPlaying ? "Pause Slideshow" : "Play Slideshow"}
               >
                 {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
@@ -564,7 +565,7 @@ export default function LandingPage() {
               <button
                 type="button"
                 onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_BROCHURE_SLIDES.length)}
-                className="p-1 hover:text-slate-900 hover:bg-slate-100 rounded transition-colors"
+                className="p-1 hover:text-[#0B4FDF] hover:bg-slate-100 rounded transition-colors"
                 aria-label="Next Slide"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -575,20 +576,20 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 5. "INDUSTRIAL SOLUTIONS" 3x2 GRID (MATCHING IMAGE 2)        */}
+      {/* 5. "INDUSTRIAL SOLUTIONS" 3x2 GRID                           */}
       {/* ============================================================ */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6">
         <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-8">
           Industrial solutions
         </h2>
 
-        {/* 3x2 Grid (Exact Image 2 Style) */}
+        {/* 3x2 Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {INDUSTRIAL_SOLUTIONS_GRID.map((item) => (
             <Link
               key={item.id}
               href={item.link}
-              className="group block bg-white border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300"
+              className="group block bg-white border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-[#0B4FDF]/40 transition-all duration-300"
             >
               {/* Card Image */}
               <div className="relative h-56 w-full overflow-hidden bg-slate-100">
@@ -599,12 +600,12 @@ export default function LandingPage() {
                 />
               </div>
 
-              {/* Title Strip with Blue Chevron (Exact Image 2 Style) */}
+              {/* Title Strip with Cobalt Chevron */}
               <div className="p-4 bg-white flex items-center justify-between border-t border-slate-100">
-                <span className="font-bold text-slate-900 text-base group-hover:text-[#0082c8] transition-colors">
+                <span className="font-bold text-slate-900 text-base group-hover:text-[#0B4FDF] transition-colors">
                   {item.title}
                 </span>
-                <ChevronRight className="w-5 h-5 text-[#0082c8] group-hover:translate-x-1.5 transition-transform" />
+                <ChevronRight className="w-5 h-5 text-[#0B4FDF] group-hover:translate-x-1.5 transition-transform" />
               </div>
             </Link>
           ))}
@@ -612,7 +613,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 6. "GAME CHANGING APPLICATIONS" (MATCHING IMAGE 3)           */}
+      {/* 6. "GAME CHANGING APPLICATIONS"                              */}
       {/* ============================================================ */}
       <section className="py-16 bg-slate-50 border-y border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
@@ -621,27 +622,27 @@ export default function LandingPage() {
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center bg-white border border-slate-200 p-8 sm:p-12 shadow-xs">
-            {/* Left Column: Copy & Read More Button (Image 3 Style) */}
+            {/* Left Column */}
             <div className="space-y-6">
               <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
                 Let's steer E-Mobility together
               </h3>
 
               <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                Are you creating the next-generation electric vehicle and do you need reliable, verified manufacturing partners who understand your challenges? Let's work together on how to design your component with our adhesive tape solutions and how to integrate them into your process for smooth production.
+                Are you creating next-generation electric vehicles and require reliable, verified manufacturing partners? Let's work together to engineer your components with our adhesive tape and thermal solutions, integrating them seamlessly into your high-volume automated production line.
               </p>
 
               <div>
                 <Link
                   href="/signup?role=buyer&search=EV+Battery"
-                  className="inline-block px-7 py-3 border-2 border-[#0082c8] text-[#0082c8] hover:bg-[#0082c8] hover:text-white text-xs font-black uppercase tracking-wider transition-all"
+                  className="inline-block px-7 py-3 border-2 border-[#0B4FDF] text-[#0B4FDF] hover:bg-[#0B4FDF] hover:text-white text-xs font-black uppercase tracking-wider transition-all"
                 >
                   READ MORE
                 </Link>
               </div>
             </div>
 
-            {/* Right Column: Hero Visual (EV Charging Port / Engineering - Image 3 Style) */}
+            {/* Right Column: Hero Visual */}
             <div className="relative h-72 sm:h-80 w-full overflow-hidden rounded-lg bg-slate-100">
               <img
                 src="https://images.unsplash.com/photo-1558441719-8b449c6ff673?auto=format&fit=crop&w=1000&q=80"
@@ -654,7 +655,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 7. "OUR LARGE INDUSTRIAL ASSORTMENT" (IMAGE 3 & SOLUTIONS)   */}
+      {/* 7. "OUR LARGE INDUSTRIAL ASSORTMENT"                         */}
       {/* ============================================================ */}
       <section id="solutions" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 space-y-10">
         <div className="space-y-2">
@@ -675,7 +676,7 @@ export default function LandingPage() {
               onClick={() => setActiveAssortmentIdx(idx)}
               className={`px-5 py-3 text-sm font-bold transition-all border-b-2 -mb-2 ${
                 activeAssortmentIdx === idx
-                  ? "border-[#0082c8] text-[#0082c8] bg-blue-50/50"
+                  ? "border-[#0B4FDF] text-[#0B4FDF] bg-blue-50/50"
                   : "border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300"
               }`}
             >
@@ -696,7 +697,7 @@ export default function LandingPage() {
             <div className="pt-2">
               <Link
                 href={`/signup?role=buyer&search=${encodeURIComponent(ASSORTMENT_CATEGORIES[activeAssortmentIdx].name)}`}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0082c8] hover:underline"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B4FDF] hover:underline"
               >
                 Request Product Samples & RFQ <ChevronRight className="w-4 h-4" />
               </Link>
@@ -705,9 +706,9 @@ export default function LandingPage() {
 
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {ASSORTMENT_CATEGORIES[activeAssortmentIdx].items.map((item, i) => (
-              <div key={i} className="p-4 bg-white border border-slate-200 rounded-xl space-y-1 shadow-2xs hover:border-[#0082c8] transition-colors">
+              <div key={i} className="p-4 bg-white border border-slate-200 rounded-xl space-y-1 shadow-2xs hover:border-[#0B4FDF] transition-colors">
                 <div className="text-sm font-bold text-slate-900 flex items-start gap-2">
-                  <Check className="w-4 h-4 text-[#0082c8] shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-[#0B4FDF] shrink-0 mt-0.5" />
                   <span>{item.name}</span>
                 </div>
                 <div className="text-xs text-slate-500 pl-6">
@@ -725,7 +726,7 @@ export default function LandingPage() {
       <section className="py-16 bg-slate-900 text-white px-4 sm:px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
           <div className="lg:col-span-2 space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded text-xs font-bold text-cyan-300">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded text-xs font-bold text-[#FF9E00]">
               <Factory className="w-3.5 h-3.5" /> Direct Factory Consortium
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight">
@@ -739,7 +740,7 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row lg:flex-col gap-3 justify-end">
             <Link
               href="/signup?role=buyer"
-              className="px-6 py-3.5 bg-[#e30613] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider text-center transition-all shadow-md"
+              className="px-6 py-3.5 bg-[#FF5500] hover:bg-[#E04800] text-white font-bold text-xs uppercase tracking-wider text-center transition-all shadow-md"
             >
               Sign up as a Buyer — Launch RFQs
             </Link>
@@ -759,8 +760,8 @@ export default function LandingPage() {
       <footer className="border-t border-slate-200 bg-white py-14 px-4 sm:px-6 text-slate-600 text-xs">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-10">
           <div className="md:col-span-2 space-y-4">
-            <div className="px-3.5 py-1.5 bg-[#e30613] rounded-md text-white font-black italic text-xl inline-block">
-              TarasAI
+            <div className="px-3.5 py-1.5 bg-[#0B4FDF] rounded-md text-white font-black italic text-xl inline-block">
+              Taras<span className="text-[#FF9E00]">AI</span>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
               TarasAI is the autonomous industrial materials intelligence and direct procurement platform connecting OEMs, converters, and certified manufacturers.
@@ -773,29 +774,29 @@ export default function LandingPage() {
           <div className="space-y-3">
             <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Industrial Markets</h4>
             <ul className="space-y-2">
-              <li><Link href="/signup?role=buyer" className="hover:text-[#0082c8] transition-colors">Automotive & E-Mobility</Link></li>
-              <li><Link href="/signup?role=buyer" className="hover:text-[#0082c8] transition-colors">Electronics & Semiconductors</Link></li>
-              <li><Link href="/signup?role=buyer" className="hover:text-[#0082c8] transition-colors">Power & Electrical Machinery</Link></li>
-              <li><Link href="/signup?role=buyer" className="hover:text-[#0082c8] transition-colors">Appliances & White Goods</Link></li>
-              <li><Link href="/signup?role=buyer" className="hover:text-[#0082c8] transition-colors">Building & Construction</Link></li>
+              <li><Link href="/signup?role=buyer" className="hover:text-[#0B4FDF] transition-colors">Automotive & E-Mobility</Link></li>
+              <li><Link href="/signup?role=buyer" className="hover:text-[#0B4FDF] transition-colors">Electronics & Semiconductors</Link></li>
+              <li><Link href="/signup?role=buyer" className="hover:text-[#0B4FDF] transition-colors">Power & Electrical Machinery</Link></li>
+              <li><Link href="/signup?role=buyer" className="hover:text-[#0B4FDF] transition-colors">Appliances & White Goods</Link></li>
+              <li><Link href="/signup?role=buyer" className="hover:text-[#0B4FDF] transition-colors">Building & Construction</Link></li>
             </ul>
           </div>
 
           <div className="space-y-3">
             <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Platform</h4>
             <ul className="space-y-2">
-              <li><Link href="/signup?role=buyer" className="hover:text-[#0082c8] transition-colors">Sign up as a Buyer</Link></li>
-              <li><Link href="/signup?role=seller" className="hover:text-[#0082c8] transition-colors">Sign in as a Seller</Link></li>
-              <li><Link href="/login" className="hover:text-[#0082c8] transition-colors">Portal Sign In</Link></li>
-              <li><Link href="/pricing" className="hover:text-[#0082c8] transition-colors">Enterprise Pricing</Link></li>
+              <li><Link href="/signup?role=buyer" className="hover:text-[#0B4FDF] transition-colors">Sign up as a Buyer</Link></li>
+              <li><Link href="/signup?role=seller" className="hover:text-[#0B4FDF] transition-colors">Sign in as a Seller</Link></li>
+              <li><Link href="/login" className="hover:text-[#0B4FDF] transition-colors">Portal Sign In</Link></li>
+              <li><Link href="/pricing" className="hover:text-[#0B4FDF] transition-colors">Enterprise Pricing</Link></li>
             </ul>
           </div>
 
           <div className="space-y-3">
             <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Compliance & Legal</h4>
             <ul className="space-y-2">
-              <li><Link href="/privacy-policy" className="hover:text-[#0082c8] transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms-of-service" className="hover:text-[#0082c8] transition-colors">Terms of Service</Link></li>
+              <li><Link href="/privacy-policy" className="hover:text-[#0B4FDF] transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms-of-service" className="hover:text-[#0B4FDF] transition-colors">Terms of Service</Link></li>
               <li><span className="text-slate-400">DPDP Act Compliant</span></li>
               <li><span className="text-slate-400">ISO 9001 / IATF Sourcing</span></li>
             </ul>
