@@ -100,7 +100,7 @@ export const BUYER_INDUSTRIES: IndustryConfig[] = [
   },
   {
     id: "power_electrical",
-    name: "Power, Electrical & Transformer (IEEMA)",
+    name: "Power, Electrical & Transformers",
     description: "Transformers, switchgears, transmission line hardware & motors",
     icon: Zap,
     categories: [
@@ -113,7 +113,7 @@ export const BUYER_INDUSTRIES: IndustryConfig[] = [
       "Medium & High Voltage Switchgear Parts"
     ],
     goals: [
-      "IEEMA & CPRI Verified Manufacturers",
+      "CPRI & Bureau of Indian Standards Verified",
       "IS / IEC Standard Compliant Raw Materials",
       "Direct Domestic Sourcing for Govt / Utility Tenders",
       "Annual Rate Contracts & Supply Guarantees"
@@ -261,7 +261,7 @@ export const SELLER_PRODUCT_CATEGORIES = [
   "Abrasives, Polishing & Surface Finishing",
   "Industrial Fasteners & Reclosables",
   "Specialty Polymers, Resins & Raw Compounds",
-  "Transformers & Electrical Machinery (IEEMA)",
+  "Transformers & Power Electrical Machinery",
   "Cables, Conductors & Winding Wires",
   "Switchgear, Panels & Automation Equipment",
   "Other Industrial Materials & Consumables"
@@ -1202,7 +1202,7 @@ export default function Signup() {
                       className="w-full bg-slate-950/60 border border-slate-800 text-white rounded-2xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all"
                     >
                       <option value="Specialty Tapes & Adhesives Manufacturing">Specialty Tapes & Adhesives</option>
-                      <option value="Electrical & Power Equipment (Transformers/Switchgear)">Electrical & Power Equipment (IEEMA)</option>
+                      <option value="Electrical & Power Equipment (Transformers/Switchgear)">Electrical & Power Equipment (Transformers/Switchgear)</option>
                       <option value="Polymer, Foam & Gasket Converting">Polymer, Foam & Gasket Converting</option>
                       <option value="Thermal Interface & Dielectric Insulation">Thermal Interface & Dielectric Insulation</option>
                       <option value="Optical, Display & Barrier Films">Optical, Display & Barrier Films</option>

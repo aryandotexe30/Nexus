@@ -40,7 +40,7 @@ import {
 } from "lucide-react";
 
 // ============================================================================
-// INDUSTRIAL MARKETS DATA (TESA / NITTO STYLE)
+// INDUSTRIAL MARKETS DATA (CLEAN & SOURCE-AGNOSTIC)
 // ============================================================================
 const INDUSTRIAL_MARKETS = [
   {
@@ -58,7 +58,7 @@ const INDUSTRIAL_MARKETS = [
       "Body Panel Attachment & Mirror Mounting"
     ],
     accentColor: "from-blue-600 to-cyan-500",
-    borderHover: "hover:border-cyan-500/50"
+    borderHover: "hover:border-blue-400 hover:shadow-blue-500/10"
   },
   {
     id: "electronics",
@@ -75,15 +75,15 @@ const INDUSTRIAL_MARKETS = [
       "Precision Micro Die-Cut Thermal Gaskets"
     ],
     accentColor: "from-indigo-600 to-blue-500",
-    borderHover: "hover:border-indigo-500/50"
+    borderHover: "hover:border-indigo-400 hover:shadow-indigo-500/10"
   },
   {
     id: "power",
-    title: "Power & Electrical (IEEMA Network)",
+    title: "Power & Electrical Systems",
     tagline: "Transformer core insulation, winding wires, switchgear & high-voltage resin",
     icon: Zap,
     badge: "CPRI & IS/IEC Verified",
-    description: "Direct access to 1,084+ certified Indian electrical manufacturers supplying power transmission, distribution transformers, and industrial switchgear.",
+    description: "Direct access to certified manufacturing plants supplying power transmission, distribution transformers, and industrial switchgear.",
     applications: [
       "CRGO / CRNGO Electrical Steel Core Laminations",
       "Enamelled Copper & Aluminum Winding Wires",
@@ -92,7 +92,7 @@ const INDUSTRIAL_MARKETS = [
       "Copper Busbars & Medium-Voltage Contacts"
     ],
     accentColor: "from-amber-600 to-yellow-500",
-    borderHover: "hover:border-amber-500/50"
+    borderHover: "hover:border-amber-400 hover:shadow-amber-500/10"
   },
   {
     id: "appliances",
@@ -109,7 +109,7 @@ const INDUSTRIAL_MARKETS = [
       "Scratch-Resistant Appliance Surface Films"
     ],
     accentColor: "from-teal-600 to-emerald-500",
-    borderHover: "hover:border-teal-500/50"
+    borderHover: "hover:border-teal-400 hover:shadow-teal-500/10"
   },
   {
     id: "aerospace",
@@ -126,7 +126,7 @@ const INDUSTRIAL_MARKETS = [
       "Titanium & Inconel Fastener Assemblies"
     ],
     accentColor: "from-sky-600 to-blue-500",
-    borderHover: "hover:border-sky-500/50"
+    borderHover: "hover:border-sky-400 hover:shadow-sky-500/10"
   },
   {
     id: "building",
@@ -143,7 +143,7 @@ const INDUSTRIAL_MARKETS = [
       "Mirror Mounting & Glass Protection Films"
     ],
     accentColor: "from-purple-600 to-pink-500",
-    borderHover: "hover:border-purple-500/50"
+    borderHover: "hover:border-purple-400 hover:shadow-purple-500/10"
   }
 ];
 
@@ -178,24 +178,23 @@ const CORE_SOLUTIONS = [
 ];
 
 export default function LandingPage() {
-  const [activeMarket, setActiveMarket] = useState(INDUSTRIAL_MARKETS[0]);
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-600 selection:text-white overflow-x-hidden">
       
       {/* ============================================================ */}
-      {/* 1. TOP ANNOUNCEMENT TICKER (ENTERPRISE SOURCING NETWORK)     */}
+      {/* 1. TOP ANNOUNCEMENT TICKER (CLEAN & SOURCE-AGNOSTIC)          */}
       {/* ============================================================ */}
-      <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white py-2 px-4 border-b border-blue-800/40 text-xs">
+      <div className="bg-slate-900 text-white py-2 px-4 text-xs">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="bg-blue-500 text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full">New</span>
-            <span className="font-semibold hidden sm:inline">IEEMA Industrial Directory Integrated:</span>
-            <span className="text-blue-200">1,084+ Verified Direct Indian Manufacturers & 4,950+ Technical Specs Live</span>
+            <span className="bg-blue-600 text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full">New</span>
+            <span className="font-semibold hidden sm:inline">Direct Manufacturing Network:</span>
+            <span className="text-slate-300">1,084+ Verified Indian Manufacturers & 4,950+ Technical Specifications Live</span>
           </div>
           <div className="flex items-center gap-4 text-slate-300">
-            <Link href="/signup?role=seller" className="hover:text-white flex items-center gap-1 font-bold transition-colors">
+            <Link href="/signup?role=seller" className="hover:text-emerald-400 flex items-center gap-1 font-bold transition-colors">
               <Factory className="w-3.5 h-3.5 text-emerald-400" />
               Sign in as a Seller
             </Link>
@@ -208,45 +207,45 @@ export default function LandingPage() {
       </div>
 
       {/* ============================================================ */}
-      {/* 2. PRIMARY ENTERPRISE NAVIGATION HEADER                      */}
+      {/* 2. PRIMARY ENTERPRISE NAVIGATION HEADER (LIGHT THEME)         */}
       {/* ============================================================ */}
-      <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 transition-all">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200 transition-all shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-6">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-blue-500 flex items-center justify-center shadow-lg shadow-blue-600/30 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-600/20 group-hover:scale-105 transition-transform">
               <Layers3 className="w-5 h-5 text-white" />
             </div>
             <div>
-              <span className="text-2xl font-black tracking-tight text-white flex items-center gap-1">
-                Taras<span className="text-blue-500">AI</span>
+              <span className="text-2xl font-black tracking-tight text-slate-900 flex items-center gap-1">
+                Taras<span className="text-blue-600">AI</span>
               </span>
-              <span className="block text-[9px] uppercase tracking-widest text-slate-400 font-bold -mt-1">
+              <span className="block text-[9px] uppercase tracking-widest text-slate-500 font-bold -mt-1">
                 Materials Intelligence
               </span>
             </div>
           </Link>
 
           {/* Nav Links */}
-          <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-300">
-            <a href="#markets" className="hover:text-blue-400 transition-colors">Markets & Industries</a>
-            <a href="#solutions" className="hover:text-blue-400 transition-colors">Adhesive & Material Solutions</a>
-            <a href="#network" className="hover:text-blue-400 transition-colors">Manufacturer Network</a>
-            <a href="#how-it-works" className="hover:text-blue-400 transition-colors">How It Works</a>
+          <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-600">
+            <a href="#markets" className="hover:text-blue-600 transition-colors">Markets & Industries</a>
+            <a href="#solutions" className="hover:text-blue-600 transition-colors">Adhesive & Material Solutions</a>
+            <a href="#network" className="hover:text-blue-600 transition-colors">Manufacturer Network</a>
+            <a href="#how-it-works" className="hover:text-blue-600 transition-colors">How It Works</a>
           </nav>
 
           {/* Action CTAs */}
           <div className="flex items-center gap-3">
             <Link 
               href="/login" 
-              className="px-4 py-2.5 text-xs font-bold text-slate-300 hover:text-white transition-colors hidden sm:inline-block"
+              className="px-4 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 transition-colors hidden sm:inline-block"
             >
               Sign In
             </Link>
             
             <Link 
               href="/signup?role=seller" 
-              className="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-emerald-500/30 hover:border-emerald-500/60 shadow-sm transition-all hidden md:flex items-center gap-1.5"
+              className="px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 shadow-xs transition-all hidden md:flex items-center gap-1.5"
             >
               <Factory className="w-3.5 h-3.5" />
               Sign in as a Seller
@@ -254,7 +253,7 @@ export default function LandingPage() {
 
             <Link 
               href="/signup?role=buyer" 
-              className="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-600/30 transition-all flex items-center gap-1.5"
+              className="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/20 transition-all flex items-center gap-1.5"
             >
               <ShoppingCart className="w-3.5 h-3.5" />
               Sign up as a Buyer
@@ -264,27 +263,26 @@ export default function LandingPage() {
       </header>
 
       {/* ============================================================ */}
-      {/* 3. HERO SECTION (TESA INDUSTRIAL LEADER STYLING)             */}
+      {/* 3. HERO SECTION (TESA / NITTO STYLE ON CRISP WHITE)           */}
       {/* ============================================================ */}
-      <section className="relative pt-16 pb-24 md:pt-24 md:pb-32 px-4 sm:px-6 overflow-hidden">
-        {/* Subtle Engineering Grid & Glow */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-[size:3rem_3rem] pointer-events-none" />
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative pt-16 pb-20 md:pt-24 md:pb-28 px-4 sm:px-6 overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50">
+        {/* Engineering Background Pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:20px_20px] opacity-70 pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto relative z-10 space-y-10 text-center">
+        <div className="max-w-7xl mx-auto relative z-10 space-y-9 text-center">
           {/* Eyebrow Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-blue-400 text-xs font-bold tracking-wide shadow-inner">
-            <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold tracking-wide shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
             ENGINEERED ADHESIVE & INDUSTRIAL MATERIALS INTELLIGENCE
           </div>
 
           {/* Headline */}
           <div className="space-y-4 max-w-4xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.08]">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-slate-900 tracking-tight leading-[1.1]">
               Advanced Adhesive Solutions & Direct Sourcing Network
             </h1>
-            <p className="text-base sm:text-lg md:text-xl text-slate-400 max-w-3xl mx-auto font-medium leading-relaxed">
-              Connecting OEMs, Tier-1 converters, and procurement teams with 1,084+ direct verified manufacturers. Replace mechanical fasteners, optimize thermal management, and discover parametric alternatives with autonomous AI.
+            <p className="text-base sm:text-lg md:text-xl text-slate-600 max-w-3xl mx-auto font-normal leading-relaxed">
+              Connecting OEMs, Tier-1 converters, and plant procurement teams with 1,084+ direct verified manufacturers. Replace mechanical fasteners, optimize thermal management, and discover parametric alternatives with autonomous AI.
             </p>
           </div>
 
@@ -292,7 +290,7 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <Link 
               href="/signup?role=buyer"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold text-sm shadow-xl shadow-blue-600/30 transition-all flex items-center justify-center gap-2 group"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2 group"
             >
               <ShoppingCart className="w-4 h-4" />
               Sign up as a Buyer — Launch RFQs
@@ -301,128 +299,128 @@ export default function LandingPage() {
 
             <Link 
               href="/signup?role=seller"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900/90 hover:bg-slate-800 text-emerald-400 border border-emerald-500/40 hover:border-emerald-500 font-extrabold text-sm transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-slate-50 text-emerald-700 border-2 border-emerald-500 font-extrabold text-sm transition-all flex items-center justify-center gap-2 shadow-sm"
             >
-              <Factory className="w-4 h-4" />
+              <Factory className="w-4 h-4 text-emerald-600" />
               Sign in as a Seller — Ingest Catalog
             </Link>
           </div>
 
           {/* Quick Specification Search Bar */}
-          <div className="max-w-2xl mx-auto pt-6">
-            <div className="p-2 bg-slate-900/90 border border-slate-800 rounded-2xl flex items-center gap-3 shadow-2xl backdrop-blur-md">
+          <div className="max-w-2xl mx-auto pt-4">
+            <div className="p-2 bg-white border-2 border-slate-200 focus-within:border-blue-500 rounded-2xl flex items-center gap-3 shadow-xl transition-all">
               <Search className="w-5 h-5 text-slate-400 ml-3 shrink-0" />
               <input 
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search by material (e.g. Polyimide, Acrylic Foam, CRGO, TIM Pads, Thermal Silicone)..."
-                className="w-full bg-transparent text-white text-xs sm:text-sm placeholder:text-slate-500 focus:outline-none"
+                className="w-full bg-transparent text-slate-900 text-xs sm:text-sm placeholder:text-slate-400 focus:outline-none font-medium"
               />
               <Link 
-                href={`/signup?role=buyer&search=${encodeURIComponent(searchQuery || 'Industrial Tapes')}`}
-                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl shrink-0 transition-colors"
+                href={`/signup?role=buyer&search=${encodeURIComponent(searchQuery || 'Industrial Materials')}`}
+                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shrink-0 transition-colors shadow-sm"
               >
                 Search Specs
               </Link>
             </div>
 
             {/* Quick Filter Tags */}
-            <div className="flex flex-wrap items-center justify-center gap-2 pt-3 text-xs text-slate-400">
-              <span className="font-semibold text-slate-500">Popular:</span>
-              <Link href="/signup?role=buyer" className="hover:text-blue-400 transition-colors">EV Battery TIM</Link>
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-3 text-xs text-slate-500 font-medium">
+              <span className="font-semibold text-slate-700">Popular:</span>
+              <Link href="/signup?role=buyer" className="hover:text-blue-600 transition-colors">EV Battery TIM</Link>
               <span>•</span>
-              <Link href="/signup?role=buyer" className="hover:text-blue-400 transition-colors">High-Temp Kapton</Link>
+              <Link href="/signup?role=buyer" className="hover:text-blue-600 transition-colors">High-Temp Kapton</Link>
               <span>•</span>
-              <Link href="/signup?role=buyer" className="hover:text-blue-400 transition-colors">Acrylic Foam VHB</Link>
+              <Link href="/signup?role=buyer" className="hover:text-blue-600 transition-colors">Acrylic Foam VHB</Link>
               <span>•</span>
-              <Link href="/signup?role=buyer" className="hover:text-blue-400 transition-colors">CRGO Transformer Core</Link>
+              <Link href="/signup?role=buyer" className="hover:text-blue-600 transition-colors">CRGO Transformer Cores</Link>
               <span>•</span>
-              <Link href="/signup?role=buyer" className="hover:text-blue-400 transition-colors">EMI Copper Foil</Link>
+              <Link href="/signup?role=buyer" className="hover:text-blue-600 transition-colors">EMI Copper Foil</Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* ============================================================ */}
-      {/* 4. KEY PERFORMANCE METRICS TICKER                            */}
+      {/* 4. KEY PERFORMANCE METRICS TICKER (LIGHT THEME)              */}
       {/* ============================================================ */}
-      <section className="border-y border-slate-800 bg-slate-900/50 py-10 px-4 sm:px-6">
+      <section id="network" className="border-y border-slate-200 bg-slate-50 py-10 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">1,084+</div>
-            <div className="text-xs font-bold uppercase tracking-wider text-blue-400">Direct Manufacturers</div>
-            <div className="text-[11px] text-slate-400">Across 4 industrial regions in India</div>
+            <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">1,084+</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-blue-600">Direct Manufacturers</div>
+            <div className="text-[11px] text-slate-500">Across 4 industrial regions in India</div>
           </div>
           <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">4,950+</div>
-            <div className="text-xs font-bold uppercase tracking-wider text-cyan-400">Technical Specifications</div>
-            <div className="text-[11px] text-slate-400">Tapes, foams, resins, polymers & metals</div>
+            <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">4,950+</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-indigo-600">Technical Specifications</div>
+            <div className="text-[11px] text-slate-500">Tapes, foams, resins, polymers & metals</div>
           </div>
           <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">15–25%</div>
-            <div className="text-xs font-bold uppercase tracking-wider text-emerald-400">Average Sourcing Savings</div>
-            <div className="text-[11px] text-slate-400">Direct factory pricing & group consortia</div>
+            <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">15–25%</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-emerald-600">Average Sourcing Savings</div>
+            <div className="text-[11px] text-slate-500">Direct factory pricing & group consortia</div>
           </div>
           <div className="space-y-1">
-            <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">&lt; 24 hrs</div>
-            <div className="text-xs font-bold uppercase tracking-wider text-purple-400">RFQ Turnaround</div>
-            <div className="text-[11px] text-slate-400">Direct plant dispatch & sample matching</div>
+            <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">&lt; 24 hrs</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-purple-600">RFQ Turnaround</div>
+            <div className="text-[11px] text-slate-500">Direct plant dispatch & sample matching</div>
           </div>
         </div>
       </section>
 
       {/* ============================================================ */}
-      {/* 5. INDUSTRIAL MARKETS & SECTORS (TESA MARKETS MATRIX)        */}
+      {/* 5. INDUSTRIAL MARKETS & SECTORS (TESA-STYLE WHITE CARDS)     */}
       {/* ============================================================ */}
       <section id="markets" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className="text-xs font-extrabold uppercase tracking-wider text-blue-400 px-3 py-1 bg-blue-500/10 rounded-full border border-blue-500/20">
+          <span className="text-xs font-extrabold uppercase tracking-wider text-blue-600 px-3 py-1 bg-blue-50 rounded-full border border-blue-200">
             Industrial Markets
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
             Specialized Adhesive & Material Solutions for Every Sector
           </h2>
-          <p className="text-sm sm:text-base text-slate-400">
-            From demanding electric vehicle battery packs to microelectronics and utility transformers, discover application-tested formulations.
+          <p className="text-sm sm:text-base text-slate-600">
+            From demanding electric vehicle battery packs to microelectronics and utility power systems, discover application-tested formulations.
           </p>
         </div>
 
-        {/* Interactive Industry Cards Grid */}
+        {/* Industry Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {INDUSTRIAL_MARKETS.map(market => {
             const IconComp = market.icon;
             return (
               <div
                 key={market.id}
-                className={`p-6 sm:p-8 bg-slate-900/70 backdrop-blur-xl border border-slate-800/90 rounded-3xl space-y-6 transition-all duration-300 hover:scale-[1.02] shadow-xl ${market.borderHover} flex flex-col justify-between group`}
+                className={`p-6 sm:p-8 bg-white border border-slate-200 rounded-3xl space-y-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 shadow-xs flex flex-col justify-between group ${market.borderHover}`}
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${market.accentColor} flex items-center justify-center text-white shadow-lg`}>
+                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${market.accentColor} flex items-center justify-center text-white shadow-md`}>
                       <IconComp className="w-6 h-6" />
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-950 border border-slate-800 text-slate-300">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700">
                       {market.badge}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                       {market.title}
                     </h3>
-                    <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                    <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
                       {market.description}
                     </p>
                   </div>
 
                   {/* Application Bullets */}
-                  <div className="space-y-2 pt-2 border-t border-slate-800/60">
-                    <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Key Formulations:</div>
-                    <ul className="space-y-1.5 text-xs text-slate-300">
+                  <div className="space-y-2 pt-2 border-t border-slate-100">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Key Formulations:</div>
+                    <ul className="space-y-1.5 text-xs text-slate-700">
                       {market.applications.slice(0, 3).map((app, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
                           <span>{app}</span>
                         </li>
                       ))}
@@ -432,7 +430,7 @@ export default function LandingPage() {
 
                 <Link
                   href="/signup?role=buyer"
-                  className="w-full py-2.5 px-4 rounded-xl bg-slate-950 hover:bg-blue-600 text-slate-300 hover:text-white border border-slate-800 text-xs font-bold transition-all flex items-center justify-center gap-1.5 group/btn"
+                  className="w-full py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-blue-600 text-slate-700 hover:text-white border border-slate-200 text-xs font-bold transition-all flex items-center justify-center gap-1.5 group/btn"
                 >
                   Procure {market.title} Materials
                   <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
@@ -444,18 +442,18 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 6. CORE APPLICATION FUNCTIONS (TESA SOLUTIONS SHOWCASE)      */}
+      {/* 6. CORE APPLICATION FUNCTIONS (LIGHT THEME SHOWCASE)         */}
       {/* ============================================================ */}
-      <section id="solutions" className="py-24 bg-slate-900/40 border-y border-slate-800">
+      <section id="solutions" className="py-24 bg-slate-50 border-y border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-16">
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400 px-3 py-1 bg-emerald-500/10 rounded-full border border-emerald-500/20">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700 px-3 py-1 bg-emerald-50 rounded-full border border-emerald-200">
               Engineering Capabilities
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
               Four Critical Industrial Material Functions
             </h2>
-            <p className="text-sm sm:text-base text-slate-400">
+            <p className="text-sm sm:text-base text-slate-600">
               How our adhesive and material intelligence platform replaces outdated mechanical joints and accelerates factory throughput.
             </p>
           </div>
@@ -466,25 +464,25 @@ export default function LandingPage() {
               return (
                 <div 
                   key={idx}
-                  className="p-8 bg-slate-950/80 border border-slate-800 rounded-3xl space-y-5 hover:border-blue-500/40 transition-all shadow-xl flex flex-col justify-between"
+                  className="p-8 bg-white border border-slate-200 rounded-3xl space-y-5 hover:border-blue-400 hover:shadow-xl transition-all shadow-sm flex flex-col justify-between"
                 >
                   <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
                       <IconComp className="w-6 h-6" />
                     </div>
 
-                    <h3 className="text-2xl font-bold text-white tracking-tight">
+                    <h3 className="text-2xl font-bold text-slate-900 tracking-tight">
                       {sol.title}
                     </h3>
 
-                    <p className="text-sm text-slate-400 leading-relaxed">
+                    <p className="text-sm text-slate-600 leading-relaxed">
                       {sol.description}
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
                       {sol.features.map((feat, fidx) => (
-                        <div key={fidx} className="flex items-center gap-2 text-xs text-slate-300 font-medium bg-slate-900/80 p-2 rounded-xl border border-slate-800/80">
-                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <div key={fidx} className="flex items-center gap-2 text-xs text-slate-700 font-medium bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                          <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                           <span>{feat}</span>
                         </div>
                       ))}
@@ -494,7 +492,7 @@ export default function LandingPage() {
                   <div className="pt-2">
                     <Link
                       href="/signup?role=buyer"
-                      className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1.5 transition-colors"
+                      className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1.5 transition-colors"
                     >
                       Explore Technical Equivalencies <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
@@ -511,47 +509,47 @@ export default function LandingPage() {
       {/* ============================================================ */}
       <section id="how-it-works" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 space-y-16">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className="text-xs font-extrabold uppercase tracking-wider text-blue-400 px-3 py-1 bg-blue-500/10 rounded-full border border-blue-500/20">
+          <span className="text-xs font-extrabold uppercase tracking-wider text-blue-600 px-3 py-1 bg-blue-50 rounded-full border border-blue-200">
             Streamlined Sourcing
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
             From Specification to Factory Floor in 3 Steps
           </h2>
-          <p className="text-sm sm:text-base text-slate-400">
+          <p className="text-sm sm:text-base text-slate-600">
             Eliminate weeks of broker emails, unverified distributor markups, and obsolete paper catalogs.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Step 1 */}
-          <div className="p-8 bg-slate-900/70 border border-slate-800 rounded-3xl space-y-4 relative">
-            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white font-black text-base flex items-center justify-center shadow-lg">
+          <div className="p-8 bg-white border border-slate-200 rounded-3xl space-y-4 shadow-sm hover:shadow-md transition-all">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white font-black text-base flex items-center justify-center shadow-md">
               1
             </div>
-            <h3 className="text-xl font-bold text-white">Input Specs or Upload Drawing</h3>
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+            <h3 className="text-xl font-bold text-slate-900">Input Specs or Upload Drawing</h3>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               Specify your substrate, temperature threshold, dielectric breakdown, or simply upload your existing component datasheet.
             </p>
           </div>
 
           {/* Step 2 */}
-          <div className="p-8 bg-slate-900/70 border border-slate-800 rounded-3xl space-y-4 relative">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white font-black text-base flex items-center justify-center shadow-lg">
+          <div className="p-8 bg-white border border-slate-200 rounded-3xl space-y-4 shadow-sm hover:shadow-md transition-all">
+            <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white font-black text-base flex items-center justify-center shadow-md">
               2
             </div>
-            <h3 className="text-xl font-bold text-white">Instant AI Parametric Matching</h3>
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+            <h3 className="text-xl font-bold text-slate-900">Instant AI Parametric Matching</h3>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               Our materials reasoning engine scans 4,950+ verified industrial specifications to discover direct and domestic alternate manufacturers.
             </p>
           </div>
 
           {/* Step 3 */}
-          <div className="p-8 bg-slate-900/70 border border-slate-800 rounded-3xl space-y-4 relative">
-            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white font-black text-base flex items-center justify-center shadow-lg">
+          <div className="p-8 bg-white border border-slate-200 rounded-3xl space-y-4 shadow-sm hover:shadow-md transition-all">
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white font-black text-base flex items-center justify-center shadow-md">
               3
             </div>
-            <h3 className="text-xl font-bold text-white">Direct Factory RFQ & Dispatch</h3>
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+            <h3 className="text-xl font-bold text-slate-900">Direct Factory RFQ & Dispatch</h3>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               Receive verified factory quotes, sample dispatch tracking, and volume consortium discounts with guaranteed lead times.
             </p>
           </div>
@@ -559,12 +557,12 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 8. DUAL CALL TO ACTION BANNER (BUYER & SELLER)              */}
+      {/* 8. DUAL CALL TO ACTION BANNER                                */}
       {/* ============================================================ */}
-      <section className="py-20 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto rounded-3xl bg-gradient-to-r from-blue-950 via-indigo-950 to-slate-900 border border-blue-800/60 p-8 sm:p-14 shadow-2xl relative overflow-hidden text-center space-y-8">
+      <section className="py-16 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 border border-blue-800 p-8 sm:p-14 shadow-2xl relative overflow-hidden text-center space-y-8 text-white">
           <div className="max-w-3xl mx-auto space-y-4">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight">
               Ready to Upgrade Your Industrial Supply Chain?
             </h2>
             <p className="text-slate-300 text-sm sm:text-base font-medium">
@@ -575,7 +573,7 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link 
               href="/signup?role=buyer"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-sm shadow-xl shadow-blue-600/30 transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-blue-500 hover:bg-blue-400 text-white font-extrabold text-sm shadow-xl shadow-blue-600/30 transition-all flex items-center justify-center gap-2"
             >
               <ShoppingCart className="w-4 h-4" />
               Sign up as a Buyer
@@ -583,7 +581,7 @@ export default function LandingPage() {
 
             <Link 
               href="/signup?role=seller"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-emerald-500/40 hover:border-emerald-500 font-extrabold text-sm transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-emerald-500/50 hover:border-emerald-500 font-extrabold text-sm transition-all flex items-center justify-center gap-2"
             >
               <Factory className="w-4 h-4" />
               Sign in as a Seller
@@ -604,11 +602,11 @@ export default function LandingPage() {
               </div>
               <span className="text-xl font-black text-white">Taras<span className="text-blue-500">AI</span></span>
             </div>
-            <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
+            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
               TarasAI is the autonomous industrial materials intelligence and direct procurement platform connecting OEMs, converters, and 1,084+ certified manufacturers.
             </p>
-            <div className="text-slate-500">
-              Direct Contact: <strong className="text-slate-300">TarasAIB2BAI@outlook.com</strong>
+            <div className="text-slate-400">
+              Direct Contact: <strong className="text-slate-200">TarasAIB2BAI@outlook.com</strong>
             </div>
           </div>
 
@@ -617,7 +615,7 @@ export default function LandingPage() {
             <ul className="space-y-2">
               <li><Link href="/signup?role=buyer" className="hover:text-white transition-colors">Automotive & EV Mobility</Link></li>
               <li><Link href="/signup?role=buyer" className="hover:text-white transition-colors">Electronics & Semiconductors</Link></li>
-              <li><Link href="/signup?role=buyer" className="hover:text-white transition-colors">Power & Transformers (IEEMA)</Link></li>
+              <li><Link href="/signup?role=buyer" className="hover:text-white transition-colors">Power & Electrical Systems</Link></li>
               <li><Link href="/signup?role=buyer" className="hover:text-white transition-colors">Appliances & White Goods</Link></li>
               <li><Link href="/signup?role=buyer" className="hover:text-white transition-colors">Building Facades & Glazing</Link></li>
             </ul>
@@ -638,13 +636,13 @@ export default function LandingPage() {
             <ul className="space-y-2">
               <li><Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link></li>
-              <li><span className="text-slate-600">DPDP Act Compliant</span></li>
-              <li><span className="text-slate-600">ISO 9001 / IATF Sourcing</span></li>
+              <li><span className="text-slate-500">DPDP Act Compliant</span></li>
+              <li><span className="text-slate-500">ISO 9001 / IATF Sourcing</span></li>
             </ul>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-600 text-[11px]">
+        <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-[11px]">
           <div>© 2026 TarasAI Materials Intelligence. All Rights Reserved.</div>
           <div>Industrial Adhesive & Materials Sourcing Architecture</div>
         </div>
