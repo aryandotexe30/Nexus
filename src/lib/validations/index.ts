@@ -6,13 +6,19 @@ export const registerSchema = z.object({
   companyName: z.string().min(2),
   gstNumber: z.string().min(10, "Invalid GST / Tax ID"),
   cinNumber: z.string().optional(),
-  personalEmail: z.string().email().optional(),
+  personalEmail: z.string().email().optional().or(z.literal("")),
   companyPhone: z.string().min(8, "Invalid phone number"),
   personalPhone: z.string().optional(),
   industry: z.string().optional(),
   udyamNumber: z.string().optional(),
   accountType: z.enum(["BUYER", "SELLER"]).optional(),
   products: z.array(z.any()).optional(),
+  sourcingCategories: z.array(z.string()).optional(),
+  annualSpend: z.string().optional(),
+  procurementNeeds: z.array(z.string()).optional(),
+  deliveryLocations: z.string().optional(),
+  designation: z.string().optional(),
+  buyerRequirements: z.string().optional(),
 });
 
 export const enquirySchema = z.object({

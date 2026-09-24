@@ -18,7 +18,8 @@ export async function POST(req: Request) {
     const { 
       email, password, companyName, gstNumber, industry, 
       udyamNumber, cinNumber, personalEmail, companyPhone, personalPhone,
-      accountType, products
+      accountType, products, sourcingCategories, annualSpend, procurementNeeds,
+      deliveryLocations, designation, buyerRequirements
     } = validation.data;
 
     // Extract domain from email (e.g., aryan@tata.com -> tata.com)
@@ -36,6 +37,18 @@ export async function POST(req: Request) {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Build structured profile
+    const profileData = {
+      accountType: accountType || 'BUYER',
+      designation: designation || null,
+      sourcingCategories: sourcingCategories || [],
+      annualSpend: annualSpend || null,
+      procurementNeeds: procurementNeeds || [],
+      deliveryLocations: deliveryLocations || null,
+      buyerRequirements: buyerRequirements || null,
+      registeredAt: new Date().toISOString()
+    };
+
     // Create the new user
     const newUser = await prisma.user.create({
       data: {
@@ -49,6 +62,7 @@ export async function POST(req: Request) {
         companyPhone,
         personalPhone: personalPhone || null,
         industry: industry || (accountType === 'SELLER' ? 'Tape & Adhesive Manufacturing' : 'Industrial Manufacturing'),
+        companyProfile: profileData,
         domain,
         isVerified: false,
         role: "USER", // Default role
