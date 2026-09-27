@@ -45,8 +45,13 @@ import {
   Download, 
   FileText, 
   ExternalLink, 
-  Phone 
+  Phone,
+  Scale
 } from "lucide-react";
+import MaterialsCopilotModal from "@/components/MaterialsCopilotModal";
+import TechnicalDatasheetModal from "@/components/TechnicalDatasheetModal";
+import { generateTarasTDS, TarasTDSData } from "@/lib/tdsGenerator";
+import { TarasAlternateMatch, TARAS_ALTERNATE_DATABASE } from "@/lib/alternateMatcherEngine";
 
 // ============================================================================
 // BROCHURE HERO CAROUSEL SLIDES (MOVING GALLERY)
@@ -62,6 +67,7 @@ const HERO_BROCHURE_SLIDES = [
     bgImage: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=85",
     cardBg: "bg-[#0B4FDF]",
     btnText: "EXPLORE ELECTRONICS SPECS",
+    sku: "TARAS-PI-5413",
     link: "/signup?role=buyer&search=Electronics"
   },
   {
@@ -74,6 +80,7 @@ const HERO_BROCHURE_SLIDES = [
     bgImage: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1920&q=85",
     cardBg: "bg-[#0B4FDF]",
     btnText: "EXPLORE E-MOBILITY SPECS",
+    sku: "TARAS-VAF-1000",
     link: "/signup?role=buyer&search=Automotive"
   },
   {
@@ -86,6 +93,7 @@ const HERO_BROCHURE_SLIDES = [
     bgImage: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1920&q=85",
     cardBg: "bg-[#0B4FDF]",
     btnText: "EXPLORE POWER & TRANSFORMERS",
+    sku: "TARAS-MICA-800",
     link: "/signup?role=buyer&search=Transformer"
   },
   {
@@ -98,6 +106,7 @@ const HERO_BROCHURE_SLIDES = [
     bgImage: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=85",
     cardBg: "bg-[#0B4FDF]",
     btnText: "EXPLORE APPLIANCE SPECS",
+    sku: "TARAS-DS-4965",
     link: "/signup?role=buyer&search=Appliances"
   }
 ];
@@ -209,6 +218,15 @@ export default function LandingPage() {
   // Search Input State
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Phase 1: Interactive Drop-In Alternate Matcher State
+  const [alternateInput, setAlternateInput] = useState("");
+  const [activeAlternateMatch, setActiveAlternateMatch] = useState<TarasAlternateMatch>(TARAS_ALTERNATE_DATABASE[0]);
+  const [isSearchingMatch, setIsSearchingMatch] = useState(false);
+
+  // Phase 3: Technical Datasheet (TDS) Modal State
+  const [isTdsModalOpen, setIsTdsModalOpen] = useState(false);
+  const [selectedTdsData, setSelectedTdsData] = useState<TarasTDSData | null>(null);
+
   // Autoplay Hero Carousel
   useEffect(() => {
     if (!isPlaying) return;
@@ -219,6 +237,37 @@ export default function LandingPage() {
   }, [isPlaying]);
 
   const slide = HERO_BROCHURE_SLIDES[currentSlide];
+
+  // Handler to open Official TDS Sheet
+  const handleOpenTds = (skuOrName: string) => {
+    const tds = generateTarasTDS(skuOrName);
+    setSelectedTdsData(tds);
+    setIsTdsModalOpen(true);
+  };
+
+  // Handler for Phase 1 Competitor Part Number Matcher
+  const handleMatchSearch = async (termToSearch?: string) => {
+    const term = (termToSearch || alternateInput).trim();
+    if (!term) return;
+
+    setIsSearchingMatch(true);
+    try {
+      const res = await fetch("/api/products/match-alternate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: term })
+      });
+
+      const data = await res.json();
+      if (data.topMatch) {
+        setActiveAlternateMatch(data.topMatch);
+      }
+    } catch (err) {
+      console.error("Failed to match alternate:", err);
+    } finally {
+      setIsSearchingMatch(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-[#0B4FDF] selection:text-white antialiased overflow-x-hidden w-full">
@@ -275,6 +324,10 @@ export default function LandingPage() {
             >
               Applications
             </button>
+            <a href="#alternate-finder" className="hover:text-[#0B4FDF] transition-colors py-2 flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5 text-[#FF5500]" />
+              <span>Import Alternate Finder</span>
+            </a>
             <Link href="/products" className="hover:text-[#0B4FDF] transition-colors py-2">
               Products Master
             </Link>
@@ -332,7 +385,7 @@ export default function LandingPage() {
       </header>
 
       {/* ============================================================ */}
-      {/* 3. SLIDE-OUT MEGA MENU DRAWER (FULLY TOUCH-SCROLLABLE)       */}
+      {/* 3. SLIDE-OUT MEGA MENU DRAWER                                */}
       {/* ============================================================ */}
       <AnimatePresence>
         {isMegaMenuOpen && (
@@ -522,24 +575,40 @@ export default function LandingPage() {
               {slide.description}
             </p>
 
-            {/* Brochure Badge */}
-            <div className="flex items-center gap-2.5 p-2.5 sm:p-3 bg-white/10 rounded border border-white/20 text-xs">
-              <FileText className="w-4 h-4 text-[#FF9E00] shrink-0" />
-              <div className="truncate">
-                <span className="font-bold text-white text-xs block truncate">{slide.brochureTitle}</span>
-                <span className="text-blue-200 text-[10px] sm:text-[11px] block">{slide.brochurePages}</span>
+            {/* Brochure Badge with 1-Click TDS Action */}
+            <div 
+              onClick={() => handleOpenTds(slide.sku)}
+              className="flex items-center justify-between p-2.5 sm:p-3 bg-white/10 hover:bg-white/20 rounded border border-white/20 text-xs cursor-pointer transition-colors group"
+            >
+              <div className="flex items-center gap-2.5 truncate">
+                <FileText className="w-4 h-4 text-[#FF9E00] shrink-0" />
+                <div className="truncate">
+                  <span className="font-bold text-white text-xs block truncate">{slide.brochureTitle}</span>
+                  <span className="text-blue-200 text-[10px] sm:text-[11px] block">{slide.brochurePages}</span>
+                </div>
               </div>
+              <span className="text-[10px] font-bold text-cyan-200 underline group-hover:text-white shrink-0 ml-2">
+                View TDS
+              </span>
             </div>
 
             {/* Read More / Action Button (Radiant Blaze Orange Button) */}
-            <div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
               <Link
                 href={slide.link}
-                className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-[#FF5500] hover:bg-[#E04800] text-white text-xs font-black uppercase tracking-wider transition-all shadow-md active:scale-95 w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-[#FF5500] hover:bg-[#E04800] text-white text-xs font-black uppercase tracking-wider transition-all shadow-md active:scale-95"
               >
                 <span>{slide.btnText}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
+              
+              <button
+                type="button"
+                onClick={() => handleOpenTds(slide.sku)}
+                className="px-4 py-3 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded transition-colors text-center"
+              >
+                Download TDS
+              </button>
             </div>
           </motion.div>
 
@@ -596,7 +665,159 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 5. "INDUSTRIAL SOLUTIONS" 3x2 PHOTO TILES GRID               */}
+      {/* 5. PHASE 1: AI DROP-IN IMPORT ALTERNATE FINDER               */}
+      {/* ============================================================ */}
+      <section id="alternate-finder" className="py-12 bg-slate-50 border-b border-slate-200">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-black">
+                <Scale className="w-3.5 h-3.5" />
+                <span>Phase 1: Autonomous Drop-in Alternate Matcher</span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                Find TarasAI Private-Label Equivalents to Costly Imports
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600">
+                Enter any competitor part number (3M, Nitto, Tesa, Kapton, Bergquist, Loctite) to see the exact domestic factory match with 25–40% cost reduction.
+              </p>
+            </div>
+
+            {/* Quick Sourcing Query Buttons */}
+            <div className="flex flex-wrap items-center gap-1.5 self-start md:self-auto">
+              {["3M 4910", "Kapton 5413", "Bergquist TIM", "Tesa 4965", "Nomex 410"].map((btn, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => { setAlternateInput(btn); handleMatchSearch(btn); }}
+                  className="px-3 py-1.5 bg-white hover:bg-blue-50 border border-slate-300 hover:border-[#0B4FDF] text-slate-700 text-xs font-bold rounded-lg transition-all shadow-2xs"
+                >
+                  {btn}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Search Box */}
+          <div className="bg-white p-2 sm:p-2.5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center gap-2">
+            <div className="relative flex-1 w-full">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={alternateInput}
+                onChange={(e) => setAlternateInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") handleMatchSearch(); }}
+                placeholder="Enter competitor part number e.g. 3M 4910, Kapton 5413, Bergquist 5000, Loctite 243..."
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs sm:text-sm rounded-xl py-2.5 pl-10 pr-3 focus:outline-none focus:bg-white focus:border-[#0B4FDF]"
+              />
+            </div>
+            <button
+              type="button"
+              disabled={isSearchingMatch}
+              onClick={() => handleMatchSearch()}
+              className="w-full sm:w-auto px-6 py-2.5 bg-[#0B4FDF] hover:bg-blue-700 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-xs flex items-center justify-center gap-2 shrink-0"
+            >
+              {isSearchingMatch ? (
+                <>
+                  <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Analyzing Specs...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 text-[#FF9E00]" />
+                  <span>Match TarasAI Alternate</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Active Alternate Comparison Card */}
+          {activeAlternateMatch && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white border-2 border-[#0B4FDF]/30 p-5 sm:p-7 rounded-2xl shadow-md space-y-4"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-1 bg-[#0B4FDF] text-white text-xs font-black rounded font-mono">
+                    {activeAlternateMatch.tarasSku}
+                  </span>
+                  <span className="text-xs font-bold text-slate-500 uppercase">
+                    Matches: {activeAlternateMatch.competitorPartNumber}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-black rounded-full">
+                    {activeAlternateMatch.costSavingsPercent}% Direct Cost Saving
+                  </span>
+                  <span className="px-3 py-1 bg-blue-50 text-[#0B4FDF] text-xs font-bold rounded-full border border-blue-200">
+                    {activeAlternateMatch.compatibilityScore}% Compatibility
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div className="lg:col-span-2 space-y-2">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900">
+                    {activeAlternateMatch.tarasName}
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    {activeAlternateMatch.technicalSummary}
+                  </p>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 text-xs">
+                    <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                      <div className="text-[10px] text-slate-400 uppercase font-bold">Caliper / Thickness</div>
+                      <div className="font-bold text-slate-900">{activeAlternateMatch.totalThickness}</div>
+                    </div>
+                    <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                      <div className="text-[10px] text-slate-400 uppercase font-bold">Operating Temp</div>
+                      <div className="font-bold text-slate-900">{activeAlternateMatch.operatingTemp}</div>
+                    </div>
+                    <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
+                      <div className="text-[10px] text-slate-400 uppercase font-bold">Peel Adhesion</div>
+                      <div className="font-bold text-slate-900">{activeAlternateMatch.peelAdhesion}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Action & Pricing */}
+                <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col justify-between space-y-3">
+                  <div className="space-y-1">
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">TarasAI Volume Rate</div>
+                    <div className="text-lg font-black text-emerald-600 font-mono">{activeAlternateMatch.estimatedTarasPrice}</div>
+                    <div className="text-[11px] text-slate-400 line-through">Import Price: {activeAlternateMatch.estimatedCompetitorPrice}</div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenTds(activeAlternateMatch.tarasSku)}
+                      className="w-full py-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-[#0B4FDF]" />
+                      <span>View Official TDS Document</span>
+                    </button>
+
+                    <Link
+                      href={`/signup?role=buyer&search=${encodeURIComponent(activeAlternateMatch.tarasSku)}`}
+                      className="w-full py-2 bg-[#FF5500] hover:bg-[#E04800] text-white text-xs font-black uppercase tracking-wider rounded-lg transition-colors text-center block shadow-xs"
+                    >
+                      Request 48-Hr Physical Sample
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 6. "INDUSTRIAL SOLUTIONS" 3x2 PHOTO TILES GRID               */}
       {/* ============================================================ */}
       <section className="py-12 sm:py-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-6 sm:mb-8">
@@ -633,7 +854,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 6. "GAME CHANGING APPLICATIONS" SPLIT SECTION               */}
+      {/* 7. "GAME CHANGING APPLICATIONS" SPLIT SECTION               */}
       {/* ============================================================ */}
       <section className="py-12 sm:py-16 bg-slate-50 border-y border-slate-200">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-10">
@@ -675,7 +896,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 7. "OUR LARGE INDUSTRIAL ASSORTMENT" TABS                    */}
+      {/* 8. "OUR LARGE INDUSTRIAL ASSORTMENT" TABS                    */}
       {/* ============================================================ */}
       <section id="solutions" className="py-12 sm:py-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-10">
         <div className="space-y-2">
@@ -741,7 +962,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 8. DIRECT SOURCING & RFQ BROKER CALLOUT                      */}
+      {/* 9. DIRECT SOURCING & RFQ BROKER CALLOUT                      */}
       {/* ============================================================ */}
       <section className="py-12 sm:py-16 bg-slate-900 text-white px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-center">
@@ -753,7 +974,7 @@ export default function LandingPage() {
               1,084+ Verified Manufacturing Plants at Your Fingertips
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Eliminate middleman margins. Compare dielectric strength, temperature thresholds, and adhesive chemistries directly from certified manufacturers.
+              Eliminate middleman margins. Compare dielectric strength, temperature thresholds, and adhesive chemistries directly from certified manufacturers under TarasAI private-label quality assurance.
             </p>
           </div>
 
@@ -775,7 +996,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* 9. ENTERPRISE FOOTER                                         */}
+      {/* 10. ENTERPRISE FOOTER                                        */}
       {/* ============================================================ */}
       <footer className="border-t border-slate-200 bg-white py-10 sm:py-14 px-4 sm:px-6 lg:px-8 text-slate-600 text-xs">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 sm:gap-10">
@@ -784,7 +1005,7 @@ export default function LandingPage() {
               Taras<span className="text-[#FF9E00]">AI</span>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
-              TarasAI is the autonomous industrial materials intelligence and direct procurement platform connecting OEMs, converters, and certified manufacturers.
+              TarasAI is the autonomous industrial materials intelligence and direct procurement platform connecting OEMs, converters, and certified manufacturers across India.
             </p>
             <div className="text-slate-600">
               Corporate Contact: <strong className="text-slate-900">TarasAIB2BAI@outlook.com</strong>
@@ -828,6 +1049,17 @@ export default function LandingPage() {
           <div>Industrial Adhesive & Materials Sourcing Architecture</div>
         </div>
       </footer>
+
+      {/* ============================================================ */}
+      {/* 11. FLOATING AI COPILOT & TECHNICAL DATASHEET MODALS         */}
+      {/* ============================================================ */}
+      <MaterialsCopilotModal onOpenTds={handleOpenTds} />
+
+      <TechnicalDatasheetModal
+        isOpen={isTdsModalOpen}
+        onClose={() => setIsTdsModalOpen(false)}
+        tdsData={selectedTdsData}
+      />
 
     </div>
   );
