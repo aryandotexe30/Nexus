@@ -32,12 +32,17 @@ export const authOptions = {
           throw new Error("Invalid password");
         }
         
+        const profile = (user.companyProfile as any) || {};
+        const accountType = profile.accountType || (user.role === 'SELLER' ? 'SELLER' : 'BUYER');
+
         return {
           id: user.id,
           email: user.email,
           role: user.role,
+          accountType: accountType,
           domain: user.domain,
           companyName: user.companyName,
+          industry: user.industry,
           plan: user.plan,
           isVerified: user.isVerified
         };
@@ -49,8 +54,10 @@ export const authOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.accountType = user.accountType;
         token.domain = user.domain;
         token.companyName = user.companyName;
+        token.industry = user.industry;
         token.plan = user.plan;
         token.isVerified = user.isVerified;
       }
@@ -63,8 +70,10 @@ export const authOptions = {
       if (session.user) {
         (session.user as any).id = token.id;
         (session.user as any).role = token.role;
+        (session.user as any).accountType = token.accountType || 'BUYER';
         (session.user as any).domain = token.domain;
         (session.user as any).companyName = token.companyName;
+        (session.user as any).industry = token.industry;
         (session.user as any).plan = token.plan;
         (session.user as any).isVerified = token.isVerified;
       }

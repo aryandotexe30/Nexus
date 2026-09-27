@@ -101,11 +101,43 @@ export default function FinderPage() {
   const userIndustry = user?.industry || "Industrial Manufacturing";
 
   // Account Verification & Live Credits State
+  const [accountType, setAccountType] = useState<string>(user?.accountType || "BUYER");
   const [isKycVerified, setIsKycVerified] = useState<boolean>(user?.isVerified ?? true);
   const [userCredits, setUserCredits] = useState<number | string>(user?.credits ?? 3);
   const [userPlan, setUserPlan] = useState<string>(user?.plan || "FREE");
   const [userRole, setUserRole] = useState<string>(user?.role || "USER");
   const [isCheckingAccount, setIsCheckingAccount] = useState(true);
+
+  const isSellerAccount = accountType === 'SELLER' || user?.accountType === 'SELLER';
+
+  const getGreetingMessage = (type: string): ChatMessage => {
+    if (type === 'SELLER') {
+      return {
+        role: 'ai',
+        text: `👋 **Welcome, ${companyName}!**\n\nI am your **Industrial Demand Radar & Supply-Side Copilot**, connected to Tier-1 Indian enterprise buyer demand (Tata, Havells, Schneider, Dixon, Exide, Amber).\n\nTell me what materials, technical tapes, or raw materials your factory produces, and I will reveal target OEM buyers who consume them, current market pricing benchmarks, and how TarasAI qualifies and private-labels your production capacity.`,
+        options: [
+          "Polyimide / Kapton Tape (25µm film)",
+          "6 W/m-K Thermal Interface Gap Pads",
+          "Structural Acrylic Foam Tape",
+          "CRGO Electrical Steel 0.27mm",
+          "Mica High-Voltage Insulation",
+          "Custom Die-Cut Gaskets & Tapes"
+        ]
+      };
+    }
+    return {
+      role: 'ai',
+      text: `👋 **Welcome, ${companyName}!**\n\nI am your **AI Materials & Tape Sourcing Copilot**, trained on our **Master Database of 1,800+ verified industrial specifications** across qualified domestic and global manufacturing standards.\n\nBased on your manufacturing profile (**${userIndustry}**), tell me what application, region/origin, or technical parameters you are sourcing (e.g. *Class H high-temp insulation, structural acrylic foam, double-sided PET, temperature rating, substrate material*).`,
+      options: [
+        "Class H High Temp Insulation (260°C)",
+        "Double-Sided Structural Acrylic Foam",
+        "High-Temp Polyimide SMT Masking",
+        "Aluminium Foil HVAC & Shielding",
+        "Domestic High-Temp Electrical Insulation",
+        "Factory-Direct Acrylic Foam, Aerogel & Polyimide"
+      ]
+    };
+  };
 
   const fetchAccountStatus = async () => {
     try {
@@ -114,6 +146,7 @@ export default function FinderPage() {
       if (data.success) {
         setIsKycVerified(data.isVerified);
         setUserCredits(data.credits);
+        if (data.accountType) setAccountType(data.accountType);
         if (data.plan) setUserPlan(data.plan);
         if (data.role) setUserRole(data.role);
       }
@@ -127,6 +160,17 @@ export default function FinderPage() {
   useEffect(() => {
     fetchAccountStatus();
   }, [session]);
+
+  // AI Copilot Chat State
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    getGreetingMessage(user?.accountType || "BUYER")
+  ]);
+
+  useEffect(() => {
+    if (messages.length === 1 && messages[0].role === 'ai') {
+      setMessages([getGreetingMessage(accountType)]);
+    }
+  }, [accountType]);
 
   const isAdmin = userRole === 'ADMIN' || user?.role === 'ADMIN';
   const isKycLocked = !isKycVerified && !isAdmin;
@@ -166,21 +210,6 @@ export default function FinderPage() {
   const [enquirySuccess, setEnquirySuccess] = useState(false);
   const [rfqSuccessRef, setRfqSuccessRef] = useState("");
 
-  // AI Copilot Chat State
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      role: 'ai',
-      text: `👋 **Welcome, ${companyName}!**\n\nI am your **AI Materials & Tape Sourcing Copilot**, trained on our **Master Database of 1,800+ verified industrial specifications** across qualified domestic and global manufacturing standards.\n\nBased on your manufacturing profile (**${userIndustry}**), tell me what application, region/origin, or technical parameters you are sourcing (e.g. *Class H high-temp insulation, structural acrylic foam, double-sided PET, temperature rating, substrate material*).`,
-      options: [
-        "Class H High Temp Insulation (260°C)",
-        "Double-Sided Structural Acrylic Foam",
-        "High-Temp Polyimide SMT Masking",
-        "Aluminium Foil HVAC & Shielding",
-        "Domestic High-Temp Electrical Insulation",
-        "Factory-Direct Acrylic Foam, Aerogel & Polyimide"
-      ]
-    }
-  ]);
   const [chatInput, setChatInput] = useState("");
   const [isAiLoading, setIsAiLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -273,6 +302,7 @@ export default function FinderPage() {
         body: JSON.stringify({ 
           messages: newMessages,
           companyContext: {
+            accountType: accountType,
             companyName,
             industry: userIndustry
           }
@@ -483,19 +513,7 @@ export default function FinderPage() {
 
             <button
               onClick={() => {
-                setMessages([
-                  {
-                    role: 'ai',
-                    text: `👋 **Welcome back, ${companyName}!**\n\nWhat industrial tape or material specification are you looking for today?`,
-                    options: [
-                      "Class H High Temp Insulation (260°C)",
-                      "Double-Sided Structural Acrylic Foam",
-                      "High-Temp Polyimide SMT Masking",
-                      "Aluminium Foil HVAC & Shielding",
-                      "Automotive Wire Harnessing"
-                    ]
-                  }
-                ]);
+                setMessages([getGreetingMessage(accountType)]);
               }}
               className="text-[11px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center gap-1 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Reset Chat"

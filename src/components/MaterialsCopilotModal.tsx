@@ -12,19 +12,20 @@ import {
   ShieldCheck, 
   FileText, 
   CheckCircle2, 
-  Scale, 
-  Layers, 
-  Cpu, 
-  Zap, 
-  HelpCircle,
-  MessageSquare
+  Building2,
+  TrendingUp,
+  Award,
+  Layers
 } from "lucide-react";
 import { TarasAlternateMatch } from "@/lib/alternateMatcherEngine";
+import { BuyerTargetMatch } from "@/lib/sellerDemandEngine";
+import { useSession } from "next-auth/react";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
   matchedAlternates?: TarasAlternateMatch[];
+  matchedSellerDemand?: BuyerTargetMatch[];
 }
 
 interface MaterialsCopilotModalProps {
@@ -32,15 +33,34 @@ interface MaterialsCopilotModalProps {
 }
 
 export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotModalProps) {
+  const { data: session } = useSession();
+  const sessionUser = session?.user as any;
+  const isSeller = sessionUser?.accountType === 'SELLER';
+
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const getInitialGreeting = () => {
+    if (isSeller) {
+      return `Hello! I am the **TarasAI Industrial Demand Radar & Supply-Side Copilot** for manufacturers.\n\nTell me what materials, tapes, or die-cuts your factory produces (e.g., *Polyimide, 6 W/m-K Thermal Gap Pads, Acrylic Foam Tape, CRGO Steel, Mica*), and I will identify Tier-1 Indian OEMs (Tata, Havells, Schneider, Dixon, Exide) that actively procure them, the benchmark market prices they pay, and how to onboard your capacity under TarasAI private-label off-take contracts.`;
+    }
+    return `Hello! I am the **TarasAI Materials Engineering Copilot**.\n\nI can help you find direct domestic private-label alternatives to imported products (3M, Nitto, Kapton, Bergquist, Loctite), calculate thermal/dielectric requirements, or configure custom die-cut parts with 25–40% cost savings.\n\nWhat material, part number, or engineering challenge are you working on?`;
+  };
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hello! I am the **TarasAI Materials Engineering Copilot**.\n\nI can help you find direct domestic private-label alternatives to imported products (3M, Nitto, Kapton, Bergquist, Loctite), calculate thermal/dielectric requirements, or configure custom die-cut parts with 25–40% cost savings.\n\nWhat material or application challenge are you working on?"
+      content: getInitialGreeting()
     }
   ]);
+
+  // Sync greeting when session loads
+  useEffect(() => {
+    if (messages.length === 1 && messages[0].role === 'assistant') {
+      setMessages([{ role: "assistant", content: getInitialGreeting() }]);
+    }
+  }, [isSeller]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -64,7 +84,12 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: newMessages
+          messages: newMessages,
+          userContext: {
+            accountType: sessionUser?.accountType || (isSeller ? 'SELLER' : 'BUYER'),
+            companyName: sessionUser?.companyName,
+            industry: sessionUser?.industry
+          }
         })
       });
 
@@ -77,7 +102,7 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
           ...newMessages,
           {
             role: "assistant",
-            content: data.fallbackReply || "I have received your specification. You can search directly in our catalog or launch an RFQ for our manufacturing consortium."
+            content: data.fallbackReply || "I have received your inquiry. You can search directly in our catalog or launch an RFQ in the portal."
           }
         ]);
       }
@@ -86,7 +111,7 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
         ...newMessages,
         {
           role: "assistant",
-          content: "I apologize, but our Materials Science Engine is experiencing high load. You can directly search for our private-label equivalents in the search bar or request an immediate quote via the Buyer RFQ portal."
+          content: "I apologize, but our Materials Intelligence Engine is currently busy. You can directly search for private-label equivalents or view demand opportunities in your dashboard."
         }
       ]);
     } finally {
@@ -94,7 +119,12 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
     }
   };
 
-  const samplePrompts = [
+  const samplePrompts = isSeller ? [
+    "I manufacture 25µm Polyimide (Kapton) Tape with silicone adhesive",
+    "We produce 6 W/m-K thermal gap pads for electronics and EV",
+    "I make structural Acrylic Foam tape for automotive",
+    "We slit 0.27mm CRGO electrical steel sheets"
+  ] : [
     "Find Indian alternate for 3M 4910 VHB tape",
     "Need 6 W/m-K thermal gap pad for EV battery module",
     "Looking for 260°C polyimide wave solder masking tape",
@@ -110,12 +140,12 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(!isOpen)}
           className="px-4 py-3 bg-[#0B4FDF] hover:bg-blue-700 text-white rounded-full shadow-2xl flex items-center gap-2.5 border-2 border-white/20 transition-all font-bold text-xs"
-          aria-label="Open Materials Science Copilot"
+          aria-label="Open AI Copilot"
         >
           <div className="relative">
             <Sparkles className="w-4 h-4 text-[#FF9E00] animate-pulse" />
           </div>
-          <span>Materials AI Copilot</span>
+          <span>{isSeller ? "MSME Demand Radar AI" : "Materials AI Copilot"}</span>
           <span className="w-2 h-2 rounded-full bg-emerald-400" />
         </motion.button>
       </div>
@@ -127,7 +157,7 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
-            className="fixed bottom-20 right-4 sm:right-6 z-50 w-[94vw] sm:w-[480px] max-h-[85vh] h-[640px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden font-sans"
+            className="fixed bottom-20 right-4 sm:right-6 z-50 w-[94vw] sm:w-[500px] max-h-[85vh] h-[660px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden font-sans"
           >
             {/* Copilot Header */}
             <div className="p-4 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800 shrink-0">
@@ -137,10 +167,16 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
                 </div>
                 <div>
                   <div className="text-xs font-black flex items-center gap-1.5">
-                    <span>TarasAI Materials Copilot</span>
-                    <span className="px-1.5 py-0.5 bg-[#FF5500] text-white text-[9px] rounded font-mono">AI v2.5</span>
+                    <span>{isSeller ? "TarasAI MSME Demand Radar" : "TarasAI Materials Copilot"}</span>
+                    <span className="px-1.5 py-0.5 bg-[#FF5500] text-white text-[9px] rounded font-mono">
+                      {isSeller ? "SELLER AI" : "BUYER AI"}
+                    </span>
                   </div>
-                  <div className="text-[10px] text-slate-400">Autonomous Sourcing & Engineering Rationale</div>
+                  <div className="text-[10px] text-slate-400">
+                    {isSeller 
+                      ? "Enterprise OEM Demand & Benchmark Price Discovery" 
+                      : "Autonomous Sourcing & Engineering Rationale"}
+                  </div>
                 </div>
               </div>
 
@@ -163,7 +199,7 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
                     </div>
                   )}
 
-                  <div className={`p-3.5 rounded-2xl text-xs leading-relaxed max-w-[85%] ${
+                  <div className={`p-3.5 rounded-2xl text-xs leading-relaxed max-w-[88%] ${
                     msg.role === "user" 
                       ? "bg-[#0B4FDF] text-white rounded-br-none shadow-sm" 
                       : "bg-white border border-slate-200 text-slate-800 rounded-bl-none shadow-xs space-y-3"
@@ -171,7 +207,7 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
                     {/* Message Text */}
                     <div className="whitespace-pre-wrap">{msg.content}</div>
 
-                    {/* Matched Alternates Structured Cards */}
+                    {/* Matched Alternates Structured Cards (Buyer Persona) */}
                     {msg.matchedAlternates && msg.matchedAlternates.length > 0 && (
                       <div className="pt-2 border-t border-slate-100 space-y-2">
                         <div className="text-[10px] font-black uppercase text-[#0B4FDF] flex items-center gap-1">
@@ -218,6 +254,72 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
                         ))}
                       </div>
                     )}
+
+                    {/* Matched Seller Demand Cards (Seller / MSME Persona) */}
+                    {msg.matchedSellerDemand && msg.matchedSellerDemand.length > 0 && (
+                      <div className="pt-2 border-t border-slate-100 space-y-3">
+                        {msg.matchedSellerDemand.map((dem, dIdx) => (
+                          <div key={dIdx} className="p-3.5 bg-gradient-to-br from-amber-50/80 to-orange-50/60 border border-amber-200/80 rounded-xl space-y-2.5 text-slate-900">
+                            <div className="flex items-center justify-between">
+                              <span className="font-black text-[#FF5500] text-[11px] flex items-center gap-1">
+                                <Building2 className="w-3.5 h-3.5" />
+                                Verified Target OEM Buyers ({dem.targetEnterpriseBuyers.length})
+                              </span>
+                              <span className="px-2 py-0.5 bg-amber-100 text-amber-900 text-[10px] font-black rounded">
+                                {dem.tarasPrivateLabelSku}
+                              </span>
+                            </div>
+
+                            <div className="space-y-1.5">
+                              {dem.targetEnterpriseBuyers.map((b, bIdx) => (
+                                <div key={bIdx} className="p-2 bg-white rounded-lg border border-amber-100 text-[11px] space-y-0.5">
+                                  <div className="flex items-center justify-between font-bold text-slate-900">
+                                    <span>{b.name}</span>
+                                    <span className="text-emerald-700 text-[10px] font-mono">{b.estimatedQuarterlyDemand}</span>
+                                  </div>
+                                  <div className="text-[10px] text-slate-600">{b.applicationUse}</div>
+                                  <div className="text-[9px] text-slate-400">Plants: {b.keyLocations}</div>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Pricing Benchmarks */}
+                            <div className="p-2.5 bg-white/90 rounded-lg border border-amber-200/60 space-y-1 text-[10px]">
+                              <div className="font-black text-slate-800 flex items-center gap-1 text-[10px]">
+                                <TrendingUp className="w-3 h-3 text-[#FF5500]" />
+                                Market Pricing Benchmark:
+                              </div>
+                              <div className="text-slate-600">• <strong className="text-slate-800">Current OEM MNC Cost:</strong> {dem.pricingBenchmark.mncBenchmarkPrice}</div>
+                              <div className="text-emerald-700">• <strong>TarasAI MSME Purchase Buy-In:</strong> {dem.pricingBenchmark.tarasMsmeBuyInRate} ({dem.pricingBenchmark.estimatedMsmeMargin})</div>
+                            </div>
+
+                            {/* Required Certifications */}
+                            <div className="flex flex-wrap gap-1 text-[9px] text-slate-600 font-mono">
+                              <span className="font-bold text-slate-700">Standards:</span>
+                              {dem.requiredCertifications.map((c, cIdx) => (
+                                <span key={cIdx} className="px-1.5 py-0.5 bg-slate-100 rounded border border-slate-200">
+                                  {c}
+                                </span>
+                              ))}
+                            </div>
+
+                            {/* 1-Click Action */}
+                            <div className="pt-1">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  window.location.href = `/signup?role=seller&product=${encodeURIComponent(dem.materialCategory)}`;
+                                }}
+                                className="w-full py-2 bg-[#FF5500] hover:bg-[#E04800] text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-colors"
+                              >
+                                <ShieldCheck className="w-3.5 h-3.5" />
+                                <span>Enroll Capacity & Submit Factory Samples</span>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {msg.role === "user" && (
@@ -231,7 +333,7 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
               {loading && (
                 <div className="flex items-center gap-2 text-xs text-slate-500 italic p-2 bg-white rounded-xl border border-slate-200 w-fit">
                   <span className="w-3.5 h-3.5 border-2 border-[#0B4FDF] border-t-transparent rounded-full animate-spin" />
-                  <span>Materials Copilot is analyzing specs & cross-referencing catalog...</span>
+                  <span>{isSeller ? "Demand Radar is scanning Indian OEM supply chains..." : "Materials Copilot is analyzing specs & cross-referencing catalog..."}</span>
                 </div>
               )}
 
@@ -264,7 +366,11 @@ export default function MaterialsCopilotModal({ onOpenTds }: MaterialsCopilotMod
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask a technical question or enter part number..."
+                  placeholder={
+                    isSeller 
+                      ? "Tell me what materials your factory manufactures..." 
+                      : "Ask an engineering question or enter a part number..."
+                  }
                   className="flex-1 bg-slate-50 border border-slate-300 text-slate-900 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:bg-white focus:border-[#0B4FDF] transition-all font-medium"
                 />
                 <button

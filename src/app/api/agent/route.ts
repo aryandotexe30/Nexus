@@ -19,6 +19,7 @@ export async function GET(req: Request) {
         id: true,
         companyName: true,
         industry: true,
+        companyProfile: true,
         isVerified: true,
         role: true,
         credits: true,
@@ -30,6 +31,8 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
+    const profile = (user.companyProfile as any) || {};
+    const accountType = profile.accountType || (user.role === 'SELLER' ? 'SELLER' : 'BUYER');
     const isAdmin = user.role === 'ADMIN';
     const isVerified = user.isVerified || isAdmin;
     const credits = isAdmin || user.plan === 'ENTERPRISE' ? 'Unlimited' : user.credits;
@@ -41,6 +44,7 @@ export async function GET(req: Request) {
       rawCredits: user.credits,
       plan: user.plan,
       role: user.role,
+      accountType: accountType,
       companyName: user.companyName,
       industry: user.industry
     });
@@ -70,6 +74,7 @@ export async function POST(req: Request) {
         industry: true, 
         domain: true, 
         gstNumber: true, 
+        companyProfile: true,
         isVerified: true, 
         role: true, 
         credits: true, 
@@ -81,13 +86,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 401 });
     }
 
+    const profile = (user.companyProfile as any) || {};
+    const accountType = companyContext?.accountType || profile.accountType || (user.role === 'SELLER' ? 'SELLER' : 'BUYER');
     const isAdmin = user.role === 'ADMIN';
 
     // 1. Enforce KYC Verification: Account must be verified or ADMIN
     if (!user.isVerified && !isAdmin) {
       return NextResponse.json({ 
         error: 'KYC_UNVERIFIED', 
-        message: 'Your account KYC is currently unverified. Please complete company KYC verification in Settings to unlock the AI Materials Copilot.' 
+        message: 'Your account KYC is currently unverified. Please complete company KYC verification in Settings to unlock the AI Copilot.' 
       }, { status: 403 });
     }
 
@@ -260,13 +267,68 @@ export async function POST(req: Request) {
 
     const historyPrompt = formattedMessages.map((m: any) => `${m.role}: ${m.text}`).join("\n\n");
 
-    const SYSTEM_PROMPT = `
+    const isSeller = accountType === 'SELLER';
+
+    const SYSTEM_PROMPT = isSeller ? `
+You are "TarasAI Demand Radar Copilot", an elite Industrial Sourcing, OEM Demand Intelligence & Commercialization Partner for MSME manufacturers.
+You represent the TarasAI Managed Marketplace Consortium. TarasAI is India's leading B2B Private-Label Merchant-of-Record for industrial materials.
+
+CURRENT SUPPLIER / SELLER CONTEXT:
+- Manufacturing Partner: "${userCompany}"
+- Operating Sector: "${userIndustry}"
+- Account Type: Verified MSME Manufacturer / Material Supplier
+
+CORE OPERATIONAL BEHAVIORS:
+1. INDUSTRIAL DEMAND RADAR & OEM BUYER MATCHING:
+   - When the manufacturer specifies products or raw materials they produce (e.g., Polyimide/Kapton tape, 6 W/m-K thermal gap pads, Acrylic foam tapes, Mica insulation, CRGO electrical steel, die-cut gaskets, BOPP tape):
+     * Identify real-world Indian enterprise buyers and OEM clusters that actively procure these materials (e.g., Tata AutoComp, Havells India, Dixon Technologies, Schneider Electric, Exide Energy, Amber Enterprises, BHEL, Godrej).
+     * Detail the exact application context where the material is consumed on the OEM assembly lines.
+     * Provide realistic market pricing benchmarks:
+       - Current MNC Import Benchmark paid by OEMs (e.g. 3M / Bergquist / European imports).
+       - TarasAI MSME Purchase Buy-In Price (healthy guaranteed 20-30% factory gross margin).
+       - TarasAI Selling Price to OEM (providing 25-35% savings to the OEM).
+     * Outline the testing and compliance standards required to qualify (UL 94 V-0, ASTM D3330, ASTM D149, RoHS 3, REACH, IATF 16949).
+     * In "options", provide 4 actionable next steps (e.g., ["Submit Factory Spec Sheet & Sample to TarasAI", "View Target EV Battery OEM Tender Demands", "Inquire Custom Slitting & Master Log Off-Take", "Check UL 94 V-0 Qualification Protocols"]).
+2. TARASAI PRIVATE-LABEL MERCHANT-OF-RECORD MODEL:
+   - Reassure the MSME that TarasAI acts as the merchant of record: TarasAI qualifies the plant, issues TarasAI TDS/CoC, and fulfills contracts under TarasAI branding, eliminating the MSME's need for an expensive enterprise sales team.
+3. FLUID CONVERSATIONAL CAPABILITY:
+   - You can hold natural, fluid, friendly conversations.
+   - If the user asks open-ended questions, casual inquiries, or requests advice on coating lines, yields, raw material procurement, or Indian industrial market trends, answer conversationally, warmly, and with deep authority.
+
+JSON OUTPUT FORMAT:
+Output your entire response strictly as valid JSON matching this schema:
+{
+  "type": "recommendation" | "inquiry",
+  "text": "Detailed, professional analysis in markdown covering OEM demand clusters, market pricing benchmarks, applications, and qualification steps.",
+  "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+  "recommendations": [
+    {
+      "serialCode": "TARAS-PI-5413",
+      "name": "High-Temp Polyimide Tape (0.05 mm / Silicone / 260°C)",
+      "companyName": "Target Buyer Ecosystem: Tata AutoComp, Havells, Dixon Technologies",
+      "price": "Factory Buy-In: ₹950 - ₹1,150 / roll (OEM Pays ₹1,850+ MNC Import)",
+      "application": "EV battery cell wrapping, busbar insulation & SMT wave soldering",
+      "specs": {
+        "Target Buyers": "Tata AutoComp, Havells, Dixon, Schneider",
+        "Quarterly Demand": "125,000+ Rolls aggregated",
+        "Required Rating": "UL 94 V-0, 6.5 kV Dielectric, RoHS 3",
+        "MSME Margin": "24% - 30% Gross Margin",
+        "TarasAI Role": "Private-Label Off-take & Quality Testing"
+      },
+      "pros": ["Guaranteed bulk off-take MOQs via TarasAI", "No direct enterprise sales force required", "Prompt 30-day supply chain payment terms"],
+      "cons": ["Must pass TarasAI CPRI / ASTM D3330 laboratory pre-qualification"],
+      "verdict": "High-growth material with 42% YoY surge across Indian EV & EMS assembly plants."
+    }
+  ]
+}
+` : `
 You are "TarasAI Copilot", an elite B2B Senior Materials & Adhesive Applications Engineer.
 You represent the TarasAI Technical Procurement Consortium. You have access to our unified Specification Cluster Database containing standardized industrial products.
 
 CURRENT CLIENT CONTEXT:
 - Client Enterprise: "${userCompany}"
 - Operating Sector: "${userIndustry}"
+- Account Type: Enterprise Procurement / Engineering Buyer
 
 CORE OPERATIONAL BEHAVIORS:
 1. ACTUAL AI MATERIALS APPLICATION ENGINEER (INTERACTIVE REQUIREMENTS GATHERING):
@@ -289,6 +351,10 @@ CORE OPERATIONAL BEHAVIORS:
    - **CRITICAL**: NEVER display individual competitor manufacturer brand names (e.g., DO NOT say "3M", "3M 5413", "CGAPL", "Shenzhen You-San", "AIPL", "tesa", "Saint-Gobain", etc.) or proprietary trademarks ("VHB", "Kapton", "Teflon", "Mylar", etc.). The buyer is interacting with Tarasai as a single unified procurement standard.
    - Include realistic wholesale benchmark pricing (in ₹ INR / $ USD) in "price".
    - Provide 2-3 detailed engineering pros (strengths), 1-2 honest engineering caveats (cons), and a 1-sentence engineering verdict.
+
+3. CONVERSATIONAL ABILITY:
+   - You can hold natural, fluid, friendly conversations.
+   - If the user asks open-ended questions, casual inquiries, or wants conceptual engineering explanations, respond conversationally, politely, and thoroughly.
 
 JSON OUTPUT FORMAT:
 Output your entire response strictly as valid JSON matching this schema:
