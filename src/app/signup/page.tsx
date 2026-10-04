@@ -39,6 +39,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import BrochureCatalogConfirmationWorkspace, { 
+  SellerProductItem, 
+  computeProductMissingFields 
+} from "@/components/BrochureCatalogConfirmationWorkspace";
 
 // ============================================================================
 // DYNAMIC BUYER INDUSTRY CONFIGURATIONS
@@ -244,40 +248,6 @@ export const ANNUAL_SPEND_OPTIONS = [
   { id: "tier4", label: "₹10 Crores+ / Global Enterprise", desc: "High-volume OEM / Tier-1 procurement" }
 ];
 
-export const SELLER_PRODUCT_CATEGORIES = [
-  "Adhesive Tapes & Transfer Films",
-  "Liquid Adhesives & Structural Sealants",
-  "Foams, Gaskets & Cushioning",
-  "Thermal Interface Materials (TIM)",
-  "Electrical & High-Dielectric Insulation",
-  "Optical, Display & Barrier Films",
-  "EMI / RFI Shielding & Conductive Foils",
-  "Protective Films & Surface Protection",
-  "Specialty Industrial Packaging & Strapping",
-  "Custom Precision Die-Cut Components",
-  "Abrasives, Polishing & Surface Finishing",
-  "Industrial Fasteners & Reclosables",
-  "Specialty Polymers, Resins & Raw Compounds",
-  "Transformers & Power Electrical Machinery",
-  "Cables, Conductors & Winding Wires",
-  "Switchgear, Panels & Automation Equipment",
-  "Other Industrial Materials & Consumables"
-] as const;
-
-interface SellerProductItem {
-  name: string;
-  category: string;
-  productType: string;
-  sideType: string;
-  backing: string;
-  adhesionType: string;
-  thickness: string;
-  tempRange: string;
-  application: string;
-  price: string;
-  specs?: Record<string, string>;
-}
-
 export default function Signup() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -334,15 +304,14 @@ export default function Signup() {
       thickness: "0.05 mm (50 µm)",
       tempRange: "260°C",
       application: "High-temperature masking & electronic insulation",
-      price: ""
+      price: "",
+      specs: {},
+      missingFields: ["Product Title / Model", "Price / MOQ"]
     }
   ]);
 
-  // Catalog Ingestion Mode for Seller
-  const [ingestionMode, setIngestionMode] = useState<"manual" | "upload">("manual");
   const [isParsingFile, setIsParsingFile] = useState(false);
   const [parseSuccessMsg, setParseSuccessMsg] = useState("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync role from query if changed
   useEffect(() => {
@@ -476,9 +445,8 @@ export default function Signup() {
     setSellerProducts(updated);
   };
 
-  // Handle AI File / Spreadsheet Upload for Seller
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  // Handle AI File / Brochure Upload for Seller
+  const handleFileUpload = async (file: File) => {
     if (!file) return;
 
     setIsParsingFile(true);
@@ -502,23 +470,24 @@ export default function Signup() {
       }
 
       if (Array.isArray(data.products) && data.products.length > 0) {
-        const normalized = data.products.map((p: any) => ({
+        const normalized: SellerProductItem[] = data.products.map((p: any) => ({
           name: p.name || "",
           category: p.category || "Adhesive Tapes & Transfer Films",
           productType: p.productType || "Tape",
           sideType: p.sideType || "Single-Sided",
-          backing: p.backing || "Specialty Substrate",
-          adhesionType: p.adhesionType || "Polymer Adhesive",
-          thickness: p.thickness || "Standard",
-          tempRange: p.tempRange || "Industrial Grade",
-          application: p.application || "Industrial engineering",
+          backing: p.backing || "",
+          adhesionType: p.adhesionType || "",
+          thickness: p.thickness || "",
+          tempRange: p.tempRange || "",
+          application: p.application || "",
           price: p.price || "",
-          specs: p.specs
+          imageUrl: p.imageUrl || "",
+          specs: p.specs || {},
+          missingFields: computeProductMissingFields(p)
         }));
 
         setSellerProducts(normalized);
-        setParseSuccessMsg(`✨ AI successfully extracted ${normalized.length} products across categories from ${file.name}! Review below.`);
-        setIngestionMode("manual");
+        setParseSuccessMsg(`✨ AI successfully extracted ${normalized.length} products from "${file.name}"! Please review specifications and confirm below.`);
       } else {
         throw new Error("No products found in file.");
       }
@@ -526,7 +495,6 @@ export default function Signup() {
       setError(err.message || "Failed to parse brochure or spreadsheet.");
     } finally {
       setIsParsingFile(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -1263,239 +1231,14 @@ export default function Signup() {
                 transition={{ duration: 0.2 }}
                 className="space-y-6"
               >
-                {/* Ingestion Mode Toggle */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-200 pb-4 gap-3">
-                  <div>
-                    <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                      <Layers className="w-4 h-4 text-emerald-600" />
-                      Product Catalog Specifications ({sellerProducts.filter(p => p.name.trim()).length} Active)
-                    </h3>
-                    <p className="text-xs text-slate-500">Add materials across any industrial category or let AI parse your brochure.</p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setIngestionMode("manual")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                        ingestionMode === "manual" 
-                          ? "bg-emerald-600 text-white shadow-xs" 
-                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                      }`}
-                    >
-                      Manual Entry
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setIngestionMode("upload")}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                        ingestionMode === "upload" 
-                          ? "bg-emerald-600 text-white shadow-xs" 
-                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                      }`}
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                      AI Brochure / Excel Upload
-                    </button>
-                  </div>
-                </div>
-
-                {/* AI FILE DROPZONE */}
-                {ingestionMode === "upload" && (
-                  <div className="p-6 bg-slate-50 border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-2xl text-center space-y-4 transition-all">
-                    <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
-                      <Upload className="w-6 h-6" />
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="font-bold text-slate-900 text-sm">Upload Technical Brochure, Datasheet, or Excel</h4>
-                      <p className="text-xs text-slate-500 max-w-md mx-auto">
-                        Supports all products: Tapes, Adhesives, Transformers, Switchgear, Foams, TIM Pads, Insulation, Cables. Upload <span className="text-emerald-600 font-mono font-bold">.xlsx</span>, <span className="text-emerald-600 font-mono font-bold">.csv</span>, <span className="text-emerald-600 font-mono font-bold">.pdf</span>, or images.
-                      </p>
-                    </div>
-
-                    <input 
-                      ref={fileInputRef}
-                      type="file" 
-                      accept=".xlsx,.xls,.csv,.pdf,.png,.jpg,.jpeg,.txt"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                      id="seller-file-upload"
-                    />
-
-                    <div>
-                      <button
-                        type="button"
-                        disabled={isParsingFile}
-                        onClick={() => fileInputRef.current?.click()}
-                        className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold rounded-lg shadow-sm transition-all inline-flex items-center gap-2 disabled:opacity-50"
-                      >
-                        {isParsingFile ? (
-                          <>
-                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            AI Normalizing Multi-Category Specifications...
-                          </>
-                        ) : (
-                          <>
-                            <FileSpreadsheet className="w-4 h-4" />
-                            Select Brochure or Excel File
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* MANUAL PRODUCT ROWS */}
-                <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
-                  {sellerProducts.map((product, idx) => (
-                    <div 
-                      key={idx}
-                      className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3 relative group"
-                    >
-                      <div className="flex items-center justify-between border-b border-slate-200 pb-2">
-                        <span className="text-xs font-bold text-emerald-700 font-mono flex items-center gap-1.5">
-                          <Tag className="w-3.5 h-3.5" /> Product Item #{idx + 1}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveProduct(idx)}
-                          className="text-slate-400 hover:text-red-600 p-1 rounded transition-colors"
-                          title="Remove Product"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      {/* Category Dropdown */}
-                      <div>
-                        <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                          Product Category / Material Family *
-                        </label>
-                        <select
-                          value={product.category || SELLER_PRODUCT_CATEGORIES[0]}
-                          onChange={e => handleUpdateProduct(idx, "category", e.target.value)}
-                          className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600 font-medium"
-                        >
-                          {SELLER_PRODUCT_CATEGORIES.map(cat => (
-                            <option key={cat} value={cat}>{cat}</option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {/* Name & Format */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div className="sm:col-span-2">
-                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Product Model / Specification Title *</label>
-                          <input 
-                            type="text"
-                            required
-                            value={product.name}
-                            onChange={e => handleUpdateProduct(idx, "name", e.target.value)}
-                            placeholder="e.g. Polyimide High-Temp Film or RTV Industrial Silicone Gasket"
-                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Format / Side Coating</label>
-                          <select
-                            value={product.sideType}
-                            onChange={e => handleUpdateProduct(idx, "sideType", e.target.value)}
-                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
-                          >
-                            <option value="Single-Sided">Single-Sided</option>
-                            <option value="Double-Sided">Double-Sided</option>
-                            <option value="Transfer">Adhesive Transfer Film</option>
-                            <option value="N/A (Liquid / Non-Adhesive)">N/A (Equipment / Component / Liquid)</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      {/* Substrate & Chemistry */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Substrate / Base Material</label>
-                          <input 
-                            type="text"
-                            value={product.backing}
-                            onChange={e => handleUpdateProduct(idx, "backing", e.target.value)}
-                            placeholder="e.g. Polyimide / CRGO Steel / EPDM / Glass Cloth / Copper"
-                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Adhesive / Coating System</label>
-                          <input 
-                            type="text"
-                            value={product.adhesionType}
-                            onChange={e => handleUpdateProduct(idx, "adhesionType", e.target.value)}
-                            placeholder="e.g. Silicone / Epoxy Resin / Pure Acrylic / Enamel"
-                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Caliper, Temp, Price */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div>
-                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Caliper / Rating / Size</label>
-                          <input 
-                            type="text"
-                            value={product.thickness}
-                            onChange={e => handleUpdateProduct(idx, "thickness", e.target.value)}
-                            placeholder="e.g. 0.05 mm / 33 kV / 150 cP"
-                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Temperature Resistance</label>
-                          <input 
-                            type="text"
-                            value={product.tempRange}
-                            onChange={e => handleUpdateProduct(idx, "tempRange", e.target.value)}
-                            placeholder="e.g. 260°C / 180°C / -40°C to 150°C"
-                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[11px] font-bold text-slate-700 mb-1">Price / MOQ</label>
-                          <input 
-                            type="text"
-                            value={product.price}
-                            onChange={e => handleUpdateProduct(idx, "price", e.target.value)}
-                            placeholder="e.g. ₹320 / roll / MOQ 500 units"
-                            className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Application */}
-                      <div>
-                        <label className="block text-[11px] font-bold text-slate-700 mb-1">Primary Industrial Applications</label>
-                        <input 
-                          type="text"
-                          value={product.application}
-                          onChange={e => handleUpdateProduct(idx, "application", e.target.value)}
-                          placeholder="e.g. EV battery pack insulation, transformer core winding, wave solder masking"
-                          className="w-full bg-white border border-slate-300 text-slate-900 rounded-lg py-2 px-3 text-xs focus:outline-none focus:border-emerald-600"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between pt-1">
-                  <button
-                    type="button"
-                    onClick={handleAddProduct}
-                    className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-emerald-700 text-xs font-bold rounded-lg border border-slate-200 flex items-center gap-1.5 transition-all"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Another Product / Material
-                  </button>
-                  <span className="text-xs font-mono text-slate-500">
-                    {sellerProducts.filter(p => p.name.trim()).length} specifications configured
-                  </span>
-                </div>
+                <BrochureCatalogConfirmationWorkspace
+                  products={sellerProducts}
+                  setProducts={setSellerProducts}
+                  isParsingFile={isParsingFile}
+                  parseSuccessMsg={parseSuccessMsg}
+                  onFileUpload={handleFileUpload}
+                  companyName={formData.companyName || "Manufacturer"}
+                />
 
                 <div className="flex gap-3 pt-2">
                   <button 
@@ -1509,7 +1252,7 @@ export default function Signup() {
                     type="submit" 
                     className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 group text-sm shadow-md"
                   >
-                    Review & Complete Seller Verification
+                    Confirm Specifications & Proceed to Verification
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>

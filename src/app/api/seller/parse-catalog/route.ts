@@ -2,7 +2,19 @@ import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import * as XLSX from 'xlsx';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({});
+
+export function computeMissingFields(product: any): string[] {
+  const missing: string[] = [];
+  if (!product.name || product.name.trim().length === 0) missing.push("Product Title / Model");
+  if (!product.backing || product.backing === 'Specialty Substrate' || product.backing === 'Unknown') missing.push("Backing Substrate");
+  if (!product.adhesionType || product.adhesionType === 'Standard Polymer' || product.adhesionType === 'Polymer System') missing.push("Adhesive Chemistry");
+  if (!product.thickness || product.thickness === 'Standard' || product.thickness === 'N/A') missing.push("Thickness / Caliper");
+  if (!product.tempRange || product.tempRange === 'Industrial Grade' || product.tempRange === 'N/A') missing.push("Temperature Rating");
+  if (!product.application || product.application.trim().length === 0) missing.push("Application Scope");
+  if (!product.price || product.price.trim().length === 0 || product.price === 'Inquire on Request') missing.push("Indicative Price / MOQ");
+  return missing;
+}
 
 export async function POST(req: Request) {
   try {
@@ -28,30 +40,30 @@ export async function POST(req: Request) {
         const rawRows: any[] = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
 
         if (rawRows.length > 0) {
-          // Normalize spreadsheet rows with AI or heuristic mapping
-          if (process.env.GEMINI_API_KEY) {
+          try {
             const prompt = `
-You are an expert industrial materials and specifications engineer.
-A manufacturer/supplier named "${companyName}" uploaded a spreadsheet catalog.
+You are an expert industrial materials engineer.
+A manufacturer/supplier named "${companyName}" uploaded a spreadsheet product catalog.
 Convert and normalize the following spreadsheet rows into an array of standardized products matching our Master Products database schema.
-The seller can supply tapes, adhesives, sealants, foams, gaskets, thermal interface materials, insulation, shielding, optical films, abrasives, or fasteners.
+Extract all relevant technical parameters (thickness, backing, adhesive chemistry, temperature endurance, dielectric, peel adhesion, applications, price).
 
-RAW ROWS:
+RAW SPREADSHEET ROWS:
 ${JSON.stringify(rawRows.slice(0, 100), null, 2)}
 
 Return strictly a valid JSON array of objects with this schema:
 [
   {
-    "name": "Product Model Name (e.g. 50µm Polyimide Masking Film or RTV Silicone Gasket Sealant)",
+    "name": "Full Product Model & Title (e.g. 50µm Polyimide Masking Film or 6 W/m-K Silicone Gap Pad)",
     "category": "Adhesive Tapes & Transfer Films" | "Liquid Adhesives & Structural Sealants" | "Foams, Gaskets & Cushioning" | "Thermal Interface Materials (TIM)" | "Electrical & High-Dielectric Insulation" | "Optical, Display & Barrier Films" | "EMI / RFI Shielding & Conductive Foils" | "Protective Films & Surface Protection" | "Specialty Industrial Packaging & Strapping" | "Custom Precision Die-Cut Components" | "Abrasives, Polishing & Surface Finishing" | "Industrial Fasteners & Reclosables" | "Specialty Polymers, Resins & Raw Compounds" | "Other Industrial Materials & Consumables",
     "productType": "Tape" | "Adhesive" | "Film" | "Foam" | "Die-Cut" | "Sealant" | "Thermal Pad" | "Liquid" | "Abrasive" | "Fastener",
     "sideType": "Single-Sided" | "Double-Sided" | "Transfer" | "N/A (Liquid / Non-Adhesive)",
-    "backing": "Carrier/Substrate/Backing Material (e.g. Polyimide, Acrylic Foam, EPDM, Aluminum Foil, Fiberglass, PET, Crepe, None / Bulk Resin)",
-    "adhesionType": "Adhesive / Chemical System (e.g. Silicone, Pure Acrylic, Epoxy, Polyurethane, Synthetic Rubber)",
-    "thickness": "Total thickness / caliper / viscosity (e.g. 0.05 mm, 1.1 mm, 0.5 mm, 120 cP)",
-    "tempRange": "Temperature resistance rating (e.g. 260°C, 180°C, 150°C, 80°C)",
+    "backing": "Carrier/Substrate/Backing Material (e.g. Polyimide Film, PVC, Acrylic Foam, Aluminum Foil, Fiberglass, PET, EPDM)",
+    "adhesionType": "Adhesive / Chemical System (e.g. Cross-Linked Silicone, Pure Acrylic, Epoxy, Polyurethane, Synthetic Rubber)",
+    "thickness": "Total thickness / caliper / gauge (e.g. 0.05 mm, 1.1 mm, 0.5 mm, 125 µm)",
+    "tempRange": "Temperature resistance rating (e.g. 260°C, 180°C, 150°C, -40°C to 120°C)",
     "application": "Primary industrial engineering applications",
-    "price": "Wholesale benchmark price or MOQ (e.g. ₹350 / roll, $4.50)",
+    "price": "Wholesale benchmark unit price or MOQ (e.g. ₹350 / roll, $4.50)",
+    "imageUrl": "",
     "specs": {
       "Backing material": "...",
       "Adhesive type": "...",
@@ -71,6 +83,8 @@ Return strictly a valid JSON array of objects with this schema:
             if (match) {
               extractedProducts = JSON.parse(match[0]);
             }
+          } catch (aiErr) {
+            console.warn("Gemini spreadsheet parse error, falling back to heuristic parsing:", aiErr);
           }
 
           // Fallback heuristic if AI parsing didn't return items
@@ -92,7 +106,7 @@ Return strictly a valid JSON array of objects with this schema:
               const temp = getVal(['temp', 'temperature', 'heat', 'thermal']) || 'Industrial Grade';
               const side = getVal(['side', 'coated', 'coating', 'format']) || (name.toLowerCase().includes('double') ? 'Double-Sided' : 'Single-Sided');
               const app = getVal(['app', 'application', 'usage', 'industry', 'use']) || 'Industrial manufacturing & engineering';
-              const price = getVal(['price', 'rate', 'cost', 'inr', 'usd', 'moq']) || 'Inquire on Request';
+              const price = getVal(['price', 'rate', 'cost', 'inr', 'usd', 'moq']) || '';
 
               return {
                 name,
@@ -105,6 +119,7 @@ Return strictly a valid JSON array of objects with this schema:
                 tempRange: temp,
                 application: app,
                 price,
+                imageUrl: '',
                 specs: {
                   'Backing material': backing,
                   'Adhesive type': adhesion,
@@ -119,40 +134,45 @@ Return strictly a valid JSON array of objects with this schema:
         console.error('Spreadsheet parse error:', err);
       }
     } 
-    // 2. PDF, Images, Text or Brochure Documents
+    // 2. PDF, Multi-Page Brochure, Images (PNG/JPG/WEBP), or Text Documents
     else {
       try {
-        if (!process.env.GEMINI_API_KEY) {
-          throw new Error('Gemini API key is required to parse brochures/datasheets.');
-        }
-
-        const mimeType = file.type || (fileName.endsWith('.pdf') ? 'application/pdf' : 'image/jpeg');
+        let mimeType = file.type || 'application/pdf';
+        if (fileName.endsWith('.pdf')) mimeType = 'application/pdf';
+        else if (fileName.endsWith('.png')) mimeType = 'image/png';
+        else if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) mimeType = 'image/jpeg';
+        else if (fileName.endsWith('.webp')) mimeType = 'image/webp';
+        else if (fileName.endsWith('.txt')) mimeType = 'text/plain';
 
         const prompt = `
-You are an expert industrial materials scientist and technical procurement engineer.
-A manufacturer/supplier named "${companyName}" uploaded their technical brochure/catalog.
-Extract all distinct industrial materials, products, tapes, adhesives, sealants, foams, gaskets, thermal pads, films, shielding, or fasteners listed in this document.
-Extract every product's specifications and normalize into our standard Master Products catalog schema.
+You are an expert industrial materials scientist and technical datasheet procurement specialist.
+A manufacturer/supplier named "${companyName}" uploaded their technical catalog/brochure/datasheet.
+Scan the entire document and extract every distinct product, material, technical tape, adhesive, thermal interface material, dielectric insulation, gasket foam, foil shielding, or die-cut item.
 
-Return strictly a valid JSON array of objects with this schema:
+Extract all technical specifications thoroughly from tables, parameter blocks, and descriptions.
+
+Return strictly a valid JSON array of objects matching this exact schema:
 [
   {
-    "name": "Full Product Name & Model Code",
+    "name": "Full Product Name & Model Code (e.g. TARAS-PI-5413 50µm Polyimide Tape or Ultra-Therm 6.0 W/m-K Gap Pad)",
     "category": "Adhesive Tapes & Transfer Films" | "Liquid Adhesives & Structural Sealants" | "Foams, Gaskets & Cushioning" | "Thermal Interface Materials (TIM)" | "Electrical & High-Dielectric Insulation" | "Optical, Display & Barrier Films" | "EMI / RFI Shielding & Conductive Foils" | "Protective Films & Surface Protection" | "Specialty Industrial Packaging & Strapping" | "Custom Precision Die-Cut Components" | "Abrasives, Polishing & Surface Finishing" | "Industrial Fasteners & Reclosables" | "Specialty Polymers, Resins & Raw Compounds" | "Other Industrial Materials & Consumables",
     "productType": "Tape" | "Adhesive" | "Film" | "Foam" | "Die-Cut" | "Sealant" | "Thermal Pad" | "Liquid" | "Abrasive" | "Fastener",
     "sideType": "Single-Sided" | "Double-Sided" | "Transfer" | "N/A (Liquid / Non-Adhesive)",
-    "backing": "Backing / Carrier / Substrate (e.g. Polyimide Film, PVC, Acrylic Foam, Aluminum Foil, Fiberglass, Glass Cloth, PET, EPDM, None)",
+    "backing": "Backing / Carrier / Substrate (e.g. Polyimide Film, PVC, Acrylic Foam, Aluminum Foil, Fiberglass, Glass Cloth, PET, EPDM, Silicone)",
     "adhesionType": "Adhesive / Polymer Chemistry (e.g. Cross-Linked Silicone, Pure Solvent Acrylic, Epoxy, Polyurethane, Natural Rubber)",
-    "thickness": "Total thickness / caliper / gauge (e.g. 0.05 mm, 0.07 mm, 1.1 mm, 0.5 mm)",
-    "tempRange": "Temperature rating (e.g. 260°C, 180°C, 150°C, 90°C)",
+    "thickness": "Total thickness / caliper / gauge (e.g. 0.05 mm, 0.07 mm, 1.1 mm, 0.5 mm, 125 µm)",
+    "tempRange": "Temperature rating (e.g. 260°C, 180°C, 150°C, -40°C to 120°C)",
     "application": "Key industrial engineering use cases and applications",
-    "price": "Estimated benchmark unit price or MOQ (e.g. ₹320.00 / roll, $4.20)",
+    "price": "Wholesale benchmark unit price or MOQ if mentioned (e.g. ₹320.00 / roll, $4.20)",
+    "imageUrl": "",
     "specs": {
       "Backing material": "...",
       "Adhesive type": "...",
       "Total thickness": "...",
       "Temperature resistance": "...",
-      "Tensile Strength": "..."
+      "Tensile Strength": "...",
+      "Dielectric Breakdown": "...",
+      "Adhesion to Steel": "..."
     }
   }
 ]
@@ -186,21 +206,28 @@ Return strictly a valid JSON array of objects with this schema:
       } catch (err: any) {
         console.error('AI brochure parsing error:', err);
         return NextResponse.json({ 
-          error: `Failed to parse document: ${err.message || 'Unknown error'}. Please try an Excel (.xlsx) file or use manual entry.` 
+          error: `Failed to parse document: ${err.message || 'Unknown error'}. Please verify the file or use manual entry.` 
         }, { status: 500 });
       }
     }
 
     if (!extractedProducts || extractedProducts.length === 0) {
       return NextResponse.json({ 
-        error: 'No product specifications could be extracted. Please ensure the file contains product data or use manual entry.' 
+        error: 'No product specifications could be extracted from this document. Please verify the file content or add items manually.' 
       }, { status: 400 });
     }
 
+    // Attach missingFields calculation to each extracted product
+    const processedProducts = extractedProducts.map(prod => ({
+      ...prod,
+      missingFields: computeMissingFields(prod)
+    }));
+
     return NextResponse.json({
       success: true,
-      count: extractedProducts.length,
-      products: extractedProducts,
+      count: processedProducts.length,
+      fileName: file.name,
+      products: processedProducts,
     });
 
   } catch (error: any) {
