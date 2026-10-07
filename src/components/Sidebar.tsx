@@ -19,7 +19,8 @@ import {
   Lock,
   Headset,
   Database,
-  AlertTriangle
+  AlertTriangle,
+  Repeat
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -82,6 +83,7 @@ export default function Sidebar() {
     { id: "finder", name: "Finder", path: "/agent", icon: Search },
     { id: "marketplace", name: "Marketplace", path: "/dashboard/marketplace", icon: Store },
     { id: "products", name: "Products Master", path: "/products", icon: Database },
+    { id: "tri_flow", name: "TriFlow & Sentinel", path: "/tri-flow", icon: Repeat },
     { id: "business_plan", name: "Business Plan", path: "/dashboard/business-plan", icon: TrendingUp, requiredPlan: ["ENTERPRISE"] },
     { id: "equity_funding", name: "Equity & IPO", path: "/dashboard/equity-funding", icon: Landmark, requiredPlan: ["ENTERPRISE"] },
     { id: "settings", name: "Settings", path: "/dashboard/settings", icon: Settings },
