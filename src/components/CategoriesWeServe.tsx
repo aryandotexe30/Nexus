@@ -2,26 +2,11 @@
 
 import Link from "next/link";
 import { ArrowRight, ChevronRight, Layers, Factory, ShieldCheck, Truck, Sparkles } from "lucide-react";
-import TapeProductVisual from "@/components/TapeProductVisual";
 
 interface SubItem {
   id: string;
   name: string;
-  visualType: 
-    | "polyimide" 
-    | "vhb-red" 
-    | "vhb-clear"
-    | "vhb-black"
-    | "green-masking" 
-    | "copper-foil" 
-    | "glass-cloth" 
-    | "cloth-fleece" 
-    | "pvc-blue" 
-    | "pvc-black" 
-    | "tim-pad" 
-    | "aluminum-foil"
-    | "pet-clear"
-    | "filament";
+  image: string;
   badge: string;
   link: string;
 }
@@ -54,42 +39,42 @@ const CATEGORY_GROUPS: CategoryGroup[] = [
       {
         id: "polyimide",
         name: "Polyimide SMT Tape",
-        visualType: "polyimide",
+        image: "/images/products/polyimide-tape.jpg",
         badge: "260°C Kapton",
         link: "/products/polyimide-smt-tape"
       },
       {
         id: "esd-tape",
         name: "ESD Anti-Static Tape",
-        visualType: "polyimide",
+        image: "/images/products/polyimide-tape.jpg",
         badge: "<50V Low Charge",
         link: "/products/esd-dissipative-tape"
       },
       {
         id: "glass-cloth",
         name: "Fiberglass Cloth Tape",
-        visualType: "glass-cloth",
+        image: "/images/products/fiberglass-tape.jpg",
         badge: "Class H 200°C",
         link: "/products/glass-cloth-tape"
       },
       {
         id: "copper-foil",
         name: "Copper Foil EMI Tape",
-        visualType: "copper-foil",
+        image: "/images/products/copper-foil-tape.jpg",
         badge: "Conductive Foil",
         link: "/products/copper-foil-emi"
       },
       {
         id: "green-masking",
         name: "Powder Coating Tape",
-        visualType: "green-masking",
+        image: "/images/products/green-masking-tape.jpg",
         badge: "220°C Bake",
         link: "/products/green-masking-tape"
       },
       {
         id: "amber-splicing",
         name: "Silicone Splicing Tape",
-        visualType: "polyimide",
+        image: "/images/products/polyimide-tape.jpg",
         badge: "25µm Ultra-Thin",
         link: "/products/silicone-splicing-tape"
       }
@@ -109,42 +94,42 @@ const CATEGORY_GROUPS: CategoryGroup[] = [
       {
         id: "vhb-foam",
         name: "Acrylic Foam VHB 1.0mm",
-        visualType: "vhb-red",
+        image: "/images/products/vhb-foam-tape.jpg",
         badge: "Solid Core VHB",
         link: "/products/acrylic-foam-vhb"
       },
       {
         id: "vhb-thin",
         name: "Thin Acrylic Foam 0.5mm",
-        visualType: "vhb-red",
+        image: "/images/products/vhb-foam-tape.jpg",
         badge: "0.5mm High Shear",
         link: "/products/thin-acrylic-foam"
       },
       {
         id: "vhb-clear",
         name: "Optical Clear Bonding",
-        visualType: "vhb-clear",
+        image: "/images/products/vhb-foam-tape.jpg",
         badge: "Transparent 4910",
         link: "/products/clear-acrylic-tape"
       },
       {
         id: "automotive-black",
         name: "Automotive Black Foam",
-        visualType: "vhb-black",
+        image: "/images/products/wire-harness-tape.jpg",
         badge: "Trim & Emblems",
         link: "/products/automotive-black-foam"
       },
       {
         id: "pet-double-sided",
         name: "Clear PET Double-Sided",
-        visualType: "pet-clear",
+        image: "/images/products/crepe-masking-tape.jpg",
         badge: "Tesa 4965 Type",
         link: "/products/double-sided-pet"
       },
       {
         id: "filament-tape",
         name: "Reinforced Strapping",
-        visualType: "filament",
+        image: "/images/products/fiberglass-tape.jpg",
         badge: "Glass Filament",
         link: "/products/reinforced-strapping"
       }
@@ -164,42 +149,42 @@ const CATEGORY_GROUPS: CategoryGroup[] = [
       {
         id: "mica-tape",
         name: "Mica Glass Cloth Tape",
-        visualType: "glass-cloth",
+        image: "/images/products/fiberglass-tape.jpg",
         badge: "18 kV/mm CPRI",
         link: "/products/mica-glass-tape"
       },
       {
         id: "wire-harness",
         name: "Wire Harness Fleece Tape",
-        visualType: "cloth-fleece",
+        image: "/images/products/wire-harness-tape.jpg",
         badge: "Noise Dampening",
         link: "/products/wire-harness-tape"
       },
       {
         id: "pvc-blue",
         name: "PVC Electrical Tape (Blue)",
-        visualType: "pvc-blue",
+        image: "/images/products/electrical-pvc-tape.jpg",
         badge: "IS 7809 FR Vinyl",
         link: "/products/pvc-electrical-blue"
       },
       {
         id: "pvc-black",
         name: "PVC Electrical Tape (Black)",
-        visualType: "pvc-black",
+        image: "/images/products/electrical-pvc-tape.jpg",
         badge: "Flame Retardant",
         link: "/products/pvc-electrical-black"
       },
       {
         id: "tim-pad",
         name: "Thermal Silicone Gap Pad",
-        visualType: "tim-pad",
+        image: "/images/products/copper-foil-tape.jpg",
         badge: "6.0 W/m-K TIM",
         link: "/products/thermal-gap-pads"
       },
       {
         id: "aluminum-foil",
         name: "Aluminum Foil Tape",
-        visualType: "aluminum-foil",
+        image: "/images/products/copper-foil-tape.jpg",
         badge: "Dead Soft HVAC",
         link: "/products/aluminum-foil-tape"
       }
@@ -281,12 +266,15 @@ export default function CategoriesWeServe() {
                       href={item.link}
                       className="group/item flex flex-col items-center text-center space-y-2 cursor-pointer"
                     >
-                      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 border border-slate-200 relative shadow-2xs group-hover/item:border-[#0B4FDF] transition-colors">
-                        <TapeProductVisual 
-                          type={item.visualType} 
-                          badge={item.badge}
-                          className="w-full h-full"
+                      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-white border border-slate-200 relative shadow-2xs group-hover/item:border-[#0B4FDF] transition-colors">
+                        <img 
+                          src={item.image} 
+                          alt={item.name}
+                          className="w-full h-full object-cover group-hover/item:scale-105 transition-transform duration-300"
                         />
+                        <div className="absolute top-1.5 left-1.5 bg-white/95 backdrop-blur-xs px-1.5 py-0.5 rounded text-[9px] font-mono font-bold text-slate-800 border border-slate-200 shadow-2xs">
+                          {item.badge}
+                        </div>
                       </div>
                       <span className="text-[11px] sm:text-xs font-bold text-slate-800 group-hover/item:text-[#0B4FDF] transition-colors line-clamp-2 leading-tight">
                         {item.name}

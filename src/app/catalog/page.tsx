@@ -17,28 +17,12 @@ import {
   Layers
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import TapeProductVisual from "@/components/TapeProductVisual";
-
 export interface CatalogProduct {
   id: string;
   name: string;
   specs: string;
   priceEstimate: string;
-  visualType: 
-    | "polyimide" 
-    | "vhb-red" 
-    | "vhb-clear"
-    | "vhb-black"
-    | "green-masking" 
-    | "copper-foil" 
-    | "glass-cloth" 
-    | "cloth-fleece" 
-    | "pvc-blue" 
-    | "pvc-black" 
-    | "tim-pad" 
-    | "aluminum-foil"
-    | "pet-clear"
-    | "filament";
+  image: string;
   slug: string;
   sku: string;
   standard: string;
@@ -64,7 +48,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Polyimide SMT Masking Tape",
         specs: "260°C • 50µm • Silicone PSA",
         priceEstimate: "₹145 - ₹165 / Roll",
-        visualType: "polyimide",
+        image: "/images/products/polyimide-tape.jpg",
         slug: "polyimide-smt-tape",
         sku: "TARAS-PI-5413",
         standard: "ASTM D3330 • UL 510"
@@ -74,7 +58,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Anti-Static ESD Polyimide Tape",
         specs: "10^6 - 10^9 Ω • Low Charge (<50V)",
         priceEstimate: "₹210 - ₹245 / Roll",
-        visualType: "polyimide",
+        image: "/images/products/polyimide-tape.jpg",
         slug: "esd-dissipative-tape",
         sku: "TARAS-PI-ESD",
         standard: "ANSI/ESD S20.20"
@@ -84,7 +68,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Amber Wave Solder Masking Tape",
         specs: "280°C Peak • 65µm • Clean Peel",
         priceEstimate: "₹155 - ₹180 / Roll",
-        visualType: "polyimide",
+        image: "/images/products/polyimide-tape.jpg",
         slug: "amber-masking-tape",
         sku: "TARAS-PI-280",
         standard: "Zero Residue ASTM"
@@ -94,7 +78,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "High-Tensile Glass Cloth Tape",
         specs: "200°C Class H • Solventless Silicone",
         priceEstimate: "₹180 - ₹210 / Roll",
-        visualType: "glass-cloth",
+        image: "/images/products/fiberglass-tape.jpg",
         slug: "glass-cloth-tape",
         sku: "TARAS-GC-200",
         standard: "IS 13357 / IEC"
@@ -104,7 +88,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Low-Static Semiconductor Film",
         specs: "Removes Below 50V • Cleanroom ISO 6",
         priceEstimate: "₹230 - ₹260 / Roll",
-        visualType: "polyimide",
+        image: "/images/products/polyimide-tape.jpg",
         slug: "low-static-polyimide",
         sku: "TARAS-PI-LS50",
         standard: "Cleanroom Class 6"
@@ -114,7 +98,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Silicone Splicing Polyimide Tape",
         specs: "Ultra-Thin 25µm • High Dynamic Shear",
         priceEstimate: "₹135 - ₹155 / Roll",
-        visualType: "polyimide",
+        image: "/images/products/polyimide-tape.jpg",
         slug: "silicone-splicing-tape",
         sku: "TARAS-PI-SPLICE",
         standard: "High-Tack Silicone"
@@ -132,7 +116,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Acrylic Foam VHB Tape 1.0mm",
         specs: "1000µm Solid Core • High Dynamic Shear",
         priceEstimate: "₹380 - ₹430 / Roll",
-        visualType: "vhb-red",
+        image: "/images/products/vhb-foam-tape.jpg",
         slug: "acrylic-foam-vhb",
         sku: "TARAS-VAF-1000",
         standard: "ASTM D3654 • IATF"
@@ -142,7 +126,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Thin Acrylic Foam Tape 0.5mm",
         specs: "500µm • Bezel & Emblem High Bond",
         priceEstimate: "₹290 - ₹340 / Roll",
-        visualType: "vhb-red",
+        image: "/images/products/vhb-foam-tape.jpg",
         slug: "thin-acrylic-foam",
         sku: "TARAS-VAF-0500",
         standard: "High Cohesion"
@@ -152,7 +136,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Clear Optical Acrylic Bonding Tape",
         specs: "Optically Clear Solid Acrylic • Glass Bond",
         priceEstimate: "₹420 - ₹480 / Roll",
-        visualType: "vhb-clear",
+        image: "/images/products/vhb-foam-tape.jpg",
         slug: "clear-optical-vhb",
         sku: "TARAS-VAF-4910",
         standard: "100% Solid Acrylic"
@@ -162,7 +146,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Automotive Black Body Foam Tape",
         specs: "1.1mm Weatherproof • Trim & Molding",
         priceEstimate: "₹360 - ₹415 / Roll",
-        visualType: "vhb-black",
+        image: "/images/products/wire-harness-tape.jpg",
         slug: "black-automotive-foam",
         sku: "TARAS-VAF-5952",
         standard: "IATF 16949 Aligned"
@@ -172,7 +156,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Pre-Paint High-Temp Foam Tape",
         specs: "230°C Powder Coat Bake Resistance",
         priceEstimate: "₹440 - ₹495 / Roll",
-        visualType: "vhb-black",
+        image: "/images/products/vhb-foam-tape.jpg",
         slug: "prepaint-hightemp-foam",
         sku: "TARAS-VAF-GPH",
         standard: "230°C Cure Stable"
@@ -182,7 +166,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Plasticizer-Resistant Gray Foam",
         specs: "1.1mm • Multi-Surface Vinyl Bonding",
         priceEstimate: "₹390 - ₹440 / Roll",
-        visualType: "vhb-black",
+        image: "/images/products/vhb-foam-tape.jpg",
         slug: "gray-industrial-foam",
         sku: "TARAS-VAF-4941",
         standard: "Plasticizer Immune"
@@ -200,7 +184,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Clear PET Double-Sided Tape",
         specs: "Tesa 4965 Type • Red MOPP Release Liner",
         priceEstimate: "₹165 - ₹195 / Roll",
-        visualType: "pet-clear",
+        image: "/images/products/vhb-foam-tape.jpg",
         slug: "clear-pet-double-sided",
         sku: "TARAS-DS-4965",
         standard: "ASTM D3330 22N/25mm"
@@ -210,7 +194,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Non-Woven Tissue Double-Sided",
         specs: "9080A Type • High Initial Tack 150µm",
         priceEstimate: "₹110 - ₹135 / Roll",
-        visualType: "pet-clear",
+        image: "/images/products/crepe-masking-tape.jpg",
         slug: "tissue-double-sided",
         sku: "TARAS-DS-9080",
         standard: "High Initial Tack"
@@ -220,7 +204,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "High-Performance Transfer Film",
         specs: "468MP Adhesive Transfer • 130µm Pure Acrylic",
         priceEstimate: "₹240 - ₹280 / Roll",
-        visualType: "pet-clear",
+        image: "/images/products/vhb-foam-tape.jpg",
         slug: "transfer-adhesive-film",
         sku: "TARAS-AT-468",
         standard: "Solvent Resistant"
@@ -230,7 +214,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Optically Clear Adhesive (OCA Film)",
         specs: "Display Screen Lamination • 175µm Ultra-Clear",
         priceEstimate: "₹450 - ₹520 / Pack",
-        visualType: "vhb-clear",
+        image: "/images/products/vhb-foam-tape.jpg",
         slug: "oca-optical-film",
         sku: "TARAS-OCA-175",
         standard: "99.8% Transmission"
@@ -240,7 +224,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Differential Removable Film Tape",
         specs: "Permanent Face / Clean-Peel Liner Side",
         priceEstimate: "₹185 - ₹215 / Roll",
-        visualType: "pet-clear",
+        image: "/images/products/green-masking-tape.jpg",
         slug: "differential-removable-tape",
         sku: "TARAS-DS-DIFF",
         standard: "Dual Chemistry"
@@ -250,7 +234,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Cross-Filament Strapping Tape",
         specs: "High-Tensile Glass Yarn Core • Heavy Bundling",
         priceEstimate: "₹140 - ₹165 / Roll",
-        visualType: "filament",
+        image: "/images/products/fiberglass-tape.jpg",
         slug: "cross-filament-tape",
         sku: "TARAS-STRAP-FIL",
         standard: "Extreme Tensile"
@@ -268,7 +252,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Green Powder Coating Masking Tape",
         specs: "220°C Bake • 85µm Polyester • Clean Removal",
         priceEstimate: "₹190 - ₹225 / Roll",
-        visualType: "green-masking",
+        image: "/images/products/green-masking-tape.jpg",
         slug: "green-powder-coating-tape",
         sku: "TARAS-MASK-220",
         standard: "3M 8992 Equivalent"
@@ -278,7 +262,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Automotive Crepe Masking Tape",
         specs: "120°C Oven Bake • Clean Paint Line",
         priceEstimate: "₹95 - ₹120 / Roll",
-        visualType: "filament",
+        image: "/images/products/crepe-masking-tape.jpg",
         slug: "crepe-masking-tape",
         sku: "TARAS-MASK-120",
         standard: "Automotive Paint"
@@ -288,7 +272,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "PE Surface Protection Film",
         specs: "Low-Tack Blue / Clear Film • Zero Ghosting",
         priceEstimate: "₹18 - ₹24 / sq.m",
-        visualType: "pvc-blue",
+        image: "/images/products/electrical-pvc-tape.jpg",
         slug: "pe-surface-protection-film",
         sku: "TARAS-PROT-PE",
         standard: "Optical Substrates"
@@ -298,7 +282,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Sandblasting Heavy-Duty Barrier Tape",
         specs: "Thick Rubber Backing • Abrasion Resistant",
         priceEstimate: "₹340 - ₹390 / Roll",
-        visualType: "glass-cloth",
+        image: "/images/products/crepe-masking-tape.jpg",
         slug: "sandblast-barrier-tape",
         sku: "TARAS-BLAST-RUB",
         standard: "Severe Grit Tested"
@@ -308,7 +292,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Electroplating Chemical Masking Tape",
         specs: "Acid & Alkali Resistant Vinyl Backing",
         priceEstimate: "₹210 - ₹250 / Roll",
-        visualType: "pvc-black",
+        image: "/images/products/green-masking-tape.jpg",
         slug: "electroplating-masking-tape",
         sku: "TARAS-PLATING-VIN",
         standard: "Chemical Anodizing"
@@ -318,7 +302,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Glass Cloth Class H Masking Tape",
         specs: "200°C High-Tensile • Flame Retardant",
         priceEstimate: "₹195 - ₹225 / Roll",
-        visualType: "glass-cloth",
+        image: "/images/products/fiberglass-tape.jpg",
         slug: "glass-cloth-masking-tape",
         sku: "TARAS-GC-CLASS-H",
         standard: "UL 510 Flame Rated"
@@ -336,7 +320,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Ultra-Therm Silicone Gap Pad (6.0 W/m-K)",
         specs: "6.0 W/m-K • High Compressibility • UL 94 V-0",
         priceEstimate: "₹1,450 - ₹1,700 / Sheet",
-        visualType: "tim-pad",
+        image: "/images/products/copper-foil-tape.jpg",
         slug: "silicone-gap-pad-60",
         sku: "TARAS-TIM-6000",
         standard: "ASTM D5470 • IATF"
@@ -346,7 +330,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Ultra-Therm Standard Gap Pad (3.2 W/m-K)",
         specs: "3.2 W/m-K • Low Outgassing ASTM E595",
         priceEstimate: "₹680 - ₹820 / Sheet",
-        visualType: "tim-pad",
+        image: "/images/products/copper-foil-tape.jpg",
         slug: "silicone-gap-pad-32",
         sku: "TARAS-TIM-3000",
         standard: "UL 94 V-0 Certified"
@@ -356,7 +340,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Copper Foil EMI Shielding Tape",
         specs: "Conductive Acrylic PSA • 85 dB Attenuation",
         priceEstimate: "₹280 - ₹340 / Roll",
-        visualType: "copper-foil",
+        image: "/images/products/copper-foil-tape.jpg",
         slug: "copper-foil-emi-tape",
         sku: "TARAS-EMI-CU1181",
         standard: "MIL-STD-285 EMI"
@@ -366,7 +350,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Aluminum Foil Heat Reflective Tape",
         specs: "50µm Dead Soft Foil • Flame Spread UL 723",
         priceEstimate: "₹140 - ₹175 / Roll",
-        visualType: "aluminum-foil",
+        image: "/images/products/copper-foil-tape.jpg",
         slug: "aluminum-foil-tape",
         sku: "TARAS-FOIL-AL50",
         standard: "UL 723 Vapor Seal"
@@ -376,7 +360,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Synthetic Graphite Heat Spreader",
         specs: "1500 W/m-K In-Plane Conductivity",
         priceEstimate: "₹590 - ₹690 / Sheet",
-        visualType: "cloth-fleece",
+        image: "/images/products/wire-harness-tape.jpg",
         slug: "graphite-heat-spreader",
         sku: "TARAS-TIM-GRAPH",
         standard: "Ultra-High K-Value"
@@ -386,7 +370,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Thermally Conductive Transfer Tape",
         specs: "Ceramic Filled Acrylic • 1.2 W/m-K",
         priceEstimate: "₹310 - ₹360 / Roll",
-        visualType: "tim-pad",
+        image: "/images/products/polyimide-tape.jpg",
         slug: "thermal-transfer-tape",
         sku: "TARAS-TIM-8810",
         standard: "Bond & Dissipate"
@@ -404,7 +388,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "ElectraShield Mica Glass Cloth Tape",
         specs: "18 kV/mm Breakdown • IEC 60331 Fire Safe",
         priceEstimate: "₹540 - ₹620 / Roll",
-        visualType: "glass-cloth",
+        image: "/images/products/fiberglass-tape.jpg",
         slug: "mica-glass-cloth-tape",
         sku: "TARAS-MICA-800",
         standard: "CPRI Tested IS 13357"
@@ -414,7 +398,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Automotive Wire Harness Fleece Tape",
         specs: "Class C Noise Dampening • Tesa 51608 Type",
         priceEstimate: "₹85 - ₹105 / Roll",
-        visualType: "cloth-fleece",
+        image: "/images/products/wire-harness-tape.jpg",
         slug: "wire-harness-fleece-tape",
         sku: "TARAS-HARN-516",
         standard: "LV 312 OEM Standard"
@@ -424,7 +408,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "FR PVC Electrical Tape (Blue)",
         specs: "IS 7809 • 6 kV Breakdown • Flame Retardant",
         priceEstimate: "₹38 - ₹48 / Roll",
-        visualType: "pvc-blue",
+        image: "/images/products/electrical-pvc-tape.jpg",
         slug: "pvc-electrical-tape-blue",
         sku: "TARAS-PVC-BLU",
         standard: "BIS IS 7809 Certified"
@@ -434,7 +418,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "FR PVC Electrical Tape (Black)",
         specs: "IS 7809 • Weatherproof Vinyl • Non-Flagging",
         priceEstimate: "₹38 - ₹48 / Roll",
-        visualType: "pvc-black",
+        image: "/images/products/electrical-pvc-tape.jpg",
         slug: "pvc-electrical-tape-black",
         sku: "TARAS-PVC-BLK",
         standard: "BIS IS 7809 Certified"
@@ -444,7 +428,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Self-Amalgamating Rubber Splicing Tape",
         specs: "High-Voltage Cable Jointing • Water Seal 35 kV",
         priceEstimate: "₹180 - ₹220 / Roll",
-        visualType: "pvc-black",
+        image: "/images/products/wire-harness-tape.jpg",
         slug: "self-amalgamating-rubber-tape",
         sku: "TARAS-RUB-35KV",
         standard: "Emergency Splicing"
@@ -454,7 +438,7 @@ export const CATALOG_DATA: CatalogSubCategory[] = [
         name: "Nomex Aramid Insulation Tape",
         specs: "Class H 180°C Transformer Barrier",
         priceEstimate: "₹320 - ₹380 / Roll",
-        visualType: "glass-cloth",
+        image: "/images/products/polyimide-tape.jpg",
         slug: "nomex-aramid-insulation-tape",
         sku: "TARAS-NMX-410",
         standard: "High Dielectric"
@@ -714,15 +698,18 @@ export default function CatalogBrowsePage() {
                       key={product.id}
                       className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-[#0B4FDF]/40 hover:shadow-lg transition-all duration-300 flex flex-col justify-between group shadow-xs"
                     >
-                      {/* Product Visual (Authentic Tape Roll Component) */}
-                      <Link href={`/products/${product.slug}`} className="block relative aspect-[4/3] bg-slate-50 overflow-hidden">
-                        <TapeProductVisual 
-                          type={product.visualType} 
-                          badge={product.sku}
-                          className="w-full h-full"
+                      {/* Product Visual (Authentic Commercial Product Photo) */}
+                      <Link href={`/products/${product.slug}`} className="block relative aspect-[4/3] bg-white overflow-hidden">
+                        <img 
+                          src={product.image} 
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono text-slate-800 font-bold border border-slate-200 shadow-2xs">
                           {product.standard}
+                        </div>
+                        <div className="absolute bottom-2.5 right-2.5 bg-slate-900/80 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono text-white font-bold">
+                          {product.sku}
                         </div>
                       </Link>
 
@@ -829,9 +816,10 @@ export default function CatalogBrowsePage() {
                   {/* Selected Spec Summary Box */}
                   <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3">
                     <div className="w-16 h-12 rounded-lg overflow-hidden border border-slate-200 bg-white">
-                      <TapeProductVisual 
-                        type={modalProduct.visualType}
-                        className="w-full h-full"
+                      <img 
+                        src={modalProduct.image} 
+                        alt={modalProduct.name}
+                        className="w-full h-full object-cover"
                       />
                     </div>
                     <div>

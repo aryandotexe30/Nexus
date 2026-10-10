@@ -25,7 +25,6 @@ import {
   Info
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import TapeProductVisual from "@/components/TapeProductVisual";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -121,12 +120,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left: Product Image & Badges (5 cols) */}
             <div className="lg:col-span-5 space-y-4">
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center group shadow-xs">
-                <TapeProductVisual 
-                  type="polyimide" 
-                  badge="ASTM D3330 • Class H (260°C)" 
-                  coreText="33M CORE"
-                  className="w-full h-full"
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-slate-200 bg-white flex items-center justify-center group shadow-sm">
+                <img 
+                  src="/images/products/polyimide-tape.jpg" 
+                  alt="High-Temp Polyimide SMT Masking Tape"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-md text-[11px] font-mono text-slate-800 font-bold border border-slate-200 shadow-2xs z-20">
                   SKU: TARAS-PI-5413
@@ -323,27 +321,27 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           </div>
         </div>
 
-        {/* FREQUENTLY CONVERTED & PAIRED SUBSTRATES */}
+        {/* FREQUENTLY BOUGHT WITH POLYIMIDE SMT TAPE */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900">
-            Frequently Paired Technical Tapes & Substrates
+            Frequently Bought with Polyimide SMT Tape
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
-              { name: "Clear PET Double-Sided Tape", spec: "Tesa 4965 Type • Red MOPP Liner", price: "₹165 / Roll", visualType: "pet-clear" as const, sku: "TARAS-DS-4965" },
-              { name: "Green Powder Coating Masking", spec: "220°C Bake • Clean Removal", price: "₹190 / Roll", visualType: "green-masking" as const, sku: "TARAS-MASK-220" },
-              { name: "Anti-Static ESD Polyimide", spec: "Surface Resistivity 10^6 - 10^9 Ω", price: "₹210 / Roll", visualType: "polyimide" as const, sku: "TARAS-PI-ESD" },
-              { name: "High-Tensile Glass Cloth Tape", spec: "Class H 200°C • Silicone PSA", price: "₹180 / Roll", visualType: "glass-cloth" as const, sku: "TARAS-GC-200" }
+              { name: "Acrylic Foam VHB Tape", spec: "1000µm Solid Core • High Shear", price: "₹380 / Roll", image: "/images/products/vhb-foam-tape.jpg", sku: "TARAS-VAF-1000" },
+              { name: "Green Powder Coating Tape", spec: "220°C Bake • Clean Removal", price: "₹190 / Roll", image: "/images/products/green-masking-tape.jpg", sku: "TARAS-MASK-220" },
+              { name: "Copper Foil EMI Tape", spec: "Conductive Acrylic • 85 dB", price: "₹280 / Roll", image: "/images/products/copper-foil-tape.jpg", sku: "TARAS-EMI-CU1181" },
+              { name: "Fiberglass Cloth Tape", spec: "Class H 200°C • Silicone PSA", price: "₹180 / Roll", image: "/images/products/fiberglass-tape.jpg", sku: "TARAS-GC-200" }
             ].map((item, idx) => (
               <div 
                 key={idx}
                 className="p-3 rounded-xl bg-slate-50/60 border border-slate-200 hover:border-[#0B4FDF]/40 hover:bg-white transition-all space-y-2 group cursor-pointer shadow-2xs"
               >
                 <div className="w-full aspect-[4/3] rounded-lg overflow-hidden border border-slate-200 bg-white group-hover:scale-102 transition-transform">
-                  <TapeProductVisual 
-                    type={item.visualType} 
-                    badge={item.sku}
-                    className="w-full h-full"
+                  <img 
+                    src={item.image} 
+                    alt={item.name}
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
