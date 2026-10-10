@@ -20,7 +20,8 @@ import {
   Headset,
   Database,
   AlertTriangle,
-  Repeat
+  Repeat,
+  Layers
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -82,7 +83,7 @@ export default function Sidebar() {
     { id: "hub", name: "Hub", path: "/dashboard", icon: LayoutDashboard },
     { id: "finder", name: "Finder", path: "/agent", icon: Search },
     { id: "marketplace", name: "Marketplace", path: "/dashboard/marketplace", icon: Store },
-    { id: "products", name: "Products Master", path: "/products", icon: Database },
+    { id: "catalog", name: "Industrial Catalog", path: "/catalog", icon: Layers },
     { id: "tri_flow", name: "TriFlow & Sentinel", path: "/tri-flow", icon: Repeat },
     { id: "business_plan", name: "Business Plan", path: "/dashboard/business-plan", icon: TrendingUp, requiredPlan: ["ENTERPRISE"] },
     { id: "equity_funding", name: "Equity & IPO", path: "/dashboard/equity-funding", icon: Landmark, requiredPlan: ["ENTERPRISE"] },
@@ -90,6 +91,7 @@ export default function Sidebar() {
   ];
 
   if (isAdmin) {
+    allRoutes.push({ id: "products", name: "Products Master", path: "/products", icon: Database });
     allRoutes.push({ id: "admin_console", name: "Admin Console", path: "/admin", icon: ShieldCheck });
     allRoutes.push({ id: "customer_care", name: "Customer Care", path: "/admin/support", icon: Headset });
   }

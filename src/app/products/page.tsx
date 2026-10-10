@@ -14,9 +14,12 @@ import {
   Tag, 
   CheckCircle2, 
   AlertCircle,
-  Network
+  Network,
+  ShieldAlert,
+  ArrowRight
 } from "lucide-react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 interface ExtractedProduct {
   id: string;
@@ -54,6 +57,9 @@ const getLocationBadge = (loc?: string) => {
 };
 
 export default function ProductsPage() {
+  const { data: session, status } = useSession();
+  const isAdmin = (session?.user as any)?.role === "ADMIN";
+
   const [query, setQuery] = useState("");
   const [isHarvesting, setIsHarvesting] = useState(false);
   const [harvestLogs, setHarvestLogs] = useState<string[]>([]);
@@ -257,6 +263,47 @@ export default function ProductsPage() {
     link.click();
     document.body.removeChild(link);
   };
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-5 shadow-2xl">
+          <div className="w-14 h-14 rounded-full bg-red-500/10 text-red-400 mx-auto flex items-center justify-center border border-red-500/20">
+            <ShieldAlert className="w-7 h-7" />
+          </div>
+          <div className="space-y-1.5">
+            <h2 className="text-xl font-bold text-white">Admin Privileges Required</h2>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              The Products Master console is restricted to administrative staff for data harvesting and catalog ingestion.
+            </p>
+          </div>
+          <div className="pt-2 flex flex-col gap-2">
+            <Link
+              href="/catalog"
+              className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20"
+            >
+              <span>Browse Public Industrial Catalog</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/dashboard"
+              className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition-colors"
+            >
+              Return to Hub Dashboard
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full space-y-8 pb-20">
