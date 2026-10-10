@@ -176,25 +176,25 @@ const CATEGORY_GROUPS: CategoryGroup[] = [
 
 export default function CategoriesWeServe() {
   return (
-    <section className="py-12 sm:py-16 bg-slate-900/60 border-y border-slate-800">
+    <section className="py-12 sm:py-16 bg-[#F5F5F7] border-y border-slate-200">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Section Heading with Italic Gradient Shimmer */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
-              <span className="italic bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent mr-2 font-black">
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+              <span className="italic bg-gradient-to-r from-[#0B4FDF] via-blue-600 to-indigo-600 bg-clip-text text-transparent mr-2 font-black">
                 Categories
               </span>
               We Serve
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1.5 font-sans">
+            <p className="text-xs sm:text-sm text-slate-600 mt-1.5 font-sans">
               Explore raw materials, precision converting clusters, and finished OEM contracts across India&apos;s key industrial corridors.
             </p>
           </div>
           <Link
-            href="/products"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors uppercase tracking-wider self-start sm:self-auto"
+            href="/catalog"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B4FDF] hover:text-blue-700 transition-colors uppercase tracking-wider self-start sm:self-auto"
           >
             <span>View Full Directory</span>
             <ChevronRight className="w-4 h-4" />
@@ -206,7 +206,7 @@ export default function CategoriesWeServe() {
           {CATEGORY_GROUPS.map((group) => (
             <div
               key={group.id}
-              className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg hover:border-slate-700 transition-all duration-300 grid grid-cols-1 lg:grid-cols-12"
+              className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-xl hover:border-[#0B4FDF]/40 transition-all duration-300 grid grid-cols-1 lg:grid-cols-12"
             >
               {/* Left Category Banner (3 cols on lg) */}
               <Link
@@ -218,28 +218,28 @@ export default function CategoriesWeServe() {
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                   style={{ backgroundImage: `url('${group.bgImage}')` }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-slate-950/50 lg:bg-gradient-to-r lg:from-slate-950/80 lg:to-slate-950/95" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0B4FDF]/95 via-[#0B4FDF]/80 to-blue-900/60 lg:bg-gradient-to-r lg:from-[#0B4FDF]/95 lg:to-blue-800/80" />
 
                 {/* Content Overlay */}
                 <div className="relative z-10 space-y-1">
-                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight group-hover:text-blue-300 transition-colors">
                     {group.title}
                   </h3>
-                  <p className="text-xs text-slate-300 font-sans">
+                  <p className="text-xs text-slate-200 font-sans">
                     {group.subtitle}
                   </p>
                 </div>
 
                 {/* Arrow Circle Badge */}
                 <div className="relative z-10 self-end mt-4">
-                  <div className="w-8 h-8 rounded-full bg-white/10 group-hover:bg-blue-600 flex items-center justify-center text-white transition-all shadow-md group-hover:scale-110">
+                  <div className="w-8 h-8 rounded-full bg-white/20 group-hover:bg-[#0B4FDF] flex items-center justify-center text-white transition-all shadow-md group-hover:scale-110">
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
               </Link>
 
               {/* Right Content Area (9 cols on lg) */}
-              <div className="lg:col-span-9 p-5 sm:p-6 flex flex-col justify-between space-y-5 bg-slate-950/40">
+              <div className="lg:col-span-9 p-5 sm:p-6 flex flex-col justify-between space-y-5 bg-white">
                 {/* 6-Item Thumbnail Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
                   {group.items.map((item) => (
@@ -248,14 +248,14 @@ export default function CategoriesWeServe() {
                       href={item.link}
                       className="group/item flex flex-col items-center text-center space-y-2 cursor-pointer"
                     >
-                      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-900 border border-slate-800 relative shadow-sm group-hover/item:border-blue-500/50 transition-colors">
+                      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200 relative shadow-2xs group-hover/item:border-[#0B4FDF] transition-colors">
                         <img
                           src={item.image}
                           alt={item.name}
                           className="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-300"
                         />
                       </div>
-                      <span className="text-[11px] sm:text-xs font-semibold text-slate-300 group-hover/item:text-blue-400 transition-colors line-clamp-2 leading-tight">
+                      <span className="text-[11px] sm:text-xs font-semibold text-slate-800 group-hover/item:text-[#0B4FDF] transition-colors line-clamp-2 leading-tight">
                         {item.name}
                       </span>
                     </Link>
@@ -263,21 +263,21 @@ export default function CategoriesWeServe() {
                 </div>
 
                 {/* Bottom Stats & Trust Strip */}
-                <div className="p-3 sm:px-4 sm:py-2.5 rounded-xl bg-slate-900/90 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
-                  <div className="flex flex-wrap items-center gap-4 text-slate-400 text-[11px]">
+                <div className="p-3 sm:px-4 sm:py-2.5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+                  <div className="flex flex-wrap items-center gap-4 text-slate-600 text-[11px]">
                     <div className="flex items-center gap-1.5 font-medium">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#0B4FDF]" />
                       <span>{group.stat1}</span>
                     </div>
                     <div className="hidden md:flex items-center gap-1.5 font-medium">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
                       <span>{group.stat2}</span>
                     </div>
                   </div>
 
                   <Link
                     href={group.statLink}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-blue-400 hover:text-blue-300 transition-colors whitespace-nowrap self-end sm:self-auto group/link"
+                    className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0B4FDF] hover:text-blue-700 transition-colors whitespace-nowrap self-end sm:self-auto group/link"
                   >
                     <span>{group.statLinkText}</span>
                     <ChevronRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
