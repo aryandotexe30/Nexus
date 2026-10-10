@@ -202,6 +202,7 @@ export default function CatalogBrowsePage() {
 
   // Modal State
   const [modalProduct, setModalProduct] = useState<CatalogProduct | null>(null);
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [quoteQuantity, setQuoteQuantity] = useState("5,000");
   const [quotePincode, setQuotePincode] = useState("411018 (Pune MIDC)");
   const [userRole, setUserRole] = useState<"BUYER" | "CONVERTER">("BUYER");
