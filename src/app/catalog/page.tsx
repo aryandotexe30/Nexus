@@ -17,17 +17,34 @@ import {
   Layers
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import TapeProductVisual from "@/components/TapeProductVisual";
 
-interface CatalogProduct {
+export interface CatalogProduct {
   id: string;
   name: string;
   specs: string;
   priceEstimate: string;
-  image: string;
+  visualType: 
+    | "polyimide" 
+    | "vhb-red" 
+    | "vhb-clear"
+    | "vhb-black"
+    | "green-masking" 
+    | "copper-foil" 
+    | "glass-cloth" 
+    | "cloth-fleece" 
+    | "pvc-blue" 
+    | "pvc-black" 
+    | "tim-pad" 
+    | "aluminum-foil"
+    | "pet-clear"
+    | "filament";
   slug: string;
+  sku: string;
+  standard: string;
 }
 
-interface CatalogSubCategory {
+export interface CatalogSubCategory {
   id: string;
   name: string;
   count: number;
@@ -35,156 +52,412 @@ interface CatalogSubCategory {
   products: CatalogProduct[];
 }
 
-const CATALOG_DATA: CatalogSubCategory[] = [
+export const CATALOG_DATA: CatalogSubCategory[] = [
   {
     id: "high-temp-smt",
-    name: "High-Temp SMT Films",
+    name: "High-Temp Polyimide & SMT Tapes",
     count: 6,
-    description: "High-temp dielectric films covering SMT masking, wave solder protection, powder coating, and battery cell insulation specified by thickness, adhesive chemistry, section width, and length.",
+    description: "Amber Kapton-equivalent dielectric films, wave solder masking, cleanroom ESD shielding, and high-voltage transformer wraps with crosslinked silicone pressure-sensitive adhesive.",
     products: [
       {
         id: "p1",
-        name: "Polyimide SMT Tape",
+        name: "Polyimide SMT Masking Tape",
         specs: "260°C • 50µm • Silicone PSA",
         priceEstimate: "₹145 - ₹165 / Roll",
-        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=400&q=80",
-        slug: "polyimide-smt-tape"
+        visualType: "polyimide",
+        slug: "polyimide-smt-tape",
+        sku: "TARAS-PI-5413",
+        standard: "ASTM D3330 • UL 510"
       },
       {
         id: "p2",
-        name: "Amber Masking Tape",
-        specs: "280°C • 65µm • Clean Peel",
-        priceEstimate: "₹155 - ₹175 / Roll",
-        image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80",
-        slug: "amber-masking-tape"
+        name: "Anti-Static ESD Polyimide Tape",
+        specs: "10^6 - 10^9 Ω • Low Charge (<50V)",
+        priceEstimate: "₹210 - ₹245 / Roll",
+        visualType: "polyimide",
+        slug: "esd-dissipative-tape",
+        sku: "TARAS-PI-ESD",
+        standard: "ANSI/ESD S20.20"
       },
       {
         id: "p3",
-        name: "ESD Dissipative Tape",
-        specs: "10^6 - 10^9 Ω • Static Shield",
-        priceEstimate: "₹190 - ₹215 / Roll",
-        image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=400&q=80",
-        slug: "esd-dissipative-tape"
+        name: "Amber Wave Solder Masking Tape",
+        specs: "280°C Peak • 65µm • Clean Peel",
+        priceEstimate: "₹155 - ₹180 / Roll",
+        visualType: "polyimide",
+        slug: "amber-masking-tape",
+        sku: "TARAS-PI-280",
+        standard: "Zero Residue ASTM"
       },
       {
         id: "p4",
-        name: "Glass Cloth Tape",
-        specs: "200°C • High Tensile • Solventless",
-        priceEstimate: "₹180 - ₹205 / Roll",
-        image: "https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80",
-        slug: "glass-cloth-tape"
+        name: "High-Tensile Glass Cloth Tape",
+        specs: "200°C Class H • Solventless Silicone",
+        priceEstimate: "₹180 - ₹210 / Roll",
+        visualType: "glass-cloth",
+        slug: "glass-cloth-tape",
+        sku: "TARAS-GC-200",
+        standard: "IS 13357 / IEC"
       },
       {
         id: "p5",
-        name: "Low-Static Polyimide",
-        specs: "Removes Below 50V Charge",
-        priceEstimate: "₹220 - ₹250 / Roll",
-        image: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=400&q=80",
-        slug: "low-static-polyimide"
+        name: "Low-Static Semiconductor Film",
+        specs: "Removes Below 50V • Cleanroom ISO 6",
+        priceEstimate: "₹230 - ₹260 / Roll",
+        visualType: "polyimide",
+        slug: "low-static-polyimide",
+        sku: "TARAS-PI-LS50",
+        standard: "Cleanroom Class 6"
       },
       {
         id: "p6",
-        name: "Silicone Splicing Tape",
-        specs: "Ultra-Thin 25µm • High Shear",
-        priceEstimate: "₹130 - ₹150 / Roll",
-        image: "https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=400&q=80",
-        slug: "silicone-splicing-tape"
+        name: "Silicone Splicing Polyimide Tape",
+        specs: "Ultra-Thin 25µm • High Dynamic Shear",
+        priceEstimate: "₹135 - ₹155 / Roll",
+        visualType: "polyimide",
+        slug: "silicone-splicing-tape",
+        sku: "TARAS-PI-SPLICE",
+        standard: "High-Tack Silicone"
       }
     ]
   },
   {
     id: "structural-vhb",
-    name: "Structural Foam & VHB",
+    name: "Structural Acrylic Foam & VHB Tapes",
     count: 6,
-    description: "Viscoelastic acrylic foam bonding tapes replacing mechanical rivets, welds, and screws across automotive body panels, solar modules, and architectural facade cladding.",
+    description: "Viscoelastic solid acrylic foam bonding tapes engineered to eliminate rivets, screws, and welds across automotive panels, EV battery casings, and architectural facade cladding.",
     products: [
       {
         id: "p7",
-        name: "Acrylic Foam VHB 1.1mm",
-        specs: "Viscoelastic • High Dynamic Shear",
+        name: "Acrylic Foam VHB Tape 1.0mm",
+        specs: "1000µm Solid Core • High Dynamic Shear",
         priceEstimate: "₹380 - ₹430 / Roll",
-        image: "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=400&q=80",
-        slug: "acrylic-foam-vhb"
+        visualType: "vhb-red",
+        slug: "acrylic-foam-vhb",
+        sku: "TARAS-VAF-1000",
+        standard: "ASTM D3654 • IATF"
       },
       {
         id: "p8",
-        name: "Clear Optical VHB",
-        specs: "Optically Clear • Glass Bonding",
-        priceEstimate: "₹420 - ₹480 / Roll",
-        image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80",
-        slug: "clear-optical-vhb"
+        name: "Thin Acrylic Foam Tape 0.5mm",
+        specs: "500µm • Bezel & Emblem High Bond",
+        priceEstimate: "₹290 - ₹340 / Roll",
+        visualType: "vhb-red",
+        slug: "thin-acrylic-foam",
+        sku: "TARAS-VAF-0500",
+        standard: "High Cohesion"
       },
       {
         id: "p9",
-        name: "Black Automotive Foam",
-        specs: "Weather Resistant • UV Sealed",
-        priceEstimate: "₹360 - ₹410 / Roll",
-        image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=400&q=80",
-        slug: "black-automotive-foam"
+        name: "Clear Optical Acrylic Bonding Tape",
+        specs: "Optically Clear Solid Acrylic • Glass Bond",
+        priceEstimate: "₹420 - ₹480 / Roll",
+        visualType: "vhb-clear",
+        slug: "clear-optical-vhb",
+        sku: "TARAS-VAF-4910",
+        standard: "100% Solid Acrylic"
       },
       {
         id: "p10",
-        name: "PE Foam Mounting Tape",
-        specs: "Closed Cell • Cushion Damping",
-        priceEstimate: "₹95 - ₹120 / Roll",
-        image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=400&q=80",
-        slug: "pe-foam-mounting-tape"
+        name: "Automotive Black Body Foam Tape",
+        specs: "1.1mm Weatherproof • Trim & Molding",
+        priceEstimate: "₹360 - ₹415 / Roll",
+        visualType: "vhb-black",
+        slug: "black-automotive-foam",
+        sku: "TARAS-VAF-5952",
+        standard: "IATF 16949 Aligned"
       },
       {
         id: "p11",
-        name: "EVA Double-Sided Foam",
-        specs: "High Initial Tack • Gap Filling",
-        priceEstimate: "₹85 - ₹110 / Roll",
-        image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=400&q=80",
-        slug: "eva-double-sided-foam"
+        name: "Pre-Paint High-Temp Foam Tape",
+        specs: "230°C Powder Coat Bake Resistance",
+        priceEstimate: "₹440 - ₹495 / Roll",
+        visualType: "vhb-black",
+        slug: "prepaint-hightemp-foam",
+        sku: "TARAS-VAF-GPH",
+        standard: "230°C Cure Stable"
       },
       {
         id: "p12",
-        name: "Thermal Die-Cut Foam",
-        specs: "Precision Gasket Shapes",
+        name: "Plasticizer-Resistant Gray Foam",
+        specs: "1.1mm • Multi-Surface Vinyl Bonding",
+        priceEstimate: "₹390 - ₹440 / Roll",
+        visualType: "vhb-black",
+        slug: "gray-industrial-foam",
+        sku: "TARAS-VAF-4941",
+        standard: "Plasticizer Immune"
+      }
+    ]
+  },
+  {
+    id: "double-sided",
+    name: "Industrial Double-Sided Filmic Tapes",
+    count: 6,
+    description: "High-adhesion double-coated polyester, tissue, and transfer adhesive films with differential release liners for automotive extrusions, nameplates, and electronic assemblies.",
+    products: [
+      {
+        id: "p13",
+        name: "Clear PET Double-Sided Tape",
+        specs: "Tesa 4965 Type • Red MOPP Release Liner",
+        priceEstimate: "₹165 - ₹195 / Roll",
+        visualType: "pet-clear",
+        slug: "clear-pet-double-sided",
+        sku: "TARAS-DS-4965",
+        standard: "ASTM D3330 22N/25mm"
+      },
+      {
+        id: "p14",
+        name: "Non-Woven Tissue Double-Sided",
+        specs: "9080A Type • High Initial Tack 150µm",
+        priceEstimate: "₹110 - ₹135 / Roll",
+        visualType: "pet-clear",
+        slug: "tissue-double-sided",
+        sku: "TARAS-DS-9080",
+        standard: "High Initial Tack"
+      },
+      {
+        id: "p15",
+        name: "High-Performance Transfer Film",
+        specs: "468MP Adhesive Transfer • 130µm Pure Acrylic",
+        priceEstimate: "₹240 - ₹280 / Roll",
+        visualType: "pet-clear",
+        slug: "transfer-adhesive-film",
+        sku: "TARAS-AT-468",
+        standard: "Solvent Resistant"
+      },
+      {
+        id: "p16",
+        name: "Optically Clear Adhesive (OCA Film)",
+        specs: "Display Screen Lamination • 175µm Ultra-Clear",
         priceEstimate: "₹450 - ₹520 / Pack",
-        image: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=400&q=80",
-        slug: "thermal-die-cut-foam"
+        visualType: "vhb-clear",
+        slug: "oca-optical-film",
+        sku: "TARAS-OCA-175",
+        standard: "99.8% Transmission"
+      },
+      {
+        id: "p17",
+        name: "Differential Removable Film Tape",
+        specs: "Permanent Face / Clean-Peel Liner Side",
+        priceEstimate: "₹185 - ₹215 / Roll",
+        visualType: "pet-clear",
+        slug: "differential-removable-tape",
+        sku: "TARAS-DS-DIFF",
+        standard: "Dual Chemistry"
+      },
+      {
+        id: "p18",
+        name: "Cross-Filament Strapping Tape",
+        specs: "High-Tensile Glass Yarn Core • Heavy Bundling",
+        priceEstimate: "₹140 - ₹165 / Roll",
+        visualType: "filament",
+        slug: "cross-filament-tape",
+        sku: "TARAS-STRAP-FIL",
+        standard: "Extreme Tensile"
+      }
+    ]
+  },
+  {
+    id: "process-masking",
+    name: "Surface Protection & Process Masking",
+    count: 6,
+    description: "Heavy-duty powder coating green films, clean-removal surface protection, and high-temperature crepe paper masking tapes for precision industrial manufacturing.",
+    products: [
+      {
+        id: "p19",
+        name: "Green Powder Coating Masking Tape",
+        specs: "220°C Bake • 85µm Polyester • Clean Removal",
+        priceEstimate: "₹190 - ₹225 / Roll",
+        visualType: "green-masking",
+        slug: "green-powder-coating-tape",
+        sku: "TARAS-MASK-220",
+        standard: "3M 8992 Equivalent"
+      },
+      {
+        id: "p20",
+        name: "Automotive Crepe Masking Tape",
+        specs: "120°C Oven Bake • Clean Paint Line",
+        priceEstimate: "₹95 - ₹120 / Roll",
+        visualType: "filament",
+        slug: "crepe-masking-tape",
+        sku: "TARAS-MASK-120",
+        standard: "Automotive Paint"
+      },
+      {
+        id: "p21",
+        name: "PE Surface Protection Film",
+        specs: "Low-Tack Blue / Clear Film • Zero Ghosting",
+        priceEstimate: "₹18 - ₹24 / sq.m",
+        visualType: "pvc-blue",
+        slug: "pe-surface-protection-film",
+        sku: "TARAS-PROT-PE",
+        standard: "Optical Substrates"
+      },
+      {
+        id: "p22",
+        name: "Sandblasting Heavy-Duty Barrier Tape",
+        specs: "Thick Rubber Backing • Abrasion Resistant",
+        priceEstimate: "₹340 - ₹390 / Roll",
+        visualType: "glass-cloth",
+        slug: "sandblast-barrier-tape",
+        sku: "TARAS-BLAST-RUB",
+        standard: "Severe Grit Tested"
+      },
+      {
+        id: "p23",
+        name: "Electroplating Chemical Masking Tape",
+        specs: "Acid & Alkali Resistant Vinyl Backing",
+        priceEstimate: "₹210 - ₹250 / Roll",
+        visualType: "pvc-black",
+        slug: "electroplating-masking-tape",
+        sku: "TARAS-PLATING-VIN",
+        standard: "Chemical Anodizing"
+      },
+      {
+        id: "p24",
+        name: "Glass Cloth Class H Masking Tape",
+        specs: "200°C High-Tensile • Flame Retardant",
+        priceEstimate: "₹195 - ₹225 / Roll",
+        visualType: "glass-cloth",
+        slug: "glass-cloth-masking-tape",
+        sku: "TARAS-GC-CLASS-H",
+        standard: "UL 510 Flame Rated"
       }
     ]
   },
   {
     id: "thermal-emi",
-    name: "Thermal & EMI Shielding",
-    count: 4,
-    description: "Conductive metal foils and thermal interface substrates providing high electromagnetic interference shielding and continuous heat dissipation for EV battery packs and electronics.",
+    name: "Thermal Management & EMI Shielding",
+    count: 6,
+    description: "Conductive copper and aluminum foil tapes, compressible silicone gap filler pads, and synthetic graphite heat spreaders for EV batteries and power electronics.",
     products: [
       {
-        id: "p13",
-        name: "Copper Foil EMI Tape",
-        specs: "Conductive Adhesive • 85 dB Shield",
+        id: "p25",
+        name: "Ultra-Therm Silicone Gap Pad (6.0 W/m-K)",
+        specs: "6.0 W/m-K • High Compressibility • UL 94 V-0",
+        priceEstimate: "₹1,450 - ₹1,700 / Sheet",
+        visualType: "tim-pad",
+        slug: "silicone-gap-pad-60",
+        sku: "TARAS-TIM-6000",
+        standard: "ASTM D5470 • IATF"
+      },
+      {
+        id: "p26",
+        name: "Ultra-Therm Standard Gap Pad (3.2 W/m-K)",
+        specs: "3.2 W/m-K • Low Outgassing ASTM E595",
+        priceEstimate: "₹680 - ₹820 / Sheet",
+        visualType: "tim-pad",
+        slug: "silicone-gap-pad-32",
+        sku: "TARAS-TIM-3000",
+        standard: "UL 94 V-0 Certified"
+      },
+      {
+        id: "p27",
+        name: "Copper Foil EMI Shielding Tape",
+        specs: "Conductive Acrylic PSA • 85 dB Attenuation",
         priceEstimate: "₹280 - ₹340 / Roll",
-        image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=400&q=80",
-        slug: "copper-foil-emi-tape"
+        visualType: "copper-foil",
+        slug: "copper-foil-emi-tape",
+        sku: "TARAS-EMI-CU1181",
+        standard: "MIL-STD-285 EMI"
       },
       {
-        id: "p14",
-        name: "Aluminum Foil Tape",
-        specs: "Flame Retardant UL 723 • Vapor Seal",
+        id: "p28",
+        name: "Aluminum Foil Heat Reflective Tape",
+        specs: "50µm Dead Soft Foil • Flame Spread UL 723",
         priceEstimate: "₹140 - ₹175 / Roll",
-        image: "https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80",
-        slug: "aluminum-foil-tape"
+        visualType: "aluminum-foil",
+        slug: "aluminum-foil-tape",
+        sku: "TARAS-FOIL-AL50",
+        standard: "UL 723 Vapor Seal"
       },
       {
-        id: "p15",
-        name: "Graphite Heat Spreader",
-        specs: "1500 W/m-K In-Plane • Ultra-Thin",
-        priceEstimate: "₹650 - ₹750 / Sheet",
-        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=400&q=80",
-        slug: "graphite-heat-spreader"
+        id: "p29",
+        name: "Synthetic Graphite Heat Spreader",
+        specs: "1500 W/m-K In-Plane Conductivity",
+        priceEstimate: "₹590 - ₹690 / Sheet",
+        visualType: "cloth-fleece",
+        slug: "graphite-heat-spreader",
+        sku: "TARAS-TIM-GRAPH",
+        standard: "Ultra-High K-Value"
       },
       {
-        id: "p16",
-        name: "Thermal Gap Filler Pad",
-        specs: "3.0 W/m-K • Dielectric Silicone",
-        priceEstimate: "₹520 - ₹610 / Pack",
-        image: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=400&q=80",
-        slug: "thermal-gap-filler-pad"
+        id: "p30",
+        name: "Thermally Conductive Transfer Tape",
+        specs: "Ceramic Filled Acrylic • 1.2 W/m-K",
+        priceEstimate: "₹310 - ₹360 / Roll",
+        visualType: "tim-pad",
+        slug: "thermal-transfer-tape",
+        sku: "TARAS-TIM-8810",
+        standard: "Bond & Dissipate"
+      }
+    ]
+  },
+  {
+    id: "electrical-machinery",
+    name: "Electrical Machinery & Wire Harness",
+    count: 6,
+    description: "High-voltage transformer mica tapes, automotive noise-dampening harness fleece, and flame-retardant electrical vinyl tapes for utilities and OEM manufacturing.",
+    products: [
+      {
+        id: "p31",
+        name: "ElectraShield Mica Glass Cloth Tape",
+        specs: "18 kV/mm Breakdown • IEC 60331 Fire Safe",
+        priceEstimate: "₹540 - ₹620 / Roll",
+        visualType: "glass-cloth",
+        slug: "mica-glass-cloth-tape",
+        sku: "TARAS-MICA-800",
+        standard: "CPRI Tested IS 13357"
+      },
+      {
+        id: "p32",
+        name: "Automotive Wire Harness Fleece Tape",
+        specs: "Class C Noise Dampening • Tesa 51608 Type",
+        priceEstimate: "₹85 - ₹105 / Roll",
+        visualType: "cloth-fleece",
+        slug: "wire-harness-fleece-tape",
+        sku: "TARAS-HARN-516",
+        standard: "LV 312 OEM Standard"
+      },
+      {
+        id: "p33",
+        name: "FR PVC Electrical Tape (Blue)",
+        specs: "IS 7809 • 6 kV Breakdown • Flame Retardant",
+        priceEstimate: "₹38 - ₹48 / Roll",
+        visualType: "pvc-blue",
+        slug: "pvc-electrical-tape-blue",
+        sku: "TARAS-PVC-BLU",
+        standard: "BIS IS 7809 Certified"
+      },
+      {
+        id: "p34",
+        name: "FR PVC Electrical Tape (Black)",
+        specs: "IS 7809 • Weatherproof Vinyl • Non-Flagging",
+        priceEstimate: "₹38 - ₹48 / Roll",
+        visualType: "pvc-black",
+        slug: "pvc-electrical-tape-black",
+        sku: "TARAS-PVC-BLK",
+        standard: "BIS IS 7809 Certified"
+      },
+      {
+        id: "p35",
+        name: "Self-Amalgamating Rubber Splicing Tape",
+        specs: "High-Voltage Cable Jointing • Water Seal 35 kV",
+        priceEstimate: "₹180 - ₹220 / Roll",
+        visualType: "pvc-black",
+        slug: "self-amalgamating-rubber-tape",
+        sku: "TARAS-RUB-35KV",
+        standard: "Emergency Splicing"
+      },
+      {
+        id: "p36",
+        name: "Nomex Aramid Insulation Tape",
+        specs: "Class H 180°C Transformer Barrier",
+        priceEstimate: "₹320 - ₹380 / Roll",
+        visualType: "glass-cloth",
+        slug: "nomex-aramid-insulation-tape",
+        sku: "TARAS-NMX-410",
+        standard: "High Dielectric"
       }
     ]
   }
@@ -212,17 +485,75 @@ export default function CatalogBrowsePage() {
       <div className="border-b border-slate-200 bg-white/90 sticky top-0 z-30 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-12 text-xs">
           <div className="flex items-center gap-6 overflow-x-auto scrollbar-none">
-            <span className="font-bold text-[#0B4FDF] border-b-2 border-[#0B4FDF] py-3.5 px-1 whitespace-nowrap cursor-pointer">
-              Technical Tapes
+            <span 
+              onClick={() => setSelectedSubCatId("ALL")}
+              className={`py-3.5 px-1 whitespace-nowrap cursor-pointer font-bold ${
+                selectedSubCatId === "ALL" 
+                  ? "text-[#0B4FDF] border-b-2 border-[#0B4FDF]" 
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              All Technical Tapes
             </span>
-            <span className="text-slate-600 hover:text-slate-900 cursor-pointer py-3.5 px-1 whitespace-nowrap font-medium">
-              Thermal Materials
+            <span 
+              onClick={() => setSelectedSubCatId("high-temp-smt")}
+              className={`py-3.5 px-1 whitespace-nowrap cursor-pointer font-medium ${
+                selectedSubCatId === "high-temp-smt" 
+                  ? "text-[#0B4FDF] border-b-2 border-[#0B4FDF] font-bold" 
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              Polyimide & SMT
             </span>
-            <span className="text-slate-600 hover:text-slate-900 cursor-pointer py-3.5 px-1 whitespace-nowrap font-medium">
-              Polymers & Resins
+            <span 
+              onClick={() => setSelectedSubCatId("structural-vhb")}
+              className={`py-3.5 px-1 whitespace-nowrap cursor-pointer font-medium ${
+                selectedSubCatId === "structural-vhb" 
+                  ? "text-[#0B4FDF] border-b-2 border-[#0B4FDF] font-bold" 
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              Structural Foam & VHB
             </span>
-            <span className="text-slate-600 hover:text-slate-900 cursor-pointer py-3.5 px-1 whitespace-nowrap font-medium">
-              Surface Protection
+            <span 
+              onClick={() => setSelectedSubCatId("double-sided")}
+              className={`py-3.5 px-1 whitespace-nowrap cursor-pointer font-medium ${
+                selectedSubCatId === "double-sided" 
+                  ? "text-[#0B4FDF] border-b-2 border-[#0B4FDF] font-bold" 
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              Double-Sided Filmic
+            </span>
+            <span 
+              onClick={() => setSelectedSubCatId("process-masking")}
+              className={`py-3.5 px-1 whitespace-nowrap cursor-pointer font-medium ${
+                selectedSubCatId === "process-masking" 
+                  ? "text-[#0B4FDF] border-b-2 border-[#0B4FDF] font-bold" 
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              Process Masking
+            </span>
+            <span 
+              onClick={() => setSelectedSubCatId("thermal-emi")}
+              className={`py-3.5 px-1 whitespace-nowrap cursor-pointer font-medium ${
+                selectedSubCatId === "thermal-emi" 
+                  ? "text-[#0B4FDF] border-b-2 border-[#0B4FDF] font-bold" 
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              Thermal TIM & EMI
+            </span>
+            <span 
+              onClick={() => setSelectedSubCatId("electrical-machinery")}
+              className={`py-3.5 px-1 whitespace-nowrap cursor-pointer font-medium ${
+                selectedSubCatId === "electrical-machinery" 
+                  ? "text-[#0B4FDF] border-b-2 border-[#0B4FDF] font-bold" 
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              Electrical & Wire Harness
             </span>
           </div>
 
@@ -245,7 +576,7 @@ export default function CatalogBrowsePage() {
           <span className="text-slate-400">/</span>
           <Link href="/" className="hover:text-slate-900">Home</Link>
           <span className="text-slate-400">/</span>
-          <span className="text-[#0B4FDF] font-bold">Technical Tapes</span>
+          <span className="text-[#0B4FDF] font-bold">Industrial Technical Tapes</span>
         </div>
 
         {/* 3. CATEGORY TITLE, INTRO & TRUST BADGES */}
@@ -255,10 +586,10 @@ export default function CatalogBrowsePage() {
               Technical Tapes — Bulk High-Temp & Structural Sourcing in India
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed font-sans max-w-4xl">
-              TarasAI supplies precision engineered industrial tapes across polyimide, acrylic foam, PET polyester, fiberglass, copper foil, and wire harness fleece. Buyers and MSME converters can move from the category to the exact specification needed for automotive, electronics, and appliance production.
+              TarasAI supplies precision engineered industrial tapes across polyimide, acrylic foam, PET polyester, fiberglass cloth, copper foil, and wire harness fleece. Enterprise OEMs and MSME converters can browse exact physical product specifications for automotive, electronics, power transformers, and appliance manufacturing.
               {showFullDesc && (
                 <span className="text-slate-500 block mt-1.5">
-                  All lots undergo ASTM D3330 180° peel adhesion, ASTM D3654 thermal shear, and dielectric voltage testing. Master jumbo rolls available for contract converting with raw silicone resin supplied under GST Job-Work.
+                  All production lots undergo ASTM D3330 180° peel adhesion, ASTM D3654 thermal shear, and dielectric voltage testing. Master jumbo rolls available for contract converting with raw silicone resin supplied under GST Job-Work.
                 </span>
               )}
               <button 
@@ -271,111 +602,94 @@ export default function CatalogBrowsePage() {
           </div>
 
           {/* 3 Trust Badges */}
-          <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-slate-700">
-            <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs font-medium">
+          <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-slate-700 font-medium">
+            <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs">
               <FileText className="w-3.5 h-3.5 text-[#0B4FDF]" />
-              <span>ASTM D3330 & UL 510 Lab Test Certificate + GST Invoice</span>
+              <span>ASTM D3330 Lab Report + GST Tax Invoice</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs font-medium">
-              <Truck className="w-3.5 h-3.5 text-cyan-600" />
-              <span>Pan-India Temperature-Controlled Logistics</span>
+            <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs">
+              <Truck className="w-3.5 h-3.5 text-blue-600" />
+              <span>Direct Dispatch from Pune / Gujarat / NCR</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs font-medium">
+            <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs">
               <Clock className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Firm Quote & Sample Lot within 24 Hours</span>
+              <span>Binding Price Quotation within 24 Hours</span>
             </div>
           </div>
         </div>
 
-        {/* 4. TWO-COLUMN BROWSE LAYOUT */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* LEFT SIDEBAR: CATEGORY TREE (3 cols on lg) */}
-          <aside className="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-5 space-y-5 sticky top-16 shadow-xs">
-            <div>
-              <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider font-bold">
-                Category Tree
-              </span>
-              <h3 className="text-sm font-bold text-slate-900 mt-0.5">All Subcategories</h3>
-              <p className="text-[11px] text-slate-500 mt-1 leading-snug">
-                High-Temp SMT · Structural Foam · Thermal & EMI · Release Liners
-              </p>
+        {/* 4. MAIN BROWSE LAYOUT (SIDEBAR TREE + PRODUCT CARDS GRID) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Vertical Subcategory Tree (3 cols) */}
+          <aside className="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-4 shadow-xs sticky top-16">
+            <div className="pb-3 mb-2 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="text-sm font-bold text-slate-900">Tape Subcategories</h3>
+              <span className="text-[11px] font-mono text-[#0B4FDF] font-bold">36 Products</span>
             </div>
 
-            {/* Tree Navigation List */}
-            <div className="space-y-1.5 text-xs">
-              <button
-                onClick={() => setSelectedSubCatId("ALL")}
-                className={`w-full p-2.5 rounded-xl text-left flex items-center justify-between font-bold transition-colors cursor-pointer ${
-                  selectedSubCatId === "ALL"
-                    ? "bg-[#0B4FDF] text-white shadow-sm"
-                    : "text-slate-700 hover:bg-slate-100"
-                }`}
-              >
-                <span>View All Products</span>
-                <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
-                  selectedSubCatId === "ALL" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"
-                }`}>16</span>
-              </button>
+            <ul className="space-y-1 text-xs">
+              <li>
+                <button
+                  onClick={() => setSelectedSubCatId("ALL")}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left font-bold transition-colors cursor-pointer ${
+                    selectedSubCatId === "ALL"
+                      ? "bg-[#0B4FDF] text-white shadow-xs"
+                      : "text-slate-700 hover:bg-slate-100"
+                  }`}
+                >
+                  <span>All Product Lines</span>
+                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                    selectedSubCatId === "ALL" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
+                  }`}>
+                    36
+                  </span>
+                </button>
+              </li>
 
               {CATALOG_DATA.map((subCat) => {
                 const isActive = selectedSubCatId === subCat.id;
                 return (
-                  <div key={subCat.id} className="space-y-1">
+                  <li key={subCat.id}>
                     <button
                       onClick={() => setSelectedSubCatId(subCat.id)}
-                      className={`w-full p-2.5 rounded-xl text-left flex items-center justify-between transition-colors cursor-pointer font-medium ${
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-colors cursor-pointer ${
                         isActive
-                          ? "bg-[#0B4FDF] text-white font-bold shadow-sm"
-                          : "text-slate-700 hover:bg-slate-100"
+                          ? "bg-[#0B4FDF] text-white font-bold shadow-xs"
+                          : "text-slate-700 hover:bg-slate-100 font-medium"
                       }`}
                     >
                       <span className="truncate">{subCat.name}</span>
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono shrink-0 ${
-                        isActive ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"
+                      <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ml-2 ${
+                        isActive ? "bg-white/20 text-white font-bold" : "bg-slate-100 text-slate-500"
                       }`}>
                         {subCat.count}
                       </span>
                     </button>
-
-                    {/* Sub-items list if active */}
-                    {isActive && (
-                      <div className="pl-3 py-1 space-y-1 border-l-2 border-[#0B4FDF]/40 ml-3">
-                        {subCat.products.map((p) => (
-                          <Link
-                            key={p.id}
-                            href={`/products/${p.slug}`}
-                            className="block text-[11px] text-slate-600 hover:text-[#0B4FDF] py-1 truncate transition-colors font-medium"
-                          >
-                            • {p.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
 
-            {/* Quick Sourcing Help Box */}
-            <div className="p-4 rounded-xl bg-blue-50/70 border border-blue-100 space-y-2 text-xs">
-              <div className="flex items-center gap-2 text-[#0B4FDF] font-bold">
+            {/* AI Yield Calculator Prompt Card */}
+            <div className="mt-5 p-3.5 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200/80 space-y-2">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-[#0B4FDF]">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Need Custom Slit Widths?</span>
+                <span>Custom Width Slitting?</span>
               </div>
-              <p className="text-[11px] text-slate-600 leading-relaxed font-sans">
-                Our vetted converting plants slit jumbo rolls from 3mm to 1250mm with ±0.1mm tolerance.
+              <p className="text-[11px] text-slate-600 leading-snug">
+                Ask Taras Copilot for exact roll yield calculations from master jumbo rolls (e.g. 500mm x 1000m logs).
               </p>
               <Link 
                 href="/agent" 
-                className="text-[#0B4FDF] hover:underline block text-[11px] font-bold"
+                className="inline-block text-[11px] font-bold text-[#0B4FDF] hover:underline"
               >
-                Upload Technical Drawing →
+                Launch Slitting Calculator →
               </Link>
             </div>
           </aside>
 
-          {/* RIGHT COLUMN: MAIN PRODUCT GRIDS (9 cols on lg) */}
-          <main className="lg:col-span-9 space-y-10">
+          {/* Right Product Grid Area (9 cols) */}
+          <main className="lg:col-span-9 space-y-8">
             {displayedSubCategories.map((subCat) => (
               <section key={subCat.id} className="space-y-4">
                 {/* Subcategory Header */}
@@ -384,31 +698,31 @@ export default function CatalogBrowsePage() {
                     <h2 className="text-xl font-black text-slate-900 tracking-tight">
                       {subCat.name}
                     </h2>
-                    <span className="text-xs font-mono text-slate-500 font-semibold">
-                      {subCat.products.length} Specifications Available
+                    <span className="text-xs font-mono font-bold text-slate-400">
+                      {subCat.count} Items Available
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 mt-1 font-sans">
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
                     {subCat.description}
                   </p>
                 </div>
 
-                {/* 3x2 Product Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* 3x2 Product Grid (6 items) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                   {subCat.products.map((product) => (
                     <div
                       key={product.id}
                       className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-[#0B4FDF]/40 hover:shadow-lg transition-all duration-300 flex flex-col justify-between group shadow-xs"
                     >
-                      {/* Product Image */}
-                      <Link href={`/products/${product.slug}`} className="block relative aspect-[4/3] bg-slate-100 overflow-hidden">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      {/* Product Visual (Authentic Tape Roll Component) */}
+                      <Link href={`/products/${product.slug}`} className="block relative aspect-[4/3] bg-slate-50 overflow-hidden">
+                        <TapeProductVisual 
+                          type={product.visualType} 
+                          badge={product.sku}
+                          className="w-full h-full"
                         />
-                        <div className="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono text-slate-800 font-bold border border-slate-200 shadow-2xs">
-                          ASTM D3330
+                        <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono text-slate-800 font-bold border border-slate-200 shadow-2xs">
+                          {product.standard}
                         </div>
                       </Link>
 
@@ -427,7 +741,7 @@ export default function CatalogBrowsePage() {
 
                         <div className="pt-2 border-t border-slate-100">
                           <span className="text-[10px] text-slate-400 block uppercase font-mono font-bold">
-                            Benchmark Rate:
+                            Indicative Rate:
                           </span>
                           <span className="text-xs font-mono font-black text-emerald-700">
                             {product.priceEstimate}
@@ -444,7 +758,7 @@ export default function CatalogBrowsePage() {
                           </Link>
                           <button
                             onClick={() => { setModalProduct(product); setIsQuoteModalOpen(true); }}
-                            className="py-2 px-3 rounded-lg bg-[#0B4FDF] hover:bg-blue-700 text-white text-xs font-extrabold text-center transition-colors shadow-2xs flex items-center justify-center gap-1 cursor-pointer"
+                            className="py-2 px-3 rounded-lg bg-[#FF5500] hover:bg-[#E04800] text-white text-xs font-extrabold text-center transition-colors shadow-2xs flex items-center justify-center gap-1 cursor-pointer"
                           >
                             <span>Get Quote</span>
                             <ChevronRight className="w-3.5 h-3.5" />
@@ -463,14 +777,14 @@ export default function CatalogBrowsePage() {
       {/* FLOATING "ASK TARAS COPILOT" BUTTON */}
       <Link
         href="/agent"
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-[#0B4FDF] to-indigo-600 text-white font-bold text-xs shadow-xl shadow-blue-600/30 hover:scale-105 transition-transform"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#0B4FDF] hover:bg-blue-700 text-white font-bold text-xs shadow-xl transition-transform hover:scale-105"
       >
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
         <Sparkles className="w-4 h-4 text-white" />
         <span>Ask Taras Copilot</span>
       </Link>
 
-      {/* INTERACTIVE RFQ & OFFTAKE MODAL */}
+      {/* QUICK QUOTE MODAL */}
       <AnimatePresence>
         {isQuoteModalOpen && modalProduct && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
@@ -488,21 +802,20 @@ export default function CatalogBrowsePage() {
               </button>
 
               <div>
-                <span className="text-xs font-mono font-bold text-[#0B4FDF] uppercase">
+                <span className="text-xs font-mono font-bold text-[#0B4FDF] uppercase tracking-wider">
                   {userRole === "BUYER" ? "OEM Procurement RFQ" : "Converter Capacity Quota"}
                 </span>
                 <h3 className="text-lg font-black text-slate-900 mt-0.5">
-                  Request Quote: {modalProduct.name}
+                  Request Quotation: {modalProduct.name}
                 </h3>
-                <p className="text-xs text-slate-500 font-mono">{modalProduct.specs}</p>
               </div>
 
               {quoteSubmitted ? (
                 <div className="p-6 text-center space-y-3 bg-emerald-50 border border-emerald-200 rounded-xl">
                   <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
                   <h4 className="text-sm font-bold text-slate-900">Quote Request Submitted</h4>
-                  <p className="text-xs text-slate-600">
-                    Your request has been routed to the TriFlow liquidity desk. An official contract offer with Certificate of Analysis (CoA) will be issued within 24 hours.
+                  <p className="text-xs text-slate-600 leading-relaxed font-sans">
+                    Your RFQ for <strong>{modalProduct.name}</strong> ({quoteQuantity} units) has been routed to our supply desk. A binding quotation with test certificates will be sent within 24 hours.
                   </p>
                   <button
                     onClick={() => { setIsQuoteModalOpen(false); setQuoteSubmitted(false); }}
@@ -513,6 +826,22 @@ export default function CatalogBrowsePage() {
                 </div>
               ) : (
                 <div className="space-y-4 text-xs">
+                  {/* Selected Spec Summary Box */}
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3">
+                    <div className="w-16 h-12 rounded-lg overflow-hidden border border-slate-200 bg-white">
+                      <TapeProductVisual 
+                        type={modalProduct.visualType}
+                        className="w-full h-full"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-slate-900 font-bold text-xs">{modalProduct.name}</div>
+                      <div className="text-slate-500 font-mono text-[11px] mt-0.5">
+                        {modalProduct.sku} • {modalProduct.specs}
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Persona Switcher */}
                   <div className="grid grid-cols-2 gap-2">
                     <button
@@ -521,26 +850,26 @@ export default function CatalogBrowsePage() {
                       className={`p-2.5 rounded-lg border font-bold text-center cursor-pointer transition-colors ${
                         userRole === "BUYER" 
                           ? "bg-blue-50 border-[#0B4FDF] text-[#0B4FDF]" 
-                          : "bg-slate-50 border-slate-200 text-slate-600"
+                          : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                       }`}
                     >
-                      I am an Enterprise Buyer (OEM)
+                      I am an OEM Buyer
                     </button>
                     <button
                       type="button"
                       onClick={() => setUserRole("CONVERTER")}
                       className={`p-2.5 rounded-lg border font-bold text-center cursor-pointer transition-colors ${
                         userRole === "CONVERTER" 
-                          ? "bg-emerald-50 border-emerald-600 text-emerald-800" 
-                          : "bg-slate-50 border-slate-200 text-slate-600"
+                          ? "bg-emerald-50 border-emerald-600 text-emerald-700" 
+                          : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                       }`}
                     >
-                      I am an MSME Converter (Tolling)
+                      I am an MSME Converter
                     </button>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-slate-700 font-bold">Order Quantity (Rolls / Packs):</label>
+                    <label className="text-slate-700 font-bold">Target Quantity (Rolls / Logs):</label>
                     <input
                       type="text"
                       value={quoteQuantity}
@@ -550,7 +879,7 @@ export default function CatalogBrowsePage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-slate-700 font-bold">Delivery Cluster / Pincode:</label>
+                    <label className="text-slate-700 font-bold">Delivery Location / Pincode:</label>
                     <input
                       type="text"
                       value={quotePincode}
@@ -562,10 +891,10 @@ export default function CatalogBrowsePage() {
                   <button
                     type="button"
                     onClick={() => setQuoteSubmitted(true)}
-                    className="w-full py-3.5 rounded-xl bg-[#0B4FDF] hover:bg-blue-700 text-white font-extrabold text-xs transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-blue-600/20 cursor-pointer"
+                    className="w-full py-3.5 rounded-xl bg-[#0B4FDF] hover:bg-blue-700 text-white font-black text-xs transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/20 cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" />
-                    Submit Request to TriFlow Desk
+                    Submit Formal RFQ to TriFlow Desk
                   </button>
                 </div>
               )}

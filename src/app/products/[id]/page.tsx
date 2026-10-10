@@ -25,6 +25,7 @@ import {
   Info
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import TapeProductVisual from "@/components/TapeProductVisual";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -120,21 +121,15 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left: Product Image & Badges (5 cols) */}
             <div className="lg:col-span-5 space-y-4">
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center group shadow-inner">
-                {/* Visual Representation of Technical Tape */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-amber-100/50 via-slate-50 to-blue-50/50" />
-                <div className="relative z-10 text-center p-6 space-y-3">
-                  <div className="w-32 h-32 mx-auto rounded-full border-8 border-amber-500/30 bg-gradient-to-tr from-amber-600 to-amber-400 shadow-xl shadow-amber-500/20 flex items-center justify-center relative group-hover:scale-105 transition-transform duration-300">
-                    <div className="w-16 h-16 rounded-full border-4 border-white bg-slate-100 flex items-center justify-center shadow-inner">
-                      <span className="text-[10px] font-mono text-amber-800 font-bold">33M CORE</span>
-                    </div>
-                  </div>
-                  <span className="text-xs font-mono px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-300/60 inline-block font-semibold">
-                    Class H (260°C) Insulation
-                  </span>
-                </div>
-                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-[11px] font-mono text-slate-700 border border-slate-200 shadow-2xs">
-                  SKU: TF-KAPTON-50
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center group shadow-xs">
+                <TapeProductVisual 
+                  type="polyimide" 
+                  badge="ASTM D3330 • Class H (260°C)" 
+                  coreText="33M CORE"
+                  className="w-full h-full"
+                />
+                <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-md text-[11px] font-mono text-slate-800 font-bold border border-slate-200 shadow-2xs z-20">
+                  SKU: TARAS-PI-5413
                 </div>
               </div>
 
@@ -331,21 +326,25 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
         {/* FREQUENTLY CONVERTED & PAIRED SUBSTRATES */}
         <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900">
-            Frequently Paired Conversion Materials
+            Frequently Paired Technical Tapes & Substrates
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
-              { name: "Fluorosilicone Release Liners", spec: "75µm PET Differential", price: "₹28/sq.m" },
-              { name: "Corona Treated PET Film", spec: "Optical Clear 25µm", price: "₹18/sq.m" },
-              { name: "Adhesive Primer Emulsions", spec: "Silicone Adhesion Promoter", price: "₹450/Ltr" },
-              { name: "Precision ABS Plastic Cores", spec: "76mm (3-inch) Slit Core", price: "₹8.50/pc" }
+              { name: "Clear PET Double-Sided Tape", spec: "Tesa 4965 Type • Red MOPP Liner", price: "₹165 / Roll", visualType: "pet-clear" as const, sku: "TARAS-DS-4965" },
+              { name: "Green Powder Coating Masking", spec: "220°C Bake • Clean Removal", price: "₹190 / Roll", visualType: "green-masking" as const, sku: "TARAS-MASK-220" },
+              { name: "Anti-Static ESD Polyimide", spec: "Surface Resistivity 10^6 - 10^9 Ω", price: "₹210 / Roll", visualType: "polyimide" as const, sku: "TARAS-PI-ESD" },
+              { name: "High-Tensile Glass Cloth Tape", spec: "Class H 200°C • Silicone PSA", price: "₹180 / Roll", visualType: "glass-cloth" as const, sku: "TARAS-GC-200" }
             ].map((item, idx) => (
               <div 
                 key={idx}
-                className="p-4 rounded-xl bg-slate-50/60 border border-slate-200 hover:border-[#0B4FDF]/40 hover:bg-white transition-all space-y-2 group cursor-pointer shadow-2xs"
+                className="p-3 rounded-xl bg-slate-50/60 border border-slate-200 hover:border-[#0B4FDF]/40 hover:bg-white transition-all space-y-2 group cursor-pointer shadow-2xs"
               >
-                <div className="w-full h-24 rounded-lg bg-white border border-slate-200 flex items-center justify-center group-hover:scale-102 transition-transform">
-                  <Layers className="w-8 h-8 text-slate-400 group-hover:text-[#0B4FDF] transition-colors" />
+                <div className="w-full aspect-[4/3] rounded-lg overflow-hidden border border-slate-200 bg-white group-hover:scale-102 transition-transform">
+                  <TapeProductVisual 
+                    type={item.visualType} 
+                    badge={item.sku}
+                    className="w-full h-full"
+                  />
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-slate-900 group-hover:text-[#0B4FDF] transition-colors">{item.name}</h4>

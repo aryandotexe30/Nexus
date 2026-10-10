@@ -2,12 +2,27 @@
 
 import Link from "next/link";
 import { ArrowRight, ChevronRight, Layers, Factory, ShieldCheck, Truck, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import TapeProductVisual from "@/components/TapeProductVisual";
 
 interface SubItem {
   id: string;
   name: string;
-  image: string;
+  visualType: 
+    | "polyimide" 
+    | "vhb-red" 
+    | "vhb-clear"
+    | "vhb-black"
+    | "green-masking" 
+    | "copper-foil" 
+    | "glass-cloth" 
+    | "cloth-fleece" 
+    | "pvc-blue" 
+    | "pvc-black" 
+    | "tim-pad" 
+    | "aluminum-foil"
+    | "pet-clear"
+    | "filament";
+  badge: string;
   link: string;
 }
 
@@ -27,148 +42,166 @@ interface CategoryGroup {
 const CATEGORY_GROUPS: CategoryGroup[] = [
   {
     id: "technical-tapes",
-    title: "Technical Tapes",
-    subtitle: "Pressure-Sensitive & High-Temp Dielectrics",
+    title: "Technical & High-Temp Tapes",
+    subtitle: "Dielectric Polyimide, Kapton & SMT Masking",
     bgImage: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80",
-    categoryLink: "/products?category=Technical+Tapes",
-    stat1: "2,400+ Vetted Converters, 12 Primary Resin Brands",
-    stat2: "18 Slitting & Coating Hubs, ASTM D3330 Verified",
-    statLinkText: "View Converting Hubs",
-    statLink: "/products?category=Technical+Tapes",
+    categoryLink: "/catalog?cat=high-temp-smt",
+    stat1: "2,400+ Vetted Converters, ASTM D3330 Verified",
+    stat2: "Class H (260°C) Insulation & Clean Peel Silicones",
+    statLinkText: "View High-Temp Catalog",
+    statLink: "/catalog?cat=high-temp-smt",
     items: [
       {
         id: "polyimide",
         name: "Polyimide SMT Tape",
-        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=260&q=80",
+        visualType: "polyimide",
+        badge: "260°C Kapton",
         link: "/products/polyimide-smt-tape"
       },
       {
-        id: "vhb-foam",
-        name: "Acrylic Foam VHB",
-        image: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=260&q=80",
-        link: "/products/acrylic-foam-vhb"
+        id: "esd-tape",
+        name: "ESD Anti-Static Tape",
+        visualType: "polyimide",
+        badge: "<50V Low Charge",
+        link: "/products/esd-dissipative-tape"
       },
       {
-        id: "pet-tape",
-        name: "Polyester PET Tape",
-        image: "https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=260&q=80",
-        link: "/products/pet-polyester-tape"
-      },
-      {
-        id: "filament",
-        name: "Fiberglass Tape",
-        image: "https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=260&q=80",
-        link: "/products/fiberglass-tape"
+        id: "glass-cloth",
+        name: "Fiberglass Cloth Tape",
+        visualType: "glass-cloth",
+        badge: "Class H 200°C",
+        link: "/products/glass-cloth-tape"
       },
       {
         id: "copper-foil",
-        name: "Copper Foil EMI",
-        image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=260&q=80",
+        name: "Copper Foil EMI Tape",
+        visualType: "copper-foil",
+        badge: "Conductive Foil",
         link: "/products/copper-foil-emi"
       },
       {
-        id: "cloth-tape",
-        name: "Wire Harness Tape",
-        image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=260&q=80",
-        link: "/products/wire-harness-tape"
+        id: "green-masking",
+        name: "Powder Coating Tape",
+        visualType: "green-masking",
+        badge: "220°C Bake",
+        link: "/products/green-masking-tape"
+      },
+      {
+        id: "amber-splicing",
+        name: "Silicone Splicing Tape",
+        visualType: "polyimide",
+        badge: "25µm Ultra-Thin",
+        link: "/products/silicone-splicing-tape"
       }
     ]
   },
   {
-    id: "thermal-materials",
-    title: "Thermal Management",
-    subtitle: "EV Battery Barriers & Heat Dissipation",
-    bgImage: "https://images.unsplash.com/photo-1558441719-8b449c6ff673?auto=format&fit=crop&w=600&q=80",
-    categoryLink: "/products?category=Thermal+Management",
-    stat1: "380+ Automotive Tier-1 OEMs Contracted",
-    stat2: "IATF 16949 & UL 94 V-0 Certified Cleanrooms",
-    statLinkText: "View EV Solutions",
-    statLink: "/products?category=Thermal+Management",
+    id: "structural-bonding",
+    title: "Structural & Double-Sided Tapes",
+    subtitle: "Viscoelastic Acrylic Foam VHB & Clear PET",
+    bgImage: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80",
+    categoryLink: "/catalog?cat=structural-vhb",
+    stat1: "Replaces Rivets, Screws & Mechanical Fasteners",
+    stat2: "Automotive IATF 16949 & Solar Module Tested",
+    statLinkText: "View Structural Foam",
+    statLink: "/catalog?cat=structural-vhb",
     items: [
       {
-        id: "gap-filler",
-        name: "Thermal Gap Pads",
-        image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=260&q=80",
+        id: "vhb-foam",
+        name: "Acrylic Foam VHB 1.0mm",
+        visualType: "vhb-red",
+        badge: "Solid Core VHB",
+        link: "/products/acrylic-foam-vhb"
+      },
+      {
+        id: "vhb-thin",
+        name: "Thin Acrylic Foam 0.5mm",
+        visualType: "vhb-red",
+        badge: "0.5mm High Shear",
+        link: "/products/thin-acrylic-foam"
+      },
+      {
+        id: "vhb-clear",
+        name: "Optical Clear Bonding",
+        visualType: "vhb-clear",
+        badge: "Transparent 4910",
+        link: "/products/clear-acrylic-tape"
+      },
+      {
+        id: "automotive-black",
+        name: "Automotive Black Foam",
+        visualType: "vhb-black",
+        badge: "Trim & Emblems",
+        link: "/products/automotive-black-foam"
+      },
+      {
+        id: "pet-double-sided",
+        name: "Clear PET Double-Sided",
+        visualType: "pet-clear",
+        badge: "Tesa 4965 Type",
+        link: "/products/double-sided-pet"
+      },
+      {
+        id: "filament-tape",
+        name: "Reinforced Strapping",
+        visualType: "filament",
+        badge: "Glass Filament",
+        link: "/products/reinforced-strapping"
+      }
+    ]
+  },
+  {
+    id: "electrical-thermal",
+    title: "Electrical & Thermal Management",
+    subtitle: "Transformer Dielectrics, Wire Harness & TIM Pads",
+    bgImage: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80",
+    categoryLink: "/catalog?cat=electrical-machinery",
+    stat1: "CPRI Tested Transformer & Motor Insulation",
+    stat2: "EV Battery Pack Thermal Protection Aligned",
+    statLinkText: "View Electrical Catalog",
+    statLink: "/catalog?cat=electrical-machinery",
+    items: [
+      {
+        id: "mica-tape",
+        name: "Mica Glass Cloth Tape",
+        visualType: "glass-cloth",
+        badge: "18 kV/mm CPRI",
+        link: "/products/mica-glass-tape"
+      },
+      {
+        id: "wire-harness",
+        name: "Wire Harness Fleece Tape",
+        visualType: "cloth-fleece",
+        badge: "Noise Dampening",
+        link: "/products/wire-harness-tape"
+      },
+      {
+        id: "pvc-blue",
+        name: "PVC Electrical Tape (Blue)",
+        visualType: "pvc-blue",
+        badge: "IS 7809 FR Vinyl",
+        link: "/products/pvc-electrical-blue"
+      },
+      {
+        id: "pvc-black",
+        name: "PVC Electrical Tape (Black)",
+        visualType: "pvc-black",
+        badge: "Flame Retardant",
+        link: "/products/pvc-electrical-black"
+      },
+      {
+        id: "tim-pad",
+        name: "Thermal Silicone Gap Pad",
+        visualType: "tim-pad",
+        badge: "6.0 W/m-K TIM",
         link: "/products/thermal-gap-pads"
       },
       {
-        id: "graphite",
-        name: "Graphite Sheets",
-        image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=260&q=80",
-        link: "/products/graphite-sheets"
-      },
-      {
-        id: "aerogel",
-        name: "Aerogel Blankets",
-        image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=260&q=80",
-        link: "/products/aerogel-blankets"
-      },
-      {
-        id: "phase-change",
-        name: "Phase Change TIM",
-        image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=260&q=80",
-        link: "/products/phase-change-tim"
-      },
-      {
-        id: "die-cut-gaskets",
-        name: "Die-Cut Cell Seals",
-        image: "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=260&q=80",
-        link: "/products/die-cut-cell-seals"
-      },
-      {
-        id: "mica-sheet",
-        name: "Mica Barrier 1000°C",
-        image: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=260&q=80",
-        link: "/products/mica-barrier"
-      }
-    ]
-  },
-  {
-    id: "chemical-resins",
-    title: "Polymers & Resins",
-    subtitle: "Chemical Precursors & Bulk Monomers",
-    bgImage: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80",
-    categoryLink: "/products?category=Polymers+and+Resins",
-    stat1: "85,000 MT Annual Bulk Chemical Throughput",
-    stat2: "Direct Alliances with Momentive, Dow, Reliance & Henkel",
-    statLinkText: "View Chemical Hubs",
-    statLink: "/products?category=Polymers+and+Resins",
-    items: [
-      {
-        id: "silicone-psa",
-        name: "Silicone PSA Resin",
-        image: "https://images.unsplash.com/photo-1603555501671-8f96b3fce8e4?auto=format&fit=crop&w=260&q=80",
-        link: "/products/silicone-psa-resin"
-      },
-      {
-        id: "acrylic-monomer",
-        name: "Acrylic Monomer",
-        image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=260&q=80",
-        link: "/products/acrylic-monomer"
-      },
-      {
-        id: "fluorosilicone",
-        name: "Release Emulsion",
-        image: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=260&q=80",
-        link: "/products/release-emulsion"
-      },
-      {
-        id: "primers",
-        name: "Adhesion Primers",
-        image: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?auto=format&fit=crop&w=260&q=80",
-        link: "/products/adhesion-primers"
-      },
-      {
-        id: "release-liners",
-        name: "Differential Liners",
-        image: "https://images.unsplash.com/photo-1581092162384-8987c1d64718?auto=format&fit=crop&w=260&q=80",
-        link: "/products/differential-liners"
-      },
-      {
-        id: "abs-cores",
-        name: "ABS Slitting Cores",
-        image: "https://images.unsplash.com/photo-1581092582845-9856f6c26880?auto=format&fit=crop&w=260&q=80",
-        link: "/products/abs-slitting-cores"
+        id: "aluminum-foil",
+        name: "Aluminum Foil Tape",
+        visualType: "aluminum-foil",
+        badge: "Dead Soft HVAC",
+        link: "/products/aluminum-foil-tape"
       }
     ]
   }
@@ -189,14 +222,14 @@ export default function CategoriesWeServe() {
               We Serve
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-1.5 font-sans">
-              Explore raw materials, precision converting clusters, and finished OEM contracts across India&apos;s key industrial corridors.
+              Precision engineered technical tapes, structural acrylic foam, and electrical dielectrics manufactured across India&apos;s leading converter hubs.
             </p>
           </div>
           <Link
             href="/catalog"
             className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B4FDF] hover:text-blue-700 transition-colors uppercase tracking-wider self-start sm:self-auto"
           >
-            <span>View Full Directory</span>
+            <span>View Full Industrial Catalog</span>
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
@@ -213,7 +246,7 @@ export default function CategoriesWeServe() {
                 href={group.categoryLink}
                 className="lg:col-span-3 relative p-6 flex flex-col justify-between overflow-hidden group min-h-[160px] lg:min-h-full"
               >
-                {/* Background Image with Dark Scrim Gradient */}
+                {/* Background Image with Electric Cobalt Brand Overlay */}
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
                   style={{ backgroundImage: `url('${group.bgImage}')` }}
@@ -222,17 +255,17 @@ export default function CategoriesWeServe() {
 
                 {/* Content Overlay */}
                 <div className="relative z-10 space-y-1">
-                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight group-hover:text-blue-300 transition-colors">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight group-hover:text-blue-200 transition-colors">
                     {group.title}
                   </h3>
-                  <p className="text-xs text-slate-200 font-sans">
+                  <p className="text-xs text-blue-100 font-sans">
                     {group.subtitle}
                   </p>
                 </div>
 
                 {/* Arrow Circle Badge */}
                 <div className="relative z-10 self-end mt-4">
-                  <div className="w-8 h-8 rounded-full bg-white/20 group-hover:bg-[#0B4FDF] flex items-center justify-center text-white transition-all shadow-md group-hover:scale-110">
+                  <div className="w-8 h-8 rounded-full bg-white/20 group-hover:bg-[#FF5500] flex items-center justify-center text-white transition-all shadow-md group-hover:scale-110">
                     <ArrowRight className="w-4 h-4" />
                   </div>
                 </div>
@@ -240,7 +273,7 @@ export default function CategoriesWeServe() {
 
               {/* Right Content Area (9 cols on lg) */}
               <div className="lg:col-span-9 p-5 sm:p-6 flex flex-col justify-between space-y-5 bg-white">
-                {/* 6-Item Thumbnail Grid */}
+                {/* 6-Item Genuine Tape Product Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
                   {group.items.map((item) => (
                     <Link
@@ -248,14 +281,14 @@ export default function CategoriesWeServe() {
                       href={item.link}
                       className="group/item flex flex-col items-center text-center space-y-2 cursor-pointer"
                     >
-                      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200 relative shadow-2xs group-hover/item:border-[#0B4FDF] transition-colors">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-300"
+                      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 border border-slate-200 relative shadow-2xs group-hover/item:border-[#0B4FDF] transition-colors">
+                        <TapeProductVisual 
+                          type={item.visualType} 
+                          badge={item.badge}
+                          className="w-full h-full"
                         />
                       </div>
-                      <span className="text-[11px] sm:text-xs font-semibold text-slate-800 group-hover/item:text-[#0B4FDF] transition-colors line-clamp-2 leading-tight">
+                      <span className="text-[11px] sm:text-xs font-bold text-slate-800 group-hover/item:text-[#0B4FDF] transition-colors line-clamp-2 leading-tight">
                         {item.name}
                       </span>
                     </Link>
@@ -287,7 +320,6 @@ export default function CategoriesWeServe() {
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );
