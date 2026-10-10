@@ -52,6 +52,7 @@ import MaterialsCopilotModal from "@/components/MaterialsCopilotModal";
 import TechnicalDatasheetModal from "@/components/TechnicalDatasheetModal";
 import { generateTarasTDS, TarasTDSData } from "@/lib/tdsGenerator";
 import { TarasAlternateMatch, TARAS_ALTERNATE_DATABASE } from "@/lib/alternateMatcherEngine";
+import CategoriesWeServe from "@/components/CategoriesWeServe";
 
 // ============================================================================
 // BROCHURE HERO CAROUSEL SLIDES (MOVING GALLERY)
@@ -815,6 +816,11 @@ export default function LandingPage() {
 
         </div>
       </section>
+
+      {/* ============================================================ */}
+      {/* 5B. CATEGORIES WE SERVE (OFBUSINESS STYLE SHOWCASE)          */}
+      {/* ============================================================ */}
+      <CategoriesWeServe />
 
       {/* ============================================================ */}
       {/* 6. "INDUSTRIAL SOLUTIONS" 3x2 PHOTO TILES GRID               */}
