@@ -36,7 +36,7 @@ const CORE_CATEGORIES = [
     title: "Technical Tapes & Bonding",
     subtitle: "High-Temp Polyimide, Acrylic Foam VHB & SMT Masking",
     tag: "36+ Line Items",
-    image: "/images/products/polyimide-tape.jpg",
+    image: "/images/products/polyimide-tape.jpg?v=2",
     link: "/products?category=tapes",
     specs: ["Class H (260°C)", "1000µm Solid Acrylic", "ASTM D3330 Tested"],
     featuredItems: [
@@ -50,7 +50,7 @@ const CORE_CATEGORIES = [
     title: "Raw Resins & Chemical Precursors",
     subtitle: "Silicone PSA Resins, Monomers, Liners & Primers",
     tag: "Bulk Chemical Hub",
-    image: "/images/products/industrial-resin.jpg",
+    image: "/images/products/industrial-resin.jpg?v=2",
     link: "/products?category=resins",
     specs: ["GE Momentive SR545", "Pure Acrylic Monomers", "Differential Liners"],
     featuredItems: [
@@ -64,13 +64,13 @@ const CORE_CATEGORIES = [
     title: "Electrical Machinery & Dielectrics",
     subtitle: "Transformer Mica, Nomex Aramid & IS 7809 Vinyl",
     tag: "CPRI & BIS Aligned",
-    image: "/images/products/electrical-equipment.jpg",
+    image: "/images/products/electrical-equipment.jpg?v=2",
     link: "/products?category=electrical",
     specs: ["18 kV/mm Breakdown", "CPRI Tested IS 13357", "UL 510 Flame Rated"],
     featuredItems: [
-      { name: "Mica Glass Cloth Tape", price: "₹540 / roll", spec: "18 kV/mm High Voltage" },
-      { name: "Nomex Aramid Sheets", price: "₹320 / roll", spec: "Class H 180°C Barrier" },
-      { name: "FR PVC Electrical (Blue)", price: "₹38 / roll", spec: "BIS IS 7809 Certified" }
+      { name: "Power Transformer Bushing", price: "Bulk RFQ", spec: "18 kV/mm High Voltage" },
+      { name: "Nomex Aramid Dielectric Barrier", price: "₹320 / sq.m", spec: "Class H 180°C Barrier" },
+      { name: "MV Switchgear Breaker Assembly", price: "Custom RFQ", spec: "CPRI & BIS Certified" }
     ]
   },
   {
@@ -78,7 +78,7 @@ const CORE_CATEGORIES = [
     title: "Precision Die-Cuts & Converted Parts",
     subtitle: "Custom IP68 EPDM Gaskets, Shims & Spacers",
     tag: "±0.1mm Tolerances",
-    image: "/images/products/diecut-gaskets.jpg",
+    image: "/images/products/diecut-gaskets.jpg?v=2",
     link: "/products?category=diecut",
     specs: ["Rotary & Laser Cut", "Watertight IP67/IP68", "Kiss-Cut Rolls"],
     featuredItems: [
@@ -92,7 +92,7 @@ const CORE_CATEGORIES = [
     title: "Thermal Interface (TIM) & EMI",
     subtitle: "Silicone Gap Pads, Synthetic Graphite & Copper Foil",
     tag: "EV Battery Grade",
-    image: "/images/products/thermal-pad.jpg",
+    image: "/images/products/thermal-pad.jpg?v=2",
     link: "/products?category=thermal",
     specs: ["3.2 - 6.0 W/m-K TIM", "85 dB EMI Attenuation", "UL 94 V-0 Certified"],
     featuredItems: [

@@ -23,7 +23,7 @@ export interface ProductImageInput {
 
 export function getGeneralProductImage(product?: ProductImageInput | null): string {
   if (!product) {
-    return "/images/products/general-industrial.jpg";
+    return "/images/products/general-industrial.jpg?v=2";
   }
 
   // 1. If product has a genuine image URL, check if it's an authentic photo rather than a logo
@@ -33,7 +33,7 @@ export function getGeneralProductImage(product?: ProductImageInput | null): stri
 
     // Direct local images
     if (url.startsWith("/images/products/")) {
-      return url;
+      return url.includes("?v=") ? url : `${url}?v=2`;
     }
 
     // Filter out corporate logos, icons, placeholders, and favicons
@@ -82,7 +82,7 @@ export function getGeneralProductImage(product?: ProductImageInput | null): stri
     text.includes("catalyst") ||
     text.includes("raw material")
   ) {
-    return "/images/products/industrial-resin.jpg";
+    return "/images/products/industrial-resin.jpg?v=2";
   }
 
   // 4. Precision Die-Cuts, Gaskets, Seals & Converted Parts
@@ -106,7 +106,7 @@ export function getGeneralProductImage(product?: ProductImageInput | null): stri
     text.includes("flange gasket") ||
     text.includes("stamped")
   ) {
-    return "/images/products/diecut-gaskets.jpg";
+    return "/images/products/diecut-gaskets.jpg?v=2";
   }
 
   // 5. Thermal Interface Materials (TIM), Heat Spreaders & Gap Pads
@@ -123,7 +123,7 @@ export function getGeneralProductImage(product?: ProductImageInput | null): stri
     text.includes("gap filler") ||
     text.includes("heat spreader")
   ) {
-    return "/images/products/thermal-pad.jpg";
+    return "/images/products/thermal-pad.jpg?v=2";
   }
 
   // 6. Electrical Machinery, Power Equipment, Switchgear & Instruments
@@ -158,7 +158,7 @@ export function getGeneralProductImage(product?: ProductImageInput | null): stri
     text.includes("feeder") ||
     text.includes("meter")
   ) {
-    return "/images/products/electrical-equipment.jpg";
+    return "/images/products/electrical-equipment.jpg?v=2";
   }
 
   // 7. Technical Adhesive Tapes (Categorized by backing/chemistry)
@@ -174,33 +174,33 @@ export function getGeneralProductImage(product?: ProductImageInput | null): stri
 
   if (isTapeItem) {
     if (text.includes("polyimide") || text.includes("kapton")) {
-      return "/images/products/polyimide-tape.jpg";
+      return "/images/products/polyimide-tape.jpg?v=2";
     }
     if (text.includes("foam") || text.includes("vhb") || text.includes("acrylic foam") || text.includes("mounting")) {
-      return "/images/products/vhb-foam-tape.jpg";
+      return "/images/products/vhb-foam-tape.jpg?v=2";
     }
     if (text.includes("green") || text.includes("powder coating") || text.includes("anodizing")) {
-      return "/images/products/green-masking-tape.jpg";
+      return "/images/products/green-masking-tape.jpg?v=2";
     }
     if (text.includes("copper") || text.includes("aluminum") || text.includes("aluminium") || text.includes("emi") || text.includes("shielding")) {
-      return "/images/products/copper-foil-tape.jpg";
+      return "/images/products/copper-foil-tape.jpg?v=2";
     }
     if (text.includes("harness") || text.includes("fleece") || text.includes("felt") || text.includes("coroplast")) {
-      return "/images/products/wire-harness-tape.jpg";
+      return "/images/products/wire-harness-tape.jpg?v=2";
     }
     if (text.includes("crepe") || text.includes("paper masking") || text.includes("painter") || text.includes("abro")) {
-      return "/images/products/crepe-masking-tape.jpg";
+      return "/images/products/crepe-masking-tape.jpg?v=2";
     }
     if (text.includes("fiberglass") || text.includes("glass cloth") || text.includes("mica")) {
-      return "/images/products/fiberglass-tape.jpg";
+      return "/images/products/fiberglass-tape.jpg?v=2";
     }
     if (text.includes("pvc") || text.includes("vinyl") || text.includes("steelgrip")) {
-      return "/images/products/electrical-pvc-tape.jpg";
+      return "/images/products/electrical-pvc-tape.jpg?v=2";
     }
     // Generic tape fallback
-    return "/images/products/polyimide-tape.jpg";
+    return "/images/products/polyimide-tape.jpg?v=2";
   }
 
   // 8. General Industrial Components Fallback (Hardware, parts, machinery, tooling, fasteners)
-  return "/images/products/general-industrial.jpg";
+  return "/images/products/general-industrial.jpg?v=2";
 }
