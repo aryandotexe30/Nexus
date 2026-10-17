@@ -1,17 +1,12 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { isValidProduct } from '@/lib/deepProductHarvester';
 
 export async function GET(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
 
     const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id')?.trim();
     const company = searchParams.get('company')?.trim();
     const market = searchParams.get('market')?.trim();
     const industry = searchParams.get('industry')?.trim();
@@ -155,6 +150,10 @@ export async function GET(req: Request) {
         { name: { contains: ' in India', mode: 'insensitive' } }
       ]
     };
+
+    if (id) {
+      where.id = id;
+    }
 
     if (company && company !== 'ALL') {
       const compLower = company.toLowerCase();
@@ -316,6 +315,11 @@ export async function GET(req: Request) {
         }
 
         for (const item of items) {
+          const itemId = `cat-${catCompany}-${item.name.replace(/\s+/g, '-').toLowerCase()}`;
+          if (id && itemId !== id && !itemId.includes(id) && !item.name.toLowerCase().includes(id.toLowerCase())) {
+            continue;
+          }
+
           if (market && market !== 'ALL' && item.market && !item.market.toLowerCase().includes(market.toLowerCase())) {
             continue;
           }
