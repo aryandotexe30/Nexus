@@ -25,6 +25,7 @@ import {
   Info
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getGeneralProductImage } from "@/lib/productImages";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -60,22 +61,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   const priceDisplay = productData?.price || "₹145 - ₹165 / Roll";
   const specs = productData?.specs || {};
 
-  const productImage = productData?.imageUrl || (
-    productName.toLowerCase().includes("polyimide") || productName.toLowerCase().includes("kapton")
-      ? "/images/products/polyimide-tape.jpg"
-      : productName.toLowerCase().includes("foam") || productName.toLowerCase().includes("vhb")
-      ? "/images/products/vhb-foam-tape.jpg"
-      : productName.toLowerCase().includes("green") || productName.toLowerCase().includes("masking")
-      ? "/images/products/green-masking-tape.jpg"
-      : productName.toLowerCase().includes("copper") || productName.toLowerCase().includes("emi")
-      ? "/images/products/copper-foil-tape.jpg"
-      : productName.toLowerCase().includes("harness") || productName.toLowerCase().includes("fleece")
-      ? "/images/products/wire-harness-tape.jpg"
-      : productName.toLowerCase().includes("fiberglass") || productName.toLowerCase().includes("glass") || productName.toLowerCase().includes("mica")
-      ? "/images/products/fiberglass-tape.jpg"
-      : productName.toLowerCase().includes("pvc") || productName.toLowerCase().includes("electrical")
-      ? "/images/products/electrical-pvc-tape.jpg"
-      : "/images/products/polyimide-tape.jpg"
+  const productImage = getGeneralProductImage(
+    productData || {
+      name: productName,
+      application: productDescription,
+      companyName: companyName,
+      specs: specs
+    }
   );
 
   // Interactive Specification Matrix State

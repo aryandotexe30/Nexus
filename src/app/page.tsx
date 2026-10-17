@@ -50,7 +50,7 @@ const CORE_CATEGORIES = [
     title: "Raw Resins & Chemical Precursors",
     subtitle: "Silicone PSA Resins, Monomers, Liners & Primers",
     tag: "Bulk Chemical Hub",
-    image: "/images/products/vhb-foam-tape.jpg",
+    image: "/images/products/industrial-resin.jpg",
     link: "/products?category=resins",
     specs: ["GE Momentive SR545", "Pure Acrylic Monomers", "Differential Liners"],
     featuredItems: [
@@ -64,7 +64,7 @@ const CORE_CATEGORIES = [
     title: "Electrical Machinery & Dielectrics",
     subtitle: "Transformer Mica, Nomex Aramid & IS 7809 Vinyl",
     tag: "CPRI & BIS Aligned",
-    image: "/images/products/fiberglass-tape.jpg",
+    image: "/images/products/electrical-equipment.jpg",
     link: "/products?category=electrical",
     specs: ["18 kV/mm Breakdown", "CPRI Tested IS 13357", "UL 510 Flame Rated"],
     featuredItems: [
@@ -78,7 +78,7 @@ const CORE_CATEGORIES = [
     title: "Precision Die-Cuts & Converted Parts",
     subtitle: "Custom IP68 EPDM Gaskets, Shims & Spacers",
     tag: "±0.1mm Tolerances",
-    image: "/images/products/crepe-masking-tape.jpg",
+    image: "/images/products/diecut-gaskets.jpg",
     link: "/products?category=diecut",
     specs: ["Rotary & Laser Cut", "Watertight IP67/IP68", "Kiss-Cut Rolls"],
     featuredItems: [
@@ -92,7 +92,7 @@ const CORE_CATEGORIES = [
     title: "Thermal Interface (TIM) & EMI",
     subtitle: "Silicone Gap Pads, Synthetic Graphite & Copper Foil",
     tag: "EV Battery Grade",
-    image: "/images/products/copper-foil-tape.jpg",
+    image: "/images/products/thermal-pad.jpg",
     link: "/products?category=thermal",
     specs: ["3.2 - 6.0 W/m-K TIM", "85 dB EMI Attenuation", "UL 94 V-0 Certified"],
     featuredItems: [

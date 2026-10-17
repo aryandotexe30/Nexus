@@ -27,6 +27,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getGeneralProductImage } from "@/lib/productImages";
 
 export interface MasterProduct {
   id: string;
@@ -459,21 +460,7 @@ function ProductExplorationContent() {
                   const adhesive = p.classification?.adhesionType || specs["Adhesive type"] || specs["Adhesive"] || specs["Binder"];
                   const temp = p.classification?.tempRange || specs["Temperature resistance"] || specs["Max Temperature"];
                   const price = p.price || "Contact for Bulk RFQ";
-                  const image = p.imageUrl || (p.name.toLowerCase().includes("polyimide") || p.name.toLowerCase().includes("kapton")
-                    ? "/images/products/polyimide-tape.jpg"
-                    : p.name.toLowerCase().includes("foam") || p.name.toLowerCase().includes("vhb")
-                    ? "/images/products/vhb-foam-tape.jpg"
-                    : p.name.toLowerCase().includes("green") || p.name.toLowerCase().includes("masking")
-                    ? "/images/products/green-masking-tape.jpg"
-                    : p.name.toLowerCase().includes("copper") || p.name.toLowerCase().includes("emi")
-                    ? "/images/products/copper-foil-tape.jpg"
-                    : p.name.toLowerCase().includes("harness") || p.name.toLowerCase().includes("fleece")
-                    ? "/images/products/wire-harness-tape.jpg"
-                    : p.name.toLowerCase().includes("fiberglass") || p.name.toLowerCase().includes("glass") || p.name.toLowerCase().includes("mica")
-                    ? "/images/products/fiberglass-tape.jpg"
-                    : p.name.toLowerCase().includes("pvc") || p.name.toLowerCase().includes("electrical")
-                    ? "/images/products/electrical-pvc-tape.jpg"
-                    : "/images/products/polyimide-tape.jpg");
+                  const image = getGeneralProductImage(p);
 
                   return (
                     <div
@@ -704,14 +691,21 @@ function ProductExplorationContent() {
                   className="space-y-4 text-xs"
                 >
                   {/* Selected Item Summary */}
-                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-slate-900 text-xs">{selectedRfqProduct.name}</div>
-                      <div className="text-[11px] text-slate-500 font-mono mt-0.5">
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-lg overflow-hidden border border-slate-200 bg-white shrink-0">
+                      <img 
+                        src={getGeneralProductImage(selectedRfqProduct)} 
+                        alt={selectedRfqProduct.name}
+                        className="w-full h-full object-cover" 
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold text-slate-900 text-xs truncate">{selectedRfqProduct.name}</div>
+                      <div className="text-[11px] text-slate-500 font-mono mt-0.5 truncate">
                         Brand: {selectedRfqProduct.companyName} • {selectedRfqProduct.market || "Specialty Sourcing"}
                       </div>
                     </div>
-                    <span className="text-xs font-mono font-bold text-emerald-700">
+                    <span className="text-xs font-mono font-bold text-emerald-700 whitespace-nowrap">
                       {selectedRfqProduct.price || "Bulk RFQ"}
                     </span>
                   </div>
