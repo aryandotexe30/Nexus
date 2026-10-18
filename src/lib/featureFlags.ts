@@ -19,6 +19,16 @@ export interface ModuleConfig {
 
 export const DEFAULT_MODULE_CONFIGS: ModuleConfig[] = [
   {
+    id: 'po_automation',
+    name: 'PO Automation',
+    path: '/dashboard/po-automation',
+    iconName: 'Bot',
+    access: 'ALL',
+    isSidebarVisible: true,
+    description: 'Autonomous PO email ingestion, AI sales planning, human approval gates & delivery collection workflow',
+    category: 'intelligence'
+  },
+  {
     id: 'finder',
     name: 'Finder',
     path: '/agent',

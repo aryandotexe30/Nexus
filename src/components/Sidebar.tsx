@@ -21,7 +21,8 @@ import {
   Database,
   AlertTriangle,
   Repeat,
-  Layers
+  Layers,
+  Bot
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -81,6 +82,7 @@ export default function Sidebar() {
 
   const allRoutes = [
     { id: "hub", name: "Hub", path: "/dashboard", icon: LayoutDashboard },
+    { id: "po_automation", name: "PO Automation", path: "/dashboard/po-automation", icon: Bot },
     { id: "finder", name: "Finder", path: "/agent", icon: Search },
     { id: "marketplace", name: "Marketplace", path: "/dashboard/marketplace", icon: Store },
     { id: "catalog", name: "Industrial Catalog", path: "/catalog", icon: Layers },

@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Search, UploadCloud, Database, Zap, ArrowUpRight, Bell, CheckCircle2, AlertCircle, MessageSquare } from "lucide-react";
+import { Search, UploadCloud, Database, Zap, ArrowUpRight, Bell, CheckCircle2, AlertCircle, MessageSquare, Bot } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import SupplyChainAnalyzer from "@/components/SupplyChainAnalyzer";
@@ -197,6 +197,24 @@ export default function HubDashboard() {
               </div>
             </div>
           </motion.div>
+
+          <Link href="/dashboard/po-automation" className="block">
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative overflow-hidden rounded-3xl p-8 bg-gradient-to-br from-[#0B4FDF] to-blue-800 border border-blue-500 shadow-xl mb-6"
+            >
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-white/20 transition-colors"></div>
+              <Bot className="w-10 h-10 mb-6 text-white transition-colors" />
+              <h2 className="text-xl font-bold mb-2 text-white">PO Automation Copilot</h2>
+              <p className="text-blue-100 text-sm leading-relaxed mb-6">
+                Autonomous email PO ingestion, AI sales planning, human approval gates, e-Way bills &amp; delivery collection.
+              </p>
+              <div className="flex items-center gap-2 font-bold text-sm text-white group-hover:translate-x-1 transition-transform">
+                Launch PO Automation <ArrowUpRight className="w-4 h-4" />
+              </div>
+            </motion.div>
+          </Link>
 
           <Link href="/agent" className="block">
             <motion.div 
