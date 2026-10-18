@@ -1,219 +1,241 @@
 import { NextResponse } from "next/server";
+import * as XLSX from "xlsx";
+import { extractText } from "unpdf";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { rawEmailText, senderEmail, subject, fileName } = body;
+    const contentType = req.headers.get("content-type") || "";
+    let rawText = "";
+    let senderEmail = "";
+    let subject = "";
+    let fileName = "";
+    let imageBase64 = "";
+    let imageMimeType = "";
 
-    if (!rawEmailText || typeof rawEmailText !== "string") {
+    // 1. Handle multipart/form-data (Real File Upload: PDF, XLSX, CSV, Image, TXT, EML)
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await req.formData();
+      const file = formData.get("file") as File | null;
+      senderEmail = ((formData.get("senderEmail") as string) || "").trim();
+      subject = ((formData.get("subject") as string) || "").trim();
+      const extraText = ((formData.get("rawEmailText") as string) || "").trim();
+
+      if (file) {
+        fileName = file.name;
+        const lowerName = file.name.toLowerCase();
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        if (lowerName.endsWith(".pdf")) {
+          const uint8 = new Uint8Array(arrayBuffer);
+          const { text } = await extractText(uint8, { mergePages: true });
+          rawText = Array.isArray(text) ? text.join("\n") : String(text || "");
+        } else if (
+          lowerName.endsWith(".xlsx") ||
+          lowerName.endsWith(".xls") ||
+          lowerName.endsWith(".csv")
+        ) {
+          const workbook = XLSX.read(buffer, { type: "buffer" });
+          const sheetTexts: string[] = [];
+          for (const sheetName of workbook.SheetNames) {
+            const sheet = workbook.Sheets[sheetName];
+            const csv = XLSX.utils.sheet_to_csv(sheet);
+            if (csv.trim()) {
+              sheetTexts.push(`--- Sheet: ${sheetName} ---\n${csv}`);
+            }
+          }
+          rawText = sheetTexts.join("\n\n");
+        } else if (
+          lowerName.endsWith(".png") ||
+          lowerName.endsWith(".jpg") ||
+          lowerName.endsWith(".jpeg") ||
+          lowerName.endsWith(".webp")
+        ) {
+          imageBase64 = buffer.toString("base64");
+          imageMimeType = file.type || "image/png";
+        } else {
+          rawText = buffer.toString("utf-8");
+        }
+      }
+
+      if (extraText) {
+        rawText = rawText ? `${extraText}\n\n--- ATTACHED PO DOCUMENT (${fileName}) ---\n${rawText}` : extraText;
+      }
+    } else {
+      // 2. Handle JSON body
+      const body = await req.json();
+      rawText = (body.rawEmailText || "").trim();
+      senderEmail = (body.senderEmail || "").trim();
+      subject = (body.subject || "").trim();
+      fileName = (body.fileName || "Uploaded_PO.txt").trim();
+    }
+
+    if (!rawText && !imageBase64) {
       return NextResponse.json(
-        { success: false, error: "Please provide raw PO email or document text to parse." },
+        {
+          success: false,
+          error: "Could not read text from the uploaded PO. Please upload a valid PDF, Excel/CSV, Image, or paste the PO text."
+        },
         { status: 400 }
       );
     }
 
     const groqKey = process.env.GROQ_API_KEY;
-
-    // 1. Try LLM extraction via Groq if API key is available
-    if (groqKey) {
-      try {
-        const systemPrompt = `You are an autonomous B2B Industrial Purchase Order (PO) Extraction & Sales Planning AI Agent for TarasAI.
-Analyze the incoming customer email and Purchase Order text and output ONLY valid JSON matching this exact structure:
-{
-  "poNumber": "string (e.g. PO-IND-2026-9012)",
-  "poDate": "string (YYYY-MM-DD)",
-  "buyerCompany": "string",
-  "buyerGstin": "string (15-char Indian GSTIN or N/A)",
-  "contactName": "string",
-  "contactEmail": "string",
-  "contactPhone": "string",
-  "deliveryAddress": "string",
-  "paymentTerms": "string (e.g. Net 30 Days / 100% against Proforma)",
-  "requestedDeliveryDate": "string",
-  "requiresHumanIntervention": boolean,
-  "interventionReason": "string (explain any price variance, custom slitting tolerance, credit term override, or low stock requiring human sign-off)",
-  "aiConfidence": number (90 to 99),
-  "items": [
-    {
-      "id": "string",
-      "sku": "string (e.g. TAR-KAP-5025)",
-      "description": "string",
-      "hsnCode": "string (e.g. 39199090 or 85469090)",
-      "quantity": number,
-      "unit": "string (Rolls / Kgs / Sheets / Units)",
-      "poUnitPrice": number,
-      "catalogFloorPrice": number,
-      "unitCost": number,
-      "stockAvailable": number,
-      "warehouseHub": "string (e.g. Pune MIDC Hub / Bhiwandi Hub / Noida Hub)",
-      "leadTimeDays": number,
-      "status": "READY_IN_STOCK" | "PRICE_VARIANCE" | "PARTIAL_STOCK_JOBWORK"
-    }
-  ],
-  "salesPlanSummary": "string (2-3 sentences detailing warehouse allocation, margin health, and dispatch recommendation)"
-}`;
-
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${groqKey}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            model: "llama-3.3-70b-versatile",
-            messages: [
-              { role: "system", content: systemPrompt },
-              {
-                role: "user",
-                content: `Sender: ${senderEmail || "procurement@client.com"}\nSubject: ${subject || "Purchase Order"}\nAttachment: ${fileName || "Purchase_Order.pdf"}\n\nContent:\n${rawEmailText}`,
-              },
-            ],
-            temperature: 0.1,
-            response_format: { type: "json_object" },
-          }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          const content = data.choices?.[0]?.message?.content;
-          if (content) {
-            const parsed = JSON.parse(content);
-            if (parsed && parsed.poNumber && Array.isArray(parsed.items) && parsed.items.length > 0) {
-              return NextResponse.json({
-                success: true,
-                source: "AI_AGENT_LIVE",
-                parsedPo: parsed,
-              });
-            }
-          }
-        }
-      } catch (aiErr) {
-        console.warn("[PO Automation] Groq extraction fallback triggered:", aiErr);
-      }
-    }
-
-    // 2. Deterministic Heuristic Parser Fallback (100% reliable even offline or without API key)
-    const poMatch = rawEmailText.match(/(?:PO\s*(?:No|Number|#)?[:\s-]*)([A-Z0-9-\/]{4,20})/i);
-    const gstMatch = rawEmailText.match(/\b([0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1})\b/i);
-    const companyMatch = rawEmailText.match(/(?:Company|From|Buyer|Client|Organization)[:\s]+([^\n\r,]+)/i);
-    const paymentMatch = rawEmailText.match(/(?:Payment\s*Terms|Terms)[:\s]+([^\n\r]+)/i);
-    const addressMatch = rawEmailText.match(/(?:Delivery|Ship\s*To|Plant|Address)[:\s]+([^\n\r]+)/i);
-
-    const extractedPoNumber = poMatch?.[1]?.trim() || `PO-CUSTOM-${Math.floor(1000 + Math.random() * 9000)}`;
-    const extractedCompany =
-      companyMatch?.[1]?.trim() ||
-      (senderEmail && senderEmail.includes("@")
-        ? senderEmail.split("@")[1].split(".")[0].toUpperCase() + " Industrial Ltd."
-        : "Enterprise Manufacturing Partner Ltd.");
-
-    // Parse lines looking for quantities and prices
-    const lines = rawEmailText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-    const parsedItems: any[] = [];
-
-    lines.forEach((line, idx) => {
-      const qtyMatch = line.match(/(\d[\d,]*)\s*(rolls?|kgs?|sheets?|units?|pcs|meters?|sqm)/i);
-      const priceMatch = line.match(/(?:₹|Rs\.?|INR)\s*(\d[\d,.]*)/i);
-
-      if (qtyMatch || (priceMatch && line.length > 12 && !line.toLowerCase().includes("total"))) {
-        const qty = qtyMatch ? parseInt(qtyMatch[1].replace(/,/g, ""), 10) : 500;
-        const unitRaw = qtyMatch ? qtyMatch[2] : "Units";
-        const unit = unitRaw.charAt(0).toUpperCase() + unitRaw.slice(1).toLowerCase();
-        const poPrice = priceMatch ? parseFloat(priceMatch[1].replace(/,/g, "")) : 185;
-        const cleanDesc = line
-          .replace(/(?:₹|Rs\.?|INR)\s*\d[\d,.]*/gi, "")
-          .replace(/\b\d[\d,]*\s*(?:rolls?|kgs?|sheets?|units?|pcs|meters?|sqm)\b/gi, "")
-          .replace(/^[-*•\d.)\s]+/, "")
-          .replace(/[@/-]+$/, "")
-          .trim();
-
-        const catalogFloor = Math.round(poPrice * 1.03);
-        const unitCost = Math.round(poPrice * 0.76);
-        const hasVariance = poPrice < catalogFloor;
-
-        parsedItems.push({
-          id: `item-custom-${idx + 1}`,
-          sku: `TAR-IND-${2040 + idx}`,
-          description: cleanDesc.length > 4 ? cleanDesc : `Industrial Grade Material Specification #${idx + 1}`,
-          hsnCode: cleanDesc.toLowerCase().includes("resin") ? "39073010" : "39199090",
-          quantity: qty || 500,
-          unit,
-          poUnitPrice: poPrice,
-          catalogFloorPrice: catalogFloor,
-          unitCost,
-          stockAvailable: (qty || 500) + 350,
-          warehouseHub: "Pune MIDC Fulfillment Hub",
-          leadTimeDays: 2,
-          status: hasVariance ? "PRICE_VARIANCE" : "READY_IN_STOCK",
-        });
-      }
-    });
-
-    if (parsedItems.length === 0) {
-      parsedItems.push(
+    if (!groqKey) {
+      return NextResponse.json(
         {
-          id: "item-custom-1",
-          sku: "TAR-KAP-5025",
-          description: "High-Temp Polyimide SMT Masking Tape (50µm x 25mm x 33m)",
-          hsnCode: "39199090",
-          quantity: 1200,
-          unit: "Rolls",
-          poUnitPrice: 142,
-          catalogFloorPrice: 145,
-          unitCost: 108,
-          stockAvailable: 2500,
-          warehouseHub: "Pune MIDC Fulfillment Hub",
-          leadTimeDays: 2,
-          status: "PRICE_VARIANCE",
+          success: false,
+          error: "GROQ_API_KEY is not configured in environment variables."
         },
-        {
-          id: "item-custom-2",
-          sku: "TAR-TIM-600",
-          description: "Silicone Thermal Interface Gap Pad 6.0 W/m-K (300mm x 300mm)",
-          hsnCode: "39209999",
-          quantity: 150,
-          unit: "Sheets",
-          poUnitPrice: 1450,
-          catalogFloorPrice: 1450,
-          unitCost: 1090,
-          stockAvailable: 400,
-          warehouseHub: "Bhiwandi Central Hub",
-          leadTimeDays: 1,
-          status: "READY_IN_STOCK",
-        }
+        { status: 500 }
       );
     }
 
-    const hasAnyVariance = parsedItems.some((i) => i.poUnitPrice < i.catalogFloorPrice);
+    // If user uploaded an image of a PO, perform vision OCR via Groq Llama-4 Scout first
+    if (imageBase64 && !rawText) {
+      const visionRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${groqKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "meta-llama/llama-4-scout-17b-16e-instruct",
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text: "Transcribe all text, tables, PO number, buyer details, GSTIN, addresses, line items, quantities, units, and unit prices verbatim from this Purchase Order image."
+                },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: `data:${imageMimeType};base64,${imageBase64}`
+                  }
+                }
+              ]
+            }
+          ],
+          temperature: 0.1
+        })
+      });
+
+      if (visionRes.ok) {
+        const visionData = await visionRes.json();
+        rawText = visionData.choices?.[0]?.message?.content || "";
+      }
+    }
+
+    if (!rawText || rawText.trim().length < 5) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "The uploaded PDF appears to be an empty or non-text file. Please upload a text-searchable PDF, Excel/CSV, Image, or paste the PO text."
+        },
+        { status: 400 }
+      );
+    }
+
+    // 3. Extract structured PO & generate Sales Plan strictly from the user's uploaded PO
+    const systemPrompt = `You are an autonomous B2B Purchase Order (PO) Extraction & Sales Planning AI Agent.
+Extract the exact details from the user's uploaded Purchase Order document/email and output ONLY valid JSON matching this schema:
+{
+  "poNumber": "string (extract exact PO number from document)",
+  "poDate": "string (extract PO date from document, or YYYY-MM-DD)",
+  "buyerCompany": "string (extract exact buyer company name from document)",
+  "buyerGstin": "string (extract exact GSTIN / Tax ID from document, or 'Not Specified in PO')",
+  "contactName": "string (extract contact person / signatory from document, or 'Procurement Desk')",
+  "contactEmail": "string (extract buyer email from document or sender email)",
+  "contactPhone": "string (extract phone from document, or 'Not Specified')",
+  "deliveryAddress": "string (extract exact shipping/delivery address from document)",
+  "paymentTerms": "string (extract exact payment terms from document, e.g. 'Net 30 Days')",
+  "requestedDeliveryDate": "string (extract delivery date/schedule from document)",
+  "requiresHumanIntervention": boolean,
+  "interventionReason": "string (explain what the human operator should review before approving the Sales Plan, e.g. verifying commercial terms, pricing, or delivery schedule)",
+  "aiConfidence": number (between 92 and 99),
+  "items": [
+    {
+      "id": "string (e.g. item-1, item-2)",
+      "sku": "string (extract item code/SKU/part number from PO, or generate a code based on item name)",
+      "description": "string (exact line item description from the PO)",
+      "hsnCode": "string (extract HSN/SAC code from PO if present, or appropriate 8-digit HSN)",
+      "quantity": number (exact numeric quantity from PO),
+      "unit": "string (exact unit of measure from PO, e.g. Nos, Rolls, Kgs, Units, Pcs, Meters)",
+      "poUnitPrice": number (exact numeric unit price/rate from PO),
+      "catalogFloorPrice": number (reference benchmark price — set equal to poUnitPrice or slightly higher if a discount is noted in the PO),
+      "unitCost": number (estimated manufacturing/sourcing cost, ~75% of poUnitPrice),
+      "stockAvailable": number (available warehouse stock quantity),
+      "warehouseHub": "string (recommended dispatch facility based on delivery address)",
+      "leadTimeDays": number (estimated dispatch lead time in days, e.g. 2),
+      "status": "READY_IN_STOCK" | "PRICE_VARIANCE" | "PARTIAL_STOCK_JOBWORK"
+    }
+  ],
+  "salesPlanSummary": "string (concise 2-3 sentence executive sales & fulfillment plan tailored specifically to the extracted buyer and line items)"
+}
+
+IMPORTANT RULES:
+- Extract ONLY the real company, PO number, addresses, and line items present in the user's document.
+- Do NOT invent fake companies or unrelated line items.`;
+
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${groqKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          { role: "system", content: systemPrompt },
+          {
+            role: "user",
+            content: `${senderEmail ? `Sender Email: ${senderEmail}\n` : ""}${
+              subject ? `Email Subject: ${subject}\n` : ""
+            }${fileName ? `Uploaded File Name: ${fileName}\n` : ""}\n--- RAW UPLOADED PO CONTENT ---\n${rawText.slice(0, 18000)}`
+          }
+        ],
+        temperature: 0.1,
+        response_format: { type: "json_object" }
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      return NextResponse.json(
+        {
+          success: false,
+          error: `AI Extraction service error (${response.status}): ${errText}`
+        },
+        { status: 502 }
+      );
+    }
+
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) {
+      return NextResponse.json(
+        { success: false, error: "AI returned an empty response while parsing the PO." },
+        { status: 500 }
+      );
+    }
+
+    const parsedPo = JSON.parse(content);
 
     return NextResponse.json({
       success: true,
-      source: "DETERMINISTIC_PARSER",
-      parsedPo: {
-        poNumber: extractedPoNumber,
-        poDate: new Date().toISOString().split("T")[0],
-        buyerCompany: extractedCompany,
-        buyerGstin: gstMatch?.[1]?.toUpperCase() || "27AAACH7409R1ZM",
-        contactName: "Procurement Desk",
-        contactEmail: senderEmail || "procurement@buyer-enterprise.in",
-        contactPhone: "+91 98201 44510",
-        deliveryAddress:
-          addressMatch?.[1]?.trim() ||
-          "Plant II, Chakan Industrial Area Phase-2, Pune, Maharashtra - 410501",
-        paymentTerms: paymentMatch?.[1]?.trim() || "Net 30 Days from Tax Invoice",
-        requestedDeliveryDate: new Date(Date.now() + 4 * 86400000).toISOString().split("T")[0],
-        requiresHumanIntervention: true,
-        interventionReason: hasAnyVariance
-          ? "PO unit rate on 1+ line items is ~2.1% below standard catalog floor price; net order margin remains healthy at 23.8%. Human sign-off requested before order booking."
-          : "New PO ingested from email inbox. Standard human approval gate active for Sales Plan sign-off.",
-        aiConfidence: 97,
-        items: parsedItems,
-        salesPlanSummary: `All ${parsedItems.length} line item(s) verified against Pune MIDC & Bhiwandi inventory. Total stock coverage is 100% ready for immediate slitting/packing within 48 hours upon Sales Plan approval.`,
-      },
+      fileName: fileName || "Pasted_PO.txt",
+      extractedRawText: rawText,
+      parsedPo
     });
   } catch (error: any) {
     console.error("[API PO Parse] Error:", error);
     return NextResponse.json(
-      { success: false, error: error.message || "Failed to parse PO document" },
+      {
+        success: false,
+        error: error.message || "Failed to parse uploaded Purchase Order."
+      },
       { status: 500 }
     );
   }
