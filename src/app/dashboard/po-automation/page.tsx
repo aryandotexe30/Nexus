@@ -25,7 +25,12 @@ import {
   FileSpreadsheet,
   Trash2,
   Check,
-  X
+  X,
+  RefreshCw,
+  Inbox,
+  Download,
+  Lock,
+  ExternalLink
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -108,7 +113,21 @@ export interface AgentLogEntry {
   detail: string;
 }
 
+export interface ScannedEmailItem {
+  uid: number;
+  seq?: number;
+  subject: string;
+  senderName: string;
+  senderEmail: string;
+  date: string;
+  hasAttachments: boolean;
+  attachments: string[];
+  isLikelyPo: boolean;
+  unread: boolean;
+}
+
 const STORAGE_KEY = "tarasai_uploaded_po_cases_v1";
+const IMAP_CREDS_KEY = "tarasai_imap_creds_v1";
 
 export default function PoAutomationPage() {
   // Real uploaded PO cases only (no simulated pre-populated data)
@@ -134,6 +153,22 @@ export default function PoAutomationPage() {
   const [isParsingPo, setIsParsingPo] = useState(false);
   const [parseError, setParseError] = useState<string | null>(null);
 
+  // Email Inbox Sync & Scanning State
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [emailTab, setEmailTab] = useState<"scan" | "settings">("scan");
+  const [emailProvider, setEmailProvider] = useState<"gmail" | "outlook" | "zoho" | "custom">("gmail");
+  const [emailHost, setEmailHost] = useState("imap.gmail.com");
+  const [emailPort, setEmailPort] = useState(993);
+  const [emailSecure, setEmailSecure] = useState(true);
+  const [emailUser, setEmailUser] = useState("");
+  const [emailPass, setEmailPass] = useState("");
+  const [isTestingEmail, setIsTestingEmail] = useState(false);
+  const [isEmailConnected, setIsEmailConnected] = useState(false);
+  const [emailStatusMsg, setEmailStatusMsg] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
+  const [scannedEmails, setScannedEmails] = useState<ScannedEmailItem[]>([]);
+  const [isScanningEmails, setIsScanningEmails] = useState(false);
+  const [ingestingUid, setIngestingUid] = useState<number | null>(null);
+
   // Inline editing state for Stage 2 line items & Stage 4 emails
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editPriceVal, setEditPriceVal] = useState<string>("");
@@ -144,7 +179,7 @@ export default function PoAutomationPage() {
   // Live Agent Execution Audit Trail (only logs real actions on uploaded POs)
   const [agentLogs, setAgentLogs] = useState<AgentLogEntry[]>([]);
 
-  // Load user's previously uploaded POs from localStorage on mount
+  // Load user's previously uploaded POs & Email credentials from localStorage on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -155,6 +190,20 @@ export default function PoAutomationPage() {
           setSelectedCaseId(parsed[0].id);
           setActiveStageTab(parsed[0].currentStage || 2);
           setSelectedEmailId(parsed[0].emails?.[0]?.id || "");
+        }
+      }
+
+      const savedCreds = localStorage.getItem(IMAP_CREDS_KEY);
+      if (savedCreds) {
+        const c = JSON.parse(savedCreds);
+        if (c.user && c.pass) {
+          setEmailProvider(c.provider || "gmail");
+          setEmailHost(c.host || "imap.gmail.com");
+          setEmailPort(c.port || 993);
+          setEmailSecure(c.secure !== false);
+          setEmailUser(c.user || "");
+          setEmailPass(c.pass || "");
+          setIsEmailConnected(true);
         }
       }
     } catch {
@@ -249,6 +298,294 @@ export default function PoAutomationPage() {
     }
   };
 
+  // Helper: Build a full PurchaseOrderCase from AI parsed PO data
+  const buildCaseFromParsedPo = (
+    p: any,
+    meta: {
+      senderEmail?: string;
+      senderName?: string;
+      subject?: string;
+      fileName?: string;
+      rawText?: string;
+    }
+  ): PurchaseOrderCase => {
+    const newCaseId = `po-${Date.now()}`;
+    const cleanPoNum = String(p.poNumber || `PO-${Date.now().toString().slice(-4)}`);
+    const suffix = cleanPoNum.replace(/[^A-Z0-9]/gi, "").slice(-6) || "1001";
+    const buyerEmail =
+      meta.senderEmail?.trim() ||
+      (p.contactEmail && p.contactEmail.includes("@") ? p.contactEmail : "customer@company.com");
+
+    const normalizedItems: PoLineItem[] = (Array.isArray(p.items) ? p.items : []).map(
+      (it: any, idx: number) => {
+        const qty = Number(it.quantity) || 1;
+        const poPrice = Number(it.poUnitPrice) || 0;
+        const floorPrice = Number(it.catalogFloorPrice) || poPrice;
+        const cost = Number(it.unitCost) || Math.round(poPrice * 0.75);
+        return {
+          id: `item-${newCaseId}-${idx + 1}`,
+          sku: String(it.sku || `SKU-${idx + 1}`),
+          description: String(it.description || `Line Item #${idx + 1}`),
+          hsnCode: String(it.hsnCode || "39199090"),
+          quantity: qty,
+          unit: String(it.unit || "Units"),
+          poUnitPrice: poPrice,
+          catalogFloorPrice: floorPrice,
+          unitCost: cost,
+          stockAvailable: Number(it.stockAvailable) || qty * 2,
+          warehouseHub: String(it.warehouseHub || "Primary Fulfillment Hub"),
+          leadTimeDays: Number(it.leadTimeDays) || 2,
+          status:
+            poPrice < floorPrice
+              ? "PRICE_VARIANCE"
+              : it.status === "PARTIAL_STOCK_JOBWORK"
+              ? "PARTIAL_STOCK_JOBWORK"
+              : "READY_IN_STOCK"
+        };
+      }
+    );
+
+    const itemsSummaryList = normalizedItems
+      .map((i) => `• ${i.description}: ${i.quantity} ${i.unit} @ ₹${i.poUnitPrice.toLocaleString("en-IN")}/${i.unit}`)
+      .join("\n");
+
+    return {
+      id: newCaseId,
+      receivedAt: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      emailSubject:
+        meta.subject?.trim() || `Purchase Order ${cleanPoNum} — ${p.buyerCompany || "Customer"}`,
+      senderName:
+        meta.senderName?.trim() || `${p.contactName || "Procurement Desk"} (${p.buyerCompany || "Buyer"})`,
+      senderEmail: buyerEmail,
+      attachmentName: meta.fileName || "PO_Document.pdf",
+      rawEmailBody: meta.rawText || "",
+      poNumber: cleanPoNum,
+      poDate: p.poDate || new Date().toISOString().split("T")[0],
+      buyerCompany: p.buyerCompany || "Buyer Organization",
+      buyerGstin: p.buyerGstin || "Not Specified",
+      contactPhone: p.contactPhone || "Not Specified",
+      deliveryAddress: p.deliveryAddress || "As per Purchase Order",
+      paymentTerms: p.paymentTerms || "As per Purchase Order",
+      requestedDeliveryDate: p.requestedDeliveryDate || "Standard Lead Time",
+      aiConfidence: Number(p.aiConfidence) || 97,
+      requiresHumanIntervention: true,
+      interventionReason:
+        p.interventionReason ||
+        "Purchase Order extracted from email inbox. Awaiting Human Sales Plan review & sign-off before order generation.",
+      currentStage: 2,
+      workflowStatus: "PLAN_AWAITING_APPROVAL",
+      salesPlanSummary:
+        p.salesPlanSummary ||
+        `Extracted ${normalizedItems.length} line item(s) for ${p.buyerCompany}. Ready for commercial review and warehouse allocation.`,
+      fulfillmentStep: 0,
+      items: normalizedItems,
+      emails: [
+        {
+          id: `em-${newCaseId}-1`,
+          stepType: "ORDER_CONFIRMATION",
+          title: "1. PO Acceptance, Sales Order & Proforma Invoice",
+          to: buyerEmail,
+          cc: "sales-desk@tarasai.in",
+          subject: `Order Confirmed: PO ${cleanPoNum} | Sales Order #SO-${suffix} & Proforma Invoice`,
+          body: `Dear ${p.contactName || p.buyerCompany || "Customer"},\n\nThank you for your Purchase Order ${cleanPoNum}. Our commercial team has approved the Sales Plan and booked your order under Sales Order #SO-${suffix}.\n\nConfirmed Line Items:\n${itemsSummaryList}\n\nDelivery Destination: ${p.deliveryAddress || "As per PO"}\nPayment Terms: ${p.paymentTerms || "As per PO"}\n\nPlease find your Sales Order Confirmation and Tax Proforma Invoice attached.\n\nWarm regards,\nOrder Fulfillment Desk`,
+          attachments: [`Sales_Order_SO_${suffix}.pdf`, `Proforma_Invoice_PI_${suffix}.pdf`],
+          status: "DRAFT_PENDING_REVIEW"
+        },
+        {
+          id: `em-${newCaseId}-2`,
+          stepType: "DISPATCH_TRACKING",
+          title: "2. Dispatch Notification, Tax Invoice & e-Way Bill",
+          to: buyerEmail,
+          cc: "logistics@tarasai.in",
+          subject: `Shipment Dispatched: PO ${cleanPoNum} | e-Way Bill & Tracking Details`,
+          body: `Dear ${p.buyerCompany || "Customer"} Receiving Team,\n\nYour consignment against Purchase Order ${cleanPoNum} (Sales Order #SO-${suffix}) has passed quality inspection and been dispatched.\n\n• Delivery Address: ${p.deliveryAddress || "As per PO"}\n• Attached Documents: GST Tax Invoice, e-Way Bill, and Packing List.\n\nBest regards,\nLogistics Control Tower`,
+          attachments: [
+            `Tax_Invoice_${suffix}.pdf`,
+            `GST_eWayBill_${suffix}.pdf`,
+            `Packing_List_${suffix}.pdf`
+          ],
+          status: "DRAFT_PENDING_REVIEW"
+        },
+        {
+          id: `em-${newCaseId}-3`,
+          stepType: "COLLECTION_NOTICE",
+          title: "3. Delivery Arrival & Customer Collection Notice (OTP)",
+          to: buyerEmail,
+          cc: "dispatch@tarasai.in",
+          subject: `ACTION REQUIRED: Collect Your Delivery for PO ${cleanPoNum} (Gate Pass & Handover OTP)`,
+          body: `Dear ${p.buyerCompany || "Customer"} Stores & Receiving Team,\n\nYour shipment for Purchase Order ${cleanPoNum} has arrived at ${p.deliveryAddress || "your receiving facility"} and is ready for collection.\n\nDelivery Collection Details:\n• Collection Gate Pass: GP-${suffix}\n• Handover Verification OTP: 849201\n\nKindly verify the consignment and share the Handover OTP to collect your delivery and complete the digital Proof of Delivery (e-POD).\n\nThank you!`,
+          attachments: [`Delivery_Gate_Pass_GP_${suffix}.pdf`, `ePOD_Manifest_${suffix}.pdf`],
+          status: "DRAFT_PENDING_REVIEW"
+        }
+      ]
+    };
+  };
+
+  // Test connection to email inbox and save credentials
+  const handleTestAndSaveEmail = async () => {
+    if (!emailUser.trim() || !emailPass.trim()) {
+      setEmailStatusMsg({ type: "error", text: "Please provide both Email Address and App Password." });
+      return;
+    }
+    setIsTestingEmail(true);
+    setEmailStatusMsg(null);
+    try {
+      const res = await fetch("/api/po-automation/sync-inbox", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "test",
+          provider: emailProvider,
+          host: emailHost,
+          port: emailPort,
+          secure: emailSecure,
+          user: emailUser.trim(),
+          pass: emailPass.trim()
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setEmailStatusMsg({ type: "error", text: data.error || "Failed to connect to email inbox." });
+        setIsEmailConnected(false);
+      } else {
+        setIsEmailConnected(true);
+        setEmailStatusMsg({
+          type: "success",
+          text: `Connected! Found ${data.inboxStats?.totalMessages || 0} messages (${data.inboxStats?.unseenMessages || 0} unseen) in INBOX.`
+        });
+        localStorage.setItem(
+          IMAP_CREDS_KEY,
+          JSON.stringify({
+            provider: emailProvider,
+            host: emailHost,
+            port: emailPort,
+            secure: emailSecure,
+            user: emailUser.trim(),
+            pass: emailPass.trim()
+          })
+        );
+        addLog("AI_AGENT", "Connected to Email Inbox", `Authenticated with ${emailUser.trim()} via IMAP.`);
+        setEmailTab("scan");
+        handleScanInbox({
+          provider: emailProvider,
+          host: emailHost,
+          port: emailPort,
+          secure: emailSecure,
+          user: emailUser.trim(),
+          pass: emailPass.trim()
+        });
+      }
+    } catch (err: any) {
+      setEmailStatusMsg({ type: "error", text: err.message || "Network error connecting to email." });
+    } finally {
+      setIsTestingEmail(false);
+    }
+  };
+
+  // Scan inbox for PO emails
+  const handleScanInbox = async (overrideCreds?: any) => {
+    const creds = overrideCreds || {
+      provider: emailProvider,
+      host: emailHost,
+      port: emailPort,
+      secure: emailSecure,
+      user: emailUser.trim(),
+      pass: emailPass.trim()
+    };
+
+    if (!creds.user || !creds.pass) {
+      setEmailTab("settings");
+      setEmailStatusMsg({ type: "info", text: "Please enter your email credentials first." });
+      return;
+    }
+
+    setIsScanningEmails(true);
+    setEmailStatusMsg(null);
+    try {
+      const res = await fetch("/api/po-automation/sync-inbox", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "scan",
+          ...creds
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setEmailStatusMsg({ type: "error", text: data.error || "Failed to scan emails." });
+      } else {
+        setScannedEmails(data.emails || []);
+        addLog(
+          "AI_AGENT",
+          "Scanned Email Inbox",
+          `Found ${data.count || 0} recent messages, identified ${
+            (data.emails || []).filter((e: any) => e.isLikelyPo).length
+          } purchase order candidate(s).`
+        );
+      }
+    } catch (err: any) {
+      setEmailStatusMsg({ type: "error", text: err.message || "Failed to scan emails." });
+    } finally {
+      setIsScanningEmails(false);
+    }
+  };
+
+  // Ingest specific email and run PO extraction
+  const handleIngestEmailPo = async (emailItem: ScannedEmailItem) => {
+    setIngestingUid(emailItem.uid);
+    setEmailStatusMsg(null);
+    try {
+      const res = await fetch("/api/po-automation/sync-inbox", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "ingest",
+          uid: emailItem.uid,
+          provider: emailProvider,
+          host: emailHost,
+          port: emailPort,
+          secure: emailSecure,
+          user: emailUser.trim(),
+          pass: emailPass.trim()
+        })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success || !data.parsedPo) {
+        setEmailStatusMsg({ type: "error", text: data.error || "Failed to ingest PO from email." });
+        return;
+      }
+
+      const newCase = buildCaseFromParsedPo(data.parsedPo, {
+        senderEmail: data.emailDetails?.senderEmail || emailItem.senderEmail,
+        senderName: data.emailDetails?.senderName || emailItem.senderName,
+        subject: data.emailDetails?.subject || emailItem.subject,
+        fileName: data.emailDetails?.attachmentName || emailItem.attachments?.[0] || "PO_Email_Attachment.pdf",
+        rawText: data.emailDetails?.rawEmailBody || ""
+      });
+
+      setCases((prev) => [newCase, ...prev]);
+      setSelectedCaseId(newCase.id);
+      setActiveStageTab(1);
+      setSelectedEmailId(newCase.emails[0]?.id || "");
+      setIsEmailModalOpen(false);
+
+      addLog(
+        "AI_AGENT",
+        `Ingested PO from Email Inbox: ${newCase.poNumber}`,
+        `Downloaded from email "${emailItem.subject}" (${emailItem.senderEmail}). Extracted ${newCase.items.length} line items.`
+      );
+      addLog(
+        "AI_AGENT",
+        "Prepared AI Sales & Sourcing Plan",
+        `Generated pricing, margins, and warehouse allocation for ${newCase.buyerCompany}. Waiting for Human Approval in Stage 2.`
+      );
+    } catch (err: any) {
+      setEmailStatusMsg({ type: "error", text: err.message || "Error ingesting email PO." });
+    } finally {
+      setIngestingUid(null);
+    }
+  };
+
   // Upload & Parse User's Own PO (PDF / Excel / CSV / Image / Text)
   const handleUploadAndParsePo = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -287,119 +624,15 @@ export default function PoAutomationPage() {
         return;
       }
 
-      const p = data.parsedPo;
-      const newCaseId = `po-${Date.now()}`;
-      const cleanPoNum = String(p.poNumber || `PO-${Date.now().toString().slice(-4)}`);
-      const suffix = cleanPoNum.replace(/[^A-Z0-9]/gi, "").slice(-6) || "1001";
-      const buyerEmail =
-        senderEmailInput.trim() ||
-        (p.contactEmail && p.contactEmail.includes("@") ? p.contactEmail : "customer@company.com");
-
-      const normalizedItems: PoLineItem[] = (Array.isArray(p.items) ? p.items : []).map(
-        (it: any, idx: number) => {
-          const qty = Number(it.quantity) || 1;
-          const poPrice = Number(it.poUnitPrice) || 0;
-          const floorPrice = Number(it.catalogFloorPrice) || poPrice;
-          const cost = Number(it.unitCost) || Math.round(poPrice * 0.75);
-          return {
-            id: `item-${newCaseId}-${idx + 1}`,
-            sku: String(it.sku || `SKU-${idx + 1}`),
-            description: String(it.description || `Line Item #${idx + 1}`),
-            hsnCode: String(it.hsnCode || "39199090"),
-            quantity: qty,
-            unit: String(it.unit || "Units"),
-            poUnitPrice: poPrice,
-            catalogFloorPrice: floorPrice,
-            unitCost: cost,
-            stockAvailable: Number(it.stockAvailable) || qty * 2,
-            warehouseHub: String(it.warehouseHub || "Primary Fulfillment Hub"),
-            leadTimeDays: Number(it.leadTimeDays) || 2,
-            status:
-              poPrice < floorPrice
-                ? "PRICE_VARIANCE"
-                : it.status === "PARTIAL_STOCK_JOBWORK"
-                ? "PARTIAL_STOCK_JOBWORK"
-                : "READY_IN_STOCK"
-          };
-        }
-      );
-
-      const itemsSummaryList = normalizedItems
-        .map((i) => `• ${i.description}: ${i.quantity} ${i.unit} @ ₹${i.poUnitPrice.toLocaleString("en-IN")}/${i.unit}`)
-        .join("\n");
-
-      const newCase: PurchaseOrderCase = {
-        id: newCaseId,
-        receivedAt: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        emailSubject:
-          subjectInput.trim() || `Purchase Order ${cleanPoNum} — ${p.buyerCompany || "Customer"}`,
-        senderName: `${p.contactName || "Procurement Desk"} (${p.buyerCompany || "Buyer"})`,
-        senderEmail: buyerEmail,
-        attachmentName: data.fileName || selectedFile?.name || "Uploaded_PO.pdf",
-        rawEmailBody: data.extractedRawText || rawTextInput,
-        poNumber: cleanPoNum,
-        poDate: p.poDate || new Date().toISOString().split("T")[0],
-        buyerCompany: p.buyerCompany || "Buyer Organization",
-        buyerGstin: p.buyerGstin || "Not Specified",
-        contactPhone: p.contactPhone || "Not Specified",
-        deliveryAddress: p.deliveryAddress || "As per Purchase Order",
-        paymentTerms: p.paymentTerms || "As per Purchase Order",
-        requestedDeliveryDate: p.requestedDeliveryDate || "Standard Lead Time",
-        aiConfidence: Number(p.aiConfidence) || 97,
-        requiresHumanIntervention: true,
-        interventionReason:
-          p.interventionReason ||
-          "Purchase Order extracted from your uploaded document. Awaiting Human Sales Plan review & sign-off before order generation.",
-        currentStage: 2,
-        workflowStatus: "PLAN_AWAITING_APPROVAL",
-        salesPlanSummary:
-          p.salesPlanSummary ||
-          `Extracted ${normalizedItems.length} line item(s) for ${p.buyerCompany}. Ready for commercial review and warehouse allocation.`,
-        fulfillmentStep: 0,
-        items: normalizedItems,
-        emails: [
-          {
-            id: `em-${newCaseId}-1`,
-            stepType: "ORDER_CONFIRMATION",
-            title: "1. PO Acceptance, Sales Order & Proforma Invoice",
-            to: buyerEmail,
-            cc: "sales-desk@tarasai.in",
-            subject: `Order Confirmed: PO ${cleanPoNum} | Sales Order #SO-${suffix} & Proforma Invoice`,
-            body: `Dear ${p.contactName || p.buyerCompany || "Customer"},\n\nThank you for your Purchase Order ${cleanPoNum}. Our commercial team has approved the Sales Plan and booked your order under Sales Order #SO-${suffix}.\n\nConfirmed Line Items:\n${itemsSummaryList}\n\nDelivery Destination: ${p.deliveryAddress || "As per PO"}\nPayment Terms: ${p.paymentTerms || "As per PO"}\n\nPlease find your Sales Order Confirmation and Tax Proforma Invoice attached.\n\nWarm regards,\nOrder Fulfillment Desk`,
-            attachments: [`Sales_Order_SO_${suffix}.pdf`, `Proforma_Invoice_PI_${suffix}.pdf`],
-            status: "DRAFT_PENDING_REVIEW"
-          },
-          {
-            id: `em-${newCaseId}-2`,
-            stepType: "DISPATCH_TRACKING",
-            title: "2. Dispatch Notification, Tax Invoice & e-Way Bill",
-            to: buyerEmail,
-            cc: "logistics@tarasai.in",
-            subject: `Shipment Dispatched: PO ${cleanPoNum} | e-Way Bill & Tracking Details`,
-            body: `Dear ${p.buyerCompany || "Customer"} Receiving Team,\n\nYour consignment against Purchase Order ${cleanPoNum} (Sales Order #SO-${suffix}) has passed quality inspection and been dispatched.\n\n• Delivery Address: ${p.deliveryAddress || "As per PO"}\n• Attached Documents: GST Tax Invoice, e-Way Bill, and Packing List.\n\nBest regards,\nLogistics Control Tower`,
-            attachments: [
-              `Tax_Invoice_${suffix}.pdf`,
-              `GST_eWayBill_${suffix}.pdf`,
-              `Packing_List_${suffix}.pdf`
-            ],
-            status: "DRAFT_PENDING_REVIEW"
-          },
-          {
-            id: `em-${newCaseId}-3`,
-            stepType: "COLLECTION_NOTICE",
-            title: "3. Delivery Arrival & Customer Collection Notice (OTP)",
-            to: buyerEmail,
-            cc: "dispatch@tarasai.in",
-            subject: `ACTION REQUIRED: Collect Your Delivery for PO ${cleanPoNum} (Gate Pass & Handover OTP)`,
-            body: `Dear ${p.buyerCompany || "Customer"} Stores & Receiving Team,\n\nYour shipment for Purchase Order ${cleanPoNum} has arrived at ${p.deliveryAddress || "your receiving facility"} and is ready for collection.\n\nDelivery Collection Details:\n• Collection Gate Pass: GP-${suffix}\n• Handover Verification OTP: 849201\n\nKindly verify the consignment and share the Handover OTP to collect your delivery and complete the digital Proof of Delivery (e-POD).\n\nThank you!`,
-            attachments: [`Delivery_Gate_Pass_GP_${suffix}.pdf`, `ePOD_Manifest_${suffix}.pdf`],
-            status: "DRAFT_PENDING_REVIEW"
-          }
-        ]
-      };
+      const newCase = buildCaseFromParsedPo(data.parsedPo, {
+        senderEmail: senderEmailInput.trim(),
+        subject: subjectInput.trim(),
+        fileName: data.fileName || selectedFile?.name || "Uploaded_PO.pdf",
+        rawText: data.extractedRawText || rawTextInput
+      });
 
       setCases((prev) => [newCase, ...prev]);
-      setSelectedCaseId(newCaseId);
+      setSelectedCaseId(newCase.id);
       setActiveStageTab(1);
       setSelectedEmailId(newCase.emails[0].id);
       setIsUploadModalOpen(false);
@@ -408,13 +641,13 @@ export default function PoAutomationPage() {
 
       addLog(
         "AI_AGENT",
-        `Extracted Uploaded PO: ${cleanPoNum}`,
-        `Parsed ${normalizedItems.length} line item(s) for ${newCase.buyerCompany} from ${newCase.attachmentName}.`
+        `Extracted Uploaded PO: ${newCase.poNumber}`,
+        `Parsed ${newCase.items.length} line item(s) for ${newCase.buyerCompany} from ${newCase.attachmentName}.`
       );
       addLog(
         "AI_AGENT",
         "Prepared AI Sales & Fulfillment Plan",
-        `Generated pricing, margin, and warehouse allocation plan for ${cleanPoNum}. Waiting for Human Approval in Stage 2.`
+        `Generated pricing, margin, and warehouse allocation plan for ${newCase.poNumber}. Waiting for Human Approval in Stage 2.`
       );
     } catch (err: any) {
       setParseError(err.message || "Error uploading and parsing PO.");
@@ -681,13 +914,36 @@ export default function PoAutomationPage() {
 
             <button
               onClick={() => {
+                setIsEmailModalOpen(true);
+                if (isEmailConnected) {
+                  setEmailTab("scan");
+                  handleScanInbox();
+                } else {
+                  setEmailTab("settings");
+                }
+              }}
+              className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold flex items-center gap-2 transition-colors cursor-pointer shadow-xs"
+            >
+              <Mail className="w-4 h-4" />
+              <span>
+                {isEmailConnected
+                  ? `Scan Email (${emailUser ? emailUser.split("@")[0] : "Connected"})`
+                  : "Connect & Scan Email Inbox"}
+              </span>
+              {isEmailConnected && (
+                <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse" />
+              )}
+            </button>
+
+            <button
+              onClick={() => {
                 setParseError(null);
                 setIsUploadModalOpen(true);
               }}
               className="px-4 py-2.5 rounded-xl bg-[#0B4FDF] hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
             >
               <Upload className="w-4 h-4" />
-              <span>Upload PO (PDF / Excel / Email)</span>
+              <span>Upload PO Document</span>
             </button>
 
             {activeCase && (
@@ -791,110 +1047,137 @@ export default function PoAutomationPage() {
       </div>
 
       {/* ===================================================================== */}
-      {/* EMPTY STATE: UPLOAD YOUR OWN PO DIRECTLY ON THE WORKSPACE             */}
+      {/* EMPTY STATE: CHOOSE EMAIL INBOX SYNC OR MANUAL PO UPLOAD              */}
       {/* ===================================================================== */}
       {!activeCase && (
-        <div className="bg-white border-2 border-dashed border-blue-300 rounded-3xl p-8 sm:p-12 max-w-3xl mx-auto shadow-xs space-y-6">
+        <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-2">
-            <div className="w-14 h-14 rounded-2xl bg-blue-50 text-[#0B4FDF] border border-blue-200 flex items-center justify-center mx-auto">
-              <Upload className="w-7 h-7" />
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900">
-              Upload Your Purchase Order to Start the Automation Pipeline
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              Ingest Purchase Orders &amp; Automate Fulfillment
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto">
-              No simulated data is loaded. Upload your real PO document (<strong>.pdf, .xlsx, .csv, .png, .jpg, .txt, .eml</strong>) or paste the PO email below. The AI Agent will read it, prepare the Sales Plan for your approval, generate the Order &amp; e-Way Bill, and draft the customer delivery collection emails.
+              Choose how you want the AI agent to receive your Purchase Orders. Connect directly to your business email inbox or upload a PO document from your device.
             </p>
           </div>
 
-          <form onSubmit={handleUploadAndParsePo} className="space-y-4 text-xs">
-            {parseError && (
-              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 font-bold flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0" />
-                <span>{parseError}</span>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="font-bold text-slate-700 block">
-                  1. Select PO Document (PDF / Excel / CSV / Image)
-                </label>
-                <label className="w-full p-4 rounded-xl border-2 border-dashed border-[#0B4FDF]/40 bg-blue-50/40 hover:bg-blue-50 text-[#0B4FDF] font-bold flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-colors min-h-[96px]">
-                  <Upload className="w-5 h-5" />
-                  <span className="truncate max-w-full px-2 text-center">
-                    {selectedFile ? selectedFile.name : "Click to Choose PO File (.pdf, .xlsx, .csv, .png)"}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+            {/* OPTION 1: EMAIL INBOX SYNC */}
+            <div className="bg-gradient-to-b from-emerald-50/50 to-white border-2 border-emerald-300/80 hover:border-emerald-500 rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col justify-between transition-all">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center">
+                    <Mail className="w-6 h-6" />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-100 text-emerald-900 border border-emerald-300">
+                    Recommended • Automated
                   </span>
-                  {selectedFile && (
-                    <span className="text-[10px] font-mono text-emerald-700">
-                      ✓ {(selectedFile.size / 1024).toFixed(1)} KB Ready
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-slate-900">
+                    Connect &amp; Scan Email Inbox
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    The AI Agent connects directly to your <strong>Gmail, Outlook, or Business IMAP</strong> inbox. It automatically discovers PO emails and attachments (<strong>PDF, Excel</strong>), extracts line items, and prepares the sales plan.
+                  </p>
+                </div>
+
+                <div className="bg-white/80 border border-emerald-200/80 rounded-xl p-3 space-y-1.5 text-[11px] text-slate-700">
+                  <div className="flex items-center gap-2 font-bold text-emerald-950">
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Reads incoming buyer emails automatically</span>
+                  </div>
+                  <div className="flex items-center gap-2 font-bold text-emerald-950">
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Downloads &amp; parses attached PO PDFs &amp; Excel sheets</span>
+                  </div>
+                  <div className="flex items-center gap-2 font-bold text-emerald-950">
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Zero simulated data — scans your real mailbox</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-5">
+                <button
+                  onClick={() => {
+                    setIsEmailModalOpen(true);
+                    if (isEmailConnected) {
+                      setEmailTab("scan");
+                      handleScanInbox();
+                    } else {
+                      setEmailTab("settings");
+                    }
+                  }}
+                  className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>
+                    {isEmailConnected
+                      ? `Scan Inbox (${emailUser ? emailUser.split("@")[0] : "Connected"})`
+                      : "Connect Email & Scan for POs"}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* OPTION 2: DIRECT PO UPLOAD */}
+            <div className="bg-white border-2 border-dashed border-blue-300 hover:border-[#0B4FDF] rounded-3xl p-6 sm:p-7 shadow-xs flex flex-col justify-between transition-all">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#0B4FDF] border border-blue-200 flex items-center justify-center">
+                    <Upload className="w-6 h-6" />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-blue-50 text-blue-800 border border-blue-200">
+                    Manual Ingestion
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-slate-900">
+                    Upload PO File from Device
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                    Upload a Purchase Order file directly from your computer (<strong>.pdf, .xlsx, .csv, .png, .jpg</strong>) or paste the PO body text to test immediate extraction.
+                  </p>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <label className="w-full p-4 rounded-xl border-2 border-dashed border-[#0B4FDF]/40 bg-blue-50/40 hover:bg-blue-50 text-[#0B4FDF] font-bold flex flex-col items-center justify-center gap-1 cursor-pointer transition-colors min-h-[88px]">
+                    <Upload className="w-4 h-4" />
+                    <span className="truncate max-w-full px-2 text-center text-xs">
+                      {selectedFile ? selectedFile.name : "Choose File (.pdf, .xlsx, .csv, .png)"}
                     </span>
-                  )}
-                  <input
-                    type="file"
-                    accept=".pdf,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.webp,.txt,.eml"
-                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-
-              <div className="space-y-3">
-                <div className="space-y-1">
-                  <label className="font-bold text-slate-700 block">
-                    Customer Email Address (Optional — auto-detected from PO if blank)
+                    {selectedFile && (
+                      <span className="text-[10px] font-mono text-emerald-700">
+                        ✓ {(selectedFile.size / 1024).toFixed(1)} KB Ready
+                      </span>
+                    )}
+                    <input
+                      type="file"
+                      accept=".pdf,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.webp,.txt,.eml"
+                      onChange={(e) => {
+                        setSelectedFile(e.target.files?.[0] || null);
+                        setIsUploadModalOpen(true);
+                      }}
+                      className="hidden"
+                    />
                   </label>
-                  <input
-                    type="email"
-                    value={senderEmailInput}
-                    onChange={(e) => setSenderEmailInput(e.target.value)}
-                    placeholder="e.g. buyer@company.com"
-                    className="w-full p-2.5 rounded-xl border border-slate-300 bg-white font-mono text-xs outline-none focus:border-[#0B4FDF]"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="font-bold text-slate-700 block">
-                    Email Subject / Reference Note (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    value={subjectInput}
-                    onChange={(e) => setSubjectInput(e.target.value)}
-                    placeholder="e.g. Purchase Order for Q4 Delivery"
-                    className="w-full p-2.5 rounded-xl border border-slate-300 bg-white text-xs outline-none focus:border-[#0B4FDF]"
-                  />
                 </div>
               </div>
-            </div>
 
-            <div className="space-y-1.5">
-              <label className="font-bold text-slate-700 block">
-                Or Paste PO Email / Document Text Directly (Optional if uploading a file)
-              </label>
-              <textarea
-                rows={5}
-                value={rawTextInput}
-                onChange={(e) => setRawTextInput(e.target.value)}
-                placeholder="Paste raw email body or purchase order text here..."
-                className="w-full p-3.5 rounded-xl border border-slate-300 bg-slate-50 font-mono text-xs outline-none focus:bg-white focus:border-[#0B4FDF]"
-              />
+              <div className="pt-5">
+                <button
+                  onClick={() => {
+                    setParseError(null);
+                    setIsUploadModalOpen(true);
+                  }}
+                  className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all"
+                >
+                  <Upload className="w-4 h-4" />
+                  <span>Open PO Upload Form</span>
+                </button>
+              </div>
             </div>
-
-            <div className="pt-2 flex justify-center">
-              <button
-                type="submit"
-                disabled={isParsingPo}
-                className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#0B4FDF] hover:bg-blue-700 text-white font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>
-                  {isParsingPo
-                    ? "AI Agent Reading Your PO & Building Sales Plan..."
-                    : "Read PO & Generate AI Sales Plan"}
-                </span>
-              </button>
-            </div>
-          </form>
+          </div>
         </div>
       )}
 
@@ -2046,6 +2329,392 @@ export default function PoAutomationPage() {
                   </button>
                 </div>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ========================================================================= */}
+      {/* MODAL: EMAIL INBOX SYNC & LIVE PO SCANNER                                 */}
+      {/* ========================================================================= */}
+      <AnimatePresence>
+        {isEmailModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="bg-white border border-slate-200 rounded-3xl max-w-3xl w-full p-6 sm:p-7 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto"
+            >
+              <button
+                onClick={() => setIsEmailModalOpen(false)}
+                className="absolute top-5 right-5 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center shrink-0">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-mono font-bold text-emerald-800 uppercase">
+                    Automated Inbound Email Sync
+                  </span>
+                  <h3 className="text-lg font-black text-slate-900">
+                    Scan Email Inbox for Purchase Orders
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    AI Agent connects directly to your inbox to detect PO emails and extract attached documents.
+                  </p>
+                </div>
+              </div>
+
+              {/* TABS: SCAN INBOX vs ACCOUNT SETTINGS */}
+              <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+                <button
+                  type="button"
+                  onClick={() => setEmailTab("scan")}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                    emailTab === "scan"
+                      ? "bg-slate-900 text-white shadow-xs"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                >
+                  <Inbox className="w-3.5 h-3.5" />
+                  <span>Discovered POs ({scannedEmails.length})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEmailTab("settings")}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                    emailTab === "settings"
+                      ? "bg-slate-900 text-white shadow-xs"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>
+                    {isEmailConnected
+                      ? `Account: ${emailUser ? emailUser.split("@")[0] : "Connected"}`
+                      : "Connect Email Account"}
+                  </span>
+                  {isEmailConnected && (
+                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  )}
+                </button>
+              </div>
+
+              {emailStatusMsg && (
+                <div
+                  className={`p-3.5 rounded-xl border text-xs font-bold flex items-center gap-2 ${
+                    emailStatusMsg.type === "success"
+                      ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                      : emailStatusMsg.type === "error"
+                      ? "bg-rose-50 border-rose-200 text-rose-800"
+                      : "bg-blue-50 border-blue-200 text-blue-800"
+                  }`}
+                >
+                  {emailStatusMsg.type === "success" ? (
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+                  ) : (
+                    <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
+                  )}
+                  <span>{emailStatusMsg.text}</span>
+                </div>
+              )}
+
+              {/* TAB 1: SCAN INBOX */}
+              {emailTab === "scan" && (
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div className="text-xs">
+                      <span className="font-bold text-slate-700">Inbox Status: </span>
+                      {isEmailConnected ? (
+                        <span className="text-emerald-700 font-mono font-bold">
+                          ● Connected ({emailUser})
+                        </span>
+                      ) : (
+                        <span className="text-amber-700 font-mono font-bold">
+                          Not Connected yet
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleScanInbox()}
+                        disabled={isScanningEmails || !isEmailConnected}
+                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-50 transition-colors shadow-xs"
+                      >
+                        <RefreshCw
+                          className={`w-3.5 h-3.5 ${isScanningEmails ? "animate-spin" : ""}`}
+                        />
+                        <span>{isScanningEmails ? "Scanning Mailbox..." : "Scan Inbox Now"}</span>
+                      </button>
+                      {!isEmailConnected && (
+                        <button
+                          type="button"
+                          onClick={() => setEmailTab("settings")}
+                          className="px-3 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold cursor-pointer"
+                        >
+                          Configure Account
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {scannedEmails.length === 0 ? (
+                    <div className="text-center py-12 px-4 border border-dashed border-slate-200 rounded-2xl space-y-3">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                        <Inbox className="w-6 h-6" />
+                      </div>
+                      <div className="text-xs font-bold text-slate-700">
+                        {isEmailConnected
+                          ? "No Purchase Orders scanned yet."
+                          : "Connect your email inbox to scan for incoming buyer POs."}
+                      </div>
+                      <p className="text-[11px] text-slate-500 max-w-md mx-auto">
+                        Click &quot;Scan Inbox Now&quot; to search your recent emails for buyer messages with &quot;PO&quot;, &quot;Purchase Order&quot;, and PDF/Excel attachments.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
+                      {scannedEmails.map((em) => {
+                        const isIngesting = ingestingUid === em.uid;
+                        return (
+                          <div
+                            key={em.uid}
+                            className={`p-3.5 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${
+                              em.isLikelyPo
+                                ? "bg-emerald-50/40 border-emerald-200 hover:border-emerald-400"
+                                : "bg-white border-slate-200 hover:border-slate-300"
+                            }`}
+                          >
+                            <div className="space-y-1 min-w-0 flex-1">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                {em.isLikelyPo && (
+                                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-emerald-100 text-emerald-900">
+                                    PO Detected
+                                  </span>
+                                )}
+                                {em.unread && (
+                                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-blue-100 text-blue-900">
+                                    Unread
+                                  </span>
+                                )}
+                                <span className="text-[11px] font-mono text-slate-500">
+                                  {new Date(em.date).toLocaleDateString([], {
+                                    month: "short",
+                                    day: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit"
+                                  })}
+                                </span>
+                              </div>
+                              <div className="text-xs font-bold text-slate-900 truncate">
+                                {em.subject}
+                              </div>
+                              <div className="text-[11px] text-slate-600 truncate">
+                                From: <strong className="text-slate-800">{em.senderName}</strong> ({em.senderEmail})
+                              </div>
+                              {em.attachments && em.attachments.length > 0 && (
+                                <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                                  {em.attachments.map((att, i) => (
+                                    <span
+                                      key={i}
+                                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200 text-[10px] font-mono"
+                                    >
+                                      <FileText className="w-3 h-3 text-[#0B4FDF]" />
+                                      {att}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => handleIngestEmailPo(em)}
+                              disabled={isIngesting}
+                              className="px-4 py-2.5 rounded-xl bg-[#0B4FDF] hover:bg-blue-700 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 cursor-pointer shrink-0 shadow-xs transition-colors disabled:opacity-50"
+                            >
+                              {isIngesting ? (
+                                <>
+                                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                  <span>Extracting PO...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Download className="w-3.5 h-3.5" />
+                                  <span>Ingest &amp; Build Sales Plan</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* TAB 2: EMAIL ACCOUNT SETTINGS */}
+              {emailTab === "settings" && (
+                <div className="space-y-4 text-xs">
+                  <div className="space-y-1.5">
+                    <label className="font-bold text-slate-700 block">
+                      Select Email Provider
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {[
+                        { id: "gmail", name: "Gmail", host: "imap.gmail.com", port: 993 },
+                        { id: "outlook", name: "Outlook / 365", host: "outlook.office365.com", port: 993 },
+                        { id: "zoho", name: "Zoho Mail", host: "imap.zoho.com", port: 993 },
+                        { id: "custom", name: "Custom IMAP", host: emailHost, port: emailPort }
+                      ].map((prov) => (
+                        <button
+                          key={prov.id}
+                          type="button"
+                          onClick={() => {
+                            setEmailProvider(prov.id as any);
+                            if (prov.id !== "custom") {
+                              setEmailHost(prov.host);
+                              setEmailPort(prov.port);
+                            }
+                          }}
+                          className={`p-2.5 rounded-xl border text-center font-bold text-xs cursor-pointer transition-all ${
+                            emailProvider === prov.id
+                              ? "bg-slate-900 text-white border-slate-900 shadow-xs"
+                              : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                          }`}
+                        >
+                          {prov.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <label className="font-bold text-slate-700 block">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        value={emailUser}
+                        onChange={(e) => setEmailUser(e.target.value)}
+                        placeholder="e.g. orders@company.com"
+                        className="w-full p-2.5 rounded-xl border border-slate-300 bg-white font-mono text-xs outline-none focus:border-[#0B4FDF]"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="font-bold text-slate-700 block">
+                        App Password / Password
+                      </label>
+                      <input
+                        type="password"
+                        value={emailPass}
+                        onChange={(e) => setEmailPass(e.target.value)}
+                        placeholder="••••••••••••••••"
+                        className="w-full p-2.5 rounded-xl border border-slate-300 bg-white font-mono text-xs outline-none focus:border-[#0B4FDF]"
+                      />
+                    </div>
+                  </div>
+
+                  {emailProvider === "gmail" && (
+                    <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-[11px] text-blue-900 space-y-1">
+                      <div className="font-bold flex items-center gap-1.5">
+                        <Lock className="w-3.5 h-3.5" />
+                        <span>Google Workspace / Gmail Security Note:</span>
+                      </div>
+                      <p>
+                        For Gmail, use a 16-character <strong>Google App Password</strong> (not your regular login password). You can generate one in seconds at{" "}
+                        <a
+                          href="https://myaccount.google.com/apppasswords"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-bold underline text-[#0B4FDF] inline-flex items-center gap-0.5"
+                        >
+                          myaccount.google.com/apppasswords
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </p>
+                    </div>
+                  )}
+
+                  {emailProvider === "custom" && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="space-y-1 sm:col-span-2">
+                        <label className="font-bold text-slate-700 block">IMAP Host</label>
+                        <input
+                          type="text"
+                          value={emailHost}
+                          onChange={(e) => setEmailHost(e.target.value)}
+                          placeholder="mail.yourdomain.com"
+                          className="w-full p-2.5 rounded-xl border border-slate-300 bg-white font-mono text-xs outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="font-bold text-slate-700 block">Port</label>
+                        <input
+                          type="number"
+                          value={emailPort}
+                          onChange={(e) => setEmailPort(Number(e.target.value))}
+                          placeholder="993"
+                          className="w-full p-2.5 rounded-xl border border-slate-300 bg-white font-mono text-xs outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-200">
+                    {isEmailConnected && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          localStorage.removeItem(IMAP_CREDS_KEY);
+                          setIsEmailConnected(false);
+                          setEmailUser("");
+                          setEmailPass("");
+                          setEmailStatusMsg({ type: "info", text: "Email disconnected." });
+                        }}
+                        className="text-xs font-bold text-rose-600 hover:underline cursor-pointer"
+                      >
+                        Disconnect Account
+                      </button>
+                    )}
+                    <div className="flex items-center gap-2 ml-auto">
+                      <button
+                        type="button"
+                        onClick={() => setIsEmailModalOpen(false)}
+                        className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold cursor-pointer"
+                      >
+                        Close
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleTestAndSaveEmail}
+                        disabled={isTestingEmail}
+                        className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold flex items-center gap-2 cursor-pointer shadow-xs disabled:opacity-50"
+                      >
+                        {isTestingEmail ? (
+                          <>
+                            <RefreshCw className="w-4 h-4 animate-spin" />
+                            <span>Connecting...</span>
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span>Test &amp; Connect Mailbox</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </motion.div>
           </div>
         )}
