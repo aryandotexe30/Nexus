@@ -850,7 +850,97 @@ export default function PoAutomationPage() {
     );
   };
 
-  // Run Autonomous Agent Step on the active uploaded PO
+  // Full Autonomous Pipeline Execution: PO -> Invoicing & e-Way Bill -> Dispatch -> Customer Collection Notice
+  const handleRunFullAutopilot = () => {
+    if (!activeCase) return;
+    setIsRunningAutopilot(true);
+
+    addLog(
+      "AI_AGENT",
+      "Full Autonomous Pipeline Initiated",
+      `Executing all steps from PO intake to billing, logistics, and delivery collection notification for ${activeCase.poNumber}.`
+    );
+
+    const cleanNum = activeCase.poNumber.replace(/[^A-Z0-9]/gi, "").slice(-6) || "1001";
+    const soId = `SO-${cleanNum}`;
+    const piId = `PI-${cleanNum}`;
+    const eway = `2819${cleanNum}92`;
+    const otp = "849201";
+    const gatePass = `GP-${cleanNum}`;
+    const nowStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    // Step 1: Switch to Stage 2 & show Sales Plan sign-off
+    setActiveStageTab(2);
+
+    setTimeout(() => {
+      addLog(
+        "AI_AGENT",
+        "Autonomous Sales Plan Sign-Off",
+        `Approved commercial terms for ${activeCase.items.length} line item(s). Allocating inventory from ${activeCase.items[0]?.warehouseHub || "Central Hub"}.`
+      );
+
+      // Step 2: Switch to Stage 3 & generate ERP Sales Order, Tax Invoice, e-Way Bill
+      setActiveStageTab(3);
+
+      setTimeout(() => {
+        addLog(
+          "AI_AGENT",
+          "ERP Invoicing & Statutory Compliance Generated",
+          `Generated Sales Order #${soId}, Tax Proforma #${piId}, and GST e-Way Bill #${eway}.`
+        );
+
+        addLog(
+          "AI_AGENT",
+          "Logistics & Linehaul Dispatch Booked",
+          `Vehicle MH-14-EL-8821 allocated. Issued Customer Gate Pass ${gatePass}.`
+        );
+
+        // Step 3: Switch to Stage 4 & Send All Customer Emails (including Final Collection Notice with OTP)
+        setTimeout(() => {
+          setCases((prev) =>
+            prev.map((c) => {
+              if (c.id !== activeCase.id) return c;
+              const updatedEmails: CustomerEmailTouchpoint[] = c.emails.map((em) => ({
+                ...em,
+                status: "SENT_DELIVERED" as const,
+                sentAt: `Today, ${nowStr}`
+              }));
+              return {
+                ...c,
+                currentStage: 4,
+                workflowStatus: "READY_FOR_COLLECTION",
+                salesPlanApprovedBy: "Autonomous AI Agent",
+                salesPlanApprovedAt: `Today, ${nowStr}`,
+                salesOrderId: soId,
+                proformaInvoiceNo: piId,
+                ewayBillNo: eway,
+                vehicleNumber: "MH-14-EL-8821",
+                transporterName: "Priority Linehaul Logistics",
+                collectionOtp: otp,
+                gatePassCode: gatePass,
+                fulfillmentStep: 3,
+                emails: updatedEmails
+              };
+            })
+          );
+
+          setActiveStageTab(4);
+          const collectionEmail = activeCase.emails.find((e) => e.stepType === "COLLECTION_NOTICE");
+          if (collectionEmail) setSelectedEmailId(collectionEmail.id);
+
+          addLog(
+            "AI_AGENT",
+            "Dispatched Customer Delivery Collection Notice (Gate Pass & OTP)",
+            `Email delivered to ${activeCase.senderEmail}: Gate Pass ${gatePass}, OTP ${otp}. Ready for customer collection.`
+          );
+
+          setIsRunningAutopilot(false);
+        }, 1200);
+      }, 1000);
+    }, 800);
+  };
+
+  // Run Autonomous Agent Step on the active uploaded PO (respects Human Gates)
   const handleRunAutopilot = () => {
     if (!activeCase) return;
     setIsRunningAutopilot(true);
@@ -950,12 +1040,16 @@ export default function PoAutomationPage() {
 
             {activeCase && (
               <button
-                onClick={handleRunAutopilot}
+                onClick={handleRunFullAutopilot}
                 disabled={isRunningAutopilot}
-                className="px-4 py-2.5 rounded-xl bg-[#FF5500] hover:bg-[#E04800] text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#FF5500] to-amber-600 hover:from-[#E04800] hover:to-amber-700 text-white text-xs font-black flex items-center gap-2 transition-all shadow-md cursor-pointer disabled:opacity-50"
               >
-                <Play className="w-3.5 h-3.5 fill-current" />
-                <span>{isRunningAutopilot ? "Running Agent..." : "Run Autonomous Step"}</span>
+                <Sparkles className="w-4 h-4 fill-current" />
+                <span>
+                  {isRunningAutopilot
+                    ? "Executing Autonomous Pipeline..."
+                    : "Run Full Auto-Pilot (PO → Invoicing → Collection Notice)"}
+                </span>
               </button>
             )}
           </div>
@@ -1794,11 +1888,20 @@ export default function PoAutomationPage() {
                     </button>
 
                     <button
+                      onClick={handleRunFullAutopilot}
+                      disabled={isRunningAutopilot}
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF5500] to-amber-600 hover:from-[#E04800] hover:to-amber-700 text-white text-xs font-black flex items-center gap-2 cursor-pointer shadow-sm transition-all disabled:opacity-50"
+                    >
+                      <Sparkles className="w-4 h-4 fill-current" />
+                      <span>Approve &amp; Run All to Delivery Collection</span>
+                    </button>
+
+                    <button
                       onClick={handleApproveSalesPlan}
                       className="px-5 py-2.5 rounded-xl bg-[#0B4FDF] hover:bg-blue-700 text-white text-xs font-extrabold flex items-center gap-2 cursor-pointer shadow-sm transition-colors"
                     >
                       <CheckCircle2 className="w-4 h-4" />
-                      <span>Approve Sales Plan &amp; Generate Order</span>
+                      <span>Approve Step-by-Step (To Stage 3)</span>
                     </button>
                   </div>
                 </div>
