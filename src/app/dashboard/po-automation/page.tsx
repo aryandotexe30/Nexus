@@ -2570,7 +2570,7 @@ export default function PoAutomationPage() {
                       {[
                         { id: "gmail", name: "Gmail", host: "imap.gmail.com", port: 993 },
                         { id: "outlook", name: "Outlook / 365", host: "outlook.office365.com", port: 993 },
-                        { id: "zoho", name: "Zoho Mail", host: "imap.zoho.com", port: 993 },
+                        { id: "zoho", name: "Zoho Mail", host: "imap.zoho.in", port: 993 },
                         { id: "custom", name: "Custom IMAP", host: emailHost, port: emailPort }
                       ].map((prov) => (
                         <button
@@ -2616,12 +2616,24 @@ export default function PoAutomationPage() {
                       <input
                         type="password"
                         value={emailPass}
-                        onChange={(e) => setEmailPass(e.target.value)}
+                        onChange={(e) => setEmailPass(e.target.value.replace(/\s+/g, ""))}
                         placeholder="••••••••••••••••"
                         className="w-full p-2.5 rounded-xl border border-slate-300 bg-white font-mono text-xs outline-none focus:border-[#0B4FDF]"
                       />
                     </div>
                   </div>
+
+                  {emailProvider === "zoho" && (
+                    <div className="p-3 rounded-xl bg-emerald-50/80 border border-emerald-200 text-[11px] text-emerald-950 space-y-1">
+                      <div className="font-bold flex items-center gap-1.5">
+                        <Lock className="w-3.5 h-3.5 text-emerald-700" />
+                        <span>Zoho Mail App Password &amp; IMAP Requirement:</span>
+                      </div>
+                      <p>
+                        Paste your generated Zoho Application-Specific Password here. Also make sure <strong>IMAP Access</strong> is enabled in your Zoho Mail Webmail (<em>Settings &rarr; Mail Accounts &rarr; check &quot;IMAP Access&quot;</em>).
+                      </p>
+                    </div>
+                  )}
 
                   {emailProvider === "gmail" && (
                     <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-[11px] text-blue-900 space-y-1">

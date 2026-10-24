@@ -22,13 +22,13 @@ function resolveImapConfig(body: any): ImapConfig | null {
     (body.provider === "outlook"
       ? "outlook.office365.com"
       : body.provider === "zoho"
-      ? "imap.zoho.com"
+      ? (body.user && String(body.user).endsWith(".in") ? "imap.zoho.in" : "imap.zoho.com")
       : "imap.gmail.com");
 
   const port = Number(body.port || process.env.IMAP_PORT || 993);
   const secure = body.secure !== undefined ? Boolean(body.secure) : true;
   const user = body.user || process.env.IMAP_USER || process.env.EMAIL_USER;
-  const pass = body.pass || process.env.IMAP_PASS || process.env.EMAIL_PASS;
+  const pass = (body.pass || process.env.IMAP_PASS || process.env.EMAIL_PASS || "").replace(/\s+/g, "");
 
   if (!user || !pass) {
     return null;
@@ -51,6 +51,27 @@ function createClient(config: ImapConfig) {
   });
 }
 
+async function connectClientWithFallback(config: ImapConfig) {
+  const client = createClient(config);
+  try {
+    await client.connect();
+    return { client, host: config.host };
+  } catch (err: any) {
+    // If Zoho, automatically try the alternate regional cluster (imap.zoho.in vs imap.zoho.com)
+    if (config.host.includes("zoho")) {
+      const altHost = config.host === "imap.zoho.com" ? "imap.zoho.in" : "imap.zoho.com";
+      const altClient = createClient({ ...config, host: altHost });
+      try {
+        await altClient.connect();
+        return { client: altClient, host: altHost };
+      } catch {
+        throw err;
+      }
+    }
+    throw err;
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -70,14 +91,13 @@ export async function POST(req: Request) {
 
     // 1. Action: Test Connection
     if (action === "test") {
-      const client = createClient(config);
       try {
-        await client.connect();
+        const { client, host } = await connectClientWithFallback(config);
         const status = await client.status("INBOX", { messages: true, unseen: true });
         await client.logout();
         return NextResponse.json({
           success: true,
-          message: `Successfully connected to ${config.user}!`,
+          message: `Successfully connected to ${config.user} via ${host}!`,
           inboxStats: {
             totalMessages: status.messages,
             unseenMessages: status.unseen
@@ -96,9 +116,8 @@ export async function POST(req: Request) {
 
     // 2. Action: Scan Inbox for Purchase Orders
     if (action === "scan") {
-      const client = createClient(config);
       try {
-        await client.connect();
+        const { client } = await connectClientWithFallback(config);
         const lock = await client.getMailboxLock("INBOX");
         const foundEmails: any[] = [];
 
@@ -223,11 +242,10 @@ export async function POST(req: Request) {
         );
       }
 
-      const client = createClient(config);
       let parsedMail: ParsedMail | null = null;
 
       try {
-        await client.connect();
+        const { client } = await connectClientWithFallback(config);
         const lock = await client.getMailboxLock("INBOX");
         try {
           const download = await client.download(String(emailUid), undefined, { uid: true });
