@@ -7,6 +7,34 @@ import { extractText } from "unpdf";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+const GROQ_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"];
+
+async function callGroqWithFallback(groqKey: string, payload: any) {
+  let lastErr = "";
+  for (const model of GROQ_MODELS) {
+    try {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${groqKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          ...payload,
+          model
+        })
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+      lastErr = await res.text();
+    } catch (e: any) {
+      lastErr = e.message || String(e);
+    }
+  }
+  throw new Error(`AI Extraction service error: ${lastErr}`);
+}
+
 interface ImapConfig {
   host: string;
   port: number;
@@ -460,37 +488,20 @@ IMPORTANT RULES:
 - Extract ONLY the real company, PO number, addresses, and line items present in the email or attachment.
 - Do NOT invent fake companies or unrelated line items.`;
 
-      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${groqKey}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
-          messages: [
-            { role: "system", content: systemPrompt },
-            {
-              role: "user",
-              content: `Sender Name: ${senderName}\nSender Email: ${senderEmail}\nEmail Subject: ${subject}\nPrimary Attachment: ${
-                primaryAttachmentName || "None"
-              }\n\n--- EMAIL & ATTACHMENT CONTENT ---\n${combinedRawText.slice(0, 18000)}`
-            }
-          ],
-          temperature: 0.1,
-          response_format: { type: "json_object" }
-        })
+      const data = await callGroqWithFallback(groqKey, {
+        messages: [
+          { role: "system", content: systemPrompt },
+          {
+            role: "user",
+            content: `Sender Name: ${senderName}\nSender Email: ${senderEmail}\nEmail Subject: ${subject}\nPrimary Attachment: ${
+              primaryAttachmentName || "None"
+            }\n\n--- EMAIL & ATTACHMENT CONTENT ---\n${combinedRawText.slice(0, 18000)}`
+          }
+        ],
+        temperature: 0.1,
+        response_format: { type: "json_object" }
       });
 
-      if (!response.ok) {
-        const errText = await response.text();
-        return NextResponse.json(
-          { success: false, error: `AI Extraction service error: ${errText}` },
-          { status: 502 }
-        );
-      }
-
-      const data = await response.json();
       const content = data.choices?.[0]?.message?.content;
       if (!content) {
         return NextResponse.json(
