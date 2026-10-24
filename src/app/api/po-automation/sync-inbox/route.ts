@@ -166,42 +166,62 @@ export async function POST(req: Request) {
             }
 
             const lowerSub = subject.toLowerCase();
+            const senderLower = senderEmail.toLowerCase();
+
+            // Skip automated notifications & security alerts
+            const isNotificationNoise =
+              lowerSub.includes("security alert") ||
+              lowerSub.includes("verification code") ||
+              lowerSub.includes("otp") ||
+              lowerSub.includes("welcome to") ||
+              lowerSub.includes("password reset") ||
+              lowerSub.includes("sign-in from") ||
+              senderLower.includes("no-reply") ||
+              senderLower.includes("noreply");
+
+            if (isNotificationNoise) {
+              continue;
+            }
+
+            // Check for PO keywords in subject
             const isPoSubject =
-              lowerSub.includes("po") ||
               lowerSub.includes("purchase order") ||
               lowerSub.includes("p.o.") ||
-              lowerSub.includes("order") ||
-              lowerSub.includes("invoice") ||
-              lowerSub.includes("rfq") ||
-              lowerSub.includes("quotation");
+              lowerSub.includes("p.o") ||
+              /\bpo[\s#:\-_0-9]/i.test(subject) ||
+              /\bpo\b/i.test(subject) ||
+              lowerSub.includes("work order") ||
+              lowerSub.includes("supply order") ||
+              lowerSub.includes("formal order") ||
+              lowerSub.includes("order booking") ||
+              lowerSub.includes("new order") ||
+              (lowerSub.includes("order") && attachments.length > 0);
 
             const hasPoAttachment = attachments.some((att) => {
               const l = att.toLowerCase();
               return (
-                l.endsWith(".pdf") ||
-                l.endsWith(".xlsx") ||
-                l.endsWith(".xls") ||
-                l.endsWith(".csv") ||
-                l.endsWith(".png") ||
-                l.endsWith(".jpg")
+                (l.includes("po") || l.includes("order") || l.includes("invoice") || l.includes("purchase")) &&
+                (l.endsWith(".pdf") || l.endsWith(".xlsx") || l.endsWith(".xls") || l.endsWith(".csv") || l.endsWith(".png") || l.endsWith(".jpg"))
               );
             });
 
-            // Score likelihood of being a PO
+            // STRICT FILTER: Only include emails that are genuine Purchase Orders
             const isLikelyPo = isPoSubject || (hasPoAttachment && attachments.length > 0);
 
-            foundEmails.push({
-              uid: message.uid,
-              seq: message.seq,
-              subject,
-              senderName,
-              senderEmail,
-              date: dateStr,
-              hasAttachments: attachments.length > 0,
-              attachments,
-              isLikelyPo,
-              unread: !message.flags?.has("\\Seen")
-            });
+            if (isLikelyPo) {
+              foundEmails.push({
+                uid: message.uid,
+                seq: message.seq,
+                subject,
+                senderName,
+                senderEmail,
+                date: dateStr,
+                hasAttachments: attachments.length > 0,
+                attachments,
+                isLikelyPo: true,
+                unread: !message.flags?.has("\\Seen")
+              });
+            }
           }
         } finally {
           lock.release();

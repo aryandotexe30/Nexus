@@ -482,8 +482,8 @@ export default function PoAutomationPage() {
     }
   };
 
-  // Scan inbox for PO emails
-  const handleScanInbox = async (overrideCreds?: any) => {
+  // Scan inbox for PO emails (strictly filtering for POs only)
+  const handleScanInbox = async (overrideCreds?: any, autoIngestFirst: boolean = false) => {
     const creds = overrideCreds || {
       provider: emailProvider,
       host: emailHost,
@@ -514,14 +514,16 @@ export default function PoAutomationPage() {
       if (!res.ok || !data.success) {
         setEmailStatusMsg({ type: "error", text: data.error || "Failed to scan emails." });
       } else {
-        setScannedEmails(data.emails || []);
+        const found = data.emails || [];
+        setScannedEmails(found);
         addLog(
           "AI_AGENT",
           "Scanned Email Inbox",
-          `Found ${data.count || 0} recent messages, identified ${
-            (data.emails || []).filter((e: any) => e.isLikelyPo).length
-          } purchase order candidate(s).`
+          `Filtered mailbox: Identified ${found.length} real Purchase Order email(s).`
         );
+        if (autoIngestFirst && found.length > 0) {
+          handleIngestEmailPo(found[0]);
+        }
       }
     } catch (err: any) {
       setEmailStatusMsg({ type: "error", text: err.message || "Failed to scan emails." });
@@ -2440,17 +2442,26 @@ export default function PoAutomationPage() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <button
+                        type="button"
+                        onClick={() => handleScanInbox(undefined, true)}
+                        disabled={isScanningEmails || !isEmailConnected}
+                        className="px-4 py-2 rounded-xl bg-[#0B4FDF] hover:bg-blue-700 text-white font-extrabold text-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50 transition-colors shadow-xs"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Auto-Detect &amp; Ingest PO</span>
+                      </button>
                       <button
                         type="button"
                         onClick={() => handleScanInbox()}
                         disabled={isScanningEmails || !isEmailConnected}
-                        className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-50 transition-colors shadow-xs"
+                        className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-2 cursor-pointer disabled:opacity-50 transition-colors"
                       >
                         <RefreshCw
                           className={`w-3.5 h-3.5 ${isScanningEmails ? "animate-spin" : ""}`}
                         />
-                        <span>{isScanningEmails ? "Scanning Mailbox..." : "Scan Inbox Now"}</span>
+                        <span>{isScanningEmails ? "Scanning..." : "Scan Only"}</span>
                       </button>
                       {!isEmailConnected && (
                         <button
