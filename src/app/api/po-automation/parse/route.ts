@@ -200,7 +200,7 @@ Extract the exact details from the user's uploaded Purchase Order document/email
       "status": "READY_IN_STOCK" | "PRICE_VARIANCE" | "PARTIAL_STOCK_JOBWORK"
     }
   ],
-  "salesPlanSummary": "string (concise 2-3 sentence executive sales & fulfillment plan tailored specifically to the extracted buyer and line items)"
+  "salesPlanSummary": "string (VERY BRIEF 2-3 bullet summary: • Value & Estimated Margin: ₹X (Y%) • Dispatch Hub & Lead Time: Facility Z in N days • Payment Verification: Credit Net 30 or Advance. Keep under 40 words total.)"
 }
 
 IMPORTANT RULES:
